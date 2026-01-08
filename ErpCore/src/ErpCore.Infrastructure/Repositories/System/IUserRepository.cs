@@ -47,6 +47,11 @@ public interface IUserRepository
     /// 更新登入資訊
     /// </summary>
     Task UpdateLoginInfoAsync(string userId, string ipAddress);
+
+    /// <summary>
+    /// 重置所有使用者密碼
+    /// </summary>
+    Task ResetAllPasswordsAsync(string hashedPassword, string updatedBy);
 }
 
 /// <summary>

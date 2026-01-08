@@ -803,25 +803,25 @@ class AutoClicker:
         }
         
         try:
-            # 1. 保存識別到的區域截圖
-            print(f"\n  [驗證] 保存識別區域截圖...")
+            # 1. 獲取識別到的區域截圖（臨時使用，處理完後刪除）
+            print(f"\n  [驗證] 獲取識別區域截圖...")
             # 修改原因：pyautogui.screenshot() 需要 Python int，不能是 numpy.int64
             # 將 location 的屬性轉換為 Python int
             region = (int(location.left), int(location.top), int(location.width), int(location.height))
             screenshot = pyautogui.screenshot(region=region)
             
-            # 創建 screenshots 目錄（如果不存在）
+            # 創建臨時 screenshots 目錄（如果不存在）
             screenshots_dir = 'screenshots'
             if not os.path.exists(screenshots_dir):
                 os.makedirs(screenshots_dir)
             
-            # 保存截圖
+            # 保存截圖（臨時使用）
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             screenshot_filename = f"{image_name.replace('.', '_')}_{timestamp}.png"
             screenshot_path = os.path.join(screenshots_dir, screenshot_filename)
             screenshot.save(screenshot_path)
             result['screenshot_path'] = screenshot_path
-            print(f"  [驗證] 截圖已保存: {screenshot_path}")
+            print(f"  [驗證] 截圖已保存（臨時）: {screenshot_path}")
             
             # 2. 檢查識別區域中心點是否為可點擊區域
             # 修改原因：確保座標是 Python int 類型
@@ -867,11 +867,33 @@ class AutoClicker:
                 print(f"  [驗證] ✗ 相似度驗證失敗 (< 85%)")
                 result['reason'] = f'相似度不足 ({similarity:.2f}%)'
             
+            # 處理完後刪除截圖文件
+            if result['screenshot_path'] and os.path.exists(result['screenshot_path']):
+                try:
+                    os.remove(result['screenshot_path'])
+                    print(f"  [驗證] 截圖已刪除: {result['screenshot_path']}")
+                except Exception as e:
+                    print(f"  [驗證] ⚠ 刪除截圖失敗: {e}")
+                finally:
+                    # 清除路徑引用
+                    result['screenshot_path'] = None
+            
             return result
             
         except Exception as e:
             print(f"  [驗證] ✗ 驗證過程發生錯誤: {e}")
             result['reason'] = f'驗證錯誤: {str(e)}'
+            
+            # 如果發生錯誤，也要刪除截圖
+            if result['screenshot_path'] and os.path.exists(result['screenshot_path']):
+                try:
+                    os.remove(result['screenshot_path'])
+                    print(f"  [驗證] 截圖已刪除: {result['screenshot_path']}")
+                except:
+                    pass
+                finally:
+                    result['screenshot_path'] = None
+            
             return result
     
     def search_clickable_area_in_b_region(self):
@@ -1491,18 +1513,15 @@ class AutoClicker:
                     # 修改原因：不要暂停，持續運行，將驗證結果記錄但繼續執行
                     if not verification_result['is_valid']:
                         print(f"\n⚠ c.PNG 驗證失敗: {verification_result['reason']}")
-                        print(f"  識別到的截圖: {verification_result['screenshot_path']}")
                         print(f"  識別位置: ({pos_c[0]}, {pos_c[1]})")
                         print(f"  可點擊: {'是' if verification_result['is_clickable'] else '否'}")
                         print(f"  → 驗證失敗但仍繼續執行（可能是相似度稍低或非 pointer cursor）")
                     elif not verification_result['is_clickable']:
                         print(f"\n⚠ c.PNG 識別正確，但不是可點擊區域")
-                        print(f"  識別到的截圖: {verification_result['screenshot_path']}")
                         print(f"  識別位置: ({pos_c[0]}, {pos_c[1]})")
                         print(f"  → 可能需要調整點擊偏移量，但繼續執行")
                     else:
                         print(f"\n✓ c.PNG 驗證通過！")
-                        print(f"  識別到的截圖: {verification_result['screenshot_path']}")
                         print(f"  相似度驗證: 通過")
                         print(f"  可點擊驗證: 通過")
                         

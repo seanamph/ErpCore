@@ -16,5 +16,6 @@ public interface IPurchaseOrderService
     Task SubmitPurchaseOrderAsync(string orderId);
     Task ApprovePurchaseOrderAsync(string orderId);
     Task CancelPurchaseOrderAsync(string orderId);
+    Task ClosePurchaseOrderAsync(string orderId);
 }
 

@@ -47,6 +47,20 @@ export const einvoiceApi = {
   // 查詢單筆電子發票
   getEInvoice: (invoiceId) => {
     return axios.get(`/einvoices/${invoiceId}`)
+  },
+
+  // 匯出Excel (ECA3020)
+  exportExcel: (data) => {
+    return axios.post('/einvoices/export/excel', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 匯出PDF (ECA3020)
+  exportPdf: (data) => {
+    return axios.post('/einvoices/export/pdf', data, {
+      responseType: 'blob'
+    })
   }
 }
 

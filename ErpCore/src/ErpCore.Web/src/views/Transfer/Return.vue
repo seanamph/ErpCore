@@ -66,11 +66,12 @@
             {{ formatCurrency(row.TotalAmount) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="250" fixed="right">
+        <el-table-column label="操作" width="300" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleView(row)">查看</el-button>
             <el-button type="warning" size="small" @click="handleEdit(row)" :disabled="row.IsSettled || row.Status === 'X'">修改</el-button>
             <el-button type="success" size="small" @click="handleConfirm(row)" :disabled="row.Status === 'C' || row.IsSettled">確認</el-button>
+            <el-button type="info" size="small" @click="handleCancel(row)" :disabled="row.Status === 'X' || row.IsSettled">取消</el-button>
             <el-button type="danger" size="small" @click="handleDelete(row)" :disabled="row.IsSettled || row.Status === 'X'">刪除</el-button>
           </template>
         </el-table-column>
@@ -373,6 +374,22 @@ export default {
       }
     }
 
+    // 取消驗退單
+    const handleCancel = async (row) => {
+      try {
+        await ElMessageBox.confirm('確定要取消此驗退單嗎？', '確認', {
+          type: 'warning'
+        })
+        await transferReturnApi.cancelTransferReturn(row.ReturnId)
+        ElMessage.success('取消成功')
+        loadData()
+      } catch (error) {
+        if (error !== 'cancel') {
+          ElMessage.error('取消失敗: ' + (error.message || '未知錯誤'))
+        }
+      }
+    }
+
     // 刪除
     const handleDelete = async (row) => {
       try {
@@ -484,6 +501,7 @@ export default {
       handleView,
       handleEdit,
       handleConfirm,
+      handleCancel,
       handleDelete,
       handleSubmit,
       handleSizeChange,

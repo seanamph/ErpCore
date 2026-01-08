@@ -1,13 +1,18 @@
-import request from '@/utils/request'
+import axios from '../axios'
 
 /**
- * 查詢店舖列表
+ * 店舖管理 API
+ * 遵循 C# API 欄位命名 (PascalCase)
  */
-export function getShops(params) {
-  return request({
-    url: '/api/v1/shops',
-    method: 'get',
-    params
-  })
+export const shopsApi = {
+  // 查詢店舖列表
+  getShops: (params) => {
+    return axios.get('/shops', { params })
+  },
+
+  // 查詢單筆店舖
+  getShop: (shopId) => {
+    return axios.get(`/shops/${shopId}`)
+  }
 }
 

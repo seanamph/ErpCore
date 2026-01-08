@@ -398,6 +398,8 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { employeeMealCardApi } from '@/api/businessReport'
+import { departmentsApi } from '@/api/departments'
+import { shopsApi } from '@/api/modules/shop'
 
 export default {
   name: 'EmployeeMealCardList',
@@ -543,11 +545,32 @@ export default {
       }
     }
 
-    // 載入組織和店別資料（這裡需要根據實際 API 調整）
+    // 載入組織和店別資料
     const loadOrgAndSiteList = async () => {
-      // TODO: 根據實際 API 載入組織和店別資料
-      // orgList.value = await orgApi.getOrgs()
-      // siteList.value = await siteApi.getSites()
+      try {
+        // 載入部別（組織）資料
+        const deptResponse = await departmentsApi.getDepartments({ PageSize: 1000 })
+        if (deptResponse.Data && deptResponse.Data.Items) {
+          orgList.value = deptResponse.Data.Items.map(dept => ({
+            OrgId: dept.DeptId,
+            OrgName: dept.DeptName
+          }))
+        }
+
+        // 載入店別資料
+        const shopResponse = await shopsApi.getShops()
+        if (shopResponse.Data) {
+          siteList.value = Array.isArray(shopResponse.Data)
+            ? shopResponse.Data.map(shop => ({
+                SiteId: shop.ShopId,
+                SiteName: shop.ShopName
+              }))
+            : []
+        }
+      } catch (error) {
+        console.error('載入組織和店別資料失敗:', error)
+        ElMessage.warning('載入組織和店別資料失敗，請稍後再試')
+      }
     }
 
     // 查詢資料

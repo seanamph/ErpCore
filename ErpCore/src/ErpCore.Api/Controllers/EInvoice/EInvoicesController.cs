@@ -119,6 +119,46 @@ public class EInvoicesController : BaseController
     }
 
     /// <summary>
+    /// 匯出電子發票查詢結果到 Excel (ECA3020)
+    /// </summary>
+    [HttpPost("export/excel")]
+    public async Task<IActionResult> ExportEInvoicesToExcel(
+        [FromBody] EInvoiceQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.ExportEInvoicesToExcelAsync(query);
+            var fileName = $"電子發票查詢_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出電子發票查詢結果到 Excel 失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail("匯出電子發票查詢結果到 Excel 失敗"));
+        }
+    }
+
+    /// <summary>
+    /// 匯出電子發票查詢結果到 PDF (ECA3020)
+    /// </summary>
+    [HttpPost("export/pdf")]
+    public async Task<IActionResult> ExportEInvoicesToPdf(
+        [FromBody] EInvoiceQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.ExportEInvoicesToPdfAsync(query);
+            var fileName = $"電子發票查詢_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出電子發票查詢結果到 PDF 失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail("匯出電子發票查詢結果到 PDF 失敗"));
+        }
+    }
+
+    /// <summary>
     /// 刪除上傳記錄
     /// </summary>
     [HttpDelete("uploads/{uploadId}")]

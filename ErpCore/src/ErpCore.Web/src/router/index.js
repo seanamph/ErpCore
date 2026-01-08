@@ -146,6 +146,24 @@ const routes = [
         name: 'EInvoiceProcess',
         component: () => import('../views/EInvoice/EInvoiceProcess.vue'),
         meta: { title: '電子發票處理作業 (ECA3010)' }
+      },
+      {
+        path: 'query',
+        name: 'EInvoiceQuery',
+        component: () => import('../views/EInvoice/EInvoiceQuery.vue'),
+        meta: { title: '電子發票查詢作業 (ECA3020)' }
+      },
+      {
+        path: 'upload',
+        name: 'EInvoiceUpload',
+        component: () => import('../views/EInvoice/EInvoiceUpload.vue'),
+        meta: { title: '電子發票上傳作業 (ECA3030)' }
+      },
+      {
+        path: 'report',
+        name: 'EInvoiceReport',
+        component: () => import('../views/EInvoice/EInvoiceReport.vue'),
+        meta: { title: '電子發票報表查詢 (ECA3040)' }
       }
     ]
   },
@@ -158,6 +176,18 @@ const routes = [
         name: 'EmployeeMealCardList',
         component: () => import('../views/BusinessReport/EmployeeMealCardList.vue'),
         meta: { title: '業務報表查詢作業 (SYSL130)' }
+      }
+    ]
+  },
+  {
+    path: '/analysis-report',
+    component: () => import('../views/Layout.vue'),
+    children: [
+      {
+        path: 'query/:reportId?',
+        name: 'AnalysisReportQuery',
+        component: () => import('../views/AnalysisReport/AnalysisReportQuery.vue'),
+        meta: { title: '進銷存分析報表 (SYSA1000)' }
       }
     ]
   }

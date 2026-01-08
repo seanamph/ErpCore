@@ -319,5 +319,31 @@ public class UserRepository : BaseRepository, IUserRepository
             throw;
         }
     }
+
+    public async Task ResetAllPasswordsAsync(string hashedPassword, string updatedBy)
+    {
+        try
+        {
+            const string sql = @"
+                UPDATE Users SET
+                    UserPassword = @UserPassword,
+                    ChangePwdDate = @ChangePwdDate,
+                    UpdatedBy = @UpdatedBy,
+                    UpdatedAt = @UpdatedAt";
+
+            await ExecuteAsync(sql, new
+            {
+                UserPassword = hashedPassword,
+                ChangePwdDate = DateTime.Now,
+                UpdatedBy = updatedBy,
+                UpdatedAt = DateTime.Now
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("重置所有使用者密碼失敗", ex);
+            throw;
+        }
+    }
 }
 

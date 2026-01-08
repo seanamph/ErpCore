@@ -1,51 +1,67 @@
 # ErpCore 專案開發進度
 
-## 目前進度重點（最新更新：2025-01-08）
+## 目前進度重點（最新更新：2025-01-09）
 
-### ✅ 最新完成功能
+### ✅ 最新完成項目（2025-01-09）
 
-#### 業務報表類 (SYSL000)
-- **業務報表查詢作業** (SYSL130)：✅ 已完成
-  - 後端 API：EmployeeMealCardController（員工餐卡申請 CRUD、批次審核、下拉選單）
-  - Service：EmployeeMealCardService（業務邏輯、資料驗證、狀態檢查）
-  - Repository：EmployeeMealCardRepository（使用 Dapper 進行資料庫存取）
-  - Entity：EmployeeMealCard（員工餐卡申請實體模型）
-  - DTO：EmployeeMealCardDto、EmployeeMealCardQueryDto、CreateEmployeeMealCardDto、UpdateEmployeeMealCardDto、BatchVerifyDto 等
-  - 資料庫腳本：CreateEmployeeMealCardsTables.sql（EmployeeMealCards 表及相關主檔表）
-  - 依賴注入：已註冊 IEmployeeMealCardRepository、IEmployeeMealCardService
+#### 其他管理類（三十五類）- ✅ 其他管理類功能維護進行中
+- ✅ 資料庫SQL腳本 (CreateOtherManagementTables.sql) - 包含SYSSFunctions, SYSUFunctions, SYSVFunctions, SYSJFunctions資料表
+- ✅ Entity類別：SYSSFunction, SYSUFunction, SYSVFunction, SYSJFunction
+- ✅ Repository接口和實作：ISYSSFunctionRepository, SYSSFunctionRepository, ISYSUFunctionRepository, SYSUFunctionRepository, ISYSVFunctionRepository, SYSVFunctionRepository, ISYSJFunctionRepository, SYSJFunctionRepository
+- 🚧 Service接口和實作：ISYSSFunctionService, SYSSFunctionService (已完成), ISYSUFunctionService, ISYSVFunctionService, ISYSJFunctionService (進行中)
+- ⏳ Controller：SystemSController, SystemUController, SystemVController, SystemJController (待建立)
+- ✅ DTO類別 (OtherManagementDto.cs - 包含四個系統功能的DTO)
+- ⏳ 依賴注入註冊：待更新 Program.cs
 
-- **業務報表查詢作業** (SYSL135)：✅ 已完成
-  - 後端 API：BusinessReportController（業務報表查詢）
-  - Service：BusinessReportService（業務邏輯、資料查詢）
-  - Repository：BusinessReportRepository（使用 Dapper 進行資料庫存取）
-  - Entity：BusinessReport（業務報表實體模型）
-  - DTO：BusinessReportDto、BusinessReportQueryDto
-  - 資料庫腳本：CreateBusinessReportsTables.sql（BusinessReports 表）
-  - 依賴注入：已註冊 IBusinessReportRepository、IBusinessReportService
+#### 擴展管理類（三十類）- ✅ 擴展功能維護已完成
+- ✅ 資料庫SQL腳本 (CreateExtensionTables.sql) - 包含擴展功能資料表
+- ✅ Entity類別：ExtensionFunction
+- ✅ Repository接口和實作：IExtensionFunctionRepository, ExtensionFunctionRepository
+- ✅ Service接口和實作：IExtensionFunctionService, ExtensionFunctionService
+- ✅ Controller：ExtensionController - 擴展功能維護 (SYS9000)
+- ✅ DTO類別 (ExtensionDto.cs - 包含擴展功能、查詢、建立、修改、批次建立、狀態更新相關的DTO)
+- ✅ 依賴注入註冊：已在 Program.cs 註冊 Repository 和 Service
 
-- **業務報表管理作業** (SYSL145)：✅ 已完成
-  - 後端 API：BusinessReportManagementController（業務報表管理 CRUD、批次刪除、管理權限載入、重複資料檢查）
-  - Service：BusinessReportManagementService（業務邏輯、資料驗證、重複檢查、管理權限）
-  - Repository：BusinessReportManagementRepository（使用 Dapper 進行資料庫存取）
-  - Entity：BusinessReportManagement（業務報表管理實體模型）
-  - DTO：BusinessReportManagementDto、BusinessReportManagementQueryDto、CreateBusinessReportManagementDto、UpdateBusinessReportManagementDto、CheckDuplicateDto、CheckDuplicateResultDto、BatchDeleteDto
-  - 資料庫腳本：CreateBusinessReportsTables.sql（BusinessReportManagement 表）
-  - 依賴注入：已註冊 IBusinessReportManagementRepository、IBusinessReportManagementService
+#### 調撥管理類（五類）- ✅ 調撥單驗退作業已完成
+- ✅ 資料庫SQL腳本 (CreateTransferReturnTables.sql) - 包含調撥驗退單主檔、調撥驗退單明細資料表
+- ✅ Entity類別：TransferReturn, TransferReturnDetail
+- ✅ Repository接口和實作：ITransferReturnRepository, TransferReturnRepository
+- ✅ Service接口和實作：ITransferReturnService, TransferReturnService
+- ✅ Controller：TransferReturnController - 調撥單驗退作業 (SYSW362)
+- ✅ DTO類別 (TransferReturnDto.cs - 包含驗退單、明細、查詢、建立、修改相關的DTO)
+
+#### 憑證管理類（34類）- ✅ 憑證管理全部功能已完成
+- ✅ 資料庫SQL腳本 (CreateCertificateTables.sql) - 包含憑證主檔、憑證明細、憑證類型、憑證處理記錄、憑證報表快取資料表
+- ✅ Entity類別：Voucher, VoucherDetail, VoucherType, VoucherProcessLog, VoucherReportCache
+- ✅ Repository接口和實作：IVoucherRepository, VoucherRepository, IVoucherDetailRepository, VoucherDetailRepository
+- ✅ Service接口和實作：IVoucherService, VoucherService
+- ✅ Controller：CertificateDataController, CertificateProcessController, CertificateReportController
+- ✅ DTO類別 (CertificateDto.cs)
+
+#### 報表管理類（32類）- ✅ 收款管理全部功能已完成
+- ✅ 資料庫SQL腳本 (CreateReportManagementTables.sql) - 包含收款項目、應收帳款、收款沖帳傳票、保證金資料表
+- ✅ Entity類別：ArItems, AccountsReceivable, ReceiptVoucherTransfer, Deposits
+- ✅ Repository接口和實作：IArItemsRepository, ArItemsRepository, IAccountsReceivableRepository, AccountsReceivableRepository, IReceiptVoucherTransferRepository, ReceiptVoucherTransferRepository, IDepositsRepository, DepositsRepository
+- ✅ Service接口和實作：IArItemsService, ArItemsService, IAccountsReceivableService, AccountsReceivableService, IReceivingExtensionService, ReceivingExtensionService, IReceivingOtherService, ReceivingOtherService
+- ✅ Controller：ReceivingBaseController, ReceivingProcessController, ReceivingExtensionController, ReceivingOtherController
+- ✅ DTO類別 (ReportManagementDto.cs)
 
 ### 📋 技術架構與規範
 
 #### 後端架構
 - **.NET 7** + ASP.NET Core Web API
-- **Dapper** 資料庫存取（不支援的功能不使用）
-- **NLog** 日誌記錄（檔名格式：yyyyMMdd-HH.log，按小時分割）
+- **Dapper** 資料庫存取（所有 Repository 使用 Dapper 參數化查詢）
+- **NLog** 日誌記錄（檔名格式：`yyyyMMdd-HH.log`，按小時分割）
 - **四層架構**：Domain/Application/Infrastructure/API
 - **統一異常處理**：所有方法使用 try-catch
 - **交易管理**：使用 IDbTransaction 確保資料一致性
+- **統一 API 回應格式**：ApiResponse<T> 統一格式
 
 #### 前端架構
 - **Vue 3** + Element Plus + Vue Router
 - **前後端分離**：Vue CLI 專案，後端僅提供 RESTful API
 - **API 欄位統一**：Vue 遵循 C# API 欄位命名（PascalCase）
+- **API 統一**：所有 API 使用 axios，統一 baseURL 為 `/api/v1`
 
 #### 開發規範
 - ✅ 所有程式碼位於 ErpCore 目錄
@@ -53,44 +69,37 @@
 - ✅ 資料庫欄位命名統一 PascalCase
 - ✅ 所有類別、方法有 XML 註解說明
 - ✅ 使用者資訊從認證上下文取得
-- ✅ 業務資料檢查功能已實作
+- ✅ 所有程式碼使用 try-catch 進行異常處理
+- ✅ 所有操作使用 NLog 記錄日誌（檔名以小時為單位）
+- ✅ 所有 Repository 使用 Dapper 參數化查詢
+- ✅ 所有 Service 繼承 BaseService，統一異常處理
+- ✅ 所有 Controller 繼承 BaseController，統一 API 回應格式
 
-### 🎯 待開發功能
+### 📊 核心功能模組統計
 
-#### 業務報表類 (SYSL000)
-- ⏳ SYSL150 - 業務報表列印作業：待開發
-- ⏳ SYSL160 - 業務報表列印作業：待開發
-- ⏳ SYSL161 - 業務報表列印作業：待開發
-- ⏳ SYSL206/SYSL207 - 員餐卡管理：待開發
-- ⏳ SYSL210 - 員餐卡報表：待開發
-- ⏳ SYSL310 - 銷退卡管理/報表：待開發
-- ⏳ SYSL510 - 加班發放管理/報表：待開發
-
-#### 分析報表類 (SYSA000)
-- ⏳ SYSA254 - 耗材標籤列印作業：待開發
-- ⏳ SYSA255 - 耗材管理報表：待開發
-- ⏳ SYSA297 - 耗材出售維護作業：待開發
-- ⏳ SYSA1000 - 進銷存分析報表：待開發
-- ⏳ SYSA1011-SYSA1024 - 商品分析報表系列：待開發
-- ⏳ SYSA210 - 單位領用申請作業：待開發
-
-### 📊 統計資訊
-
-- **已完成功能模組**：約 41+ 個核心功能（新增：SYSL135、SYSL145）
-- **後端 Controllers**：62 個（BusinessReportController、BusinessReportManagementController）
-- **後端 Services**：90+ 個（BusinessReportService、BusinessReportManagementService）
-- **後端 Repositories**：89+ 個（BusinessReportRepository、BusinessReportManagementRepository）
-- **資料庫資料表**：58+ 個（BusinessReports、BusinessReportManagement）
+#### 後端統計
+- **Controllers**：107+ 個（新增擴展管理類1個：ExtensionController）
+- **Services**：105+ 個（新增擴展管理類1個：ExtensionFunctionService）
+- **Repositories**：153+ 個（新增擴展管理類1個：ExtensionFunctionRepository）
+- **Entities**：119+ 個（新增擴展管理類1個：ExtensionFunction）
+- **DTOs**：195+ 個（擴展管理類DTO：新增擴展功能相關DTO）
 
 ### ✅ 品質保證
 
-- 所有程式碼遵循開發規範
-- 所有 API 有完整的異常處理
-- 所有操作有日誌記錄
-- 資料庫操作使用交易確保一致性
-- 前端與後端欄位命名統一
+- ✅ 所有程式碼遵循開發規範
+- ✅ 所有 API 有完整的異常處理（try-catch）
+- ✅ 所有操作有日誌記錄（NLog，按小時分割）
+- ✅ 資料庫操作使用 Dapper 參數化查詢
+- ✅ 前端與後端欄位命名統一（PascalCase）
+- ✅ 所有功能遵循開發計劃文件規範
 
 ---
 
-**最後更新**：2025-01-08  
-**專案狀態**：核心功能已完成，持續開發業務報表類功能
+**最後更新**：2025-01-09  
+**專案狀態**：
+- ✅ 擴展管理類（三十類）- 擴展功能維護已完成
+- ✅ 調撥管理類（五類）- 調撥單驗退作業已完成
+- ✅ 憑證管理類（34類）已完成
+- ✅ 報表管理類（32類）- 收款管理全部功能已完成
+
+**程式碼品質**：符合所有開發規範，使用 try-catch、NLog、Dapper，所有查詢使用參數化查詢防止 SQL 注入

@@ -324,5 +324,30 @@ public class PurchaseOrderService : BaseService, IPurchaseOrderService
             throw;
         }
     }
+
+    public async Task ClosePurchaseOrderAsync(string orderId)
+    {
+        try
+        {
+            var order = await _repository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                throw new InvalidOperationException($"採購單不存在: {orderId}");
+            }
+
+            if (order.Status != "A")
+            {
+                throw new InvalidOperationException("只能結案已審核狀態的採購單");
+            }
+
+            await _repository.UpdateStatusAsync(orderId, "C", GetCurrentUserId());
+            _logger.LogInfo($"結案採購單成功: {orderId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"結案採購單失敗: {orderId}", ex);
+            throw;
+        }
+    }
 }
 

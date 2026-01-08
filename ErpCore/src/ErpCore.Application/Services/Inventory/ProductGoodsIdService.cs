@@ -434,8 +434,33 @@ public class ProductGoodsIdService : BaseService, IProductGoodsIdService
                     $"此商品已被 {transferOrderCount} 筆調撥單使用，無法刪除。請先處理相關調撥單。");
             }
 
-            // 可以繼續檢查其他業務資料（如庫存、盤點等）
-            // TODO: 根據實際業務需求添加更多檢查
+            // 檢查庫存資料中是否使用此商品
+            const string inventorySql = @"
+                SELECT COUNT(*) 
+                FROM Inventories 
+                WHERE GoodsId = @GoodsId";
+            
+            var inventoryCount = await connection.ExecuteScalarAsync<int>(inventorySql, new { GoodsId = goodsId });
+
+            if (inventoryCount > 0)
+            {
+                throw new InvalidOperationException(
+                    $"此商品存在庫存資料（{inventoryCount} 筆），無法刪除。請先處理相關庫存。");
+            }
+
+            // 檢查盤點資料中是否使用此商品
+            const string stocktakingSql = @"
+                SELECT COUNT(*) 
+                FROM StocktakingDetails 
+                WHERE GoodsId = @GoodsId";
+            
+            var stocktakingCount = await connection.ExecuteScalarAsync<int>(stocktakingSql, new { GoodsId = goodsId });
+
+            if (stocktakingCount > 0)
+            {
+                throw new InvalidOperationException(
+                    $"此商品已被 {stocktakingCount} 筆盤點資料使用，無法刪除。請先處理相關盤點資料。");
+            }
         }
         catch (InvalidOperationException)
         {

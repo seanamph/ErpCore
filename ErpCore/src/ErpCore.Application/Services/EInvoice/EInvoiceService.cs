@@ -413,6 +413,139 @@ public class EInvoiceService : BaseService, IEInvoiceService
         }
     }
 
+    /// <summary>
+    /// 匯出電子發票查詢結果到 Excel (ECA3020)
+    /// </summary>
+    public async Task<byte[]> ExportEInvoicesToExcelAsync(EInvoiceQueryDto query)
+    {
+        try
+        {
+            // 查詢所有資料（不分頁）
+            var allDataQuery = new EInvoiceQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                UploadId = query.UploadId,
+                OrderNo = query.OrderNo,
+                RetailerOrderNo = query.RetailerOrderNo,
+                RetailerOrderDetailNo = query.RetailerOrderDetailNo,
+                StoreId = query.StoreId,
+                ProviderId = query.ProviderId,
+                OrderDateFrom = query.OrderDateFrom,
+                OrderDateTo = query.OrderDateTo,
+                ProcessStatus = query.ProcessStatus,
+                OrderStatus = query.OrderStatus,
+                GoodsId = query.GoodsId,
+                GoodsName = query.GoodsName,
+                SpecId = query.SpecId,
+                ProviderGoodsId = query.ProviderGoodsId,
+                NdType = query.NdType
+            };
+
+            var result = await GetEInvoicesAsync(allDataQuery);
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvoiceId", DisplayName = "發票ID", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderNo", DisplayName = "訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerOrderNo", DisplayName = "零售商訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerOrderDetailNo", DisplayName = "零售商訂單明細編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderDate", DisplayName = "訂單日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "StoreId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderId", DisplayName = "供應商代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderName", DisplayName = "供應商名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "NdType", DisplayName = "類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecId", DisplayName = "規格ID", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderGoodsId", DisplayName = "供應商商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecColor", DisplayName = "規格顏色", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecSize", DisplayName = "規格尺寸", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SuggestPrice", DisplayName = "建議售價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InternetPrice", DisplayName = "網路售價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingType", DisplayName = "運送方式", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "訂單數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderShippingFee", DisplayName = "訂單運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "訂單小計", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderTotal", DisplayName = "訂單總計", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderStatus", DisplayName = "訂單狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProcessStatus", DisplayName = "處理狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CreatedAt", DisplayName = "建立時間", DataType = ExportDataType.DateTime }
+            };
+
+            return _exportHelper.ExportToExcel(result.Items, columns, "電子發票查詢", "電子發票查詢結果");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出電子發票查詢結果到 Excel 失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 匯出電子發票查詢結果到 PDF (ECA3020)
+    /// </summary>
+    public async Task<byte[]> ExportEInvoicesToPdfAsync(EInvoiceQueryDto query)
+    {
+        try
+        {
+            // 查詢所有資料（不分頁）
+            var allDataQuery = new EInvoiceQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                UploadId = query.UploadId,
+                OrderNo = query.OrderNo,
+                RetailerOrderNo = query.RetailerOrderNo,
+                RetailerOrderDetailNo = query.RetailerOrderDetailNo,
+                StoreId = query.StoreId,
+                ProviderId = query.ProviderId,
+                OrderDateFrom = query.OrderDateFrom,
+                OrderDateTo = query.OrderDateTo,
+                ProcessStatus = query.ProcessStatus,
+                OrderStatus = query.OrderStatus,
+                GoodsId = query.GoodsId,
+                GoodsName = query.GoodsName,
+                SpecId = query.SpecId,
+                ProviderGoodsId = query.ProviderGoodsId,
+                NdType = query.NdType
+            };
+
+            var result = await GetEInvoicesAsync(allDataQuery);
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvoiceId", DisplayName = "發票ID", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderNo", DisplayName = "訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerOrderNo", DisplayName = "零售商訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderDate", DisplayName = "訂單日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "StoreName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderName", DisplayName = "供應商名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "訂單數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderTotal", DisplayName = "訂單總計", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderStatus", DisplayName = "訂單狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProcessStatus", DisplayName = "處理狀態", DataType = ExportDataType.String }
+            };
+
+            return _exportHelper.ExportToPdf(result.Items, columns, "電子發票查詢結果");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出電子發票查詢結果到 PDF 失敗", ex);
+            throw;
+        }
+    }
+
     public async Task DeleteUploadAsync(long uploadId)
     {
         try

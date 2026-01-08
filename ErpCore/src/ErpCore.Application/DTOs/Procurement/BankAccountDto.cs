@@ -1,0 +1,80 @@
+namespace ErpCore.Application.DTOs.Procurement;
+
+/// <summary>
+/// 銀行帳戶 DTO
+/// </summary>
+public class BankAccountDto
+{
+    public long TKey { get; set; }
+    public string BankAccountId { get; set; } = string.Empty;
+    public string BankId { get; set; } = string.Empty;
+    public string? BankName { get; set; }
+    public string AccountName { get; set; } = string.Empty;
+    public string AccountNumber { get; set; } = string.Empty;
+    public string? AccountType { get; set; }
+    public string? CurrencyId { get; set; }
+    public string Status { get; set; } = "A";
+    public string? Memo { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string? UpdatedBy { get; set; }
+    public DateTime UpdatedAt { get; set; }
+}
+
+/// <summary>
+/// 建立銀行帳戶 DTO
+/// </summary>
+public class CreateBankAccountDto
+{
+    public string BankAccountId { get; set; } = string.Empty;
+    public string BankId { get; set; } = string.Empty;
+    public string AccountName { get; set; } = string.Empty;
+    public string AccountNumber { get; set; } = string.Empty;
+    public string? AccountType { get; set; }
+    public string? CurrencyId { get; set; }
+    public string Status { get; set; } = "A";
+    public string? Memo { get; set; }
+}
+
+/// <summary>
+/// 修改銀行帳戶 DTO
+/// </summary>
+public class UpdateBankAccountDto
+{
+    public string BankId { get; set; } = string.Empty;
+    public string AccountName { get; set; } = string.Empty;
+    public string AccountNumber { get; set; } = string.Empty;
+    public string? AccountType { get; set; }
+    public string? CurrencyId { get; set; }
+    public string Status { get; set; } = "A";
+    public string? Memo { get; set; }
+}
+
+/// <summary>
+/// 查詢銀行帳戶 DTO
+/// </summary>
+public class BankAccountQueryDto
+{
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 20;
+    public string? BankAccountId { get; set; }
+    public string? BankId { get; set; }
+    public string? AccountName { get; set; }
+    public string? AccountNumber { get; set; }
+    public string? AccountType { get; set; }
+    public string? CurrencyId { get; set; }
+    public string? Status { get; set; }
+}
+
+/// <summary>
+/// 銀行帳戶餘額 DTO
+/// </summary>
+public class BankAccountBalanceDto
+{
+    public string BankAccountId { get; set; } = string.Empty;
+    public string AccountName { get; set; } = string.Empty;
+    public decimal Balance { get; set; }
+    public string CurrencyId { get; set; } = "TWD";
+    public DateTime LastUpdateDate { get; set; }
+}
+

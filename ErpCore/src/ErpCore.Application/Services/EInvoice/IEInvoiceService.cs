@@ -16,6 +16,16 @@ public interface IEInvoiceService
     Task StartProcessAsync(long uploadId);
     Task<PagedResult<EInvoiceDto>> GetEInvoicesAsync(EInvoiceQueryDto query);
     Task<EInvoiceDto> GetEInvoiceAsync(long invoiceId);
+    
+    /// <summary>
+    /// 匯出電子發票查詢結果到 Excel (ECA3020)
+    /// </summary>
+    Task<byte[]> ExportEInvoicesToExcelAsync(EInvoiceQueryDto query);
+    
+    /// <summary>
+    /// 匯出電子發票查詢結果到 PDF (ECA3020)
+    /// </summary>
+    Task<byte[]> ExportEInvoicesToPdfAsync(EInvoiceQueryDto query);
     Task DeleteUploadAsync(long uploadId);
     Task<PagedResult<EInvoiceReportDto>> GetEInvoiceReportsAsync(EInvoiceReportQueryDto query);
 

@@ -435,8 +435,49 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
                     $"此供應商商品已被 {purchaseOrderCount} 筆採購單使用，無法刪除。請先處理相關採購單。");
             }
 
-            // 可以繼續檢查其他業務資料（如驗收單、庫存等）
-            // TODO: 根據實際業務需求添加更多檢查
+            // 檢查採購驗收單明細中是否使用此供應商商品
+            const string purchaseReceiptSql = @"
+                SELECT COUNT(*) 
+                FROM PurchaseReceiptDetails PRD
+                INNER JOIN PurchaseReceipts PR ON PRD.ReceiptId = PR.ReceiptId
+                WHERE PR.SupplierId = @SupplierId 
+                  AND PRD.BarcodeId = @BarcodeId
+                  AND PR.ShopId = @ShopId
+                  AND PR.Status != 'X'";
+            
+            var purchaseReceiptCount = await connection.ExecuteScalarAsync<int>(purchaseReceiptSql, new
+            {
+                SupplierId = supplierId,
+                BarcodeId = barcodeId,
+                ShopId = shopId
+            });
+
+            if (purchaseReceiptCount > 0)
+            {
+                throw new InvalidOperationException(
+                    $"此供應商商品已被 {purchaseReceiptCount} 筆採購驗收單使用，無法刪除。請先處理相關驗收單。");
+            }
+
+            // 檢查庫存資料中是否使用此供應商商品
+            const string inventorySql = @"
+                SELECT COUNT(*) 
+                FROM Inventories 
+                WHERE SupplierId = @SupplierId 
+                  AND BarcodeId = @BarcodeId
+                  AND ShopId = @ShopId";
+            
+            var inventoryCount = await connection.ExecuteScalarAsync<int>(inventorySql, new
+            {
+                SupplierId = supplierId,
+                BarcodeId = barcodeId,
+                ShopId = shopId
+            });
+
+            if (inventoryCount > 0)
+            {
+                throw new InvalidOperationException(
+                    $"此供應商商品存在庫存資料（{inventoryCount} 筆），無法刪除。請先處理相關庫存。");
+            }
         }
         catch (InvalidOperationException)
         {
