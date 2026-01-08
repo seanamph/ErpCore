@@ -1,0 +1,700 @@
+# SYSQ000 - 查詢功能維護系列 開發計劃
+
+## 一、功能概述
+
+### 1.1 功能說明
+- **功能代碼**: SYSQ000 系列
+- **功能名稱**: 查詢功能維護系列
+- **功能描述**: 提供查詢功能資料的新增、修改、刪除、查詢功能，用於系統查詢功能的資料管理
+- **參考舊程式**: 
+  - `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FI.ASP` (新增)
+  - `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FU.ASP` (修改)
+  - `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FD.ASP` (刪除)
+  - `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FQ.ASP` (查詢)
+  - `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FB.ASP` (瀏覽)
+  - `WEB/IMS_CORE/ASP/INCLUDE/SYSQ000/INIT.inc` (初始化)
+
+### 1.2 業務需求
+- 管理查詢功能基本資料
+- 支援查詢功能的新增、修改、刪除、查詢
+- 支援查詢條件的設定
+- 支援查詢結果的排序
+- 支援查詢功能的啟用/停用
+- 支援查詢功能的權限控制
+
+---
+
+## 二、資料庫設計 (Schema)
+
+### 2.1 主要資料表: `QueryFunctions` (對應舊系統 `SYSQ_QUERY`)
+
+```sql
+CREATE TABLE [dbo].[QueryFunctions] (
+    [TKey] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1), -- 主鍵 (T_KEY)
+    [QueryId] NVARCHAR(50) NOT NULL, -- 查詢功能代碼 (QUERY_ID)
+    [QueryName] NVARCHAR(100) NOT NULL, -- 查詢功能名稱 (QUERY_NAME)
+    [QueryType] NVARCHAR(20) NULL, -- 查詢類型 (QUERY_TYPE)
+    [QuerySql] NVARCHAR(MAX) NULL, -- 查詢SQL語句 (QUERY_SQL)
+    [QueryConfig] NVARCHAR(MAX) NULL, -- 查詢設定 (JSON格式) (QUERY_CONFIG)
+    [SeqNo] INT NULL DEFAULT 0, -- 排序序號 (SEQ_NO)
+    [Status] NVARCHAR(10) NOT NULL DEFAULT '1', -- 狀態 (STATUS) 1:啟用, 0:停用
+    [Notes] NVARCHAR(500) NULL, -- 備註 (NOTES)
+    [CreatedBy] NVARCHAR(50) NULL, -- 建立者 (CREATED_BY)
+    [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間 (CREATED_AT)
+    [UpdatedBy] NVARCHAR(50) NULL, -- 更新者 (UPDATED_BY)
+    [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 更新時間 (UPDATED_AT)
+    [CreatedPriority] INT NULL, -- 建立者等級 (CREATED_PRIORITY)
+    [CreatedGroup] NVARCHAR(50) NULL, -- 建立者群組 (CREATED_GROUP)
+    CONSTRAINT [PK_QueryFunctions] PRIMARY KEY CLUSTERED ([TKey] ASC),
+    CONSTRAINT [UQ_QueryFunctions_QueryId] UNIQUE ([QueryId])
+);
+
+-- 索引
+CREATE NONCLUSTERED INDEX [IX_QueryFunctions_QueryId] ON [dbo].[QueryFunctions] ([QueryId]);
+CREATE NONCLUSTERED INDEX [IX_QueryFunctions_QueryType] ON [dbo].[QueryFunctions] ([QueryType]);
+CREATE NONCLUSTERED INDEX [IX_QueryFunctions_Status] ON [dbo].[QueryFunctions] ([Status]);
+CREATE NONCLUSTERED INDEX [IX_QueryFunctions_SeqNo] ON [dbo].[QueryFunctions] ([SeqNo]);
+```
+
+### 2.2 資料字典
+
+| 欄位名稱 | 資料類型 | 長度 | 允許NULL | 預設值 | 說明 | 備註 |
+|---------|---------|------|---------|--------|------|------|
+| TKey | BIGINT | - | NO | IDENTITY(1,1) | 主鍵 | 自動遞增 |
+| QueryId | NVARCHAR | 50 | NO | - | 查詢功能代碼 | 唯一鍵 |
+| QueryName | NVARCHAR | 100 | NO | - | 查詢功能名稱 | - |
+| QueryType | NVARCHAR | 20 | YES | - | 查詢類型 | - |
+| QuerySql | NVARCHAR(MAX) | - | YES | - | 查詢SQL語句 | - |
+| QueryConfig | NVARCHAR(MAX) | - | YES | - | 查詢設定 | JSON格式 |
+| SeqNo | INT | - | YES | 0 | 排序序號 | - |
+| Status | NVARCHAR | 10 | NO | '1' | 狀態 | 1:啟用, 0:停用 |
+| Notes | NVARCHAR | 500 | YES | - | 備註 | - |
+| CreatedBy | NVARCHAR | 50 | YES | - | 建立者 | - |
+| CreatedAt | DATETIME2 | - | NO | GETDATE() | 建立時間 | - |
+| UpdatedBy | NVARCHAR | 50 | YES | - | 更新者 | - |
+| UpdatedAt | DATETIME2 | - | NO | GETDATE() | 更新時間 | - |
+| CreatedPriority | INT | - | YES | - | 建立者等級 | - |
+| CreatedGroup | NVARCHAR | 50 | YES | - | 建立者群組 | - |
+
+---
+
+## 三、後端 API 設計
+
+### 3.1 API 端點列表
+
+#### 3.1.1 查詢功能列表
+- **HTTP 方法**: `GET`
+- **路徑**: `/api/v1/query-functions`
+- **說明**: 查詢功能列表，支援分頁、排序、篩選
+- **請求參數**:
+  ```json
+  {
+    "pageIndex": 1,
+    "pageSize": 20,
+    "sortField": "SeqNo",
+    "sortOrder": "ASC",
+    "filters": {
+      "queryId": "",
+      "queryName": "",
+      "queryType": "",
+      "status": ""
+    }
+  }
+  ```
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "查詢成功",
+    "data": {
+      "items": [
+        {
+          "tKey": 1,
+          "queryId": "QUERY001",
+          "queryName": "查詢功能1",
+          "queryType": "TYPE1",
+          "querySql": "SELECT * FROM Table1",
+          "queryConfig": "{}",
+          "seqNo": 1,
+          "status": "1",
+          "notes": "查詢功能說明"
+        }
+      ],
+      "totalCount": 100,
+      "pageIndex": 1,
+      "pageSize": 20,
+      "totalPages": 5
+    },
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.2 查詢單筆功能
+- **HTTP 方法**: `GET`
+- **路徑**: `/api/v1/query-functions/{tKey}`
+- **說明**: 根據主鍵查詢單筆查詢功能資料
+- **路徑參數**:
+  - `tKey`: 主鍵
+- **回應格式**: 同查詢列表的單筆資料格式
+
+#### 3.1.3 根據查詢代碼查詢
+- **HTTP 方法**: `GET`
+- **路徑**: `/api/v1/query-functions/by-id/{queryId}`
+- **說明**: 根據查詢功能代碼查詢查詢功能資料
+- **路徑參數**:
+  - `queryId`: 查詢功能代碼
+- **回應格式**: 同查詢列表的單筆資料格式
+
+#### 3.1.4 新增查詢功能
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/query-functions`
+- **說明**: 新增查詢功能資料
+- **請求格式**:
+  ```json
+  {
+    "queryId": "QUERY001",
+    "queryName": "查詢功能1",
+    "queryType": "TYPE1",
+    "querySql": "SELECT * FROM Table1",
+    "queryConfig": "{}",
+    "seqNo": 1,
+    "status": "1",
+    "notes": "查詢功能說明"
+  }
+  ```
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "新增成功",
+    "data": {
+      "tKey": 1
+    },
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.5 修改查詢功能
+- **HTTP 方法**: `PUT`
+- **路徑**: `/api/v1/query-functions/{tKey}`
+- **說明**: 修改查詢功能資料
+- **路徑參數**:
+  - `tKey`: 主鍵
+- **請求格式**: 同新增，但 `queryId` 不可修改
+- **回應格式**: 同新增
+
+#### 3.1.6 刪除查詢功能
+- **HTTP 方法**: `DELETE`
+- **路徑**: `/api/v1/query-functions/{tKey}`
+- **說明**: 刪除查詢功能資料（軟刪除或硬刪除）
+- **路徑參數**:
+  - `tKey`: 主鍵
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "刪除成功",
+    "data": null,
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.7 執行查詢功能
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/query-functions/{tKey}/execute`
+- **說明**: 執行查詢功能，返回查詢結果
+- **路徑參數**:
+  - `tKey`: 主鍵
+- **請求格式**:
+  ```json
+  {
+    "parameters": {
+      "param1": "value1",
+      "param2": "value2"
+    }
+  }
+  ```
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "查詢成功",
+    "data": {
+      "columns": ["col1", "col2", "col3"],
+      "rows": [
+        ["value1", "value2", "value3"],
+        ["value4", "value5", "value6"]
+      ],
+      "totalCount": 2
+    },
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.8 啟用/停用查詢功能
+- **HTTP 方法**: `PUT`
+- **路徑**: `/api/v1/query-functions/{tKey}/status`
+- **說明**: 啟用或停用查詢功能
+- **請求格式**:
+  ```json
+  {
+    "status": "1" // 1:啟用, 0:停用
+  }
+  ```
+
+### 3.2 後端實作類別
+
+#### 3.2.1 Controller: `QueryFunctionsController.cs`
+```csharp
+namespace RSL.IMS3.Api.Controllers
+{
+    [ApiController]
+    [Route("api/v1/query-functions")]
+    [Authorize]
+    public class QueryFunctionsController : ControllerBase
+    {
+        private readonly IQueryFunctionService _queryFunctionService;
+        
+        public QueryFunctionsController(IQueryFunctionService queryFunctionService)
+        {
+            _queryFunctionService = queryFunctionService;
+        }
+        
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<PagedResult<QueryFunctionDto>>>> GetQueryFunctions([FromQuery] QueryFunctionQueryDto query)
+        {
+            // 實作查詢邏輯
+        }
+        
+        [HttpGet("{tKey}")]
+        public async Task<ActionResult<ApiResponse<QueryFunctionDto>>> GetQueryFunction(long tKey)
+        {
+            // 實作查詢單筆邏輯
+        }
+        
+        [HttpGet("by-id/{queryId}")]
+        public async Task<ActionResult<ApiResponse<QueryFunctionDto>>> GetQueryFunctionById(string queryId)
+        {
+            // 實作根據代碼查詢邏輯
+        }
+        
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<long>>> CreateQueryFunction([FromBody] CreateQueryFunctionDto dto)
+        {
+            // 實作新增邏輯
+        }
+        
+        [HttpPut("{tKey}")]
+        public async Task<ActionResult<ApiResponse>> UpdateQueryFunction(long tKey, [FromBody] UpdateQueryFunctionDto dto)
+        {
+            // 實作修改邏輯
+        }
+        
+        [HttpDelete("{tKey}")]
+        public async Task<ActionResult<ApiResponse>> DeleteQueryFunction(long tKey)
+        {
+            // 實作刪除邏輯
+        }
+        
+        [HttpPost("{tKey}/execute")]
+        public async Task<ActionResult<ApiResponse<QueryResultDto>>> ExecuteQueryFunction(long tKey, [FromBody] ExecuteQueryDto dto)
+        {
+            // 實作執行查詢邏輯
+        }
+        
+        [HttpPut("{tKey}/status")]
+        public async Task<ActionResult<ApiResponse>> UpdateStatus(long tKey, [FromBody] UpdateStatusDto dto)
+        {
+            // 實作啟用/停用邏輯
+        }
+    }
+}
+```
+
+#### 3.2.2 Service: `QueryFunctionService.cs`
+```csharp
+namespace RSL.IMS3.Application.Services
+{
+    public interface IQueryFunctionService
+    {
+        Task<PagedResult<QueryFunctionDto>> GetQueryFunctionsAsync(QueryFunctionQueryDto query);
+        Task<QueryFunctionDto> GetQueryFunctionByIdAsync(long tKey);
+        Task<QueryFunctionDto> GetQueryFunctionByQueryIdAsync(string queryId);
+        Task<long> CreateQueryFunctionAsync(CreateQueryFunctionDto dto);
+        Task UpdateQueryFunctionAsync(long tKey, UpdateQueryFunctionDto dto);
+        Task DeleteQueryFunctionAsync(long tKey);
+        Task<QueryResultDto> ExecuteQueryFunctionAsync(long tKey, ExecuteQueryDto dto);
+        Task UpdateStatusAsync(long tKey, string status);
+    }
+}
+```
+
+#### 3.2.3 Repository: `QueryFunctionRepository.cs`
+```csharp
+namespace RSL.IMS3.Infrastructure.Data.Repositories
+{
+    public interface IQueryFunctionRepository
+    {
+        Task<QueryFunction> GetByIdAsync(long tKey);
+        Task<QueryFunction> GetByQueryIdAsync(string queryId);
+        Task<PagedResult<QueryFunction>> GetPagedAsync(QueryFunctionQuery query);
+        Task<QueryFunction> CreateAsync(QueryFunction queryFunction);
+        Task<QueryFunction> UpdateAsync(QueryFunction queryFunction);
+        Task DeleteAsync(long tKey);
+        Task<bool> ExistsAsync(string queryId);
+    }
+}
+```
+
+---
+
+## 四、前端 UI 設計
+
+### 4.1 頁面結構
+
+#### 4.1.1 查詢功能列表頁面 (`QueryFunctionList.vue`)
+- **路徑**: `/system/query-functions`
+- **功能**: 顯示查詢功能列表，支援查詢、新增、修改、刪除、執行
+- **主要元件**:
+  - 查詢表單 (QueryFunctionSearchForm)
+  - 資料表格 (QueryFunctionDataTable)
+  - 新增/修改對話框 (QueryFunctionDialog)
+  - 刪除確認對話框
+  - 執行查詢對話框
+
+#### 4.1.2 查詢功能詳細頁面 (`QueryFunctionDetail.vue`)
+- **路徑**: `/system/query-functions/:tKey`
+- **功能**: 顯示查詢功能詳細資料，支援修改、執行
+
+### 4.2 UI 元件設計
+
+#### 4.2.1 查詢表單元件 (`QueryFunctionSearchForm.vue`)
+```vue
+<template>
+  <el-form :model="searchForm" inline>
+    <el-form-item label="查詢功能代碼">
+      <el-input v-model="searchForm.queryId" placeholder="請輸入查詢功能代碼" />
+    </el-form-item>
+    <el-form-item label="查詢功能名稱">
+      <el-input v-model="searchForm.queryName" placeholder="請輸入查詢功能名稱" />
+    </el-form-item>
+    <el-form-item label="查詢類型">
+      <el-select v-model="searchForm.queryType" placeholder="請選擇查詢類型">
+        <el-option label="全部" value="" />
+        <el-option label="類型1" value="TYPE1" />
+        <el-option label="類型2" value="TYPE2" />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="狀態">
+      <el-select v-model="searchForm.status" placeholder="請選擇狀態">
+        <el-option label="全部" value="" />
+        <el-option label="啟用" value="1" />
+        <el-option label="停用" value="0" />
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="handleSearch">查詢</el-button>
+      <el-button @click="handleReset">重置</el-button>
+    </el-form-item>
+  </el-form>
+</template>
+```
+
+#### 4.2.2 資料表格元件 (`QueryFunctionDataTable.vue`)
+```vue
+<template>
+  <div>
+    <el-table :data="queryFunctionList" v-loading="loading">
+      <el-table-column prop="queryId" label="查詢功能代碼" width="120" />
+      <el-table-column prop="queryName" label="查詢功能名稱" width="200" />
+      <el-table-column prop="queryType" label="查詢類型" width="100" />
+      <el-table-column prop="seqNo" label="排序序號" width="100" />
+      <el-table-column prop="status" label="狀態" width="80">
+        <template #default="{ row }">
+          <el-tag :type="row.status === '1' ? 'success' : 'danger'">
+            {{ row.status === '1' ? '啟用' : '停用' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="250" fixed="right">
+        <template #default="{ row }">
+          <el-button type="primary" size="small" @click="handleEdit(row)">修改</el-button>
+          <el-button type="success" size="small" @click="handleExecute(row)">執行</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(row)">刪除</el-button>
+          <el-button type="info" size="small" @click="handleToggleStatus(row)">啟用/停用</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-pagination
+      v-model:current-page="pagination.pageIndex"
+      v-model:page-size="pagination.pageSize"
+      :total="pagination.totalCount"
+      :page-sizes="[10, 20, 50, 100]"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="handleSizeChange"
+      @current-change="handlePageChange"
+    />
+  </div>
+</template>
+```
+
+#### 4.2.3 新增/修改對話框 (`QueryFunctionDialog.vue`)
+```vue
+<template>
+  <el-dialog
+    :title="dialogTitle"
+    v-model="visible"
+    width="900px"
+    @close="handleClose"
+  >
+    <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
+      <el-form-item label="查詢功能代碼" prop="queryId">
+        <el-input v-model="form.queryId" :disabled="isEdit" placeholder="請輸入查詢功能代碼" />
+      </el-form-item>
+      <el-form-item label="查詢功能名稱" prop="queryName">
+        <el-input v-model="form.queryName" placeholder="請輸入查詢功能名稱" />
+      </el-form-item>
+      <el-form-item label="查詢類型" prop="queryType">
+        <el-select v-model="form.queryType" placeholder="請選擇查詢類型">
+          <el-option label="類型1" value="TYPE1" />
+          <el-option label="類型2" value="TYPE2" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="查詢SQL語句" prop="querySql">
+        <el-input v-model="form.querySql" type="textarea" :rows="10" placeholder="請輸入查詢SQL語句" />
+      </el-form-item>
+      <el-form-item label="查詢設定" prop="queryConfig">
+        <el-input v-model="form.queryConfig" type="textarea" :rows="5" placeholder="請輸入JSON格式的查詢設定" />
+      </el-form-item>
+      <el-form-item label="排序序號" prop="seqNo">
+        <el-input-number v-model="form.seqNo" :min="0" />
+      </el-form-item>
+      <el-form-item label="狀態" prop="status">
+        <el-select v-model="form.status" placeholder="請選擇狀態">
+          <el-option label="啟用" value="1" />
+          <el-option label="停用" value="0" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="備註" prop="notes">
+        <el-input v-model="form.notes" type="textarea" :rows="3" placeholder="請輸入備註" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="handleClose">取消</el-button>
+      <el-button type="primary" @click="handleSubmit">確定</el-button>
+    </template>
+  </el-dialog>
+</template>
+```
+
+### 4.3 API 呼叫 (`queryFunction.api.ts`)
+```typescript
+import request from '@/utils/request';
+
+export interface QueryFunctionDto {
+  tKey: number;
+  queryId: string;
+  queryName: string;
+  queryType?: string;
+  querySql?: string;
+  queryConfig?: string;
+  seqNo?: number;
+  status: string;
+  notes?: string;
+}
+
+export interface QueryFunctionQueryDto {
+  pageIndex: number;
+  pageSize: number;
+  sortField?: string;
+  sortOrder?: 'ASC' | 'DESC';
+  filters?: {
+    queryId?: string;
+    queryName?: string;
+    queryType?: string;
+    status?: string;
+  };
+}
+
+export interface CreateQueryFunctionDto {
+  queryId: string;
+  queryName: string;
+  queryType?: string;
+  querySql?: string;
+  queryConfig?: string;
+  seqNo?: number;
+  status: string;
+  notes?: string;
+}
+
+export interface UpdateQueryFunctionDto extends Omit<CreateQueryFunctionDto, 'queryId'> {}
+
+export interface ExecuteQueryDto {
+  parameters?: Record<string, any>;
+}
+
+export interface QueryResultDto {
+  columns: string[];
+  rows: any[][];
+  totalCount: number;
+}
+
+// API 函數
+export const getQueryFunctionList = (query: QueryFunctionQueryDto) => {
+  return request.get<ApiResponse<PagedResult<QueryFunctionDto>>>('/api/v1/query-functions', { params: query });
+};
+
+export const getQueryFunctionById = (tKey: number) => {
+  return request.get<ApiResponse<QueryFunctionDto>>(`/api/v1/query-functions/${tKey}`);
+};
+
+export const getQueryFunctionByQueryId = (queryId: string) => {
+  return request.get<ApiResponse<QueryFunctionDto>>(`/api/v1/query-functions/by-id/${queryId}`);
+};
+
+export const createQueryFunction = (data: CreateQueryFunctionDto) => {
+  return request.post<ApiResponse<number>>('/api/v1/query-functions', data);
+};
+
+export const updateQueryFunction = (tKey: number, data: UpdateQueryFunctionDto) => {
+  return request.put<ApiResponse>(`/api/v1/query-functions/${tKey}`, data);
+};
+
+export const deleteQueryFunction = (tKey: number) => {
+  return request.delete<ApiResponse>(`/api/v1/query-functions/${tKey}`);
+};
+
+export const executeQueryFunction = (tKey: number, data: ExecuteQueryDto) => {
+  return request.post<ApiResponse<QueryResultDto>>(`/api/v1/query-functions/${tKey}/execute`, data);
+};
+
+export const updateStatus = (tKey: number, status: string) => {
+  return request.put<ApiResponse>(`/api/v1/query-functions/${tKey}/status`, { status });
+};
+```
+
+---
+
+## 五、開發時程
+
+### 5.1 階段一: 資料庫設計 (1天)
+- [ ] 建立資料表結構
+- [ ] 建立索引
+- [ ] 建立外鍵約束
+- [ ] 建立預設值
+- [ ] 資料庫遷移腳本
+
+### 5.2 階段二: 後端開發 (3天)
+- [ ] Entity 類別建立
+- [ ] Repository 實作
+- [ ] Service 實作
+- [ ] Controller 實作
+- [ ] DTO 類別建立
+- [ ] 驗證邏輯實作
+- [ ] SQL執行邏輯實作
+- [ ] 單元測試
+
+### 5.3 階段三: 前端開發 (3天)
+- [ ] API 呼叫函數
+- [ ] 列表頁面開發
+- [ ] 新增/修改對話框開發
+- [ ] 執行查詢對話框開發
+- [ ] 查詢表單開發
+- [ ] 資料表格開發
+- [ ] 表單驗證
+- [ ] 元件測試
+
+### 5.4 階段四: 整合測試 (1天)
+- [ ] API 整合測試
+- [ ] 端對端測試
+- [ ] 效能測試
+- [ ] 安全性測試
+- [ ] SQL注入防護測試
+
+### 5.5 階段五: 文件與部署 (1天)
+- [ ] API 文件更新
+- [ ] 使用者手冊
+- [ ] 部署文件
+
+**總計**: 9天
+
+---
+
+## 六、注意事項
+
+### 6.1 安全性
+- SQL語句必須進行安全驗證，防止SQL注入
+- 必須實作權限檢查
+- 敏感資料必須加密傳輸 (HTTPS)
+- 查詢結果必須進行資料脫敏處理
+
+### 6.2 效能
+- 大量資料查詢必須使用分頁
+- 必須建立適當的索引
+- 必須使用快取機制
+- SQL語句必須進行效能優化
+
+### 6.3 資料驗證
+- 查詢功能代碼必須唯一
+- 必填欄位必須驗證
+- SQL語句必須驗證語法
+- JSON格式必須驗證
+
+### 6.4 業務邏輯
+- 刪除查詢功能前必須檢查是否有相關資料
+- 停用查詢功能時必須檢查是否有進行中的查詢
+- SQL語句執行必須記錄日誌
+
+---
+
+## 七、測試案例
+
+### 7.1 單元測試
+- [ ] 新增查詢功能成功
+- [ ] 新增查詢功能失敗 (重複代碼)
+- [ ] 修改查詢功能成功
+- [ ] 修改查詢功能失敗 (不存在)
+- [ ] 刪除查詢功能成功
+- [ ] 查詢功能列表成功
+- [ ] 查詢單筆功能成功
+- [ ] 執行查詢功能成功
+- [ ] SQL注入防護測試
+
+### 7.2 整合測試
+- [ ] 完整 CRUD 流程測試
+- [ ] 權限檢查測試
+- [ ] 資料驗證測試
+- [ ] 錯誤處理測試
+- [ ] SQL執行測試
+
+### 7.3 效能測試
+- [ ] 大量資料查詢測試
+- [ ] 並發操作測試
+- [ ] SQL執行效能測試
+
+---
+
+## 八、參考資料
+
+### 8.1 舊程式碼
+- `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FI.ASP`
+- `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FU.ASP`
+- `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FD.ASP`
+- `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FQ.ASP`
+- `WEB/IMS_CORE/ASP/SYSQ000/SYSQ000_FB.ASP`
+- `WEB/IMS_CORE/ASP/INCLUDE/SYSQ000/INIT.inc`
+
+### 8.2 資料庫 Schema
+- 參考舊系統 `SYSQ_QUERY` 資料表結構
+
+---
+
+**文件版本**: v1.0  
+**建立日期**: 2024-01-01  
+**最後更新**: 2024-01-01
+
+

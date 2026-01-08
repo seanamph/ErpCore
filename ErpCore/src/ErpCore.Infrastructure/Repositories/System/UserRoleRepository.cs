@@ -1,0 +1,240 @@
+using Dapper;
+using ErpCore.Domain.Entities.System;
+using ErpCore.Infrastructure.Data;
+using ErpCore.Infrastructure.Repositories;
+using ErpCore.Shared.Common;
+using ErpCore.Shared.Logging;
+
+namespace ErpCore.Infrastructure.Repositories.System;
+
+/// <summary>
+/// 使用者角色 Repository 實作 (SYS0220)
+/// 使用 Dapper 進行資料庫存取
+/// </summary>
+public class UserRoleRepository : BaseRepository, IUserRoleRepository
+{
+    public UserRoleRepository(IDbConnectionFactory connectionFactory, ILoggerService logger)
+        : base(connectionFactory, logger)
+    {
+    }
+
+    public async Task<IEnumerable<UserRole>> GetByUserIdAsync(string userId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM UserRoles 
+                WHERE UserId = @UserId
+                ORDER BY CreatedAt DESC";
+
+            return await QueryAsync<UserRole>(sql, new { UserId = userId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者角色失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<UserRole?> GetByUserIdAndRoleIdAsync(string userId, string roleId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM UserRoles 
+                WHERE UserId = @UserId AND RoleId = @RoleId";
+
+            return await QueryFirstOrDefaultAsync<UserRole>(sql, new { UserId = userId, RoleId = roleId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者角色失敗: {userId}, {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<UserRole>> GetByUserIdAndRoleIdsAsync(string userId, List<string> roleIds)
+    {
+        try
+        {
+            if (roleIds == null || roleIds.Count == 0)
+            {
+                return Enumerable.Empty<UserRole>();
+            }
+
+            const string sql = @"
+                SELECT * FROM UserRoles 
+                WHERE UserId = @UserId AND RoleId IN @RoleIds";
+
+            return await QueryAsync<UserRole>(sql, new { UserId = userId, RoleIds = roleIds });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者角色失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<string>> GetRoleIdsByUserIdAsync(string userId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT RoleId FROM UserRoles 
+                WHERE UserId = @UserId";
+
+            var result = await QueryAsync<string>(sql, new { UserId = userId });
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者角色ID列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<UserRole>> GetUserRolesAsync(string userId, int pageIndex = 1, int pageSize = 20)
+    {
+        try
+        {
+            var sql = @"
+                SELECT ur.*
+                FROM UserRoles ur
+                WHERE ur.UserId = @UserId
+                ORDER BY ur.CreatedAt DESC
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", userId);
+            parameters.Add("Offset", (pageIndex - 1) * pageSize);
+            parameters.Add("PageSize", pageSize);
+
+            var items = await QueryAsync<UserRole>(sql, parameters);
+
+            // 查詢總數
+            const string countSql = @"
+                SELECT COUNT(*) FROM UserRoles 
+                WHERE UserId = @UserId";
+
+            var totalCount = await QueryFirstOrDefaultAsync<int>(countSql, new { UserId = userId });
+
+            return new PagedResult<UserRole>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = pageIndex,
+                PageSize = pageSize
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者角色列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<UserRole> CreateAsync(UserRole userRole)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt)
+                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt)";
+
+            await ExecuteAsync(sql, new
+            {
+                userRole.UserId,
+                userRole.RoleId,
+                userRole.CreatedBy,
+                userRole.CreatedAt
+            });
+
+            return userRole;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增使用者角色失敗: {userRole.UserId}, {userRole.RoleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task CreateRangeAsync(IEnumerable<UserRole> userRoles)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt)
+                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt)";
+
+            await ExecuteAsync(sql, userRoles.Select(ur => new
+            {
+                ur.UserId,
+                ur.RoleId,
+                ur.CreatedBy,
+                ur.CreatedAt
+            }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("批量新增使用者角色失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task DeleteAsync(string userId, string roleId)
+    {
+        try
+        {
+            const string sql = @"
+                DELETE FROM UserRoles 
+                WHERE UserId = @UserId AND RoleId = @RoleId";
+
+            await ExecuteAsync(sql, new { UserId = userId, RoleId = roleId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除使用者角色失敗: {userId}, {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task DeleteRangeAsync(IEnumerable<UserRole> userRoles)
+    {
+        try
+        {
+            const string sql = @"
+                DELETE FROM UserRoles 
+                WHERE UserId = @UserId AND RoleId = @RoleId";
+
+            await ExecuteAsync(sql, userRoles.Select(ur => new
+            {
+                ur.UserId,
+                ur.RoleId
+            }));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("批量刪除使用者角色失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<bool> ExistsAsync(string userId, string roleId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT COUNT(*) FROM UserRoles 
+                WHERE UserId = @UserId AND RoleId = @RoleId";
+
+            var count = await QueryFirstOrDefaultAsync<int>(sql, new { UserId = userId, RoleId = roleId });
+            return count > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"檢查使用者角色是否存在失敗: {userId}, {roleId}", ex);
+            throw;
+        }
+    }
+}
+

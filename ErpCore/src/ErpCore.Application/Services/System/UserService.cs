@@ -1,0 +1,538 @@
+using ErpCore.Application.DTOs.System;
+using ErpCore.Application.Services.Base;
+using ErpCore.Domain.Entities.System;
+using ErpCore.Infrastructure.Data;
+using ErpCore.Infrastructure.Repositories.System;
+using ErpCore.Shared.Common;
+using ErpCore.Shared.Logging;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace ErpCore.Application.Services.System;
+
+/// <summary>
+/// 使用者服務實作
+/// </summary>
+public class UserService : BaseService, IUserService
+{
+    private readonly IUserRepository _repository;
+    private readonly IDbConnectionFactory _connectionFactory;
+    private readonly ExportHelper _exportHelper;
+
+    public UserService(
+        IUserRepository repository,
+        IDbConnectionFactory connectionFactory,
+        ILoggerService logger,
+        IUserContext userContext,
+        ExportHelper exportHelper) : base(logger, userContext)
+    {
+        _repository = repository;
+        _connectionFactory = connectionFactory;
+        _exportHelper = exportHelper;
+    }
+
+    public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new UserQuery
+            {
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                UserId = query.UserId,
+                UserName = query.UserName,
+                OrgId = query.OrgId,
+                Status = query.Status,
+                UserType = query.UserType,
+                Title = query.Title,
+                ShopId = query.ShopId
+            };
+
+            var result = await _repository.QueryAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(x => new UserDto
+            {
+                UserId = x.UserId,
+                UserName = x.UserName,
+                Title = x.Title,
+                OrgId = x.OrgId,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                LastLoginDate = x.LastLoginDate,
+                LastLoginIp = x.LastLoginIp,
+                Status = x.Status,
+                UserType = x.UserType,
+                Notes = x.Notes,
+                UserPriority = x.UserPriority,
+                ShopId = x.ShopId,
+                LoginCount = x.LoginCount,
+                ChangePwdDate = x.ChangePwdDate,
+                FloorId = x.FloorId,
+                AreaId = x.AreaId,
+                BtypeId = x.BtypeId,
+                StoreId = x.StoreId,
+                CreatedBy = x.CreatedBy,
+                CreatedAt = x.CreatedAt,
+                UpdatedBy = x.UpdatedBy,
+                UpdatedAt = x.UpdatedAt
+            }).ToList();
+
+            return new PagedResult<UserDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢使用者列表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<UserDto> GetUserAsync(string userId)
+    {
+        try
+        {
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            return new UserDto
+            {
+                UserId = entity.UserId,
+                UserName = entity.UserName,
+                Title = entity.Title,
+                OrgId = entity.OrgId,
+                StartDate = entity.StartDate,
+                EndDate = entity.EndDate,
+                LastLoginDate = entity.LastLoginDate,
+                LastLoginIp = entity.LastLoginIp,
+                Status = entity.Status,
+                UserType = entity.UserType,
+                Notes = entity.Notes,
+                UserPriority = entity.UserPriority,
+                ShopId = entity.ShopId,
+                LoginCount = entity.LoginCount,
+                ChangePwdDate = entity.ChangePwdDate,
+                FloorId = entity.FloorId,
+                AreaId = entity.AreaId,
+                BtypeId = entity.BtypeId,
+                StoreId = entity.StoreId,
+                CreatedBy = entity.CreatedBy,
+                CreatedAt = entity.CreatedAt,
+                UpdatedBy = entity.UpdatedBy,
+                UpdatedAt = entity.UpdatedAt
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<string> CreateUserAsync(CreateUserDto dto)
+    {
+        try
+        {
+            // 驗證資料
+            ValidateCreateDto(dto);
+
+            // 檢查是否已存在
+            var exists = await _repository.ExistsAsync(dto.UserId);
+            if (exists)
+            {
+                throw new InvalidOperationException($"使用者已存在: {dto.UserId}");
+            }
+
+            // 加密密碼
+            var hashedPassword = !string.IsNullOrEmpty(dto.UserPassword)
+                ? HashPassword(dto.UserPassword)
+                : null;
+
+            var entity = new User
+            {
+                UserId = dto.UserId,
+                UserName = dto.UserName,
+                UserPassword = hashedPassword,
+                Title = dto.Title,
+                OrgId = dto.OrgId,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status,
+                UserType = dto.UserType,
+                Notes = dto.Notes,
+                UserPriority = dto.UserPriority,
+                ShopId = dto.ShopId,
+                LoginCount = 0,
+                ChangePwdDate = hashedPassword != null ? DateTime.Now : null,
+                FloorId = dto.FloorId,
+                AreaId = dto.AreaId,
+                BtypeId = dto.BtypeId,
+                StoreId = dto.StoreId,
+                CreatedBy = GetCurrentUserId(),
+                CreatedAt = DateTime.Now,
+                UpdatedBy = GetCurrentUserId(),
+                UpdatedAt = DateTime.Now
+            };
+
+            await _repository.CreateAsync(entity);
+
+            return entity.UserId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增使用者失敗: {dto.UserId}", ex);
+            throw;
+        }
+    }
+
+    public async Task UpdateUserAsync(string userId, UpdateUserDto dto)
+    {
+        try
+        {
+            // 檢查是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            entity.UserName = dto.UserName;
+            entity.Title = dto.Title;
+            entity.OrgId = dto.OrgId;
+            entity.StartDate = dto.StartDate;
+            entity.EndDate = dto.EndDate;
+            entity.Status = dto.Status;
+            entity.UserType = dto.UserType;
+            entity.Notes = dto.Notes;
+            entity.UserPriority = dto.UserPriority;
+            entity.ShopId = dto.ShopId;
+            entity.FloorId = dto.FloorId;
+            entity.AreaId = dto.AreaId;
+            entity.BtypeId = dto.BtypeId;
+            entity.StoreId = dto.StoreId;
+            entity.UpdatedBy = GetCurrentUserId();
+            entity.UpdatedAt = DateTime.Now;
+
+            await _repository.UpdateAsync(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改使用者失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task DeleteUserAsync(string userId)
+    {
+        try
+        {
+            // 檢查是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            await _repository.DeleteAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除使用者失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task DeleteUsersBatchAsync(BatchDeleteUserDto dto)
+    {
+        try
+        {
+            foreach (var userId in dto.UserIds)
+            {
+                await DeleteUserAsync(userId);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("批次刪除使用者失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task ChangePasswordAsync(string userId, ChangePasswordDto dto)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 驗證舊密碼（如果存在）
+            if (!string.IsNullOrEmpty(entity.UserPassword))
+            {
+                var oldPasswordHash = HashPassword(dto.OldPassword);
+                if (entity.UserPassword != oldPasswordHash)
+                {
+                    throw new InvalidOperationException("舊密碼不正確");
+                }
+            }
+
+            // 加密新密碼
+            var newPasswordHash = HashPassword(dto.NewPassword);
+
+            // 更新密碼
+            await _repository.UpdatePasswordAsync(userId, newPasswordHash);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改密碼失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    private void ValidateCreateDto(CreateUserDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.UserId))
+        {
+            throw new ArgumentException("使用者編號不能為空");
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.UserName))
+        {
+            throw new ArgumentException("使用者名稱不能為空");
+        }
+
+        if (dto.Status != "A" && dto.Status != "I" && dto.Status != "L")
+        {
+            throw new ArgumentException("狀態必須為 A(啟用)、I(停用) 或 L(鎖定)");
+        }
+    }
+
+    /// <summary>
+    /// 驗證使用者編號和密碼 (SYS0130)
+    /// </summary>
+    public async Task<UserValidationResultDto> ValidateUserAsync(string userId, string password)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                return new UserValidationResultDto
+                {
+                    IsValid = false,
+                    ErrorCode = "USER_INVALID",
+                    ErrorMessage = "使用者編號錯誤"
+                };
+            }
+
+            // 驗證密碼
+            if (string.IsNullOrEmpty(entity.UserPassword))
+            {
+                return new UserValidationResultDto
+                {
+                    IsValid = false,
+                    ErrorCode = "PASSWORD_INVALID",
+                    ErrorMessage = "使用者尚未設定密碼"
+                };
+            }
+
+            var passwordHash = HashPassword(password);
+            if (entity.UserPassword != passwordHash)
+            {
+                return new UserValidationResultDto
+                {
+                    IsValid = false,
+                    ErrorCode = "PASSWORD_INVALID",
+                    ErrorMessage = "使用者密碼錯誤"
+                };
+            }
+
+            return new UserValidationResultDto
+            {
+                IsValid = true,
+                UserId = entity.UserId,
+                UserName = entity.UserName
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"驗證使用者失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 更新使用者帳戶原則 (SYS0130)
+    /// </summary>
+    public async Task UpdateAccountPolicyAsync(string userId, string? newPassword, DateTime? endDate)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 更新密碼（如果有提供）
+            if (!string.IsNullOrEmpty(newPassword))
+            {
+                var newPasswordHash = HashPassword(newPassword);
+                await _repository.UpdatePasswordAsync(userId, newPasswordHash);
+            }
+
+            // 更新帳號終止日
+            if (endDate.HasValue)
+            {
+                entity.EndDate = endDate.Value;
+                entity.UpdatedBy = GetCurrentUserId();
+                entity.UpdatedAt = DateTime.Now;
+                await _repository.UpdateAsync(entity);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"更新使用者帳戶原則失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 更新帳號終止日 (SYS0130)
+    /// </summary>
+    public async Task UpdateEndDateAsync(string userId, DateTime? endDate)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 更新帳號終止日
+            entity.EndDate = endDate;
+            entity.UpdatedBy = GetCurrentUserId();
+            entity.UpdatedAt = DateTime.Now;
+            await _repository.UpdateAsync(entity);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"更新帳號終止日失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 匯出使用者查詢結果 (SYS0910)
+    /// </summary>
+    public async Task<byte[]> ExportUserQueryAsync(UserQueryDto query, string exportFormat)
+    {
+        try
+        {
+            // 查詢所有資料（不分頁）
+            var allDataQuery = new UserQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                UserId = query.UserId,
+                UserName = query.UserName,
+                OrgId = query.OrgId,
+                Status = query.Status,
+                UserType = query.UserType,
+                Title = query.Title,
+                ShopId = query.ShopId
+            };
+
+            var result = await GetUsersAsync(allDataQuery);
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "UserId", DisplayName = "使用者代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "UserName", DisplayName = "使用者名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Title", DisplayName = "職稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "組織代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "UserType", DisplayName = "使用者型態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Status", DisplayName = "帳號狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StartDate", DisplayName = "啟用日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "EndDate", DisplayName = "終止日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "LastLoginDate", DisplayName = "最後登入日期", DataType = ExportDataType.DateTime },
+                new ExportColumn { PropertyName = "LastLoginIp", DisplayName = "最後登入IP", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "LoginCount", DisplayName = "登入次數", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "ChangePwdDate", DisplayName = "密碼變更日期", DataType = ExportDataType.DateTime },
+                new ExportColumn { PropertyName = "ShopId", DisplayName = "商店代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Notes", DisplayName = "備註", DataType = ExportDataType.String }
+            };
+
+            var title = "使用者查詢結果";
+
+            if (exportFormat.ToLower() == "excel")
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "使用者查詢結果", title);
+            }
+            else if (exportFormat.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, title);
+            }
+            else
+            {
+                throw new ArgumentException($"不支援的匯出格式: {exportFormat}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出使用者查詢結果失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<UserDto> GetCurrentUserAsync()
+    {
+        try
+        {
+            var userId = GetCurrentUserId();
+            if (string.IsNullOrWhiteSpace(userId) || userId == "SYSTEM")
+            {
+                throw new UnauthorizedAccessException("未登入或使用者資訊不存在");
+            }
+
+            return await GetUserAsync(userId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("取得當前登入使用者資訊失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 密碼雜湊（使用 SHA256）
+    /// 注意：實際應用中應使用更安全的加密方式，如 BCrypt 或 Argon2
+    /// </summary>
+    private string HashPassword(string password)
+    {
+        using var sha256 = SHA256.Create();
+        var bytes = Encoding.UTF8.GetBytes(password);
+        var hash = sha256.ComputeHash(bytes);
+        return Convert.ToBase64String(hash);
+    }
+}
+

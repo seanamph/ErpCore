@@ -1,0 +1,17 @@
+// 表格元件樣式
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid $border-color-lighter;
+  }
+  
+  th {
+    background-color: $background-color-light;
+    font-weight: 500;
+  }
+}
+

@@ -1,0 +1,96 @@
+# ErpCore 專案開發進度
+
+## 目前進度重點（最新更新：2025-01-08）
+
+### ✅ 最新完成功能
+
+#### 業務報表類 (SYSL000)
+- **業務報表查詢作業** (SYSL130)：✅ 已完成
+  - 後端 API：EmployeeMealCardController（員工餐卡申請 CRUD、批次審核、下拉選單）
+  - Service：EmployeeMealCardService（業務邏輯、資料驗證、狀態檢查）
+  - Repository：EmployeeMealCardRepository（使用 Dapper 進行資料庫存取）
+  - Entity：EmployeeMealCard（員工餐卡申請實體模型）
+  - DTO：EmployeeMealCardDto、EmployeeMealCardQueryDto、CreateEmployeeMealCardDto、UpdateEmployeeMealCardDto、BatchVerifyDto 等
+  - 資料庫腳本：CreateEmployeeMealCardsTables.sql（EmployeeMealCards 表及相關主檔表）
+  - 依賴注入：已註冊 IEmployeeMealCardRepository、IEmployeeMealCardService
+
+- **業務報表查詢作業** (SYSL135)：✅ 已完成
+  - 後端 API：BusinessReportController（業務報表查詢）
+  - Service：BusinessReportService（業務邏輯、資料查詢）
+  - Repository：BusinessReportRepository（使用 Dapper 進行資料庫存取）
+  - Entity：BusinessReport（業務報表實體模型）
+  - DTO：BusinessReportDto、BusinessReportQueryDto
+  - 資料庫腳本：CreateBusinessReportsTables.sql（BusinessReports 表）
+  - 依賴注入：已註冊 IBusinessReportRepository、IBusinessReportService
+
+- **業務報表管理作業** (SYSL145)：✅ 已完成
+  - 後端 API：BusinessReportManagementController（業務報表管理 CRUD、批次刪除、管理權限載入、重複資料檢查）
+  - Service：BusinessReportManagementService（業務邏輯、資料驗證、重複檢查、管理權限）
+  - Repository：BusinessReportManagementRepository（使用 Dapper 進行資料庫存取）
+  - Entity：BusinessReportManagement（業務報表管理實體模型）
+  - DTO：BusinessReportManagementDto、BusinessReportManagementQueryDto、CreateBusinessReportManagementDto、UpdateBusinessReportManagementDto、CheckDuplicateDto、CheckDuplicateResultDto、BatchDeleteDto
+  - 資料庫腳本：CreateBusinessReportsTables.sql（BusinessReportManagement 表）
+  - 依賴注入：已註冊 IBusinessReportManagementRepository、IBusinessReportManagementService
+
+### 📋 技術架構與規範
+
+#### 後端架構
+- **.NET 7** + ASP.NET Core Web API
+- **Dapper** 資料庫存取（不支援的功能不使用）
+- **NLog** 日誌記錄（檔名格式：yyyyMMdd-HH.log，按小時分割）
+- **四層架構**：Domain/Application/Infrastructure/API
+- **統一異常處理**：所有方法使用 try-catch
+- **交易管理**：使用 IDbTransaction 確保資料一致性
+
+#### 前端架構
+- **Vue 3** + Element Plus + Vue Router
+- **前後端分離**：Vue CLI 專案，後端僅提供 RESTful API
+- **API 欄位統一**：Vue 遵循 C# API 欄位命名（PascalCase）
+
+#### 開發規範
+- ✅ 所有程式碼位於 ErpCore 目錄
+- ✅ API 命名統一 RESTful 規範（/api/v1/{module}）
+- ✅ 資料庫欄位命名統一 PascalCase
+- ✅ 所有類別、方法有 XML 註解說明
+- ✅ 使用者資訊從認證上下文取得
+- ✅ 業務資料檢查功能已實作
+
+### 🎯 待開發功能
+
+#### 業務報表類 (SYSL000)
+- ⏳ SYSL150 - 業務報表列印作業：待開發
+- ⏳ SYSL160 - 業務報表列印作業：待開發
+- ⏳ SYSL161 - 業務報表列印作業：待開發
+- ⏳ SYSL206/SYSL207 - 員餐卡管理：待開發
+- ⏳ SYSL210 - 員餐卡報表：待開發
+- ⏳ SYSL310 - 銷退卡管理/報表：待開發
+- ⏳ SYSL510 - 加班發放管理/報表：待開發
+
+#### 分析報表類 (SYSA000)
+- ⏳ SYSA254 - 耗材標籤列印作業：待開發
+- ⏳ SYSA255 - 耗材管理報表：待開發
+- ⏳ SYSA297 - 耗材出售維護作業：待開發
+- ⏳ SYSA1000 - 進銷存分析報表：待開發
+- ⏳ SYSA1011-SYSA1024 - 商品分析報表系列：待開發
+- ⏳ SYSA210 - 單位領用申請作業：待開發
+
+### 📊 統計資訊
+
+- **已完成功能模組**：約 41+ 個核心功能（新增：SYSL135、SYSL145）
+- **後端 Controllers**：62 個（BusinessReportController、BusinessReportManagementController）
+- **後端 Services**：90+ 個（BusinessReportService、BusinessReportManagementService）
+- **後端 Repositories**：89+ 個（BusinessReportRepository、BusinessReportManagementRepository）
+- **資料庫資料表**：58+ 個（BusinessReports、BusinessReportManagement）
+
+### ✅ 品質保證
+
+- 所有程式碼遵循開發規範
+- 所有 API 有完整的異常處理
+- 所有操作有日誌記錄
+- 資料庫操作使用交易確保一致性
+- 前端與後端欄位命名統一
+
+---
+
+**最後更新**：2025-01-08  
+**專案狀態**：核心功能已完成，持續開發業務報表類功能

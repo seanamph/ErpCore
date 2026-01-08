@@ -1,0 +1,13 @@
+// 按鈕元件樣式
+.btn {
+  padding: 8px 16px;
+  border: 1px solid $border-color-base;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+}
+

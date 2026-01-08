@@ -1,0 +1,283 @@
+# SYSK310-SYSK500 - 憑證報表查詢系列 開發計劃
+
+## 一、功能概述
+
+### 1.1 功能說明
+- **功能代碼**: SYSK310-SYSK500 系列
+- **功能名稱**: 憑證報表查詢系列
+- **功能描述**: 提供憑證報表查詢功能，包含憑證明細報表、憑證統計報表、憑證分析報表等
+- **參考舊程式**: 
+  - `WEB/IMS_CORE/ASP/SYSK000/SYSK310_*.ASP` (憑證報表查詢相關)
+  - `WEB/IMS_CORE/ASP/SYSK000/SYSK320_*.ASP` (憑證統計報表相關)
+  - `WEB/IMS_CORE/ASP/SYSK000/SYSK400_*.ASP` (憑證分析報表相關)
+  - `WEB/IMS_CORE/ASP/SYSK000/SYSK500_*.ASP` (憑證擴展報表相關)
+
+### 1.2 業務需求
+- 支援憑證明細報表查詢
+- 支援憑證統計報表查詢（按日期、類型、分店等）
+- 支援憑證分析報表查詢
+- 支援報表匯出功能（Excel、PDF）
+- 支援報表列印功能
+
+---
+
+## 二、資料庫設計 (Schema)
+
+### 2.1 相關資料表
+本功能主要使用 `Vouchers` 和 `VoucherDetails` 資料表，參考「SYSK110-SYSK150-憑證資料維護系列」的資料庫設計。
+
+### 2.2 報表快取表: `VoucherReportCache` (憑證報表快取)
+
+```sql
+CREATE TABLE [dbo].[VoucherReportCache] (
+    [TKey] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+    [ReportType] NVARCHAR(50) NOT NULL, -- 報表類型
+    [ReportParams] NVARCHAR(MAX) NULL, -- 報表參數（JSON格式）
+    [ReportData] NVARCHAR(MAX) NULL, -- 報表資料（JSON格式）
+    [CacheExpireTime] DATETIME2 NOT NULL, -- 快取過期時間
+    [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
+    CONSTRAINT [UQ_VoucherReportCache_Type_Params] UNIQUE ([ReportType], [ReportParams])
+);
+
+-- 索引
+CREATE NONCLUSTERED INDEX [IX_VoucherReportCache_ReportType] ON [dbo].[VoucherReportCache] ([ReportType]);
+CREATE NONCLUSTERED INDEX [IX_VoucherReportCache_CacheExpireTime] ON [dbo].[VoucherReportCache] ([CacheExpireTime]);
+```
+
+---
+
+## 三、後端 API 設計
+
+### 3.1 API 端點列表
+
+#### 3.1.1 憑證明細報表查詢
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/vouchers/reports/detail`
+- **說明**: 查詢憑證明細報表
+- **請求格式**:
+  ```json
+  {
+    "voucherDateFrom": "2024-01-01",
+    "voucherDateTo": "2024-01-31",
+    "voucherType": "",
+    "shopId": "",
+    "status": "",
+    "pageIndex": 1,
+    "pageSize": 20
+  }
+  ```
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "查詢成功",
+    "data": {
+      "items": [
+        {
+          "voucherId": "VCH001",
+          "voucherDate": "2024-01-01",
+          "voucherType": "V",
+          "shopId": "SHOP001",
+          "status": "A",
+          "totalAmount": 10000.00,
+          "details": []
+        }
+      ],
+      "totalCount": 100,
+      "pageIndex": 1,
+      "pageSize": 20,
+      "totalPages": 5
+    },
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.2 憑證統計報表查詢
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/vouchers/reports/statistics`
+- **說明**: 查詢憑證統計報表
+- **請求格式**:
+  ```json
+  {
+    "voucherDateFrom": "2024-01-01",
+    "voucherDateTo": "2024-01-31",
+    "groupBy": "VOUCHER_TYPE", // VOUCHER_TYPE, SHOP, DATE
+    "voucherType": "",
+    "shopId": ""
+  }
+  ```
+- **回應格式**:
+  ```json
+  {
+    "success": true,
+    "code": 200,
+    "message": "查詢成功",
+    "data": {
+      "summary": {
+        "totalCount": 100,
+        "totalAmount": 1000000.00,
+        "totalDebitAmount": 1000000.00,
+        "totalCreditAmount": 1000000.00
+      },
+      "groups": [
+        {
+          "groupKey": "V",
+          "groupName": "傳票",
+          "count": 50,
+          "totalAmount": 500000.00
+        }
+      ]
+    },
+    "timestamp": "2024-01-01T00:00:00Z"
+  }
+  ```
+
+#### 3.1.3 憑證分析報表查詢
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/vouchers/reports/analysis`
+- **說明**: 查詢憑證分析報表
+- **請求格式**: 同統計報表
+- **回應格式**: 包含更詳細的分析資料
+
+#### 3.1.4 報表匯出
+- **HTTP 方法**: `POST`
+- **路徑**: `/api/v1/vouchers/reports/export`
+- **說明**: 匯出報表（Excel、PDF格式）
+- **請求格式**:
+  ```json
+  {
+    "reportType": "DETAIL", // DETAIL, STATISTICS, ANALYSIS
+    "exportFormat": "EXCEL", // EXCEL, PDF
+    "params": {}
+  }
+  ```
+
+---
+
+## 四、前端 UI 設計
+
+### 4.1 頁面結構
+
+#### 4.1.1 憑證報表查詢頁面 (`VoucherReport.vue`)
+- **路徑**: `/vouchers/reports`
+- **功能**: 提供憑證報表查詢功能
+- **主要元件**:
+  - 查詢條件表單
+  - 報表類型選擇
+  - 報表結果顯示
+  - 匯出功能按鈕
+
+### 4.2 UI 元件設計
+
+#### 4.2.1 報表查詢表單 (`VoucherReportSearchForm.vue`)
+```vue
+<template>
+  <el-form :model="searchForm" inline>
+    <el-form-item label="憑證日期">
+      <el-date-picker
+        v-model="searchForm.voucherDateRange"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="開始日期"
+        end-placeholder="結束日期"
+      />
+    </el-form-item>
+    <el-form-item label="憑證類型">
+      <el-select v-model="searchForm.voucherType" placeholder="請選擇憑證類型">
+        <el-option label="全部" value="" />
+        <el-option label="傳票" value="V" />
+        <el-option label="收據" value="R" />
+        <el-option label="發票" value="I" />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="分店">
+      <el-select v-model="searchForm.shopId" placeholder="請選擇分店">
+        <el-option label="全部" value="" />
+        <el-option v-for="shop in shopList" :key="shop.shopId" :label="shop.shopName" :value="shop.shopId" />
+      </el-select>
+    </el-form-item>
+    <el-form-item label="報表類型">
+      <el-select v-model="searchForm.reportType" placeholder="請選擇報表類型">
+        <el-option label="明細報表" value="DETAIL" />
+        <el-option label="統計報表" value="STATISTICS" />
+        <el-option label="分析報表" value="ANALYSIS" />
+      </el-select>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="handleSearch">查詢</el-button>
+      <el-button @click="handleReset">重置</el-button>
+      <el-button type="success" @click="handleExport">匯出</el-button>
+    </el-form-item>
+  </el-form>
+</template>
+```
+
+---
+
+## 五、開發時程
+
+### 5.1 階段一: 後端開發 (3天)
+- [ ] 報表查詢邏輯實作
+- [ ] 報表統計邏輯實作
+- [ ] 報表分析邏輯實作
+- [ ] 報表匯出邏輯實作
+- [ ] 報表快取機制實作
+- [ ] 單元測試
+
+### 5.2 階段二: 前端開發 (2天)
+- [ ] 報表查詢頁面開發
+- [ ] 報表結果顯示開發
+- [ ] 報表匯出功能開發
+- [ ] 元件測試
+
+### 5.3 階段三: 整合測試 (1天)
+- [ ] API 整合測試
+- [ ] 端對端測試
+- [ ] 效能測試
+
+**總計**: 6天
+
+---
+
+## 六、注意事項
+
+### 6.1 效能
+- 大量資料查詢必須使用分頁
+- 必須使用報表快取機制
+- 統計報表必須使用資料庫聚合函數
+
+### 6.2 資料驗證
+- 查詢條件必須驗證日期範圍
+- 報表參數必須驗證
+
+---
+
+## 七、測試案例
+
+### 7.1 單元測試
+- [ ] 明細報表查詢成功
+- [ ] 統計報表查詢成功
+- [ ] 分析報表查詢成功
+- [ ] 報表匯出成功
+
+### 7.2 整合測試
+- [ ] 完整報表查詢流程測試
+- [ ] 報表快取測試
+
+---
+
+## 八、參考資料
+
+### 8.1 舊程式碼
+- `WEB/IMS_CORE/ASP/SYSK000/SYSK310_*.ASP`
+- `WEB/IMS_CORE/ASP/SYSK000/SYSK320_*.ASP`
+- `WEB/IMS_CORE/ASP/SYSK000/SYSK400_*.ASP`
+- `WEB/IMS_CORE/ASP/SYSK000/SYSK500_*.ASP`
+
+---
+
+**文件版本**: v1.0  
+**建立日期**: 2024-01-01  
+**最後更新**: 2024-01-01
+
