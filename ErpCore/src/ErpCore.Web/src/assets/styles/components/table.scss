@@ -1,7 +1,10 @@
 // 表格元件樣式
+@import '../variables.scss';
+
 .table {
   width: 100%;
   border-collapse: collapse;
+  background-color: $card-bg;
   
   th, td {
     padding: 12px;
@@ -11,7 +14,16 @@
   
   th {
     background-color: $background-color-light;
+    color: $text-color-primary; // 確保文字顏色對比度
     font-weight: 500;
+  }
+  
+  td {
+    color: $text-color-regular; // 確保文字顏色對比度
+  }
+  
+  tr:hover {
+    background-color: $background-color-base;
   }
 }
 

@@ -42,12 +42,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .layout {
   height: 100vh;
   
   .el-header {
-    background-color: #409EFF;
-    color: white;
+    background-color: $primary-color; // 使用主色 #198754
+    color: #FFFFFF; // 白色文字，確保對比度
     display: flex;
     align-items: center;
     padding: 0 20px;
@@ -55,16 +57,17 @@ export default {
     h1 {
       margin: 0;
       font-size: 20px;
+      color: #FFFFFF; // 確保文字顏色對比度
     }
   }
   
   .el-aside {
-    background-color: #fff;
-    border-right: 1px solid #e4e7ed;
+    background-color: $card-bg;
+    border-right: 1px solid $border-color-base;
   }
   
   .el-main {
-    background-color: #f5f7fa;
+    background-color: $background-color-base;
     padding: 20px;
   }
 }

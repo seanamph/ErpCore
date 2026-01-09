@@ -45,6 +45,32 @@ using ErpCore.Infrastructure.Repositories.Certificate;
 using ErpCore.Application.Services.Certificate;
 using ErpCore.Infrastructure.Repositories.Extension;
 using ErpCore.Application.Services.Extension;
+using ErpCore.Infrastructure.Repositories.OtherManagement;
+using ErpCore.Application.Services.OtherManagement;
+using ErpCore.Infrastructure.Repositories.InvoiceSales;
+using ErpCore.Application.Services.InvoiceSales;
+using ErpCore.Infrastructure.Repositories.InvoiceSalesB2B;
+using ErpCore.Application.Services.InvoiceSalesB2B;
+using ErpCore.Infrastructure.Repositories.SystemExtensionE;
+using ErpCore.Application.Services.SystemExtensionE;
+using ErpCore.Infrastructure.Repositories.SystemExtensionH;
+using ErpCore.Application.Services.SystemExtensionH;
+using ErpCore.Infrastructure.Repositories.Loyalty;
+using ErpCore.Application.Services.Loyalty;
+using ErpCore.Infrastructure.Repositories.SalesReport;
+using ErpCore.Application.Services.SalesReport;
+using ErpCore.Infrastructure.Repositories.StandardModule;
+using ErpCore.Application.Services.StandardModule;
+using ErpCore.Infrastructure.Repositories.CustomerCustom;
+using ErpCore.Application.Services.CustomerCustom;
+using ErpCore.Infrastructure.Repositories.CustomerCustomJgjn;
+using ErpCore.Application.Services.CustomerCustomJgjn;
+using ErpCore.Infrastructure.Repositories.CommunicationModule;
+using ErpCore.Application.Services.CommunicationModule;
+using ErpCore.Infrastructure.Repositories.ChartTools;
+using ErpCore.Application.Services.ChartTools;
+using ErpCore.Infrastructure.Repositories.InvoiceExtension;
+using ErpCore.Application.Services.InvoiceExtension;
 using ErpCore.Shared.Logging;
 
 var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
@@ -168,7 +194,16 @@ try
     builder.Services.AddScoped<ICashFlowMediumTypeRepository, CashFlowMediumTypeRepository>();
     builder.Services.AddScoped<ICashFlowSubjectTypeRepository, CashFlowSubjectTypeRepository>();
     builder.Services.AddScoped<ICashFlowSubTotalRepository, CashFlowSubTotalRepository>();
+    builder.Services.AddScoped<IInvoiceDataRepository, InvoiceDataRepository>();
+    builder.Services.AddScoped<ITransactionDataRepository, TransactionDataRepository>();
+    builder.Services.AddScoped<ITaxReportRepository, TaxReportRepository>();
+    builder.Services.AddScoped<ITaxReportPrintRepository, TaxReportPrintRepository>();
+    builder.Services.AddScoped<IVoucherAuditRepository, VoucherAuditRepository>();
+    builder.Services.AddScoped<IVoucherImportRepository, VoucherImportRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.ISupplierRepository, ErpCore.Infrastructure.Repositories.Procurement.SupplierRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IPaymentRepository, ErpCore.Infrastructure.Repositories.Procurement.PaymentRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IBankAccountRepository, ErpCore.Infrastructure.Repositories.Procurement.BankAccountRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IProcurementOtherRepository, ErpCore.Infrastructure.Repositories.Procurement.ProcurementOtherRepository>();
     builder.Services.AddScoped<IContractRepository, ContractRepository>();
     builder.Services.AddScoped<ICashParamsRepository, CashParamsRepository>();
     builder.Services.AddScoped<IPcKeepRepository, PcKeepRepository>();
@@ -179,6 +214,57 @@ try
     builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
     builder.Services.AddScoped<IVoucherDetailRepository, VoucherDetailRepository>();
     builder.Services.AddScoped<IExtensionFunctionRepository, ExtensionFunctionRepository>();
+    builder.Services.AddScoped<ISYSSFunctionRepository, SYSSFunctionRepository>();
+    builder.Services.AddScoped<ISYSUFunctionRepository, SYSUFunctionRepository>();
+    builder.Services.AddScoped<ISYSVFunctionRepository, SYSVFunctionRepository>();
+    builder.Services.AddScoped<ISYSJFunctionRepository, SYSJFunctionRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.CustomerInvoice.ICustomerDataRepository, ErpCore.Infrastructure.Repositories.CustomerInvoice.CustomerDataRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.CustomerInvoice.IInvoicePrintRepository, ErpCore.Infrastructure.Repositories.CustomerInvoice.InvoicePrintRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.CustomerInvoice.IMailFaxRepository, ErpCore.Infrastructure.Repositories.CustomerInvoice.MailFaxRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.CustomerInvoice.ILedgerDataRepository, ErpCore.Infrastructure.Repositories.CustomerInvoice.LedgerDataRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreMember.IStoreRepository, ErpCore.Infrastructure.Repositories.StoreMember.StoreRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreMember.IMemberRepository, ErpCore.Infrastructure.Repositories.StoreMember.MemberRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreMember.IPromotionRepository, ErpCore.Infrastructure.Repositories.StoreMember.PromotionRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreFloor.IShopFloorRepository, ErpCore.Infrastructure.Repositories.StoreFloor.ShopFloorRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreFloor.IFloorRepository, ErpCore.Infrastructure.Repositories.StoreFloor.FloorRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreFloor.ITypeCodeRepository, ErpCore.Infrastructure.Repositories.StoreFloor.TypeCodeRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.StoreFloor.IPosTerminalRepository, ErpCore.Infrastructure.Repositories.StoreFloor.PosTerminalRepository>();
+    builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+    builder.Services.AddScoped<IElectronicInvoiceRepository, ElectronicInvoiceRepository>();
+    builder.Services.AddScoped<IElectronicInvoicePrintSettingRepository, ElectronicInvoicePrintSettingRepository>();
+    builder.Services.AddScoped<ISalesOrderRepository, SalesOrderRepository>();
+    builder.Services.AddScoped<ISalesOrderDetailRepository, SalesOrderDetailRepository>();
+    builder.Services.AddScoped<ISalesOrderQueryRepository, SalesOrderQueryRepository>();
+    builder.Services.AddScoped<ISalesReportQueryRepository, SalesReportQueryRepository>();
+    builder.Services.AddScoped<IReportTemplateRepository, ReportTemplateRepository>();
+    builder.Services.AddScoped<IReportPrintLogRepository, ReportPrintLogRepository>();
+    // B2B InvoiceSales
+    builder.Services.AddScoped<IB2BInvoiceRepository, B2BInvoiceRepository>();
+    builder.Services.AddScoped<IB2BElectronicInvoiceRepository, B2BElectronicInvoiceRepository>();
+    builder.Services.AddScoped<IB2BElectronicInvoicePrintSettingRepository, B2BElectronicInvoicePrintSettingRepository>();
+    builder.Services.AddScoped<IB2BSalesOrderRepository, B2BSalesOrderRepository>();
+    builder.Services.AddScoped<IB2BSalesOrderDetailRepository, B2BSalesOrderDetailRepository>();
+    builder.Services.AddScoped<IB2BSalesOrderQueryRepository, B2BSalesOrderQueryRepository>();
+    // SystemExtensionE
+    builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+    builder.Services.AddScoped<IPersonnelRepository, PersonnelRepository>();
+    // SystemExtensionH
+    builder.Services.AddScoped<IPersonnelImportLogRepository, PersonnelImportLogRepository>();
+    builder.Services.AddScoped<IPersonnelImportDetailRepository, PersonnelImportDetailRepository>();
+    builder.Services.AddScoped<IEmpCardRepository, EmpCardRepository>();
+    // Loyalty
+    builder.Services.AddScoped<ILoyaltySystemConfigRepository, LoyaltySystemConfigRepository>();
+    builder.Services.AddScoped<ILoyaltySystemInitLogRepository, LoyaltySystemInitLogRepository>();
+    builder.Services.AddScoped<ILoyaltyPointTransactionRepository, LoyaltyPointTransactionRepository>();
+    builder.Services.AddScoped<ILoyaltyMemberRepository, LoyaltyMemberRepository>();
+    // CommunicationModule
+    builder.Services.AddScoped<ISystemCommunicationRepository, SystemCommunicationRepository>();
+    builder.Services.AddScoped<IXComSystemParamRepository, XComSystemParamRepository>();
+    builder.Services.AddScoped<IErrorMessageRepository, ErrorMessageRepository>();
+    // ChartTools
+    builder.Services.AddScoped<IChartConfigRepository, ChartConfigRepository>();
+    // InvoiceExtension
+    builder.Services.AddScoped<IEInvoiceExtensionRepository, EInvoiceExtensionRepository>();
 
     // 註冊 Service
     builder.Services.AddScoped<ITransferReturnService, TransferReturnService>();
@@ -283,7 +369,17 @@ try
     builder.Services.AddScoped<ICashFlowMediumTypeService, CashFlowMediumTypeService>();
     builder.Services.AddScoped<ICashFlowSubjectTypeService, CashFlowSubjectTypeService>();
     builder.Services.AddScoped<ICashFlowSubTotalService, CashFlowSubTotalService>();
+    builder.Services.AddScoped<IInvoiceDataService, InvoiceDataService>();
+    builder.Services.AddScoped<ITransactionDataService, TransactionDataService>();
+    builder.Services.AddScoped<ITaxReportService, TaxReportService>();
+    builder.Services.AddScoped<ITaxReportPrintService, TaxReportPrintService>();
+    builder.Services.AddScoped<IVoucherAuditService, VoucherAuditService>();
+    builder.Services.AddScoped<IVoucherImportService, VoucherImportService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.ISupplierService, ErpCore.Application.Services.Procurement.SupplierService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPaymentService, ErpCore.Application.Services.Procurement.PaymentService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IBankAccountService, ErpCore.Application.Services.Procurement.BankAccountService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IProcurementReportService, ErpCore.Application.Services.Procurement.ProcurementReportService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IProcurementOtherService, ErpCore.Application.Services.Procurement.ProcurementOtherService>();
     builder.Services.AddScoped<IContractService, ContractService>();
     builder.Services.AddScoped<ICashParamsService, CashParamsService>();
     builder.Services.AddScoped<IPcKeepService, PcKeepService>();
@@ -295,6 +391,149 @@ try
     builder.Services.AddScoped<ErpCore.Application.Services.ReportManagement.IReceivingOtherService, ErpCore.Application.Services.ReportManagement.ReceivingOtherService>();
     builder.Services.AddScoped<IVoucherService, VoucherService>();
     builder.Services.AddScoped<IExtensionFunctionService, ExtensionFunctionService>();
+    builder.Services.AddScoped<ISYSSFunctionService, SYSSFunctionService>();
+    builder.Services.AddScoped<ISYSUFunctionService, SYSUFunctionService>();
+    builder.Services.AddScoped<ISYSVFunctionService, SYSVFunctionService>();
+    builder.Services.AddScoped<ISYSJFunctionService, SYSJFunctionService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.CustomerInvoice.ICustomerDataService, ErpCore.Application.Services.CustomerInvoice.CustomerDataService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.CustomerInvoice.IInvoicePrintService, ErpCore.Application.Services.CustomerInvoice.InvoicePrintService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.CustomerInvoice.IMailFaxService, ErpCore.Application.Services.CustomerInvoice.MailFaxService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.CustomerInvoice.ILedgerDataService, ErpCore.Application.Services.CustomerInvoice.LedgerDataService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IStoreService, ErpCore.Application.Services.StoreMember.StoreService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IMemberService, ErpCore.Application.Services.StoreMember.MemberService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IStoreQueryService, ErpCore.Application.Services.StoreMember.StoreQueryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IMemberQueryService, ErpCore.Application.Services.StoreMember.MemberQueryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IPromotionService, ErpCore.Application.Services.StoreMember.PromotionService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreMember.IStoreReportService, ErpCore.Application.Services.StoreMember.StoreReportService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IShopFloorService, ErpCore.Application.Services.StoreFloor.ShopFloorService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IShopFloorQueryService, ErpCore.Application.Services.StoreFloor.ShopFloorQueryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IFloorService, ErpCore.Application.Services.StoreFloor.FloorService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IFloorQueryService, ErpCore.Application.Services.StoreFloor.FloorQueryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.ITypeCodeService, ErpCore.Application.Services.StoreFloor.TypeCodeService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.ITypeCodeQueryService, ErpCore.Application.Services.StoreFloor.TypeCodeQueryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IPosTerminalService, ErpCore.Application.Services.StoreFloor.PosTerminalService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.StoreFloor.IPosTerminalQueryService, ErpCore.Application.Services.StoreFloor.PosTerminalQueryService>();
+    builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+    builder.Services.AddScoped<IElectronicInvoiceService, ElectronicInvoiceService>();
+    builder.Services.AddScoped<IElectronicInvoicePrintSettingService, ElectronicInvoicePrintSettingService>();
+    builder.Services.AddScoped<ISalesOrderService, SalesOrderService>();
+    builder.Services.AddScoped<ISalesOrderQueryService, SalesOrderQueryService>();
+    builder.Services.AddScoped<ISalesReportQueryService, SalesReportQueryService>();
+    builder.Services.AddScoped<IReportPrintService, ReportPrintService>();
+    // B2B InvoiceSales Services
+    builder.Services.AddScoped<IB2BInvoiceService, B2BInvoiceService>();
+    builder.Services.AddScoped<IB2BElectronicInvoiceService, B2BElectronicInvoiceService>();
+    builder.Services.AddScoped<IB2BElectronicInvoicePrintSettingService, B2BElectronicInvoicePrintSettingService>();
+    builder.Services.AddScoped<IB2BSalesOrderService, B2BSalesOrderService>();
+    builder.Services.AddScoped<IB2BSalesOrderQueryService, B2BSalesOrderQueryService>();
+    // SystemExtensionH Services
+    builder.Services.AddScoped<IPersonnelBatchService, PersonnelBatchService>();
+    builder.Services.AddScoped<ISystemExtensionPHService, SystemExtensionPHService>();
+    // Loyalty Services
+    builder.Services.AddScoped<ILoyaltyInitService, LoyaltyInitService>();
+    builder.Services.AddScoped<ILoyaltyMaintenanceService, LoyaltyMaintenanceService>();
+    // CommunicationModule Services
+    builder.Services.AddScoped<ISystemCommunicationService, SystemCommunicationService>();
+    builder.Services.AddScoped<IXComSystemParamService, XComSystemParamService>();
+    builder.Services.AddScoped<IErrorMessageService, ErrorMessageService>();
+    // ChartTools Services
+    builder.Services.AddScoped<IChartConfigService, ChartConfigService>();
+    // InvoiceExtension Services
+    builder.Services.AddScoped<IEInvoiceExtensionService, EInvoiceExtensionService>();
+    
+    // Energy Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Energy.IEnergyBaseRepository, ErpCore.Infrastructure.Repositories.Energy.EnergyBaseRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Energy.IEnergyProcessRepository, ErpCore.Infrastructure.Repositories.Energy.EnergyProcessRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Energy.IEnergyExtensionRepository, ErpCore.Infrastructure.Repositories.Energy.EnergyExtensionRepository>();
+    
+    // SalesReport Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.SalesReport.ISalesReportRepository, ErpCore.Infrastructure.Repositories.SalesReport.SalesReportRepository>();
+    
+    // Energy Services
+    builder.Services.AddScoped<ErpCore.Application.Services.Energy.IEnergyBaseService, ErpCore.Application.Services.Energy.EnergyBaseService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Energy.IEnergyProcessService, ErpCore.Application.Services.Energy.EnergyProcessService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Energy.IEnergyExtensionService, ErpCore.Application.Services.Energy.EnergyExtensionService>();
+    
+    // SalesReport Services
+    builder.Services.AddScoped<ErpCore.Application.Services.SalesReport.ISalesReportService, ErpCore.Application.Services.SalesReport.SalesReportService>();
+    
+    // StandardModule Repositories
+    builder.Services.AddScoped<IStd3000DataRepository, Std3000DataRepository>();
+    builder.Services.AddScoped<IStd5000BaseDataRepository, Std5000BaseDataRepository>();
+    builder.Services.AddScoped<IStd5000MemberRepository, Std5000MemberRepository>();
+    builder.Services.AddScoped<IStd5000MemberPointRepository, Std5000MemberPointRepository>();
+    builder.Services.AddScoped<IStd5000TransactionRepository, Std5000TransactionRepository>();
+    builder.Services.AddScoped<IStd5000TransactionDetailRepository, Std5000TransactionDetailRepository>();
+    
+    // StandardModule Services
+    builder.Services.AddScoped<IStd3000DataService, Std3000DataService>();
+    builder.Services.AddScoped<IStd5000BaseDataService, Std5000BaseDataService>();
+    builder.Services.AddScoped<IStd5000MemberService, Std5000MemberService>();
+    builder.Services.AddScoped<IStd5000TransactionService, Std5000TransactionService>();
+    
+    // Lease Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Lease.ILeaseRepository, ErpCore.Infrastructure.Repositories.Lease.LeaseRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Lease.ILeaseExtensionRepository, ErpCore.Infrastructure.Repositories.Lease.LeaseExtensionRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Lease.ILeaseProcessRepository, ErpCore.Infrastructure.Repositories.Lease.LeaseProcessRepository>();
+    
+    // Lease Services
+    builder.Services.AddScoped<ErpCore.Application.Services.Lease.ILeaseService, ErpCore.Application.Services.Lease.LeaseService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Lease.ILeaseExtensionService, ErpCore.Application.Services.Lease.LeaseExtensionService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Lease.ILeaseProcessService, ErpCore.Application.Services.Lease.LeaseProcessService>();
+
+    // CustomerCustom Repositories
+    builder.Services.AddScoped<ICus3000MemberRepository, Cus3000MemberRepository>();
+    builder.Services.AddScoped<ICus3000PromotionRepository, Cus3000PromotionRepository>();
+    builder.Services.AddScoped<ICus3000ActivityRepository, Cus3000ActivityRepository>();
+    // Cus3000Eskyland Repositories
+    builder.Services.AddScoped<ICus3000EskylandMemberRepository, Cus3000EskylandMemberRepository>();
+
+    // CustomerCustom Services
+    builder.Services.AddScoped<ICus3000MemberService, Cus3000MemberService>();
+    builder.Services.AddScoped<ICus3000PromotionService, Cus3000PromotionService>();
+    builder.Services.AddScoped<ICus3000ActivityService, Cus3000ActivityService>();
+    // Cus3000Eskyland Services
+    builder.Services.AddScoped<ICus3000EskylandMemberService, Cus3000EskylandMemberService>();
+
+    // CustomerCustomJgjn Repositories
+    builder.Services.AddScoped<IJgjNDataRepository, JgjNDataRepository>();
+    builder.Services.AddScoped<IJgjNCustomerRepository, JgjNCustomerRepository>();
+    builder.Services.AddScoped<IJgjNInvoiceRepository, JgjNInvoiceRepository>();
+
+    // CustomerCustomJgjn Services
+    builder.Services.AddScoped<IJgjNDataService, JgjNDataService>();
+    builder.Services.AddScoped<IJgjNCustomerService, JgjNCustomerService>();
+    builder.Services.AddScoped<IJgjNInvoiceService, JgjNInvoiceService>();
+
+    // MirModule Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.MirModule.IMirH000PersonnelRepository, ErpCore.Infrastructure.Repositories.MirModule.MirH000PersonnelRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.MirModule.IMirH000SalaryRepository, ErpCore.Infrastructure.Repositories.MirModule.MirH000SalaryRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.MirModule.IMirV000DataRepository, ErpCore.Infrastructure.Repositories.MirModule.MirV000DataRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.MirModule.IMirW000DataRepository, ErpCore.Infrastructure.Repositories.MirModule.MirW000DataRepository>();
+
+    // MirModule Services
+    builder.Services.AddScoped<ErpCore.Application.Services.MirModule.IMirH000PersonnelService, ErpCore.Application.Services.MirModule.MirH000PersonnelService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.MirModule.IMirH000SalaryService, ErpCore.Application.Services.MirModule.MirH000SalaryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.MirModule.IMirV000DataService, ErpCore.Application.Services.MirModule.MirV000DataService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.MirModule.IMirW000DataService, ErpCore.Application.Services.MirModule.MirW000DataService>();
+
+    // MshModule Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.MshModule.IMsh3000DataRepository, ErpCore.Infrastructure.Repositories.MshModule.Msh3000DataRepository>();
+
+    // MshModule Services
+    builder.Services.AddScoped<ErpCore.Application.Services.MshModule.IMsh3000DataService, ErpCore.Application.Services.MshModule.Msh3000DataService>();
+
+    // SapIntegration Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.SapIntegration.ITransSapRepository, ErpCore.Infrastructure.Repositories.SapIntegration.TransSapRepository>();
+
+    // SapIntegration Services
+    builder.Services.AddScoped<ErpCore.Application.Services.SapIntegration.ITransSapService, ErpCore.Application.Services.SapIntegration.TransSapService>();
+
+    // UniversalModule Repositories
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.UniversalModule.IUniv000Repository, ErpCore.Infrastructure.Repositories.UniversalModule.Univ000Repository>();
+
+    // UniversalModule Services
+    builder.Services.AddScoped<ErpCore.Application.Services.UniversalModule.IUniv000Service, ErpCore.Application.Services.UniversalModule.Univ000Service>();
 
     // 註冊日誌服務
     builder.Services.AddSingleton<ILoggerService>(provider => new LoggerService("Default"));

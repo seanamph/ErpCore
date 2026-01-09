@@ -1,4 +1,47 @@
 // 基礎樣式
+@import './variables.scss';
+
+// Root 樣式（確保所有顏色變數都定義在 :root 中）
+:root {
+  // 主色系
+  --primary-color: #{$primary-color};
+  --success-color: #{$success-color};
+  --warning-color: #{$warning-color};
+  --danger-color: #{$danger-color};
+  --info-color: #{$info-color};
+  
+  // 文字顏色（確保與背景對比度）
+  --text-color-primary: #{$text-color-primary};
+  --text-color-regular: #{$text-color-regular};
+  --text-color-secondary: #{$text-color-secondary};
+  --text-color-placeholder: #{$text-color-placeholder};
+  
+  // 背景顏色
+  --background-color-base: #{$background-color-base};
+  --background-color-light: #{$background-color-light};
+  
+  // Card 和 Badge 顏色（確保文字和背景對比度）
+  --card-bg: #{$card-bg};
+  --card-border: #{$card-border};
+  --card-text: #{$card-text};
+  
+  --badge-primary-bg: #{$badge-primary-bg};
+  --badge-primary-text: #{$badge-primary-text};
+  --badge-success-bg: #{$badge-success-bg};
+  --badge-success-text: #{$badge-success-text};
+  --badge-warning-bg: #{$badge-warning-bg};
+  --badge-warning-text: #{$badge-warning-text};
+  --badge-danger-bg: #{$badge-danger-bg};
+  --badge-danger-text: #{$badge-danger-text};
+  --badge-info-bg: #{$badge-info-bg};
+  --badge-info-text: #{$badge-info-text};
+  
+  // 邊框顏色
+  --border-color-base: #{$border-color-base};
+  --border-color-light: #{$border-color-light};
+  --border-color-lighter: #{$border-color-lighter};
+}
+
 .container {
   padding: 20px;
 }
@@ -10,6 +53,67 @@
     font-size: 24px;
     font-weight: 500;
     color: $text-color-primary;
+  }
+}
+
+// Card 樣式（確保文字和背景對比度）
+.card {
+  background-color: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 16px;
+  
+  .card-header {
+    color: $card-text;
+    font-weight: 500;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid $border-color-lighter;
+  }
+  
+  .card-body {
+    color: $text-color-regular;
+  }
+  
+  .card-footer {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid $border-color-lighter;
+  }
+}
+
+// Badge 樣式（確保文字和背景對比度）
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  
+  &.badge-primary {
+    background-color: $badge-primary-bg;
+    color: $badge-primary-text;
+  }
+  
+  &.badge-success {
+    background-color: $badge-success-bg;
+    color: $badge-success-text;
+  }
+  
+  &.badge-warning {
+    background-color: $badge-warning-bg;
+    color: $badge-warning-text;
+  }
+  
+  &.badge-danger {
+    background-color: $badge-danger-bg;
+    color: $badge-danger-text;
+  }
+  
+  &.badge-info {
+    background-color: $badge-info-bg;
+    color: $badge-info-text;
   }
 }
 

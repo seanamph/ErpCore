@@ -1,0 +1,217 @@
+// Element Plus 主題覆蓋
+// 主色系：Bootstrap 風格，以 #198754 為主色
+@import './variables.scss';
+
+// Element Plus CSS 變數覆蓋
+:root {
+  // 主色系
+  --el-color-primary: #{$primary-color};
+  --el-color-primary-light-3: #{lighten($primary-color, 3%)};
+  --el-color-primary-light-5: #{lighten($primary-color, 5%)};
+  --el-color-primary-light-7: #{lighten($primary-color, 7%)};
+  --el-color-primary-light-8: #{lighten($primary-color, 8%)};
+  --el-color-primary-light-9: #{lighten($primary-color, 9%)};
+  --el-color-primary-dark-2: #{darken($primary-color, 2%)};
+  
+  // 成功色（與主色一致）
+  --el-color-success: #{$success-color};
+  --el-color-success-light-3: #{lighten($success-color, 3%)};
+  --el-color-success-light-5: #{lighten($success-color, 5%)};
+  --el-color-success-light-7: #{lighten($success-color, 7%)};
+  --el-color-success-light-8: #{lighten($success-color, 8%)};
+  --el-color-success-light-9: #{lighten($success-color, 9%)};
+  --el-color-success-dark-2: #{darken($success-color, 2%)};
+  
+  // 警告色
+  --el-color-warning: #{$warning-color};
+  --el-color-warning-light-3: #{lighten($warning-color, 3%)};
+  --el-color-warning-light-5: #{lighten($warning-color, 5%)};
+  --el-color-warning-light-7: #{lighten($warning-color, 7%)};
+  --el-color-warning-light-8: #{lighten($warning-color, 8%)};
+  --el-color-warning-light-9: #{lighten($warning-color, 9%)};
+  --el-color-warning-dark-2: #{darken($warning-color, 2%)};
+  
+  // 危險色
+  --el-color-danger: #{$danger-color};
+  --el-color-danger-light-3: #{lighten($danger-color, 3%)};
+  --el-color-danger-light-5: #{lighten($danger-color, 5%)};
+  --el-color-danger-light-7: #{lighten($danger-color, 7%)};
+  --el-color-danger-light-8: #{lighten($danger-color, 8%)};
+  --el-color-danger-light-9: #{lighten($danger-color, 9%)};
+  --el-color-danger-dark-2: #{darken($danger-color, 2%)};
+  
+  // 資訊色
+  --el-color-info: #{$info-color};
+  --el-color-info-light-3: #{lighten($info-color, 3%)};
+  --el-color-info-light-5: #{lighten($info-color, 5%)};
+  --el-color-info-light-7: #{lighten($info-color, 7%)};
+  --el-color-info-light-8: #{lighten($info-color, 8%)};
+  --el-color-info-light-9: #{lighten($info-color, 9%)};
+  --el-color-info-dark-2: #{darken($info-color, 2%)};
+  
+  // 文字顏色（確保與背景對比度）
+  --el-text-color-primary: #{$text-color-primary};
+  --el-text-color-regular: #{$text-color-regular};
+  --el-text-color-secondary: #{$text-color-secondary};
+  --el-text-color-placeholder: #{$text-color-placeholder};
+  
+  // 邊框顏色
+  --el-border-color: #{$border-color-base};
+  --el-border-color-light: #{$border-color-light};
+  --el-border-color-lighter: #{$border-color-lighter};
+  --el-border-color-extra-light: #{$border-color-extra-light};
+  
+  // 背景顏色
+  --el-bg-color: #{$background-color-light};
+  --el-bg-color-page: #{$background-color-base};
+  --el-bg-color-overlay: #{$card-bg};
+  
+  // Card 顏色（確保文字和背景對比度）
+  --el-card-bg-color: #{$card-bg};
+  --el-card-border-color: #{$card-border};
+  --el-text-color-primary: #{$card-text};
+}
+
+// Element Plus 組件樣式覆蓋
+.el-button {
+  // 確保按鈕文字顏色對比度
+  &.el-button--primary {
+    background-color: var(--el-color-primary);
+    border-color: var(--el-color-primary);
+    color: #FFFFFF; // 白色文字，確保對比度
+    
+    &:hover {
+      background-color: var(--el-color-primary-light-3);
+      border-color: var(--el-color-primary-light-3);
+    }
+  }
+  
+  &.el-button--success {
+    background-color: var(--el-color-success);
+    border-color: var(--el-color-success);
+    color: #FFFFFF; // 白色文字，確保對比度
+    
+    &:hover {
+      background-color: var(--el-color-success-light-3);
+      border-color: var(--el-color-success-light-3);
+    }
+  }
+  
+  &.el-button--warning {
+    background-color: var(--el-color-warning);
+    border-color: var(--el-color-warning);
+    color: #000000; // 黑色文字，確保對比度
+    
+    &:hover {
+      background-color: var(--el-color-warning-light-3);
+      border-color: var(--el-color-warning-light-3);
+    }
+  }
+  
+  &.el-button--danger {
+    background-color: var(--el-color-danger);
+    border-color: var(--el-color-danger);
+    color: #FFFFFF; // 白色文字，確保對比度
+    
+    &:hover {
+      background-color: var(--el-color-danger-light-3);
+      border-color: var(--el-color-danger-light-3);
+    }
+  }
+  
+  &.el-button--info {
+    background-color: var(--el-color-info);
+    border-color: var(--el-color-info);
+    color: #000000; // 黑色文字，確保對比度
+    
+    &:hover {
+      background-color: var(--el-color-info-light-3);
+      border-color: var(--el-color-info-light-3);
+    }
+  }
+}
+
+// Element Plus Card 組件樣式覆蓋（確保文字和背景對比度）
+.el-card {
+  background-color: var(--el-card-bg-color);
+  border-color: var(--el-card-border-color);
+  
+  .el-card__header {
+    color: var(--el-text-color-primary);
+    border-bottom-color: var(--el-border-color-lighter);
+  }
+  
+  .el-card__body {
+    color: var(--el-text-color-regular);
+  }
+}
+
+// Element Plus Badge 組件樣式覆蓋（確保文字和背景對比度）
+.el-badge {
+  .el-badge__content {
+    &.is-primary {
+      background-color: $badge-primary-bg;
+      color: $badge-primary-text; // 白色文字，確保對比度
+    }
+    
+    &.is-success {
+      background-color: $badge-success-bg;
+      color: $badge-success-text; // 白色文字，確保對比度
+    }
+    
+    &.is-warning {
+      background-color: $badge-warning-bg;
+      color: $badge-warning-text; // 黑色文字，確保對比度
+    }
+    
+    &.is-danger {
+      background-color: $badge-danger-bg;
+      color: $badge-danger-text; // 白色文字，確保對比度
+    }
+    
+    &.is-info {
+      background-color: $badge-info-bg;
+      color: $badge-info-text; // 黑色文字，確保對比度
+    }
+  }
+}
+
+// Element Plus Table 組件樣式覆蓋（確保文字和背景對比度）
+.el-table {
+  background-color: $card-bg;
+  color: $text-color-regular;
+  
+  th.el-table__cell {
+    background-color: $background-color-light;
+    color: $text-color-primary; // 確保文字顏色對比度
+  }
+  
+  td.el-table__cell {
+    color: $text-color-regular; // 確保文字顏色對比度
+  }
+  
+  tr:hover > td.el-table__cell {
+    background-color: $background-color-base;
+  }
+}
+
+// Element Plus Menu 組件樣式覆蓋
+.el-menu {
+  background-color: $card-bg;
+  border-color: $border-color-base;
+  
+  .el-menu-item {
+    color: $text-color-regular;
+    
+    &:hover {
+      background-color: $background-color-base;
+      color: $primary-color;
+    }
+    
+    &.is-active {
+      background-color: $primary-color;
+      color: #FFFFFF; // 白色文字，確保對比度
+    }
+  }
+}
+

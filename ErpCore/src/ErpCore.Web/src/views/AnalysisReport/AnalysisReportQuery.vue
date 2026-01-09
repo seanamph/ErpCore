@@ -564,6 +564,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .analysis-report-query {
   .search-card {
     margin-bottom: 20px;
@@ -575,17 +577,18 @@ export default {
     .report-header {
       margin-bottom: 20px;
       padding-bottom: 10px;
-      border-bottom: 1px solid #ebeef5;
+      border-bottom: 1px solid $border-color-lighter; // 使用主題邊框顏色
 
       h2 {
         margin: 0 0 10px 0;
         font-size: 18px;
         font-weight: 600;
+        color: $text-color-primary; // 確保文字顏色對比度
       }
 
       p {
         margin: 0;
-        color: #606266;
+        color: $text-color-regular; // 使用主題文字顏色
         font-size: 14px;
       }
     }

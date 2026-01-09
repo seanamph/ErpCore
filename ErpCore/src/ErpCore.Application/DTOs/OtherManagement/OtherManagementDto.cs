@@ -311,3 +311,15 @@ public class UpdateSYSJFunctionDto
     public string? CreatedGroup { get; set; }
 }
 
+// =============================================
+// 共用 DTOs
+// =============================================
+
+/// <summary>
+/// 狀態更新 DTO
+/// </summary>
+public class UpdateStatusDto
+{
+    public string Status { get; set; } = "1";
+}
+

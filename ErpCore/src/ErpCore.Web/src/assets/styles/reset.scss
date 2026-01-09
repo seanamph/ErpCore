@@ -1,4 +1,6 @@
 // 樣式重置
+@import './variables.scss';
+
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +11,7 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   line-height: 1.5;
-  color: $text-color-primary;
+  color: $text-color-primary; // 確保文字顏色對比度
   background-color: $background-color-base;
 }
 

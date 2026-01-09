@@ -1,20 +1,40 @@
 // 變數定義
-$primary-color: #409EFF;
-$success-color: #67C23A;
-$warning-color: #E6A23C;
-$danger-color: #F56C6C;
-$info-color: #909399;
+// 主色系：Bootstrap 風格，以 #198754 為主色
+$primary-color: #198754; // 主色（綠色）
+$success-color: #198754; // 成功色（與主色一致）
+$warning-color: #FFC107; // 警告色（黃色，確保對比度）
+$danger-color: #DC3545; // 危險色（紅色，確保對比度）
+$info-color: #0DCAF0; // 資訊色（藍色，確保對比度）
 
-$text-color-primary: #303133;
-$text-color-regular: #606266;
-$text-color-secondary: #909399;
-$text-color-placeholder: #C0C4CC;
+// 文字顏色（確保與背景對比度）
+$text-color-primary: #212529; // 主要文字（深色，確保對比度）
+$text-color-regular: #495057; // 常規文字
+$text-color-secondary: #6C757D; // 次要文字
+$text-color-placeholder: #ADB5BD; // 佔位符文字
 
-$border-color-base: #DCDFE6;
-$border-color-light: #E4E7ED;
-$border-color-lighter: #EBEEF5;
-$border-color-extra-light: #F2F6FC;
+// 邊框顏色
+$border-color-base: #DEE2E6; // 基礎邊框
+$border-color-light: #E9ECEF; // 淺色邊框
+$border-color-lighter: #F1F3F5; // 更淺邊框
+$border-color-extra-light: #F8F9FA; // 極淺邊框
 
-$background-color-base: #F5F7FA;
-$background-color-light: #FAFAFA;
+// 背景顏色
+$background-color-base: #F8F9FA; // 基礎背景
+$background-color-light: #FFFFFF; // 淺色背景
+
+// Card 和 Badge 顏色配置（確保文字和背景對比度）
+$card-bg: #FFFFFF; // Card 背景（白色）
+$card-border: #DEE2E6; // Card 邊框
+$card-text: #212529; // Card 文字（深色，確保對比度）
+
+$badge-primary-bg: #198754; // Badge 主色背景
+$badge-primary-text: #FFFFFF; // Badge 主色文字（白色，確保對比度）
+$badge-success-bg: #198754; // Badge 成功背景
+$badge-success-text: #FFFFFF; // Badge 成功文字（白色）
+$badge-warning-bg: #FFC107; // Badge 警告背景
+$badge-warning-text: #000000; // Badge 警告文字（黑色，確保對比度）
+$badge-danger-bg: #DC3545; // Badge 危險背景
+$badge-danger-text: #FFFFFF; // Badge 危險文字（白色）
+$badge-info-bg: #0DCAF0; // Badge 資訊背景
+$badge-info-text: #000000; // Badge 資訊文字（黑色，確保對比度）
 

@@ -84,14 +84,14 @@
         <el-col :span="6">
           <el-statistic title="啟用數" :value="statistics.ActiveCount">
             <template #suffix>
-              <span style="color: #67c23a">啟用</span>
+              <span class="status-active">啟用</span>
             </template>
           </el-statistic>
         </el-col>
         <el-col :span="6">
           <el-statistic title="停用數" :value="statistics.InactiveCount">
             <template #suffix>
-              <span style="color: #f56c6c">停用</span>
+              <span class="status-inactive">停用</span>
             </template>
           </el-statistic>
         </el-col>
@@ -505,7 +505,9 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .sysx140-report {
   padding: 20px;
 }
@@ -518,12 +520,22 @@ onMounted(async () => {
   margin: 0;
   font-size: 24px;
   font-weight: 500;
+  color: $text-color-primary; // 確保文字顏色對比度
 }
 
 .search-card,
 .table-card,
 .statistics-card {
   margin-bottom: 20px;
+}
+
+// 狀態顏色（使用主題變數，確保對比度）
+.status-active {
+  color: $success-color; // 使用主題成功色
+}
+
+.status-inactive {
+  color: $danger-color; // 使用主題危險色
 }
 </style>
 
