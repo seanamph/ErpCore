@@ -22,97 +22,97 @@
 
 ```
 ErpCore/
-├── ErpCore.sln                    # Visual Studio Solution 檔案
-├── README.md                       # 專案說明文件
-├── .gitignore                      # Git 忽略檔案設定
-├── .gitattributes                  # Git 屬性設定
-├── .editorconfig                   # 編輯器設定檔
-├── Directory.Build.props           # 全域 MSBuild 屬性
-├── Directory.Build.targets         # 全域 MSBuild 目標
-├── NuGet.config                    # NuGet 設定檔
+├── ErpCore.sln                    # Visual Studio Solution 檔案 ✅
+├── README.md                       # 專案說明文件 ✅
+├── .gitignore                      # Git 忽略檔案設定 ✅
+├── .gitattributes                  # Git 屬性設定 ✅
+├── .editorconfig                   # 編輯器設定檔 ✅
+├── Directory.Build.props           # 全域 MSBuild 屬性 ✅
+├── Directory.Build.targets         # 全域 MSBuild 目標 ✅
+├── NuGet.config                    # NuGet 設定檔 ✅
 │
-├── src/                            # 原始碼目錄
-│   ├── ErpCore.Api/                # Web API 專案（ASP.NET Core Web API，不包含 MVC Views）
-│   ├── ErpCore.Application/        # 應用層（業務邏輯）
-│   ├── ErpCore.Domain/             # 領域層（實體模型）
-│   ├── ErpCore.Infrastructure/     # 基礎設施層（資料存取、外部服務）
-│   ├── ErpCore.Shared/             # 共用類別庫
-│   └── ErpCore.Web/                # Vue CLI 前端專案
+├── src/                            # 原始碼目錄 ✅
+│   ├── ErpCore.Api/                # Web API 專案（ASP.NET Core Web API，不包含 MVC Views） ✅
+│   ├── ErpCore.Application/        # 應用層（業務邏輯） ✅
+│   ├── ErpCore.Domain/             # 領域層（實體模型） ✅
+│   ├── ErpCore.Infrastructure/     # 基礎設施層（資料存取、外部服務） ✅
+│   ├── ErpCore.Shared/             # 共用類別庫 ✅
+│   └── ErpCore.Web/                # Vue CLI 前端專案 ✅
 │
-├── tests/                          # 測試專案目錄
-│   ├── ErpCore.UnitTests/          # 單元測試
-│   ├── ErpCore.IntegrationTests/   # 整合測試
-│   └── ErpCore.E2ETests/          # 端對端測試
+├── tests/                          # 測試專案目錄 ✅
+│   ├── ErpCore.UnitTests/          # 單元測試 ✅
+│   ├── ErpCore.IntegrationTests/   # 整合測試 ✅
+│   └── ErpCore.E2ETests/          # 端對端測試 ✅
 │
-├── database/                       # 資料庫相關檔案
-│   ├── Migrations/                 # Entity Framework Migrations
-│   ├── Scripts/                    # SQL 腳本
-│   ├── Seeds/                      # 種子資料
-│   └── Schema/                     # 資料庫 Schema 文件
+├── database/                       # 資料庫相關檔案 ✅
+│   ├── Migrations/                 # Entity Framework Migrations ✅
+│   ├── Scripts/                    # SQL 腳本 ✅
+│   ├── Seeds/                      # 種子資料 ✅
+│   └── Schema/                     # 資料庫 Schema 文件 ✅
 │
-├── docs/                           # 文件目錄
-│   ├── api/                        # API 文件
-│   │   ├── swagger.json            # Swagger 定義檔
-│   │   ├── swagger.yaml            # Swagger YAML 定義檔
-│   │   └── api-documentation.md    # API 說明文件
-│   ├── architecture/               # 架構文件
-│   │   ├── system-architecture.md  # 系統架構
-│   │   ├── database-design.md      # 資料庫設計
-│   │   ├── deployment-architecture.md # 部署架構
-│   │   └── module-architecture.md  # 模組架構
-│   ├── deployment/                 # 部署文件
-│   │   ├── deployment-guide.md     # 部署指南
-│   │   ├── environment-setup.md   # 環境設定
-│   │   └── troubleshooting.md      # 故障排除
-│   ├── development/                # 開發文件
-│   │   ├── coding-standards.md     # 編碼標準
-│   │   ├── git-workflow.md         # Git 工作流程
-│   │   └── testing-guide.md        # 測試指南
-│   └── user-guide/                 # 使用者手冊
-│       ├── user-manual.md          # 使用者手冊
-│       └── admin-manual.md         # 管理員手冊
+├── docs/                           # 文件目錄 ✅
+│   ├── api/                        # API 文件 ✅
+│   │   ├── swagger.json            # Swagger 定義檔 ✅
+│   │   ├── swagger.yaml            # Swagger YAML 定義檔 ✅
+│   │   └── api-documentation.md    # API 說明文件 ✅
+│   ├── architecture/               # 架構文件 ✅
+│   │   ├── system-architecture.md  # 系統架構 ✅
+│   │   ├── database-design.md      # 資料庫設計 ✅
+│   │   ├── deployment-architecture.md # 部署架構 ✅
+│   │   └── module-architecture.md  # 模組架構 ✅
+│   ├── deployment/                 # 部署文件 ✅
+│   │   ├── deployment-guide.md     # 部署指南 ✅
+│   │   ├── environment-setup.md   # 環境設定 ✅
+│   │   └── troubleshooting.md      # 故障排除 ✅
+│   ├── development/                # 開發文件 ✅
+│   │   ├── coding-standards.md     # 編碼標準 ✅
+│   │   ├── git-workflow.md         # Git 工作流程 ✅
+│   │   └── testing-guide.md        # 測試指南 ✅
+│   └── user-guide/                 # 使用者手冊 ✅
+│       ├── user-manual.md          # 使用者手冊 ✅
+│       └── admin-manual.md         # 管理員手冊 ✅
 │
-├── scripts/                        # 建置與部署腳本
-│   ├── build.ps1                   # Windows 建置腳本
-│   ├── build.sh                     # Linux/Mac 建置腳本
-│   ├── deploy.ps1                   # Windows 部署腳本
-│   ├── deploy.sh                    # Linux/Mac 部署腳本
-│   ├── database.ps1                 # Windows 資料庫腳本
-│   ├── database.sh                  # Linux/Mac 資料庫腳本
-│   ├── migrate.ps1                  # Windows Migration 腳本
-│   ├── migrate.sh                   # Linux/Mac Migration 腳本
-│   ├── seed.ps1                     # Windows 種子資料腳本
-│   └── seed.sh                      # Linux/Mac 種子資料腳本
+├── scripts/                        # 建置與部署腳本 ✅
+│   ├── build.ps1                   # Windows 建置腳本 ✅
+│   ├── build.sh                     # Linux/Mac 建置腳本 ✅
+│   ├── deploy.ps1                   # Windows 部署腳本 ✅
+│   ├── deploy.sh                    # Linux/Mac 部署腳本 ✅
+│   ├── database.ps1                 # Windows 資料庫腳本 ✅
+│   ├── database.sh                  # Linux/Mac 資料庫腳本 ✅
+│   ├── migrate.ps1                  # Windows Migration 腳本 ✅
+│   ├── migrate.sh                   # Linux/Mac Migration 腳本 ✅
+│   ├── seed.ps1                     # Windows 種子資料腳本 ✅
+│   └── seed.sh                      # Linux/Mac 種子資料腳本 ✅
 │
-├── docker/                         # Docker 相關檔案
-│   ├── Dockerfile                   # 後端 Dockerfile
-│   ├── Dockerfile.web               # 前端 Dockerfile
-│   ├── docker-compose.yml           # Docker Compose 設定檔
-│   ├── docker-compose.dev.yml       # 開發環境 Docker Compose
-│   ├── docker-compose.prod.yml      # 生產環境 Docker Compose
-│   └── .dockerignore                # Docker 忽略檔案
+├── docker/                         # Docker 相關檔案 ✅
+│   ├── Dockerfile                   # 後端 Dockerfile ✅
+│   ├── Dockerfile.web               # 前端 Dockerfile ✅
+│   ├── docker-compose.yml           # Docker Compose 設定檔 ✅
+│   ├── docker-compose.dev.yml       # 開發環境 Docker Compose ✅
+│   ├── docker-compose.prod.yml       # 生產環境 Docker Compose ✅
+│   └── .dockerignore                # Docker 忽略檔案 ✅
 │
-├── .github/                        # GitHub Actions CI/CD
+├── .github/                        # GitHub Actions CI/CD ✅
 │   └── workflows/
-│       ├── ci.yml                   # CI 工作流程
-│       ├── cd.yml                   # CD 工作流程
-│       └── test.yml                 # 測試工作流程
+│       ├── ci.yml                   # CI 工作流程 ✅
+│       ├── cd.yml                   # CD 工作流程 ✅
+│       └── test.yml                 # 測試工作流程 ✅
 │
-├── .gitlab-ci.yml                  # GitLab CI/CD 設定檔（如使用 GitLab）
+├── .gitlab-ci.yml                  # GitLab CI/CD 設定檔（如使用 GitLab） ✅
 │
-├── certs/                          # 憑證目錄（不納入版本控制，或使用加密儲存）
-│   ├── ssl/                        # SSL 憑證
-│   │   ├── server.crt              # 伺服器憑證
-│   │   ├── server.key              # 伺服器私鑰
-│   │   └── ca.crt                  # CA 憑證
-│   └── jwt/                        # JWT 憑證（如使用）
-│       ├── private.key             # 私鑰
-│       └── public.key             # 公鑰
+├── certs/                          # 憑證目錄（不納入版本控制，或使用加密儲存） ✅
+│   ├── ssl/                        # SSL 憑證 ✅
+│   │   ├── server.crt              # 伺服器憑證 ✅
+│   │   ├── server.key              # 伺服器私鑰 ✅
+│   │   └── ca.crt                  # CA 憑證 ✅
+│   └── jwt/                        # JWT 憑證（如使用） ✅
+│       ├── private.key             # 私鑰 ✅
+│       └── public.key             # 公鑰 ✅
 │
-└── .vscode/                        # Visual Studio Code 設定（可選）
-    ├── settings.json                # VS Code 設定
-    ├── launch.json                  # 啟動設定
-    └── tasks.json                   # 任務設定
+└── .vscode/                        # Visual Studio Code 設定（可選） ✅
+    ├── settings.json                # VS Code 設定 ✅
+    ├── launch.json                  # 啟動設定 ✅
+    └── tasks.json                   # 任務設定 ✅
 ```
 
 ---
@@ -131,69 +131,76 @@ ErpCore/
 
 ```
 src/ErpCore.Api/
-├── ErpCore.Api.csproj              # 專案檔
-├── Program.cs                      # 應用程式進入點
-├── Startup.cs                      # 啟動設定（.NET 7 使用 Program.cs，此檔案可選）
-├── appsettings.json                # 應用程式設定
-├── appsettings.Development.json    # 開發環境設定
-├── appsettings.Production.json     # 生產環境設定
-├── appsettings.Staging.json        # 測試環境設定
-├── appsettings.Local.json          # 本地環境設定
-├── web.config                      # IIS 設定檔（如部署到 IIS）
-├── nlog.config                     # NLog 日誌設定（如使用 NLog）
+├── ErpCore.Api.csproj              # 專案檔 ✅
+├── Program.cs                      # 應用程式進入點（已配置所有 Repository 和 Service 依賴注入） ✅
+├── Startup.cs                      # 啟動設定（.NET 7 使用 Program.cs，此檔案可選）✅（可選，已使用 Program.cs）
+├── appsettings.json                # 應用程式設定 ✅
+├── appsettings.Development.json    # 開發環境設定 ✅
+├── appsettings.Production.json     # 生產環境設定 ✅
+├── appsettings.Staging.json        # 測試環境設定 ✅
+├── appsettings.Local.json          # 本地環境設定 ✅
+├── web.config                      # IIS 設定檔（如部署到 IIS） ✅
+├── nlog.config                     # NLog 日誌設定（按小時分割，檔名格式：yyyyMMdd-HH.log） ✅
 │
-├── Configuration/                  # 設定類別目錄
-│   ├── DatabaseConfig.cs           # 資料庫設定
-│   ├── JwtConfig.cs                # JWT 設定
-│   ├── AppConfig.cs                # 應用程式設定
-│   ├── LoggingConfig.cs            # 日誌設定
-│   ├── CacheConfig.cs              # 快取設定
-│   ├── EmailConfig.cs              # 郵件設定
-│   └── FileStorageConfig.cs        # 檔案儲存設定
+├── Configuration/                  # 設定類別目錄 ✅
+│   ├── DatabaseConfig.cs           # 資料庫設定 ✅
+│   ├── JwtConfig.cs                # JWT 設定 ✅
+│   ├── AppConfig.cs                # 應用程式設定 ✅
+│   ├── LoggingConfig.cs            # 日誌設定 ✅
+│   ├── CacheConfig.cs              # 快取設定 ✅
+│   ├── EmailConfig.cs              # 郵件設定 ✅
+│   └── FileStorageConfig.cs        # 檔案儲存設定 ✅
 │
 ├── Controllers/                    # Web API 控制器（RESTful API）
 │   ├── Base/                       # 基礎控制器
-│   │   └── BaseController.cs
+│   │   └── BaseController.cs       # ✅
 │   │
 │   ├── System/                     # 一、系統管理類 (SYS0000) ✅
-│   │   ├── UsersController.cs      # 使用者管理 (SYS0110-SYS0140, SYS0117, SYS0610, SYS0760) ✅
-│   │   ├── RolesController.cs      # 角色管理 (SYS0210-SYS0240, SYS0620) ✅
+│   │   ├── UsersController.cs      # ✅ 使用者管理 (SYS0110-SYS0140, SYS0117, SYS0610, SYS0760) ✅
+│   │   ├── RolesController.cs      # ✅ 角色管理 (SYS0210-SYS0240, SYS0620) ✅
 │   │   ├── PermissionsController.cs # 權限管理 (SYS0310-SYS0360, SYS0510, SYS0710-SYS0780) ✅
-│   │   ├── ChangeLogsController.cs  # 異動記錄 (SYS0610-SYS0660) ✅
-│   │   ├── ButtonLogsController.cs  # 按鈕日誌 (SYS0790) ✅
+│   │   ├── ChangeLogsController.cs  # ✅ 異動記錄 (SYS0610-SYS0660) ✅
+│   │   ├── ButtonLogsController.cs  # ✅ 按鈕日誌 (SYS0790) ✅
 │   │   └── [其他權限相關Controller] ✅
 │   │
 │   ├── BasicData/                  # 二、基本資料管理類 (SYSB000) ✅
-│   │   ├── ParametersController.cs # 參數設定 (SYSBC40) ✅
-│   │   ├── RegionsController.cs    # 地區設定 (SYSBC30, SYSB450) ✅
-│   │   ├── AreasController.cs     # 區域設定 (SYSB450) ✅
-│   │   ├── BanksController.cs      # 金融機構 (SYSBC20) ✅
-│   │   ├── VendorsController.cs    # 廠商客戶 (SYSB206) ✅
-│   │   ├── DepartmentsController.cs # 部別資料 (SYSWB40) ✅
-│   │   ├── GroupsController.cs    # 組別資料 (SYSWB70) ✅
-│   │   ├── WarehousesController.cs # 庫別資料 (SYSWB60) ✅
-│   │   ├── ShopsController.cs     # 店別資料 ✅
-│   │   └── ProductCategoryController.cs # 商品分類 (SYSB110) ✅
+│   │   ├── ParametersController.cs # ✅ 參數設定 (SYSBC40) ✅
+│   │   ├── RegionsController.cs    # ✅ 地區設定 (SYSBC30, SYSB450) ✅
+│   │   ├── AreasController.cs     # ✅ 區域設定 (SYSB450) ✅
+│   │   ├── BanksController.cs      # ✅ 金融機構 (SYSBC20) ✅
+│   │   ├── VendorsController.cs    # ✅ 廠商客戶 (SYSB206) ✅
+│   │   ├── DepartmentsController.cs # ✅ 部別資料 (SYSWB40) ✅
+│   │   ├── GroupsController.cs    # ✅ 組別資料 (SYSWB70) ✅
+│   │   ├── WarehousesController.cs # ✅ 庫別資料 (SYSWB60) ✅
+│   │   ├── ShopsController.cs     # ✅ 店別資料 ✅
+│   │   └── ProductCategoriesController.cs # ✅ 商品分類 (SYSB110) ✅
 │   │
 │   ├── Inventory/                  # 三、進銷存管理類 (SYSW000) ✅
-│   │   ├── ProductsController.cs   # 商品管理 (SYSW110) ✅
-│   │   ├── SupplierGoodsController.cs # 供應商商品資料 (SYSW110) ✅
-│   │   ├── ProductGoodsIdController.cs # 商品進銷碼維護 (SYSW137) ✅
-│   │   ├── PriceChangeController.cs # 商品永久變價 (SYSW150) ✅
-│   │   ├── PopPrintController.cs  # POP卡商品卡列印 (SYSW170) ✅
-│   │   ├── PopPrintApController.cs # POP卡商品卡列印_AP (SYSW171) ✅
-│   │   ├── PopPrintUaController.cs # POP卡商品卡列印_UA (SYSW172) ✅
+│   │   ├── ProductsController.cs   # ✅ 商品管理 (SYSW110) ✅
+│   │   ├── SupplierGoodsController.cs # ✅ 供應商商品資料 (SYSW110) ✅
+│   │   ├── ProductGoodsIdController.cs # ✅ 商品進銷碼維護 (SYSW137) ✅
+│   │   ├── PriceChangeController.cs # ✅ 商品永久變價 (SYSW150) ✅
+│   │   ├── PopPrintController.cs  # ✅ POP卡商品卡列印 (SYSW170) ✅
+│   │   ├── PopPrintApController.cs # ✅ POP卡商品卡列印_AP (SYSW171) ✅
+│   │   ├── PopPrintUaController.cs # ✅ POP卡商品卡列印_UA (SYSW172) ✅
 │   │   └── TextFileController.cs  # BAT格式文本文件處理 (HT680) ✅
 │   │
 │   ├── Purchase/                   # 四、採購管理類 (SYSP000) ✅
-│   │   ├── PurchaseOrderController.cs # 訂退貨申請作業 (SYSW315, SYSW316) ✅
-│   │   ├── OnSitePurchaseOrderController.cs # 現場打單作業 (SYSW322) ✅
-│   │   ├── PurchaseReceiptController.cs # 採購單驗收作業 (SYSW324, SYSW336) ✅
-│   │   └── [已日結調整相關Controller] ✅
+│   │   ├── PurchaseOrderController.cs # ✅ 訂退貨申請作業 (SYSW315, SYSW316) ✅
+│   │   ├── OnSitePurchaseOrderController.cs # ✅ 現場打單作業 (SYSW322) ✅
+│   │   ├── PurchaseReceiptController.cs # ✅ 採購單驗收作業 (SYSW324, SYSW336, SYSW333, SYSW337, SYSW530) ✅
+│   │   # ✅ 已日結調整相關功能已整合在 PurchaseReceiptController 中
+│   │   # ✅ 資料庫SQL腳本 (CreatePurchaseReceiptTables.sql - 包含PurchaseReceipts, PurchaseReceiptDetails)
+│   │   # ✅ Entity類別 (PurchaseReceipt, PurchaseReceiptDetail)
+│   │   # ✅ Repository接口和實作 (IPurchaseReceiptRepository, PurchaseReceiptRepository)
+│   │   # ✅ Service接口和實作 (IPurchaseReceiptService, PurchaseReceiptService)
+│   │   # ✅ DTO類別 (PurchaseReceiptDto.cs - 包含驗收單、明細、查詢、建立、修改相關的DTO)
+│   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+│   │   # ✅ Vue 前端頁面 (Purchase/PurchaseReceipt.vue) 已完成
 │   │
 │   ├── Transfer/                   # 五、調撥管理類 (SYSW000) ✅
-│   │   ├── TransferReceiptController.cs # 調撥單驗收 (SYSW352) ✅
-│   │   ├── TransferReturnController.cs # 調撥單驗退 (SYSW362) ✅
+│   │   ├── TransferReceiptController.cs # ✅ 調撥單驗收 (SYSW352) ✅
+│   │   ├── TransferReturnController.cs # ✅ 調撥單驗退 (SYSW362) ✅
 │   │   └── TransferShortageController.cs # 調撥短溢維護 (SYSW384) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateTransferReceiptTables.sql - 包含TransferReceipts, TransferReceiptDetails)
 │   │   # ✅ 資料庫SQL腳本 (CreateTransferReturnTables.sql - 包含TransferReturns, TransferReturnDetails)
@@ -206,9 +213,23 @@ src/ErpCore.Api/
 │   │
 │   ├── InventoryCheck/             # 六、盤點管理類 (SYSW000) ✅
 │   │   └── InventoryCheckController.cs # 盤點維護作業 (SYSW53M) ✅
+│   │   # ✅ 資料庫SQL腳本 (CreateStocktakingPlanTables.sql - 包含StocktakingPlans, StocktakingPlanShops, StocktakingTemp等)
+│   │   # ✅ Entity類別 (StocktakingPlan, StocktakingPlanShop, StocktakingTemp等)
+│   │   # ✅ Repository接口和實作 (IStocktakingPlanRepository, StocktakingPlanRepository)
+│   │   # ✅ Service接口和實作 (IStocktakingPlanService, StocktakingPlanService)
+│   │   # ✅ DTO類別 (StocktakingPlanDto.cs - 包含盤點計劃、查詢、建立、修改相關的DTO)
+│   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+│   │   # ✅ Vue 前端頁面 (InventoryCheck/StocktakingPlan.vue) 已完成
 │   │
 │   ├── StockAdjustment/           # 七、庫存調整類 (SYSW000) ✅
 │   │   └── StockAdjustmentController.cs # 庫存調整作業 (SYSW490) ✅
+│   │   # ✅ 資料庫SQL腳本 (CreateInventoryAdjustmentTables.sql - 包含InventoryAdjustments, InventoryAdjustmentDetails, AdjustmentReasons)
+│   │   # ✅ Entity類別 (InventoryAdjustment, InventoryAdjustmentDetail, AdjustmentReason)
+│   │   # ✅ Repository接口和實作 (IStockAdjustmentRepository, StockAdjustmentRepository)
+│   │   # ✅ Service接口和實作 (IStockAdjustmentService, StockAdjustmentService)
+│   │   # ✅ DTO類別 (InventoryAdjustmentDto.cs - 包含調整單、明細、查詢、建立、修改相關的DTO)
+│   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+│   │   # ✅ Vue 前端頁面 (StockAdjustment/InventoryAdjustment.vue) 已完成
 │   │
 │   ├── Invoice/                    # 八、電子發票管理類 (ECA0000) ✅
 │   │   └── EInvoicesController.cs  # 電子發票處理、查詢、上傳、報表 (ECA2050, ECA3010-ECA4060) ✅
@@ -220,52 +241,52 @@ src/ErpCore.Api/
 │   │   └── AnalysisReportsController.cs # 進銷存分析報表 (SYSA1000, SYSA1011-SYSA1024) ✅
 │   │
 │   ├── BusinessReport/            # 十一、業務報表類 (SYSL000) ✅
-│   │   ├── BusinessReportController.cs # 業務報表查詢 (SYSL135) ✅
-│   │   ├── BusinessReportManagementController.cs # 業務報表管理 ✅
-│   │   ├── BusinessReportPrintController.cs # 業務報表列印 ✅
-│   │   ├── BusinessReportPrintLogController.cs # 業務報表列印記錄 (SYSL161) ✅
-│   │   ├── BusinessReportPrintDetailController.cs # 業務報表列印明細 ✅
-│   │   ├── EmployeeMealCardController.cs # 員餐卡管理 (SYSL210) ✅
-│   │   ├── EmployeeMealCardFieldController.cs # 員餐卡欄位管理 ✅
-│   │   ├── EmployeeMealCardReportController.cs # 員餐卡報表 ✅
-│   │   ├── ReturnCardController.cs # 銷退卡管理 (SYSL310) ✅
-│   │   ├── ReturnCardReportController.cs # 銷退卡報表 ✅
-│   │   ├── OvertimePaymentController.cs # 加班發放管理 (SYSL510) ✅
-│   │   └── OvertimePaymentReportController.cs # 加班發放報表 ✅
+│   │   ├── BusinessReportController.cs # ✅ 業務報表查詢 (SYSL135) ✅
+│   │   ├── BusinessReportManagementController.cs # ✅ 業務報表管理 ✅
+│   │   ├── BusinessReportPrintController.cs # ✅ 業務報表列印 ✅
+│   │   ├── BusinessReportPrintLogController.cs # ✅ 業務報表列印記錄 (SYSL161) ✅
+│   │   ├── BusinessReportPrintDetailController.cs # ✅ 業務報表列印明細 ✅
+│   │   ├── EmployeeMealCardController.cs # ✅ 員餐卡管理 (SYSL210) ✅
+│   │   ├── EmployeeMealCardFieldController.cs # ✅ 員餐卡欄位管理 ✅
+│   │   ├── EmployeeMealCardReportController.cs # ✅ 員餐卡報表 ✅
+│   │   ├── ReturnCardController.cs # ✅ 銷退卡管理 (SYSL310) ✅
+│   │   ├── ReturnCardReportController.cs # ✅ 銷退卡報表 ✅
+│   │   ├── OvertimePaymentController.cs # ✅ 加班發放管理 (SYSL510) ✅
+│   │   └── OvertimePaymentReportController.cs # ✅ 加班發放報表 ✅
 │   │
 │   ├── Pos/                        # 十二、POS系統類 ✅
-│   │   ├── PosTransactionController.cs # POS交易查詢 ✅
-│   │   ├── PosReportController.cs  # POS報表查詢 ✅
-│   │   └── PosSyncController.cs    # POS資料同步作業 ✅
+│   │   ├── PosTransactionController.cs # ✅ POS交易查詢 ✅
+│   │   ├── PosReportController.cs  # ✅ POS報表查詢 ✅
+│   │   └── PosSyncController.cs    # ✅ POS資料同步作業 ✅
 │   │
 │   ├── SystemExtension/           # 十三、系統擴展類 ✅
-│   │   ├── SystemExtensionController.cs # 系統擴展資料維護 (SYSX110) ✅
-│   │   ├── SystemExtensionQueryController.cs # 系統擴展查詢 (SYSX120) ✅
-│   │   └── SystemExtensionReportController.cs # 系統擴展報表 (SYSX140) ✅
+│   │   ├── SystemExtensionController.cs # ✅ 系統擴展資料維護 (SYSX110) ✅
+│   │   ├── SystemExtensionQueryController.cs # ✅ 系統擴展查詢 (SYSX120) ✅
+│   │   └── SystemExtensionReportController.cs # ✅ 系統擴展報表 (SYSX140) ✅
 │   │
 │   ├── Kiosk/                      # 十四、自助服務終端類 ✅
-│   │   ├── KioskReportController.cs # Kiosk報表查詢 ✅
-│   │   └── KioskProcessController.cs # Kiosk資料處理作業 ✅
+│   │   ├── KioskReportController.cs # ✅ Kiosk報表查詢 ✅
+│   │   └── KioskProcessController.cs # ✅ Kiosk資料處理作業 ✅
 │   │
 │   ├── ReportExtension/            # 十五、報表擴展類 ✅
-│   │   ├── ReportModuleOController.cs # 報表模組O ✅
-│   │   ├── ReportModuleNController.cs # 報表模組N ✅
-│   │   ├── ReportModuleWPController.cs # 報表模組WP ✅
-│   │   ├── ReportModule7Controller.cs # 報表模組7 (SYS7000) ✅
-│   │   ├── ReportPrintController.cs # 報表列印作業 (SYS7B10-SYS7B40) ✅
-│   │   └── ReportStatisticsController.cs # 報表統計作業 (SYS7C10, SYS7C30) ✅
+│   │   ├── ReportModuleOController.cs # ✅ 報表模組O ✅
+│   │   ├── ReportModuleNController.cs # ✅ 報表模組N ✅
+│   │   ├── ReportModuleWPController.cs # ✅ 報表模組WP ✅
+│   │   ├── ReportModule7Controller.cs # ✅ 報表模組7 (SYS7000) ✅
+│   │   ├── ReportPrintController.cs # ✅ 報表列印作業 (SYS7B10-SYS7B40) ✅
+│   │   └── ReportStatisticsController.cs # ✅ 報表統計作業 (SYS7C10, SYS7C30) ✅
 │   │
 │   ├── DropdownList/               # 十六、下拉列表類 ✅
-│   │   ├── AddressListController.cs # 地址列表 (ADDR_CITY_LIST, ADDR_ZONE_LIST) ✅
-│   │   ├── DateListController.cs  # 日期列表 (DATE_LIST) ✅
-│   │   ├── MenuListController.cs  # 選單列表 (MENU_LIST) ✅
-│   │   ├── MultiSelectListController.cs # 多選列表 (MULTI_AREA_LIST, MULTI_SHOP_LIST, MULTI_USERS_LIST) ✅
-│   │   └── SystemListController.cs # 系統列表 (SYSID_LIST, USER_LIST) ✅
+│   │   ├── AddressListController.cs # ✅ 地址列表 (ADDR_CITY_LIST, ADDR_ZONE_LIST) ✅
+│   │   ├── DateListController.cs  # ✅ 日期列表 (DATE_LIST) ✅
+│   │   ├── MenuListController.cs  # ✅ 選單列表 (MENU_LIST) ✅
+│   │   ├── MultiSelectListController.cs # ✅ 多選列表 (MULTI_AREA_LIST, MULTI_SHOP_LIST, MULTI_USERS_LIST) ✅
+│   │   └── SystemListController.cs # ✅ 系統列表 (SYSID_LIST, USER_LIST) ✅
 │   │
 │   ├── Communication/              # 十七、通訊與通知類 ✅
-│   │   ├── AutoProcessMailController.cs # 自動處理郵件作業 ✅
-│   │   ├── EncodeDataController.cs # 資料編碼作業 ✅
-│   │   └── MailSmsController.cs   # 郵件簡訊發送作業 (SYS5000) ✅
+│   │   ├── AutoProcessMailController.cs # ✅ 自動處理郵件作業 ✅
+│   │   ├── EncodeDataController.cs # ✅ 資料編碼作業 ✅
+│   │   └── MailSmsController.cs   # ✅ 郵件簡訊發送作業 (SYS5000) ✅
 │   │   # Entity: EmailLog, EmailAttachment, SmsLog, NotificationTemplate, EmailQueue, EncodeLog ✅
 │   │   # Repository: IEmailLogRepository, IEmailAttachmentRepository, ISmsLogRepository, IEmailQueueRepository, IEncodeLogRepository ✅
 │   │   # Service: IEmailService, ISmsService, IEmailQueueService, IEncodeService ✅
@@ -273,53 +294,53 @@ src/ErpCore.Api/
 │   │   # Database: CreateCommunicationTables.sql ✅
 │   │
 │   ├── UiComponent/                # 十八、UI組件類 ✅
-│   │   ├── DataMaintenanceComponentController.cs # 資料維護UI組件 (IMS30系列) ✅
-│   │   └── UiComponentQueryController.cs # UI組件查詢與報表 ✅
+│   │   ├── DataMaintenanceComponentController.cs # ✅ 資料維護UI組件 (IMS30系列) ✅
+│   │   └── UiComponentQueryController.cs # ✅ UI組件查詢與報表 ✅
 │   │
 │   ├── Tools/                       # 十九、工具類 ✅
-│   │   ├── FileUploadController.cs # 檔案上傳工具 (FILE_UPLOAD) ✅
-│   │   ├── BarcodeController.cs    # 條碼處理工具 (RSL_BARCODE) ✅
-│   │   └── Html2PdfController.cs   # HTML轉PDF工具 (RslHtml2Pdf) ✅
+│   │   ├── FileUploadController.cs # ✅ 檔案上傳工具 (FILE_UPLOAD) ✅
+│   │   ├── BarcodeController.cs    # ✅ 條碼處理工具 (RSL_BARCODE) ✅
+│   │   └── Html2PdfController.cs   # ✅ HTML轉PDF工具 (RslHtml2Pdf) ✅
 │   │
 │   ├── Core/                        # 二十、核心功能類 ✅
-│   │   ├── UserManagementController.cs # 使用者管理 ✅
-│   │   ├── FrameworkController.cs  # 框架功能 ✅
-│   │   ├── DataMaintenanceController.cs # 資料維護功能 (IMS30系列：FB, FI, FQ, FS, FU, PR) ✅
-│   │   ├── ToolsController.cs      # 工具功能 (Export_Excel, Encode_String, ASPXTOASP) ✅
-│   │   └── SystemFunctionController.cs # 系統功能 (Identify, MakeRegFile, about) ✅
+│   │   ├── UserManagementController.cs # ✅ 使用者管理 ✅
+│   │   ├── FrameworkController.cs  # ✅ 框架功能 ✅
+│   │   ├── DataMaintenanceController.cs # ✅ 資料維護功能 (IMS30系列：FB, FI, FQ, FS, FU, PR) ✅
+│   │   ├── ToolsController.cs      # ✅ 工具功能 (Export_Excel, Encode_String, ASPXTOASP) ✅
+│   │   └── SystemFunctionController.cs # ✅ 系統功能 (Identify, MakeRegFile, about) ✅
 │   │
 │   ├── OtherModule/                # 二十一、其他模組類 ✅
-│   │   ├── CrpReportController.cs  # CRP報表模組 ✅
-│   │   ├── EipIntegrationController.cs # EIP系統整合 (IMS2EIP) ✅
-│   │   └── LabTestController.cs    # 實驗室測試功能 (Lab) ✅
+│   │   ├── CrpReportController.cs  # ✅ CRP報表模組 ✅
+│   │   ├── EipIntegrationController.cs # ✅ EIP系統整合 (IMS2EIP) ✅
+│   │   └── LabTestController.cs    # ✅ 實驗室測試功能 (Lab) ✅
 │   │
 │   ├── HumanResource/              # 二十二、人力資源管理類 (SYSH000) ✅
-│   │   ├── PersonnelController.cs  # 人事管理 (SYSH110) ✅
-│   │   ├── PayrollController.cs    # 薪資管理 (SYSH210) ✅
-│   │   └── AttendanceController.cs # 考勤管理 ✅
+│   │   ├── PersonnelController.cs  # ✅ 人事管理 (SYSH110) ✅
+│   │   ├── PayrollController.cs    # ✅ 薪資管理 (SYSH210) ✅
+│   │   └── AttendanceController.cs # ✅ 考勤管理 ✅
 │   │
 │   ├── Accounting/                 # 二十三、會計財務管理類 (SYSN000) ✅
-│   │   ├── AccountSubjectController.cs # 會計科目維護 (SYSN110-SYSN111) ✅
-│   │   ├── AccountingController.cs # 會計管理 (SYSN120-SYSN154) ✅
-│   │   ├── FinancialTransactionController.cs # 財務交易 (SYSN210-SYSN213) ✅
-│   │   ├── AssetController.cs      # 資產管理 (SYSN310-SYSN311) ✅
-│   │   ├── FinancialReportController.cs # 財務報表 (SYSN510-SYSN540) ✅
+│   │   ├── AccountSubjectController.cs # ✅ 會計科目維護 (SYSN110-SYSN111) ✅
+│   │   ├── AccountingController.cs # ✅ 會計管理 (SYSN120-SYSN154) ✅
+│   │   ├── FinancialTransactionController.cs # ✅ 財務交易 (SYSN210-SYSN213) ✅
+│   │   ├── AssetController.cs      # ✅ 資產管理 (SYSN310-SYSN311) ✅
+│   │   ├── FinancialReportController.cs # ✅ 財務報表 (SYSN510-SYSN540) ✅
 │   │   └── OtherFinancialController.cs # 其他財務功能 (SYSN610-SYSN910) ✅
 │   │
 │   ├── TaxAccounting/              # 二十四、會計稅務管理類 (SYST000) ✅
-│   │   ├── AccountingSubjectController.cs # 會計科目維護 (SYST111-SYST11A) ✅
-│   │   ├── AccountingVoucherController.cs # 會計憑證管理 (SYST121-SYST12B) ✅
-│   │   ├── AccountingBookController.cs # 會計帳簿管理 (SYST131-SYST134) ✅
+│   │   ├── AccountingSubjectController.cs # ✅ 會計科目維護 (SYST111-SYST11A) ✅
+│   │   ├── AccountingVoucherController.cs # ✅ 會計憑證管理 (SYST121-SYST12B) ✅
+│   │   ├── AccountingBookController.cs # ✅ 會計帳簿管理 (SYST131-SYST134) ✅
 │   │   │   # Repository: ICashFlowLargeTypeRepository, ICashFlowMediumTypeRepository, ICashFlowSubjectTypeRepository, ICashFlowSubTotalRepository ✅
 │   │   │   # Service: ICashFlowLargeTypeService, ICashFlowMediumTypeService, ICashFlowSubjectTypeService, ICashFlowSubTotalService ✅
 │   │   │   # Entity: CashFlowLargeType, CashFlowMediumType, CashFlowSubjectType, CashFlowSubTotal ✅
 │   │   │   # DTO: CashFlowDto.cs (包含4個實體的DTO) ✅
 │   │   │   # Database: CreateTaxAccountingTables.sql (CashFlowLargeTypes, CashFlowMediumTypes, CashFlowSubjectTypes, CashFlowSubTotals) ✅
-│   │   ├── InvoiceDataController.cs # 發票資料維護 (SYST211-SYST212) ✅
-│   │   ├── TransactionDataController.cs # 交易資料處理 (SYST221, SYST311-SYST352) ✅
-│   │   ├── TaxReportController.cs  # 稅務報表查詢 (SYST411-SYST452) ✅
-│   │   ├── TaxReportPrintController.cs # 稅務報表列印 (SYST510-SYST530) ✅
-│   │   ├── VoucherAuditController.cs # 暫存傳票審核作業 (SYSTA00-SYSTA70) ✅
+│   │   ├── InvoiceDataController.cs # ✅ 發票資料維護 (SYST211-SYST212) ✅
+│   │   ├── TransactionDataController.cs # ✅ 交易資料處理 (SYST221, SYST311-SYST352) ✅
+│   │   ├── TaxReportController.cs  # ✅ 稅務報表查詢 (SYST411-SYST452) ✅
+│   │   ├── TaxReportPrintController.cs # ✅ 稅務報表列印 (SYST510-SYST530) ✅
+│   │   ├── VoucherAuditController.cs # ✅ 暫存傳票審核作業 (SYSTA00-SYSTA70) ✅
 │   │   └── VoucherImportController.cs # 傳票轉入作業 (SYST002-SYST003) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateTaxAccountingTables.sql - 包含AccountSubjects, VoucherTypes, CommonVouchers, CashFlowLargeTypes, CashFlowMediumTypes, CashFlowSubjectTypes, CashFlowSubTotals, InvoiceVouchers, TaxReportPrints, TmpVoucherMs, TmpVoucherDs, VoucherImportLogs, VoucherImportDetails等)
 │   │   # ✅ Entity類別 (TaxAccountingSubject, VoucherType, CommonVoucher, CashFlowLargeType, CashFlowMediumType, CashFlowSubjectType, CashFlowSubTotal, InvoiceVoucher, TaxReportPrint, TmpVoucherM, TmpVoucherD, VoucherImportLog, VoucherImportDetail等)
@@ -330,11 +351,11 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── Procurement/                # 二十五、採購供應商管理類 (SYSP000) ✅
-│   │   ├── ProcurementController.cs # 採購管理 (SYSP110-SYSP190) ✅
-│   │   ├── SupplierController.cs   # 供應商管理 ✅
-│   │   ├── PaymentController.cs    # 付款管理 (SYSP271-SYSP2B0) ✅
-│   │   ├── BankManagementController.cs # 銀行管理 ✅
-│   │   ├── ProcurementReportController.cs # 採購報表 (SYSP410-SYSP4I0) ✅
+│   │   ├── ProcurementController.cs # ✅ 採購管理 (SYSP110-SYSP190) ✅
+│   │   ├── SupplierController.cs   # ✅ 供應商管理 ✅
+│   │   ├── PaymentController.cs    # ✅ 付款管理 (SYSP271-SYSP2B0) ✅
+│   │   ├── BankManagementController.cs # ✅ 銀行管理 ✅
+│   │   ├── ProcurementReportController.cs # ✅ 採購報表 (SYSP410-SYSP4I0) ✅
 │   │   └── ProcurementOtherController.cs # 採購其他功能 (SYSP510-SYSP530) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateProcurementTables.sql - 包含Suppliers, Payments, BankAccounts, ProcurementReports等)
 │   │   # ✅ Entity類別 (Supplier, Payment, BankAccount, ProcurementReport等)
@@ -345,9 +366,9 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── Contract/                   # 二十六、合同管理類 (SYSF000) ✅
-│   │   ├── ContractDataController.cs # 合同資料維護 (SYSF110-SYSF140) ✅
-│   │   ├── ContractProcessController.cs # 合同處理作業 (SYSF210-SYSF220) ✅
-│   │   ├── ContractExtensionController.cs # 合同擴展維護 (SYSF350-SYSF540) ✅
+│   │   ├── ContractDataController.cs # ✅ 合同資料維護 (SYSF110-SYSF140) ✅
+│   │   ├── ContractProcessController.cs # ✅ 合同處理作業 (SYSF210-SYSF220) ✅
+│   │   ├── ContractExtensionController.cs # ✅ 合同擴展維護 (SYSF350-SYSF540) ✅
 │   │   └── CmsContractController.cs # CMS合同維護 (CMS2310-CMS2320) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateContractTables.sql - 包含Contracts, ContractTerms, ContractProcesses, ContractExtensions, CmsContracts等)
 │   │   # ✅ Entity類別 (Contract, ContractTerm, ContractProcess, ContractExtension, CmsContract等)
@@ -358,8 +379,8 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── Lease/                       # 二十七、租賃管理類 (SYS8000) ✅
-│   │   ├── LeaseDataController.cs   # 租賃資料維護 (SYS8110-SYS8220) ✅
-│   │   ├── LeaseExtensionController.cs # 租賃擴展維護 (SYS8A10-SYS8A45) ✅
+│   │   ├── LeaseDataController.cs   # ✅ 租賃資料維護 (SYS8110-SYS8220) ✅
+│   │   ├── LeaseExtensionController.cs # ✅ 租賃擴展維護 (SYS8A10-SYS8A45) ✅
 │   │   └── LeaseProcessController.cs # 租賃處理作業 (SYS8B50-SYS8B90) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateLeaseTables.sql - 包含Leases, LeaseExtensions, LeaseProcesses等)
 │   │   # ✅ Entity類別 (Lease, LeaseExtension, LeaseProcess等)
@@ -370,7 +391,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── LeaseSYSE/                  # 二十八、租賃管理SYSE類 (SYSE000) ✅
-│   │   ├── LeaseSYSEDataController.cs # 租賃資料維護 (SYSE110-SYSE140) ✅
+│   │   ├── LeaseSYSEDataController.cs # ✅ 租賃資料維護 (SYSE110-SYSE140) ✅
 │   │   └── LeaseSYSEFeeController.cs # 費用資料維護 (SYSE310-SYSE430) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateLeaseSYSETables.sql)
 │   │   # ✅ Entity類別 (LeaseTerm, LeaseAccountingCategory, LeaseFee, LeaseFeeItem)
@@ -379,7 +400,7 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (LeaseSYSEDto.cs)
 │   │
 │   ├── LeaseSYSM/                  # 二十九、租賃管理SYSM類 (SYSM000) ✅
-│   │   ├── LeaseSYSMDataController.cs # 租賃資料維護 (SYSM111-SYSM138) ✅
+│   │   ├── LeaseSYSMDataController.cs # ✅ 租賃資料維護 (SYSM111-SYSM138) ✅
 │   │   └── LeaseSYSMReportController.cs # 租賃報表查詢 (SYSM141-SYSM144) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateLeaseSYSMTables.sql)
 │   │   # ✅ Entity類別 (ParkingSpace, LeaseContract, LeaseReportQuery)
@@ -388,8 +409,8 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (LeaseSYSMDto.cs)
 │   │
 │   ├── Extension/                  # 三十、擴展管理類 (SYS9000) ✅
-│   │   ├── ExtensionController.cs  # 擴展功能維護 (SYS9000) ✅
-│   │   └── ReportModuleWPController.cs # 報表模組WP (SYSWP00)
+│   │   ├── ExtensionController.cs  # ✅ 擴展功能維護 (SYS9000) ✅
+│   │   └── ReportModuleWPController.cs # 報表模組WP (SYSWP00) ✅ (位於 ReportExtension 目錄)
 │   │   # ✅ 資料庫SQL腳本 (CreateExtensionTables.sql - 包含ExtensionFunctions)
 │   │   # ✅ Entity類別 (ExtensionFunction)
 │   │   # ✅ Repository接口和實作 (IExtensionFunctionRepository, ExtensionFunctionRepository)
@@ -397,20 +418,22 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (ExtensionDto.cs - 包含擴展功能、查詢、建立、修改相關的DTO)
 │   │
 │   ├── Query/                       # 三十一、查詢管理類 (SYSQ000) ✅
-│   │   ├── QueryController.cs      # 查詢功能維護 (SYSQ000)
-│   │   ├── QualityBaseController.cs # 質量管理基礎功能 (SYSQ110-SYSQ120) ✅
-│   │   ├── QualityProcessController.cs # 質量管理處理功能 (SYSQ210-SYSQ250) ✅
+│   │   ├── QueryController.cs      # ✅ 查詢功能維護 (SYSQ000) ✅
+│   │   ├── QualityBaseController.cs # ✅ 質量管理基礎功能 (SYSQ110-SYSQ120) ✅
+│   │   ├── QualityProcessController.cs # ✅ 質量管理處理功能 (SYSQ210-SYSQ250) ✅
 │   │   └── QualityReportController.cs # 質量管理報表功能 (SYSQ310-SYSQ340) ✅
-│   │   # ✅ 資料庫SQL腳本 (CreateQueryTables.sql - 包含PcCash, PcCashRequest, PcCashTransfer, PcCashInventory, VoucherAudit)
-│   │   # ✅ Entity類別 (PcCash, PcCashRequest, PcCashTransfer, PcCashInventory, VoucherAudit)
-│   │   # ✅ Repository接口和實作 (IPcCashRepository, PcCashRepository等)
-│   │   # ✅ Service接口和實作 (IPcCashService, PcCashService)
-│   │   # ✅ DTO類別 (QueryDto.cs - 包含所有處理和報表相關的DTO)
+│   │   # ✅ 資料庫SQL腳本 (CreateQueryTables.sql - 包含PcCash, PcCashRequest, PcCashTransfer, PcCashInventory, VoucherAudit) ✅
+│   │   # ✅ Entity類別 (PcCash, PcCashRequest, PcCashTransfer, PcCashInventory, VoucherAudit) ✅
+│   │   # ✅ Repository接口和實作 (IPcCashRepository, PcCashRepository, IPcCashRequestRepository, PcCashRequestRepository, IPcCashTransferRepository, PcCashTransferRepository, IPcCashInventoryRepository, PcCashInventoryRepository, IVoucherAuditRepository, VoucherAuditRepository) ✅
+│   │   # ✅ Service接口和實作 (IPcCashService, PcCashService, IPcCashRequestService, PcCashRequestService, IPcCashTransferService, PcCashTransferService, IPcCashInventoryService, PcCashInventoryService, IVoucherAuditService, VoucherAuditService) ✅
+│   │   # ✅ DTO類別 (QueryDto.cs - 包含所有處理和報表相關的DTO，包含 PcCashRequestDto, PcCashTransferDto, PcCashInventoryDto, UpdatePcCashRequestDto, UpdatePcCashTransferDto, PcCashTransferQueryDto, VoucherAuditDto, VoucherAuditQueryDto, UpdateVoucherAuditDto) ✅
+│   │   # ✅ Controller API 端點 (QualityProcessController 包含 VoucherAudit 相關 API) ✅
+│   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── ReportManagement/            # 三十二、報表管理類 (SYSR000) ✅
-│   │   ├── ReceivingBaseController.cs # 收款基礎功能 (SYSR110-SYSR120) ✅
-│   │   ├── ReceivingProcessController.cs # 收款處理功能 (SYSR210-SYSR240) ✅
-│   │   ├── ReceivingExtensionController.cs # 收款擴展功能 (SYSR310-SYSR450) ✅
+│   │   ├── ReceivingBaseController.cs # ✅ 收款基礎功能 (SYSR110-SYSR120) ✅
+│   │   ├── ReceivingProcessController.cs # ✅ 收款處理功能 (SYSR210-SYSR240) ✅
+│   │   ├── ReceivingExtensionController.cs # ✅ 收款擴展功能 (SYSR310-SYSR450) ✅
 │   │   └── ReceivingOtherController.cs # 收款其他功能 (SYSR510-SYSR570) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateReportManagementTables.sql - 包含ArItems, AccountsReceivable, ReceiptVoucherTransfer, Deposits)
 │   │   # ✅ Entity類別 (ArItems, AccountsReceivable, ReceiptVoucherTransfer, Deposits)
@@ -419,8 +442,8 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (ReportManagementDto.cs - 包含收款項目、應收帳款、收款沖帳傳票、保證金相關的DTO)
 │   │
 │   ├── Sales/                       # 三十三、銷售管理類 (SYSD000) ✅
-│   │   ├── SalesDataController.cs  # 銷售資料維護 (SYSD110-SYSD140) ✅
-│   │   ├── SalesProcessController.cs # 銷售處理作業 (SYSD210-SYSD230) ✅
+│   │   ├── SalesDataController.cs  # ✅ 銷售資料維護 (SYSD110-SYSD140) ✅
+│   │   ├── SalesProcessController.cs # ✅ 銷售處理作業 (SYSD210-SYSD230) ✅
 │   │   └── SalesReportController.cs # 銷售報表查詢 (SYSD310-SYSD430) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateSalesTables.sql)
 │   │   # ✅ Entity類別 (SalesOrder, SalesOrderDetail, SalesProcessLog, SalesReportCache)
@@ -429,8 +452,8 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (SalesDto.cs)
 │   │
 │   ├── Certificate/                 # 三十四、憑證管理類 (SYSK000) ✅
-│   │   ├── CertificateDataController.cs # 憑證資料維護 (SYSK110-SYSK150) ✅
-│   │   ├── CertificateProcessController.cs # 憑證處理作業 (SYSK210-SYSK230) ✅
+│   │   ├── CertificateDataController.cs # ✅ 憑證資料維護 (SYSK110-SYSK150) ✅
+│   │   ├── CertificateProcessController.cs # ✅ 憑證處理作業 (SYSK210-SYSK230) ✅
 │   │   └── CertificateReportController.cs # 憑證報表查詢 (SYSK310-SYSK500) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateCertificateTables.sql - 包含Vouchers, VoucherDetails, VoucherTypes, VoucherProcessLogs, VoucherReportCache)
 │   │   # ✅ Entity類別 (Voucher, VoucherDetail, VoucherType, VoucherProcessLog, VoucherReportCache)
@@ -439,9 +462,9 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (CertificateDto.cs - 包含憑證、憑證明細、查詢、處理、報表相關的DTO)
 │   │
 │   ├── OtherManagement/             # 三十五、其他管理類 ✅
-│   │   ├── SystemSController.cs     # S系統功能維護 (SYSS000) ✅
-│   │   ├── SystemUController.cs     # U系統功能維護 (SYSU000) ✅
-│   │   ├── SystemVController.cs    # V系統功能維護 (SYSV000) ✅
+│   │   ├── SystemSController.cs     # ✅ S系統功能維護 (SYSS000) ✅
+│   │   ├── SystemUController.cs     # ✅ U系統功能維護 (SYSU000) ✅
+│   │   ├── SystemVController.cs    # ✅ V系統功能維護 (SYSV000) ✅
 │   │   └── SystemJController.cs    # J系統功能維護 (SYSJ000) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateOtherManagementTables.sql - 包含SYSSFunctions, SYSUFunctions, SYSVFunctions, SYSJFunctions)
 │   │   # ✅ Entity類別 (SYSSFunction, SYSUFunction, SYSVFunction, SYSJFunction)
@@ -450,9 +473,9 @@ src/ErpCore.Api/
 │   │   # ✅ DTO類別 (OtherManagementDto.cs - 包含四個系統功能的DTO)
 │   │
 │   ├── CustomerInvoice/             # 三十六、客戶與發票管理類 (SYS2000) ✅
-│   │   ├── CustomerDataController.cs # 客戶資料維護 ✅
-│   │   ├── InvoicePrintController.cs # 發票列印作業 ✅
-│   │   ├── MailFaxController.cs    # 郵件傳真作業 ✅
+│   │   ├── CustomerDataController.cs # ✅ 客戶資料維護 ✅
+│   │   ├── InvoicePrintController.cs # ✅ 發票列印作業 ✅
+│   │   ├── MailFaxController.cs    # ✅ 郵件傳真作業 ✅
 │   │   └── LedgerDataController.cs # 總帳資料維護 ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateCustomerInvoiceTables.sql - 包含CustomerData, CustomerContacts, CustomerAddresses, CustomerBankAccounts, Invoices, InvoiceDetails, InvoicePrintLogs, EmailFaxJobs, EmailFaxTemplates, EmailFaxLogs, GeneralLedger, Accounts, Vouchers, VoucherDetails, AccountBalances)
 │   │   # ✅ Entity類別 (CustomerData, CustomerContact, CustomerAddress, CustomerBankAccount, Invoice, InvoiceDetail, InvoicePrintLog, EmailFaxJob, EmailFaxTemplate, EmailFaxLog, GeneralLedger, Account, Voucher, VoucherDetail, AccountBalance)
@@ -463,11 +486,11 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── StoreMember/                 # 三十七、商店與會員管理類 (SYS3000) ✅
-│   │   ├── StoreController.cs      # 商店資料維護 (SYS3130-SYS3160) ✅
-│   │   ├── StoreQueryController.cs # 商店查詢作業 (SYS3210-SYS3299) ✅
-│   │   ├── MemberController.cs     # 會員資料維護 (SYS3310-SYS3320) ✅
-│   │   ├── MemberQueryController.cs # 會員查詢作業 (SYS3330-SYS33B0) ✅
-│   │   ├── PromotionController.cs  # 促銷活動維護 (SYS3510-SYS3600) ✅
+│   │   ├── StoreController.cs      # ✅ 商店資料維護 (SYS3130-SYS3160) ✅
+│   │   ├── StoreQueryController.cs # ✅ 商店查詢作業 (SYS3210-SYS3299) ✅
+│   │   ├── MemberController.cs     # ✅ 會員資料維護 (SYS3310-SYS3320) ✅
+│   │   ├── MemberQueryController.cs # ✅ 會員查詢作業 (SYS3330-SYS33B0) ✅
+│   │   ├── PromotionController.cs  # ✅ 促銷活動維護 (SYS3510-SYS3600) ✅
 │   │   └── StoreReportController.cs # 報表查詢作業 (SYS3410-SYS3440) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateStoreMemberTables.sql - 包含Shops, ShopTypes, ShopPosSettings, Members, MemberLevels, MemberCards, MemberPoints, Promotions, StoreReports)
 │   │   # ✅ Entity類別 (Shop, ShopType, ShopPosSetting, Member, MemberLevel, MemberCard, MemberPoint, Promotion, StoreReport)
@@ -478,13 +501,13 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── StoreFloor/                  # 三十八、商店樓層管理類 (SYS6000) ✅
-│   │   ├── StoreManagementController.cs # 商店資料維護 (SYS6110-SYS6140) ✅
-│   │   ├── StoreQueryController.cs  # 商店查詢作業 (SYS6210-SYS6270) ✅
-│   │   ├── FloorController.cs       # 樓層資料維護 (SYS6310-SYS6370) ✅
-│   │   ├── FloorQueryController.cs  # 樓層查詢作業 (SYS6381-SYS63A0) ✅
-│   │   ├── TypeCodeController.cs   # 類型代碼維護 (SYS6405-SYS6490) ✅
-│   │   ├── TypeCodeQueryController.cs # 類型代碼查詢 (SYS6501-SYS6560) ✅
-│   │   ├── PosDataController.cs     # POS資料維護 (SYS6610-SYS6999) ✅
+│   │   ├── StoreManagementController.cs # ✅ 商店資料維護 (SYS6110-SYS6140) ✅
+│   │   ├── StoreQueryController.cs  # ✅ 商店查詢作業 (SYS6210-SYS6270) ✅
+│   │   ├── FloorController.cs       # ✅ 樓層資料維護 (SYS6310-SYS6370) ✅
+│   │   ├── FloorQueryController.cs  # ✅ 樓層查詢作業 (SYS6381-SYS63A0) ✅
+│   │   ├── TypeCodeController.cs   # ✅ 類型代碼維護 (SYS6405-SYS6490) ✅
+│   │   ├── TypeCodeQueryController.cs # ✅ 類型代碼查詢 (SYS6501-SYS6560) ✅
+│   │   ├── PosDataController.cs     # ✅ POS資料維護 (SYS6610-SYS6999) ✅
 │   │   └── PosQueryController.cs   # POS查詢作業 (SYS6A04-SYS6A19) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateStoreFloorTables.sql - 包含ShopFloors, Floors, ShopTypes, TypeCodes, ShopPosSettings, PosTerminals)
 │   │   # ✅ Entity類別 (ShopFloor, Floor, TypeCode, PosTerminal)
@@ -495,11 +518,11 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── InvoiceSales/                # 三十九、發票銷售管理類 (SYSG000) ✅
-│   │   ├── InvoiceDataController.cs # 發票資料維護 (SYSG110-SYSG190) ✅
-│   │   ├── InvoicePrintController.cs # 電子發票列印 (SYSG210-SYSG2B0) ✅
-│   │   ├── SalesDataController.cs   # 銷售資料維護 (SYSG410-SYSG460) ✅
-│   │   ├── SalesQueryController.cs  # 銷售查詢作業 (SYSG510-SYSG5D0) ✅
-│   │   ├── SalesReportQueryController.cs # 報表查詢作業 (SYSG610-SYSG640) ✅
+│   │   ├── InvoiceDataController.cs # ✅ 發票資料維護 (SYSG110-SYSG190) ✅
+│   │   ├── InvoicePrintController.cs # ✅ 電子發票列印 (SYSG210-SYSG2B0) ✅
+│   │   ├── SalesDataController.cs   # ✅ 銷售資料維護 (SYSG410-SYSG460) ✅
+│   │   ├── SalesQueryController.cs  # ✅ 銷售查詢作業 (SYSG510-SYSG5D0) ✅
+│   │   ├── SalesReportQueryController.cs # ✅ 報表查詢作業 (SYSG610-SYSG640) ✅
 │   │   └── SalesReportPrintController.cs # 報表列印作業 (SYSG710-SYSG7I0) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateInvoiceSalesTables.sql - 包含Invoices, InvoiceFormats, TaxRegistrations)
 │   │   # ✅ 資料庫SQL腳本 (CreateElectronicInvoicePrintTables.sql - 包含ElectronicInvoices, ElectronicInvoicePrintSettings)
@@ -512,9 +535,9 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅ ✅
 │   │
 │   ├── InvoiceSalesB2B/            # 四十、發票銷售管理B2B類 (SYSG000_B2B) ✅
-│   │   ├── B2BInvoiceDataController.cs # B2B發票資料維護 ✅
-│   │   ├── B2BInvoicePrintController.cs # B2B電子發票列印 ✅
-│   │   ├── B2BSalesDataController.cs # B2B銷售資料維護 ✅
+│   │   ├── B2BInvoiceDataController.cs # ✅ B2B發票資料維護 ✅
+│   │   ├── B2BInvoicePrintController.cs # ✅ B2B電子發票列印 ✅
+│   │   ├── B2BSalesDataController.cs # ✅ B2B銷售資料維護 ✅
 │   │   └── B2BSalesQueryController.cs # B2B銷售查詢作業 ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateB2BInvoiceSalesTables.sql - 包含B2BInvoices, B2BInvoiceFormats, B2BInvoiceTransfers, B2BElectronicInvoices, B2BElectronicInvoicePrintSettings, B2BSalesOrders, B2BSalesOrderDetails)
 │   │   # ✅ Entity類別 (B2BInvoice, B2BElectronicInvoice, B2BElectronicInvoicePrintSetting, B2BSalesOrder, B2BSalesOrderDetail, B2BInvoiceTransfer)
@@ -525,7 +548,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── SystemExtensionE/            # 四十一、系統擴展E類 (SYSPE00) ✅
-│   │   ├── EmployeeDataController.cs # 員工資料維護 (SYSPE10-SYSPE11) ✅
+│   │   ├── EmployeeDataController.cs # ✅ 員工資料維護 (SYSPE10-SYSPE11) ✅
 │   │   └── PersonnelDataController.cs # 人事資料維護 (SYSPED0) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateSystemExtensionETables.sql - 包含Employees, Personnel)
 │   │   # ✅ Entity類別 (Employee, Personnel)
@@ -536,7 +559,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── SystemExtensionH/            # 四十二、系統擴展H類 (SYSH000_NEW) ✅
-│   │   ├── PersonnelBatchController.cs # 人事批量新增 (SYSH3D0_FMI) ✅
+│   │   ├── PersonnelBatchController.cs # ✅ 人事批量新增 (SYSH3D0_FMI) ✅
 │   │   └── SystemExtensionPHController.cs # 系統擴展PH (SYSPH00) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateSystemExtensionHTables.sql - 包含PersonnelImportLogs, PersonnelImportDetails, EmpCard)
 │   │   # ✅ Entity類別 (PersonnelImportLog, PersonnelImportDetail, EmpCard)
@@ -547,7 +570,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── Loyalty/                     # 四十三、忠誠度系統類 (SYSLPS) ✅
-│   │   ├── LoyaltyInitController.cs # 忠誠度系統初始化 (WEBLOYALTYINI) ✅
+│   │   ├── LoyaltyInitController.cs # ✅ 忠誠度系統初始化 (WEBLOYALTYINI) ✅
 │   │   └── LoyaltyMaintenanceController.cs # 忠誠度系統維護 (LPS) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateLoyaltyTables.sql - 包含LoyaltySystemConfigs, LoyaltySystemInitLogs, LoyaltyPointTransactions, LoyaltyMembers)
 │   │   # ✅ Entity類別 (LoyaltySystemConfig, LoyaltySystemInitLog, LoyaltyPointTransaction, LoyaltyMember)
@@ -558,8 +581,8 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── CustomerCustom/              # 四十四、客戶定制模組類 ✅
-│   │   ├── Cus3000Controller.cs     # CUS3000系列 ✅ (會員管理、促銷活動管理、活動管理已完成)
-│   │   ├── Cus3000EskylandController.cs # CUS3000.ESKYLAND ✅
+│   │   ├── Cus3000Controller.cs     # ✅ CUS3000系列 ✅ (會員管理、促銷活動管理、活動管理已完成)
+│   │   ├── Cus3000EskylandController.cs # ✅ CUS3000.ESKYLAND ✅
 │   │   ├── Cus5000EskylandController.cs # CUS5000.ESKYLAND ✅
 │   │   ├── CusBackupController.cs   # CUSBACKUP ✅
 │   │   ├── CusCtsController.cs     # CUSCTS ✅
@@ -574,7 +597,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊
 │   │
 │   ├── StandardModule/             # 四十五、標準模組類 ✅
-│   │   ├── Std3000Controller.cs     # STD3000系列 (SYS3620) ✅
+│   │   ├── Std3000Controller.cs     # ✅ STD3000系列 (SYS3620) ✅
 │   │   └── Std5000Controller.cs     # STD5000系列 ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateStandardModuleTables.sql - 包含Std3000Data, Std5000BaseData, Std5000Members, Std5000MemberPoints, Std5000Transactions, Std5000TransactionDetails)
 │   │   # ✅ Entity類別 (Std3000Data, Std5000BaseData, Std5000Member, Std5000MemberPoint, Std5000Transaction, Std5000TransactionDetail)
@@ -585,8 +608,8 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── MirModule/                   # 四十六、MIR系列模組類 ✅
-│   │   ├── MirH000Controller.cs     # MIRH000系列 ✅
-│   │   ├── MirV000Controller.cs     # MIRV000系列 ✅
+│   │   ├── MirH000Controller.cs     # ✅ MIRH000系列 ✅
+│   │   ├── MirV000Controller.cs     # ✅ MIRV000系列 ✅
 │   │   └── MirW000Controller.cs     # MIRW000系列 ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateMirModuleTables.sql - 包含MirH000Personnel, MirH000Salaries, MirV000Data, MirW000Data)
 │   │   # ✅ Entity類別 (MirH000Personnel, MirH000Salary, MirV000Data, MirW000Data)
@@ -637,12 +660,13 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── Recruitment/                 # 五十一、招商管理類 (SYSC000) ✅
-│   │   ├── ProspectMasterController.cs # 潛客主檔 (SYSC165) ✅
-│   │   ├── ProspectController.cs    # 潛客 (SYSC180) ✅
-│   │   └── InterviewController.cs   # 訪談 (SYSC222) ✅
+│   │   ├── ProspectMasterController.cs # ✅ 潛客主檔 (SYSC165) ✅
+│   │   ├── ProspectController.cs    # ✅ 潛客 (SYSC180) ✅
+│   │   ├── InterviewController.cs   # ✅ 訪談 (SYSC222) ✅
+│   │   └── BusinessOtherController.cs # 招商其他功能 (SYSC999) ✅
 │   │
 │   ├── CommunicationModule/          # 五十二、通訊模組類 (XCOM000) ✅
-│   │   ├── XcomController.cs        # XCOM000系列通訊模組 (XCOM110-XCOM930, XCOMA01-XCOMA02, XCOMFUP等) ✅
+│   │   ├── XcomController.cs        # ✅ XCOM000系列通訊模組 (XCOM110-XCOM930, XCOMA01-XCOMA02, XCOMFUP等) ✅
 │   │   └── XcomMsgController.cs     # XCOMMSG系列錯誤訊息處理 (HTTP錯誤頁面、等待頁面、警告頁面、錯誤訊息處理) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateCommunicationModuleTables.sql - 包含SystemCommunications, CommunicationLogs, XComSystemParams)
 │   │   # ✅ 資料庫SQL腳本 (CreateErrorMessageTables.sql - 包含ErrorMessages, ErrorMessageTemplates)
@@ -654,8 +678,8 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── ChartTools/                   # 五十三、圖表與工具類 ✅
-│   │   ├── ChartController.cs       # 圖表功能 (SYS1000) ✅
-│   │   └── ToolsController.cs       # 工具功能
+│   │   ├── ChartController.cs       # ✅ 圖表功能 (SYS1000) ✅
+│   │   └── ToolsController.cs       # ✅ 工具功能 ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateChartToolsTables.sql - 包含ChartConfigs)
 │   │   # ✅ Entity類別 (ChartConfig)
 │   │   # ✅ Repository接口和實作 (IChartConfigRepository, ChartConfigRepository)
@@ -678,7 +702,7 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── SalesReport/                   # 五十六、銷售報表管理類 (SYS1000) ✅
-│   │   ├── SalesReportModuleController.cs # 銷售報表模組系列 (SYS1100-SYS1D10等) ✅
+│   │   ├── SalesReportModuleController.cs # ✅ 銷售報表模組系列 (SYS1100-SYS1D10等) ✅
 │   │   └── CrystalReportController.cs # Crystal Reports報表功能 (SYS1360) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateSalesReportTables.sql - 包含SalesReports, ProductReports, CrystalReportSettings)
 │   │   # ✅ Entity類別 (SalesReport, ProductReport, CrystalReportSetting)
@@ -689,8 +713,8 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   ├── Energy/                       # 五十七、能源管理類 (SYSO000) ✅
-│   │   ├── EnergyBaseController.cs  # 能源基礎功能 (SYSO100-SYSO130) ✅
-│   │   ├── EnergyProcessController.cs # 能源處理功能 (SYSO310) ✅
+│   │   ├── EnergyBaseController.cs  # ✅ 能源基礎功能 (SYSO100-SYSO130) ✅
+│   │   ├── EnergyProcessController.cs # ✅ 能源處理功能 (SYSO310) ✅
 │   │   └── EnergyExtensionController.cs # 能源擴展功能 (SYSOU10-SYSOU33) ✅
 │   │   # ✅ 資料庫SQL腳本 (CreateEnergyTables.sql - 包含EnergyBases, EnergyProcesses, EnergyExtensions)
 │   │   # ✅ Entity類別 (EnergyBase, EnergyProcess, EnergyExtension)
@@ -701,47 +725,47 @@ src/ErpCore.Api/
 │   │   # ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
 │   │
 │   └── Common/                       # 共用控制器
-│       ├── FileUploadController.cs
-│       ├── ExportController.cs
-│       └── DownloadController.cs
+│       ├── FileUploadController.cs ✅
+│       ├── ExportController.cs ✅
+│       └── DownloadController.cs ✅
 │
 ├── Middleware/                     # 中介軟體
-│   ├── ExceptionHandlingMiddleware.cs
-│   ├── AuthenticationMiddleware.cs
-│   ├── AuthorizationMiddleware.cs
-│   └── LoggingMiddleware.cs
+│   ├── ExceptionHandlingMiddleware.cs ✅
+│   ├── AuthenticationMiddleware.cs ✅
+│   ├── AuthorizationMiddleware.cs ✅
+│   └── LoggingMiddleware.cs ✅
 │
 ├── Filters/                        # 動作過濾器
-│   ├── ValidateModelAttribute.cs
-│   ├── AuthorizeAttribute.cs
-│   └── LogActionAttribute.cs
+│   ├── ValidateModelAttribute.cs ✅
+│   ├── AuthorizeAttribute.cs ✅
+│   └── LogActionAttribute.cs ✅
 │
 ├── ViewModels/                     # 視圖模型（API 請求/回應）
 │   ├── Request/                    # 請求模型
-│   │   ├── UserRequest.cs
-│   │   └── CommonRequest.cs
+│   │   ├── UserRequest.cs ✅
+│   │   └── CommonRequest.cs ✅
 │   └── Response/                   # 回應模型
-│       ├── ApiResponse.cs
-│       └── PagedResponse.cs
+│       ├── ApiResponse.cs ✅
+│       └── PagedResponse.cs ✅
 │
 ├── Extensions/                     # 擴充方法
-│   ├── ServiceCollectionExtensions.cs
-│   └── ApplicationBuilderExtensions.cs
+│   ├── ServiceCollectionExtensions.cs ✅
+│   └── ApplicationBuilderExtensions.cs ✅
 │
-├── Configuration/                  # 設定類別
-│   ├── DatabaseConfig.cs
-│   ├── JwtConfig.cs
-│   └── AppConfig.cs
+├── Configuration/                  # 設定類別 ✅
+│   ├── DatabaseConfig.cs ✅
+│   ├── JwtConfig.cs ✅
+│   └── AppConfig.cs ✅
 │
-├── Properties/                     # 專案屬性
-│   ├── launchSettings.json         # 啟動設定
-│   └── AssemblyInfo.cs             # 組件資訊
+├── Properties/                     # 專案屬性 ✅
+│   ├── launchSettings.json         # 啟動設定 ✅
+│   └── AssemblyInfo.cs             # 組件資訊 ✅
 │
 └── wwwroot/                        # 靜態檔案根目錄（Vue 建置後的靜態檔案存放目錄）
     │                                # 注意：前端使用 Vue CLI，建置後的檔案會放在此目錄
     │                                # 開發時，Vue 專案位於 src/ErpCore.Web/，使用 npm run serve 啟動開發伺服器
     │                                # 生產環境，使用 npm run build 建置後，將 dist/ 目錄內容複製到此目錄
-    ├── index.html                   # Vue 建置後的入口 HTML（從 ErpCore.Web/dist/index.html 複製）
+    ├── index.html ✅                   # Vue 建置後的入口 HTML（從 ErpCore.Web/dist/index.html 複製）
     ├── static/                      # Vue 建置後的靜態資源（從 ErpCore.Web/dist/static/ 複製）
     │   ├── css/                     # CSS 檔案
     │   ├── js/                      # JavaScript 檔案
@@ -763,43 +787,43 @@ src/ErpCore.Api/
 
 ```
 src/ErpCore.Application/
-├── ErpCore.Application.csproj
+├── ErpCore.Application.csproj ✅
 │
 ├── Services/                       # 應用服務
 │   ├── Interfaces/                 # 服務介面
 │   │   ├── System/                 # 系統管理服務介面
-│   │   │   ├── IUserService.cs
-│   │   │   ├── IRoleService.cs
-│   │   │   ├── IPermissionService.cs
-│   │   │   ├── ISystemConfigService.cs
-│   │   │   └── ILogService.cs
+│   │   │   ├── IUserService.cs ✅
+│   │   │   ├── IRoleService.cs ✅
+│   │   │   ├── IPermissionService.cs ✅ (使用 ISystemPermissionService, IUserPermissionService 等)
+│   │   │   ├── ISystemConfigService.cs ✅ (使用 SystemConfig 相關服務)
+│   │   │   └── ILogService.cs ✅ (使用 IChangeLogService, IButtonLogService 等)
 │   │   ├── BasicData/              # 基本資料服務介面
-│   │   │   ├── IParameterService.cs
-│   │   │   ├── IRegionService.cs
-│   │   │   ├── IBankService.cs
-│   │   │   ├── IVendorService.cs
+│   │   │   ├── IParameterService.cs ✅
+│   │   │   ├── IRegionService.cs ✅
+│   │   │   ├── IBankService.cs ✅
+│   │   │   ├── IVendorService.cs ✅
 │   │   │   ├── IOrganizationService.cs
-│   │   │   └── IProductCategoryService.cs
+│   │   │   └── IProductCategoryService.cs ✅
 │   │   ├── Inventory/              # 進銷存服務介面
-│   │   │   ├── IProductService.cs
+│   │   │   ├── IProductService.cs ✅
 │   │   │   ├── IStockService.cs
 │   │   │   ├── ILabelService.cs
 │   │   │   └── IBatFormatService.cs
 │   │   ├── Purchase/               # 採購服務介面
-│   │   │   ├── IPurchaseOrderService.cs
+│   │   │   ├── IPurchaseOrderService.cs ✅
 │   │   │   ├── IReceivingService.cs
 │   │   │   └── IReturnService.cs
 │   │   ├── Transfer/              # 調撥服務介面
 │   │   │   ├── ITransferReceivingService.cs
-│   │   │   ├── ITransferReturnService.cs
-│   │   │   └── ITransferShortageService.cs
+│   │   │   ├── ITransferReturnService.cs ✅
+│   │   │   └── ITransferShortageService.cs ✅
 │   │   ├── Invoice/                # 電子發票服務介面
 │   │   │   ├── IInvoiceUploadService.cs
 │   │   │   ├── IInvoiceProcessService.cs
 │   │   │   ├── IInvoiceQueryService.cs
 │   │   │   └── IInvoiceReportService.cs
 │   │   ├── Customer/               # 客戶服務介面
-│   │   │   ├── ICustomerService.cs
+│   │   │   ├── ICustomerService.cs ✅
 │   │   │   ├── ICustomerQueryService.cs
 │   │   │   └── ICustomerReportService.cs
 │   │   ├── AnalysisReport/         # 分析報表服務介面 (SYSA000)
@@ -807,32 +831,32 @@ src/ErpCore.Application/
 │   │   │   ├── IInventoryAnalysisService.cs
 │   │   │   └── IWorkConsumablesService.cs
 │   │   ├── BusinessReport/         # 業務報表服務介面 (SYSL000)
-│   │   │   ├── IBusinessReportService.cs
+│   │   │   ├── IBusinessReportService.cs ✅
 │   │   │   ├── IEmployeeCardService.cs
-│   │   │   ├── IReturnCardService.cs
+│   │   │   ├── IReturnCardService.cs ✅
 │   │   │   └── IOvertimeService.cs
 │   │   ├── Pos/                    # POS系統服務介面
-│   │   │   ├── IPosTransactionService.cs
+│   │   │   ├── IPosTransactionService.cs ✅
 │   │   │   ├── IPosReportService.cs
 │   │   │   └── IPosSyncService.cs
 │   │   ├── SystemExtension/       # 系統擴展服務介面
-│   │   │   ├── ISystemExtensionService.cs
+│   │   │   ├── ISystemExtensionService.cs ✅
 │   │   │   ├── ISystemExtensionQueryService.cs
-│   │   │   └── ISystemExtensionReportService.cs
+│   │   │   └── ISystemExtensionReportService.cs ✅
 │   │   ├── Kiosk/                  # 自助服務終端服務介面
-│   │   │   ├── IKioskReportService.cs
+│   │   │   ├── IKioskReportService.cs ✅
 │   │   │   └── IKioskProcessService.cs
 │   │   ├── ReportExtension/        # 報表擴展服務介面
 │   │   │   ├── IReportModuleOService.cs
 │   │   │   ├── IReportModuleNService.cs
 │   │   │   ├── IReportModuleWPService.cs
-│   │   │   ├── IReportModule7Service.cs
-│   │   │   ├── IReportPrintService.cs
-│   │   │   └── IReportStatisticsService.cs
+│   │   │   ├── IReportModule7Service.cs ✅
+│   │   │   ├── IReportPrintService.cs ✅
+│   │   │   └── IReportStatisticsService.cs ✅
 │   │   ├── DropdownList/           # 下拉列表服務介面
 │   │   │   ├── IAddressListService.cs
 │   │   │   ├── IDateListService.cs
-│   │   │   ├── IMenuListService.cs ✅
+│   │   │   ├── IMenuListService.cs
 │   │   │   ├── IMultiSelectListService.cs ✅
 │   │   │   └── ISystemListService.cs ✅
 │   │   ├── Communication/          # 通訊與通知服務介面
@@ -840,31 +864,31 @@ src/ErpCore.Application/
 │   │   │   ├── IEncodeDataService.cs
 │   │   │   └── IMailSmsService.cs
 │   │   ├── UiComponent/            # UI組件服務介面
-│   │   │   ├── IDataMaintenanceComponentService.cs
-│   │   │   └── IUiComponentQueryService.cs
+│   │   │   ├── IDataMaintenanceComponentService.cs ✅
+│   │   │   └── IUiComponentQueryService.cs ✅
 │   │   ├── Tools/                  # 工具服務介面
-│   │   │   ├── IFileUploadService.cs
-│   │   │   ├── IBarcodeService.cs
-│   │   │   └── IHtml2PdfService.cs
+│   │   │   ├── IFileUploadService.cs ✅
+│   │   │   ├── IBarcodeService.cs ✅
+│   │   │   └── IHtml2PdfService.cs ✅
 │   │   ├── Core/                   # 核心功能服務介面
-│   │   │   ├── IUserManagementService.cs
-│   │   │   ├── IFrameworkService.cs
-│   │   │   ├── IDataMaintenanceService.cs
-│   │   │   ├── IToolsService.cs
-│   │   │   └── ISystemFunctionService.cs
+│   │   │   ├── IUserManagementService.cs ✅
+│   │   │   ├── IFrameworkService.cs ✅
+│   │   │   ├── IDataMaintenanceService.cs ✅
+│   │   │   ├── IToolsService.cs ✅
+│   │   │   └── ISystemFunctionService.cs ✅
 │   │   ├── OtherModule/            # 其他模組服務介面
-│   │   │   ├── ICrpReportService.cs
-│   │   │   ├── IEipIntegrationService.cs
-│   │   │   └── ILabTestService.cs
+│   │   │   ├── ICrpReportService.cs ✅
+│   │   │   ├── IEipIntegrationService.cs ✅
+│   │   │   └── ILabTestService.cs ✅
 │   │   ├── HumanResource/         # 人力資源服務介面 (SYSH000) ✅
-│   │   │   ├── IPersonnelService.cs ✅
+│   │   │   ├── IPersonnelService.cs
 │   │   │   ├── IPayrollService.cs ✅
 │   │   │   └── IAttendanceService.cs ✅
 │   │   ├── Accounting/             # 會計財務服務介面 (SYSN000)
 │   │   │   ├── IAccountingService.cs
-│   │   │   ├── IFinancialTransactionService.cs
-│   │   │   ├── IAssetService.cs
-│   │   │   ├── IFinancialReportService.cs
+│   │   │   ├── IFinancialTransactionService.cs ✅
+│   │   │   ├── IAssetService.cs ✅
+│   │   │   ├── IFinancialReportService.cs ✅
 │   │   │   └── IOtherFinancialService.cs
 │   │   ├── TaxAccounting/          # 會計稅務服務介面 (SYST000)
 │   │   │   ├── IAccountingSubjectService.cs
@@ -878,20 +902,20 @@ src/ErpCore.Application/
 │   │   │   └── IVoucherImportService.cs ✅
 │   │   ├── Procurement/            # 採購供應商服務介面 (SYSP000)
 │   │   │   ├── IProcurementService.cs
-│   │   │   ├── ISupplierService.cs
-│   │   │   ├── IPaymentService.cs
+│   │   │   ├── ISupplierService.cs ✅
+│   │   │   ├── IPaymentService.cs ✅
 │   │   │   ├── IBankManagementService.cs
-│   │   │   ├── IProcurementReportService.cs
-│   │   │   └── IProcurementOtherService.cs
+│   │   │   ├── IProcurementReportService.cs ✅
+│   │   │   └── IProcurementOtherService.cs ✅
 │   │   ├── Contract/               # 合同服務介面 (SYSF000)
 │   │   │   ├── IContractDataService.cs
-│   │   │   ├── IContractProcessService.cs
-│   │   │   ├── IContractExtensionService.cs
-│   │   │   └── ICmsContractService.cs
+│   │   │   ├── IContractProcessService.cs ✅
+│   │   │   ├── IContractExtensionService.cs ✅
+│   │   │   └── ICmsContractService.cs ✅
 │   │   ├── Lease/                  # 租賃服務介面 (SYS8000)
 │   │   │   ├── ILeaseDataService.cs
-│   │   │   ├── ILeaseExtensionService.cs
-│   │   │   └── ILeaseProcessService.cs
+│   │   │   ├── ILeaseExtensionService.cs ✅
+│   │   │   └── ILeaseProcessService.cs ✅
 │   │   ├── LeaseSYSE/              # 租賃SYSE服務介面 (SYSE000)
 │   │   │   ├── ILeaseSYSEDataService.cs
 │   │   │   ├── ILeaseSYSEExtensionService.cs
@@ -904,54 +928,54 @@ src/ErpCore.Application/
 │   │   │   └── IReportModuleWPService.cs
 │   │   ├── Query/                  # 查詢服務介面 (SYSQ000) ✅
 │   │   │   ├── IQueryService.cs
-│   │   │   ├── IQualityBaseService.cs ✅
-│   │   │   ├── IQualityProcessService.cs ✅ (IPcCashService)
+│   │   │   ├── IQualityBaseService.cs
+│   │   │   ├── IQualityProcessService.cs (IPcCashService)
 │   │   │   └── IQualityReportService.cs ✅
 │   │   ├── ReportManagement/       # 報表管理服務介面 (SYSR000)
 │   │   │   ├── IReceivingBaseService.cs
 │   │   │   ├── IReceivingProcessService.cs
-│   │   │   ├── IReceivingExtensionService.cs
-│   │   │   └── IReceivingOtherService.cs
+│   │   │   ├── IReceivingExtensionService.cs ✅
+│   │   │   └── IReceivingOtherService.cs ✅
 │   │   ├── Sales/                  # 銷售服務介面 (SYSD000)
 │   │   │   ├── ISalesDataService.cs
 │   │   │   ├── ISalesProcessService.cs
-│   │   │   └── ISalesReportService.cs
+│   │   │   └── ISalesReportService.cs ✅
 │   │   ├── Certificate/            # 憑證服務介面 (SYSK000)
 │   │   │   ├── ICertificateDataService.cs
 │   │   │   ├── ICertificateProcessService.cs
-│   │   │   └── ICertificateReportService.cs
+│   │   │   └── ICertificateReportService.cs ✅
 │   │   ├── OtherManagement/        # 其他管理服務介面
 │   │   │   ├── ISystemSService.cs
 │   │   │   ├── ISystemUService.cs
 │   │   │   ├── ISystemVService.cs
 │   │   │   └── ISystemJService.cs
 │   │   ├── CustomerInvoice/        # 客戶與發票服務介面 (SYS2000)
-│   │   │   ├── ICustomerDataService.cs
-│   │   │   ├── IInvoicePrintService.cs
-│   │   │   ├── IMailFaxService.cs
-│   │   │   └── ILedgerDataService.cs
+│   │   │   ├── ICustomerDataService.cs ✅
+│   │   │   ├── IInvoicePrintService.cs ✅
+│   │   │   ├── IMailFaxService.cs ✅
+│   │   │   └── ILedgerDataService.cs ✅
 │   │   ├── StoreMember/            # 商店與會員服務介面 (SYS3000)
-│   │   │   ├── IStoreService.cs
-│   │   │   ├── IStoreQueryService.cs
-│   │   │   ├── IMemberService.cs
-│   │   │   ├── IMemberQueryService.cs
-│   │   │   ├── IPromotionService.cs
-│   │   │   └── IStoreReportService.cs
+│   │   │   ├── IStoreService.cs ✅
+│   │   │   ├── IStoreQueryService.cs ✅
+│   │   │   ├── IMemberService.cs ✅
+│   │   │   ├── IMemberQueryService.cs ✅
+│   │   │   ├── IPromotionService.cs ✅
+│   │   │   └── IStoreReportService.cs ✅
 │   │   ├── StoreFloor/             # 商店樓層服務介面 (SYS6000)
 │   │   │   ├── IStoreManagementService.cs
-│   │   │   ├── IStoreQueryService.cs
-│   │   │   ├── IFloorService.cs
-│   │   │   ├── IFloorQueryService.cs
-│   │   │   ├── ITypeCodeService.cs
-│   │   │   ├── ITypeCodeQueryService.cs
+│   │   │   ├── IStoreQueryService.cs ✅
+│   │   │   ├── IFloorService.cs ✅
+│   │   │   ├── IFloorQueryService.cs ✅
+│   │   │   ├── ITypeCodeService.cs ✅
+│   │   │   ├── ITypeCodeQueryService.cs ✅
 │   │   │   ├── IPosDataService.cs
 │   │   │   └── IPosQueryService.cs
 │   │   ├── InvoiceSales/          # 發票銷售服務介面 (SYSG000)
-│   │   │   ├── IInvoiceDataService.cs
-│   │   │   ├── IInvoicePrintService.cs
+│   │   │   ├── IInvoiceDataService.cs ✅
+│   │   │   ├── IInvoicePrintService.cs ✅
 │   │   │   ├── ISalesDataService.cs
 │   │   │   ├── ISalesQueryService.cs
-│   │   │   ├── ISalesReportQueryService.cs
+│   │   │   ├── ISalesReportQueryService.cs ✅
 │   │   │   └── ISalesReportPrintService.cs
 │   │   ├── InvoiceSalesB2B/        # 發票銷售B2B服務介面 (SYSG000_B2B)
 │   │   │   ├── IB2BInvoiceDataService.cs
@@ -959,14 +983,14 @@ src/ErpCore.Application/
 │   │   │   ├── IB2BSalesDataService.cs
 │   │   │   └── IB2BSalesQueryService.cs
 │   │   ├── SystemExtensionE/       # 系統擴展E服務介面 (SYSPE00)
-│   │   │   ├── IEmployeeDataService.cs
+│   │   │   ├── IEmployeeDataService.cs ✅
 │   │   │   └── IPersonnelDataService.cs
 │   │   ├── SystemExtensionH/        # 系統擴展H服務介面 (SYSH000_NEW)
-│   │   │   ├── IPersonnelBatchService.cs
-│   │   │   └── ISystemExtensionPHService.cs
+│   │   │   ├── IPersonnelBatchService.cs ✅
+│   │   │   └── ISystemExtensionPHService.cs ✅
 │   │   ├── Loyalty/                # 忠誠度服務介面 (SYSLPS)
-│   │   │   ├── ILoyaltyInitService.cs
-│   │   │   └── ILoyaltyMaintenanceService.cs
+│   │   │   ├── ILoyaltyInitService.cs ✅
+│   │   │   └── ILoyaltyMaintenanceService.cs ✅
 │   │   ├── CustomerCustom/         # 客戶定制服務介面
 │   │   │   ├── ICus3000Service.cs
 │   │   │   ├── ICus3000EskylandService.cs
@@ -985,22 +1009,22 @@ src/ErpCore.Application/
 │   │   ├── MshModule/              # MSH模組服務介面
 │   │   │   └── IMsh3000Service.cs
 │   │   ├── SapIntegration/         # SAP整合服務介面
-│   │   │   └── ITransSapService.cs
+│   │   │   └── ITransSapService.cs ✅
 │   │   ├── UniversalModule/        # 通用模組服務介面
-│   │   │   └── IUniv000Service.cs
+│   │   │   └── IUniv000Service.cs ✅
 │   │   ├── CustomerCustomJgjn/      # 客戶定制JGJN服務介面
 │   │   │   └── ISysCustJgjnService.cs
 │   │   ├── BusinessDevelopment/    # 招商服務介面 (SYSC000)
-│   │   │   ├── IProspectMasterService.cs
-│   │   │   ├── IProspectService.cs
-│   │   │   ├── IInterviewService.cs
-│   │   │   └── IBusinessOtherService.cs
+│   │   │   ├── IProspectMasterService.cs ✅
+│   │   │   ├── IProspectService.cs ✅
+│   │   │   ├── IInterviewService.cs ✅
+│   │   │   └── IBusinessOtherService.cs ✅
 │   │   ├── CommunicationModule/    # 通訊模組服務介面 (XCOM000)
 │   │   │   ├── IXcomService.cs
 │   │   │   └── IXcomMsgService.cs  # XCOMMSG錯誤訊息處理服務介面
 │   │   ├── ChartTools/             # 圖表與工具服務介面
 │   │   │   ├── IChartService.cs
-│   │   │   └── IToolsService.cs
+│   │   │   └── IToolsService.cs ✅
 │   │   ├── SystemExit/             # 系統退出服務介面
 │   │   │   └── ISystemExitService.cs
 │   │   ├── InvoiceExtension/       # 電子發票擴展服務介面
@@ -1009,81 +1033,88 @@ src/ErpCore.Application/
 │   │   │   ├── ISalesReportModuleService.cs
 │   │   │   └── ICrystalReportService.cs
 │   │   ├── Energy/                 # 能源服務介面 (SYSO000)
-│   │   │   ├── IEnergyBaseService.cs
-│   │   │   ├── IEnergyProcessService.cs
-│   │   │   └── IEnergyExtensionService.cs
+│   │   │   ├── IEnergyBaseService.cs ✅
+│   │   │   ├── IEnergyProcessService.cs ✅
+│   │   │   └── IEnergyExtensionService.cs ✅
 │   │   └── Common/                 # 共用服務介面
-│   │       ├── IFileUploadService.cs
+│   │       ├── IFileUploadService.cs ✅
 │   │       ├── IExportService.cs
 │   │       └── IReportService.cs
 │   │
 │   └── Implementations/            # 服務實作
 │       ├── System/                 # 系統管理服務實作
-│       │   ├── UserService.cs
-│       │   ├── RoleService.cs
-│       │   ├── PermissionService.cs
-│       │   ├── SystemConfigService.cs
-│       │   └── LogService.cs
+│       │   ├── UserService.cs ✅
+│       │   ├── RoleService.cs ✅
+│       │   ├── PermissionService.cs ✅ (使用 SystemPermissionService, UserPermissionService 等)
+│       │   ├── SystemConfigService.cs ✅ (使用 SystemConfig 相關服務)
+│       │   └── LogService.cs ✅ (使用 ChangeLogService, ButtonLogService 等)
 │       ├── BasicData/              # 基本資料服務實作
-│       │   ├── ParameterService.cs
-│       │   ├── RegionService.cs
-│       │   ├── BankService.cs
-│       │   ├── VendorService.cs
+│       │   ├── ParameterService.cs ✅
+│       │   ├── RegionService.cs ✅
+│       │   ├── AreaService.cs ✅
+│       │   ├── BankService.cs ✅
+│       │   ├── VendorService.cs ✅
+│       │   ├── DepartmentService.cs ✅
+│       │   ├── GroupService.cs ✅
+│       │   ├── WarehouseService.cs ✅
 │       │   ├── OrganizationService.cs
-│       │   └── ProductCategoryService.cs
+│       │   └── ProductCategoryService.cs ✅
 │       ├── Inventory/              # 進銷存服務實作
-│       │   ├── ProductService.cs
+│       │   ├── ProductService.cs ✅
 │       │   ├── StockService.cs
 │       │   ├── LabelService.cs
 │       │   └── BatFormatService.cs
 │       ├── Purchase/               # 採購服務實作
-│       │   ├── PurchaseOrderService.cs
+│       │   ├── PurchaseOrderService.cs ✅
 │       │   ├── ReceivingService.cs
-│       │   └── ReturnService.cs
+│       │   └── ReturnService.cs ✅
 │       ├── Transfer/               # 調撥服務實作
 │       │   ├── TransferReceivingService.cs
-│       │   ├── TransferReturnService.cs
-│       │   └── TransferShortageService.cs
+│       │   ├── TransferReturnService.cs ✅
+│       │   └── TransferShortageService.cs ✅
 │       ├── Invoice/                # 電子發票服務實作
 │       │   ├── InvoiceUploadService.cs
 │       │   ├── InvoiceProcessService.cs
 │       │   ├── InvoiceQueryService.cs
 │       │   └── InvoiceReportService.cs
 │       ├── Customer/               # 客戶服務實作
-│       │   ├── CustomerService.cs
+│       │   ├── CustomerService.cs ✅
 │       │   ├── CustomerQueryService.cs
 │       │   └── CustomerReportService.cs
 │       ├── AnalysisReport/         # 分析報表服務實作 (SYSA000)
 │       │   ├── ConsumablesService.cs
 │       │   ├── InventoryAnalysisService.cs
-│       │   └── WorkConsumablesService.cs
+│       │   ├── WorkConsumablesService.cs
+│       │   └── AnalysisReportService.cs ✅
 │       ├── BusinessReport/         # 業務報表服務實作 (SYSL000)
-│       │   ├── BusinessReportService.cs
+│       │   ├── BusinessReportService.cs ✅
 │       │   ├── EmployeeCardService.cs
-│       │   ├── ReturnCardService.cs
+│       │   ├── EmployeeMealCardService.cs ✅
+│       │   ├── ReturnCardService.cs ✅
 │       │   └── OvertimeService.cs
+│       │   └── OvertimePaymentService.cs ✅
 │       ├── Pos/                    # POS系統服務實作
-│       │   ├── PosTransactionService.cs
+│       │   ├── PosTransactionService.cs ✅
 │       │   ├── PosReportService.cs
-│       │   └── PosSyncService.cs
+│       │   └── PosSyncService.cs ✅
 │       ├── SystemExtension/        # 系統擴展服務實作
-│       │   ├── SystemExtensionService.cs
+│       │   ├── SystemExtensionService.cs ✅
 │       │   ├── SystemExtensionQueryService.cs
-│       │   └── SystemExtensionReportService.cs
+│       │   └── SystemExtensionReportService.cs ✅
 │       ├── Kiosk/                  # 自助服務終端服務實作
-│       │   ├── KioskReportService.cs
-│       │   └── KioskProcessService.cs
+│       │   ├── KioskReportService.cs ✅
+│       │   └── KioskProcessService.cs ✅
 │       ├── ReportExtension/        # 報表擴展服務實作
 │       │   ├── ReportModuleOService.cs
 │       │   ├── ReportModuleNService.cs
 │       │   ├── ReportModuleWPService.cs
-│       │   ├── ReportModule7Service.cs
-│       │   ├── ReportPrintService.cs
-│       │   └── ReportStatisticsService.cs
+│       │   ├── ReportModule7Service.cs ✅
+│       │   ├── ReportPrintService.cs ✅
+│       │   └── ReportStatisticsService.cs ✅
 │       ├── DropdownList/           # 下拉列表服務實作
 │       │   ├── AddressListService.cs
 │       │   ├── DateListService.cs
-│       │   ├── MenuListService.cs ✅
+│       │   ├── MenuListService.cs
 │       │   ├── MultiSelectListService.cs ✅
 │       │   └── SystemListService.cs ✅
 │       ├── Communication/          # 通訊與通知服務實作
@@ -1091,12 +1122,12 @@ src/ErpCore.Application/
 │       │   ├── EncodeDataService.cs
 │       │   └── MailSmsService.cs
 │       ├── UiComponent/            # UI組件服務實作
-│       │   ├── DataMaintenanceComponentService.cs
-│       │   └── UiComponentQueryService.cs
+│       │   ├── DataMaintenanceComponentService.cs ✅
+│       │   └── UiComponentQueryService.cs ✅
 │       ├── Tools/                  # 工具服務實作
-│       │   ├── FileUploadService.cs
-│       │   ├── BarcodeService.cs
-│       │   └── Html2PdfService.cs
+│       │   ├── FileUploadService.cs ✅
+│       │   ├── BarcodeService.cs ✅
+│       │   └── Html2PdfService.cs ✅
 │       ├── Core/                   # 核心功能服務實作
 │       │   ├── UserManagementService.cs ✅
 │       │   ├── FrameworkService.cs ✅
@@ -1104,21 +1135,22 @@ src/ErpCore.Application/
 │       │   ├── ToolsService.cs ✅
 │       │   └── SystemFunctionService.cs ✅
 │       ├── OtherModule/            # 其他模組服務實作
-│       │   ├── CrpReportService.cs
-│       │   ├── EipIntegrationService.cs
-│       │   └── LabTestService.cs
+│       │   ├── CrpReportService.cs ✅
+│       │   ├── EipIntegrationService.cs ✅
+│       │   └── LabTestService.cs ✅
 │       ├── HumanResource/         # 人力資源服務實作 (SYSH000) ✅
 │       │   ├── PersonnelService.cs ✅
 │       │   ├── PayrollService.cs ✅
 │       │   └── AttendanceService.cs ✅
 │       ├── Accounting/             # 會計財務服務實作 (SYSN000)
 │       │   ├── AccountingService.cs
-│       │   ├── FinancialTransactionService.cs
-│       │   ├── AssetService.cs
-│       │   ├── FinancialReportService.cs
+│       │   ├── AccountSubjectService.cs ✅
+│       │   ├── FinancialTransactionService.cs ✅
+│       │   ├── AssetService.cs ✅
+│       │   ├── FinancialReportService.cs ✅
 │       │   └── OtherFinancialService.cs
 │       ├── TaxAccounting/          # 會計稅務服務實作 (SYST000)
-│       │   ├── AccountingSubjectService.cs
+│       │   ├── AccountingSubjectService.cs ✅
 │       │   ├── AccountingVoucherService.cs
 │       │   ├── AccountingBookService.cs
 │       │   ├── InvoiceDataService.cs ✅
@@ -1129,20 +1161,21 @@ src/ErpCore.Application/
 │       │   └── VoucherImportService.cs ✅
 │       ├── Procurement/            # 採購供應商服務實作 (SYSP000)
 │       │   ├── ProcurementService.cs
-│       │   ├── SupplierService.cs
-│       │   ├── PaymentService.cs
+│       │   ├── SupplierService.cs ✅
+│       │   ├── PaymentService.cs ✅
 │       │   ├── BankManagementService.cs
-│       │   ├── ProcurementReportService.cs
-│       │   └── ProcurementOtherService.cs
+│       │   ├── BankAccountService.cs ✅
+│       │   ├── ProcurementReportService.cs ✅
+│       │   └── ProcurementOtherService.cs ✅
 │       ├── Contract/               # 合同服務實作 (SYSF000)
 │       │   ├── ContractDataService.cs
-│       │   ├── ContractProcessService.cs
-│       │   ├── ContractExtensionService.cs
-│       │   └── CmsContractService.cs
+│       │   ├── ContractProcessService.cs ✅
+│       │   ├── ContractExtensionService.cs ✅
+│       │   └── CmsContractService.cs ✅
 │       ├── Lease/                  # 租賃服務實作 (SYS8000)
 │       │   ├── LeaseDataService.cs
-│       │   ├── LeaseExtensionService.cs
-│       │   └── LeaseProcessService.cs
+│       │   ├── LeaseExtensionService.cs ✅
+│       │   └── LeaseProcessService.cs ✅
 │       ├── LeaseSYSE/              # 租賃SYSE服務實作 (SYSE000)
 │       │   ├── LeaseSYSEDataService.cs
 │       │   ├── LeaseSYSEExtensionService.cs
@@ -1151,58 +1184,60 @@ src/ErpCore.Application/
 │       │   ├── LeaseSYSMDataService.cs
 │       │   └── LeaseSYSMReportService.cs
 │       ├── Extension/               # 擴展服務實作 (SYS9000)
-│       │   ├── ExtensionService.cs
+│       │   ├── ExtensionService.cs ✅
 │       │   └── ReportModuleWPService.cs
 │       ├── Query/                  # 查詢服務實作 (SYSQ000) ✅
-│       │   ├── QueryService.cs
-│       │   ├── QualityBaseService.cs ✅
-│       │   ├── QualityProcessService.cs ✅
+│       │   ├── QueryService.cs ✅
+│       │   ├── QualityBaseService.cs
+│       │   ├── QualityProcessService.cs
 │       │   └── QualityReportService.cs ✅
 │       ├── ReportManagement/       # 報表管理服務實作 (SYSR000)
 │       │   ├── ReceivingBaseService.cs
 │       │   ├── ReceivingProcessService.cs
-│       │   ├── ReceivingExtensionService.cs
-│       │   └── ReceivingOtherService.cs
+│       │   ├── ReceivingExtensionService.cs ✅
+│       │   └── ReceivingOtherService.cs ✅
 │       ├── Sales/                  # 銷售服務實作 (SYSD000)
 │       │   ├── SalesDataService.cs
 │       │   ├── SalesProcessService.cs
-│       │   └── SalesReportService.cs
+│       │   └── SalesReportService.cs ✅
 │       ├── Certificate/            # 憑證服務實作 (SYSK000)
 │       │   ├── CertificateDataService.cs
 │       │   ├── CertificateProcessService.cs
-│       │   └── CertificateReportService.cs
+│       │   ├── VoucherService.cs ✅
+│       │   └── CertificateReportService.cs ✅
 │       ├── OtherManagement/        # 其他管理服務實作
 │       │   ├── SystemSService.cs
 │       │   ├── SystemUService.cs
 │       │   ├── SystemVService.cs
 │       │   └── SystemJService.cs
 │       ├── CustomerInvoice/        # 客戶與發票服務實作 (SYS2000)
-│       │   ├── CustomerDataService.cs
-│       │   ├── InvoicePrintService.cs
-│       │   ├── MailFaxService.cs
-│       │   └── LedgerDataService.cs
+│       │   ├── CustomerDataService.cs ✅
+│       │   ├── InvoicePrintService.cs ✅
+│       │   ├── MailFaxService.cs ✅
+│       │   └── LedgerDataService.cs ✅
 │       ├── StoreMember/            # 商店與會員服務實作 (SYS3000)
-│       │   ├── StoreService.cs
-│       │   ├── StoreQueryService.cs
-│       │   ├── MemberService.cs
-│       │   ├── MemberQueryService.cs
-│       │   ├── PromotionService.cs
-│       │   └── StoreReportService.cs
+│       │   ├── StoreService.cs ✅
+│       │   ├── StoreQueryService.cs ✅
+│       │   ├── MemberService.cs ✅
+│       │   ├── MemberQueryService.cs ✅
+│       │   ├── PromotionService.cs ✅
+│       │   └── StoreReportService.cs ✅
 │       ├── StoreFloor/             # 商店樓層服務實作 (SYS6000)
 │       │   ├── StoreManagementService.cs
-│       │   ├── StoreQueryService.cs
-│       │   ├── FloorService.cs
-│       │   ├── FloorQueryService.cs
-│       │   ├── TypeCodeService.cs
-│       │   ├── TypeCodeQueryService.cs
+│       │   ├── StoreQueryService.cs ✅
+│       │   ├── FloorService.cs ✅
+│       │   ├── FloorQueryService.cs ✅
+│       │   ├── TypeCodeService.cs ✅
+│       │   ├── TypeCodeQueryService.cs ✅
 │       │   ├── PosDataService.cs
+│       │   ├── PosTerminalQueryService.cs ✅
 │       │   └── PosQueryService.cs
 │       ├── InvoiceSales/          # 發票銷售服務實作 (SYSG000)
-│       │   ├── InvoiceDataService.cs
-│       │   ├── InvoicePrintService.cs
+│       │   ├── InvoiceDataService.cs ✅
+│       │   ├── InvoicePrintService.cs ✅
 │       │   ├── SalesDataService.cs
 │       │   ├── SalesQueryService.cs
-│       │   ├── SalesReportQueryService.cs
+│       │   ├── SalesReportQueryService.cs ✅
 │       │   └── SalesReportPrintService.cs
 │       ├── InvoiceSalesB2B/        # 發票銷售B2B服務實作 (SYSG000_B2B)
 │       │   ├── B2BInvoiceDataService.cs
@@ -1210,14 +1245,14 @@ src/ErpCore.Application/
 │       │   ├── B2BSalesDataService.cs
 │       │   └── B2BSalesQueryService.cs
 │       ├── SystemExtensionE/       # 系統擴展E服務實作 (SYSPE00)
-│       │   ├── EmployeeDataService.cs
+│       │   ├── EmployeeDataService.cs ✅
 │       │   └── PersonnelDataService.cs
 │       ├── SystemExtensionH/        # 系統擴展H服務實作 (SYSH000_NEW)
-│       │   ├── PersonnelBatchService.cs
-│       │   └── SystemExtensionPHService.cs
+│       │   ├── PersonnelBatchService.cs ✅
+│       │   └── SystemExtensionPHService.cs ✅
 │       ├── Loyalty/                # 忠誠度服務實作 (SYSLPS)
-│       │   ├── LoyaltyInitService.cs
-│       │   └── LoyaltyMaintenanceService.cs
+│       │   ├── LoyaltyInitService.cs ✅
+│       │   └── LoyaltyMaintenanceService.cs ✅
 │       ├── CustomerCustom/         # 客戶定制服務實作
 │       │   ├── Cus3000Service.cs
 │       │   ├── Cus3000EskylandService.cs
@@ -1236,72 +1271,73 @@ src/ErpCore.Application/
 │       ├── MshModule/              # MSH模組服務實作
 │       │   └── Msh3000Service.cs
 │       ├── SapIntegration/         # SAP整合服務實作
-│       │   └── TransSapService.cs
+│       │   └── TransSapService.cs ✅
 │       ├── UniversalModule/        # 通用模組服務實作
-│       │   └── Univ000Service.cs
+│       │   └── Univ000Service.cs ✅
 │       ├── CustomerCustomJgjn/      # 客戶定制JGJN服務實作
 │       │   └── SysCustJgjnService.cs
 │       ├── BusinessDevelopment/    # 招商服務實作 (SYSC000)
-│       │   ├── ProspectMasterService.cs
-│       │   ├── ProspectService.cs
-│       │   ├── InterviewService.cs
-│       │   └── BusinessOtherService.cs
+│       │   ├── ProspectMasterService.cs ✅
+│       │   ├── ProspectService.cs ✅
+│       │   ├── InterviewService.cs ✅
+│       │   └── BusinessOtherService.cs ✅
 │       ├── CommunicationModule/    # 通訊模組服務實作 (XCOM000)
 │       │   ├── XcomService.cs
 │       │   └── XcomMsgService.cs   # XCOMMSG錯誤訊息處理服務實作
 │       ├── ChartTools/             # 圖表與工具服務實作
 │       │   ├── ChartService.cs
-│       │   └── ToolsService.cs
+│       │   └── ToolsService.cs ✅
 │       ├── SystemExit/             # 系統退出服務實作
 │       │   └── SystemExitService.cs
 │       ├── InvoiceExtension/       # 電子發票擴展服務實作
-│       │   └── InvoiceExtensionService.cs
+│       │   └── InvoiceExtensionService.cs ✅
 │       ├── SalesReport/            # 銷售報表服務實作 (SYS1000)
 │       │   ├── SalesReportModuleService.cs
+│       │   ├── SalesReportService.cs ✅
 │       │   └── CrystalReportService.cs
 │       ├── Energy/                 # 能源服務實作 (SYSO000)
-│       │   ├── EnergyBaseService.cs
-│       │   ├── EnergyProcessService.cs
-│       │   └── EnergyExtensionService.cs
+│       │   ├── EnergyBaseService.cs ✅
+│       │   ├── EnergyProcessService.cs ✅
+│       │   └── EnergyExtensionService.cs ✅
 │       └── Common/                 # 共用服務實作
-│           ├── FileUploadService.cs
+│           ├── FileUploadService.cs ✅
 │           ├── ExportService.cs
-│           └── ReportService.cs
+│           └── ReportService.cs ✅
 │
 ├── DTOs/                           # 資料傳輸物件
 │   ├── System/                     # 系統管理 DTOs
-│   │   ├── UserDto.cs
-│   │   ├── RoleDto.cs
-│   │   ├── PermissionDto.cs
+│   │   ├── UserDto.cs ✅
+│   │   ├── RoleDto.cs ✅
+│   │   ├── PermissionDto.cs ✅
 │   │   ├── SystemConfigDto.cs
-│   │   └── LogDto.cs
+│   │   └── LogDto.cs ✅
 │   ├── BasicData/                  # 基本資料 DTOs
-│   │   ├── ParameterDto.cs
-│   │   ├── RegionDto.cs
-│   │   ├── BankDto.cs
-│   │   ├── VendorDto.cs
+│   │   ├── ParameterDto.cs ✅
+│   │   ├── RegionDto.cs ✅
+│   │   ├── BankDto.cs ✅
+│   │   ├── VendorDto.cs ✅
 │   │   ├── OrganizationDto.cs
-│   │   └── ProductCategoryDto.cs
+│   │   └── ProductCategoryDto.cs ✅
 │   ├── Inventory/                  # 進銷存 DTOs
 │   │   ├── ProductDto.cs
 │   │   ├── StockDto.cs
 │   │   ├── LabelDto.cs
 │   │   └── BatFormatDto.cs
 │   ├── Purchase/                   # 採購 DTOs
-│   │   ├── PurchaseOrderDto.cs
+│   │   ├── PurchaseOrderDto.cs ✅
 │   │   ├── ReceivingDto.cs
-│   │   └── ReturnDto.cs
+│   │   └── ReturnDto.cs ✅
 │   ├── Transfer/                   # 調撥 DTOs
 │   │   ├── TransferReceivingDto.cs
-│   │   ├── TransferReturnDto.cs
-│   │   └── TransferShortageDto.cs
+│   │   ├── TransferReturnDto.cs ✅
+│   │   └── TransferShortageDto.cs ✅
 │   ├── Invoice/                    # 電子發票 DTOs
 │   │   ├── InvoiceUploadDto.cs
 │   │   ├── InvoiceProcessDto.cs
 │   │   ├── InvoiceQueryDto.cs
 │   │   └── InvoiceReportDto.cs
 │   ├── Customer/                   # 客戶 DTOs
-│   │   ├── CustomerDto.cs
+│   │   ├── CustomerDto.cs ✅
 │   │   ├── CustomerQueryDto.cs
 │   │   └── CustomerReportDto.cs
 │   ├── AnalysisReport/             # 分析報表 DTOs (SYSA000)
@@ -1309,15 +1345,15 @@ src/ErpCore.Application/
 │   │   ├── InventoryAnalysisDto.cs
 │   │   └── WorkConsumablesDto.cs
 │   ├── BusinessReport/             # 業務報表 DTOs (SYSL000)
-│   │   ├── BusinessReportDto.cs
+│   │   ├── BusinessReportDto.cs ✅
 │   │   ├── EmployeeCardDto.cs
-│   │   ├── ReturnCardDto.cs
+│   │   ├── ReturnCardDto.cs ✅
 │   │   └── OvertimeDto.cs
 │   ├── Pos/                        # POS系統 DTOs
-│   │   ├── PosTransactionDto.cs
+│   │   ├── PosTransactionDto.cs ✅
 │   │   └── PosReportDto.cs
 │   ├── SystemExtension/            # 系統擴展 DTOs
-│   │   ├── SystemExtensionDto.cs
+│   │   ├── SystemExtensionDto.cs ✅
 │   │   ├── SystemExtensionQueryDto.cs
 │   │   └── SystemExtensionReportDto.cs
 │   ├── Kiosk/                      # 自助服務終端 DTOs
@@ -1327,7 +1363,7 @@ src/ErpCore.Application/
 │   │   ├── ReportModuleNDto.cs
 │   │   ├── ReportModuleWPDto.cs
 │   │   ├── ReportModule7Dto.cs
-│   │   ├── ReportPrintDto.cs
+│   │   ├── ReportPrintDto.cs ✅
 │   │   └── ReportStatisticsDto.cs
 │   ├── DropdownList/               # 下拉列表 DTOs
 │   │   ├── AddressListDto.cs
@@ -1337,13 +1373,13 @@ src/ErpCore.Application/
 │   │   └── SystemListDto.cs ✅
 │   ├── Communication/              # 通訊與通知 DTOs
 │   │   ├── MailDto.cs
-│   │   └── SmsDto.cs
+│   │   └── SmsDto.cs ✅
 │   ├── UiComponent/                # UI組件 DTOs
 │   │   └── UiComponentDto.cs
 │   ├── Tools/                      # 工具 DTOs
-│   │   ├── FileUploadDto.cs
-│   │   ├── BarcodeDto.cs
-│   │   └── Html2PdfDto.cs
+│   │   ├── FileUploadDto.cs ✅
+│   │   ├── BarcodeDto.cs ✅
+│   │   └── Html2PdfDto.cs ✅
 │   ├── Core/                       # 核心功能 DTOs
 │   │   ├── UserProfileDto.cs ✅
 │   │   ├── FrameworkDto.cs ✅
@@ -1351,18 +1387,18 @@ src/ErpCore.Application/
 │   │   ├── ToolsDto.cs ✅
 │   │   └── SystemFunctionDto.cs ✅
 │   ├── OtherModule/                # 其他模組 DTOs
-│   │   ├── CrpReportDto.cs
-│   │   ├── EipIntegrationDto.cs
-│   │   └── LabTestDto.cs
+│   │   ├── CrpReportDto.cs ✅
+│   │   ├── EipIntegrationDto.cs ✅
+│   │   └── LabTestDto.cs ✅
 │   ├── HumanResource/              # 人力資源 DTOs (SYSH000)
 │   │   ├── PersonnelDto.cs
-│   │   ├── PayrollDto.cs
-│   │   └── AttendanceDto.cs
+│   │   ├── PayrollDto.cs ✅
+│   │   └── AttendanceDto.cs ✅
 │   ├── Accounting/                 # 會計財務 DTOs (SYSN000)
 │   │   ├── AccountingDto.cs
-│   │   ├── FinancialTransactionDto.cs
-│   │   ├── AssetDto.cs
-│   │   ├── FinancialReportDto.cs
+│   │   ├── FinancialTransactionDto.cs ✅
+│   │   ├── AssetDto.cs ✅
+│   │   ├── FinancialReportDto.cs ✅
 │   │   └── OtherFinancialDto.cs
 │   ├── TaxAccounting/             # 會計稅務 DTOs (SYST000)
 │   │   ├── AccountingSubjectDto.cs
@@ -1376,11 +1412,11 @@ src/ErpCore.Application/
 │   │   └── VoucherImportDto.cs ✅
 │   ├── Procurement/                # 採購供應商 DTOs (SYSP000)
 │   │   ├── ProcurementDto.cs
-│   │   ├── SupplierDto.cs
-│   │   ├── PaymentDto.cs
+│   │   ├── SupplierDto.cs ✅
+│   │   ├── PaymentDto.cs ✅
 │   │   ├── BankManagementDto.cs
-│   │   ├── ProcurementReportDto.cs
-│   │   └── ProcurementOtherDto.cs
+│   │   ├── ProcurementReportDto.cs ✅
+│   │   └── ProcurementOtherDto.cs ✅
 │   ├── Contract/                   # 合同 DTOs (SYSF000)
 │   │   ├── ContractDataDto.cs
 │   │   ├── ContractProcessDto.cs
@@ -1388,8 +1424,8 @@ src/ErpCore.Application/
 │   │   └── CmsContractDto.cs
 │   ├── Lease/                      # 租賃 DTOs (SYS8000)
 │   │   ├── LeaseDataDto.cs
-│   │   ├── LeaseExtensionDto.cs
-│   │   └── LeaseProcessDto.cs
+│   │   ├── LeaseExtensionDto.cs ✅
+│   │   └── LeaseProcessDto.cs ✅
 │   ├── LeaseSYSE/                  # 租賃SYSE DTOs (SYSE000)
 │   │   ├── LeaseSYSEDataDto.cs
 │   │   ├── LeaseSYSEExtensionDto.cs
@@ -1398,10 +1434,10 @@ src/ErpCore.Application/
 │   │   ├── LeaseSYSMDataDto.cs
 │   │   └── LeaseSYSMReportDto.cs
 │   ├── Extension/                  # 擴展 DTOs (SYS9000)
-│   │   ├── ExtensionDto.cs
+│   │   ├── ExtensionDto.cs ✅
 │   │   └── ReportModuleWPDto.cs
 │   ├── Query/                      # 查詢 DTOs (SYSQ000)
-│   │   ├── QueryDto.cs
+│   │   ├── QueryDto.cs ✅
 │   │   ├── QualityBaseDto.cs
 │   │   ├── QualityProcessDto.cs
 │   │   └── QualityReportDto.cs
@@ -1413,7 +1449,7 @@ src/ErpCore.Application/
 │   ├── Sales/                      # 銷售 DTOs (SYSD000)
 │   │   ├── SalesDataDto.cs
 │   │   ├── SalesProcessDto.cs
-│   │   └── SalesReportDto.cs
+│   │   └── SalesReportDto.cs ✅
 │   ├── Certificate/                # 憑證 DTOs (SYSK000)
 │   │   ├── CertificateDataDto.cs
 │   │   ├── CertificateProcessDto.cs
@@ -1430,22 +1466,22 @@ src/ErpCore.Application/
 │   │   └── LedgerDataDto.cs
 │   ├── StoreMember/                # 商店與會員 DTOs (SYS3000)
 │   │   ├── StoreDto.cs
-│   │   ├── StoreQueryDto.cs
-│   │   ├── MemberDto.cs
+│   │   ├── StoreQueryDto.cs ✅
+│   │   ├── MemberDto.cs ✅
 │   │   ├── MemberQueryDto.cs
 │   │   ├── PromotionDto.cs
 │   │   └── StoreReportDto.cs
 │   ├── StoreFloor/                 # 商店樓層 DTOs (SYS6000)
 │   │   ├── StoreManagementDto.cs
-│   │   ├── StoreQueryDto.cs
-│   │   ├── FloorDto.cs
-│   │   ├── FloorQueryDto.cs
-│   │   ├── TypeCodeDto.cs
-│   │   ├── TypeCodeQueryDto.cs
+│   │   ├── StoreQueryDto.cs ✅
+│   │   ├── FloorDto.cs ✅
+│   │   ├── FloorQueryDto.cs ✅
+│   │   ├── TypeCodeDto.cs ✅
+│   │   ├── TypeCodeQueryDto.cs ✅
 │   │   ├── PosDataDto.cs
 │   │   └── PosQueryDto.cs
 │   ├── InvoiceSales/               # 發票銷售 DTOs (SYSG000)
-│   │   ├── InvoiceDataDto.cs
+│   │   ├── InvoiceDataDto.cs ✅
 │   │   ├── InvoicePrintDto.cs
 │   │   ├── SalesDataDto.cs
 │   │   ├── SalesQueryDto.cs
@@ -1463,10 +1499,10 @@ src/ErpCore.Application/
 │   │   ├── PersonnelBatchDto.cs
 │   │   └── SystemExtensionPHDto.cs
 │   ├── Loyalty/                    # 忠誠度 DTOs (SYSLPS)
-│   │   └── LoyaltyDto.cs
+│   │   └── LoyaltyDto.cs ✅
 │   ├── CustomerCustom/             # 客戶定制 DTOs
-│   │   ├── Cus3000Dto.cs
-│   │   ├── Cus3000EskylandDto.cs
+│   │   ├── Cus3000Dto.cs ✅
+│   │   ├── Cus3000EskylandDto.cs ✅
 │   │   ├── Cus5000EskylandDto.cs
 │   │   ├── CusBackupDto.cs
 │   │   ├── CusCtsDto.cs
@@ -1474,30 +1510,30 @@ src/ErpCore.Application/
 │   │   └── Sys8000EskylandDto.cs
 │   ├── StandardModule/             # 標準模組 DTOs
 │   │   ├── Std3000Dto.cs
-│   │   └── Std5000Dto.cs
+│   │   └── Std5000Dto.cs ✅
 │   ├── MirModule/                  # MIR系列 DTOs
-│   │   ├── MirH000Dto.cs
-│   │   ├── MirV000Dto.cs
-│   │   └── MirW000Dto.cs
+│   │   ├── MirH000Dto.cs ✅
+│   │   ├── MirV000Dto.cs ✅
+│   │   └── MirW000Dto.cs ✅
 │   ├── MshModule/                  # MSH模組 DTOs
-│   │   └── Msh3000Dto.cs
+│   │   └── Msh3000Dto.cs ✅
 │   ├── SapIntegration/             # SAP整合 DTOs
-│   │   └── TransSapDto.cs
+│   │   └── TransSapDto.cs ✅
 │   ├── UniversalModule/            # 通用模組 DTOs
-│   │   └── Univ000Dto.cs
+│   │   └── Univ000Dto.cs ✅
 │   ├── CustomerCustomJgjn/          # 客戶定制JGJN DTOs
 │   │   └── SysCustJgjnDto.cs
 │   ├── BusinessDevelopment/        # 招商 DTOs (SYSC000)
-│   │   ├── ProspectMasterDto.cs
-│   │   ├── ProspectDto.cs
-│   │   ├── InterviewDto.cs
-│   │   └── BusinessOtherDto.cs
+│   │   ├── ProspectMasterDto.cs ✅
+│   │   ├── ProspectDto.cs ✅
+│   │   ├── InterviewDto.cs ✅
+│   │   └── TenantLocationDto.cs ✅ (BusinessOther 使用 TenantLocationDto)
 │   ├── CommunicationModule/        # 通訊模組 DTOs (XCOM000)
 │   │   ├── XcomDto.cs
 │   │   └── XcomMsgDto.cs           # XCOMMSG錯誤訊息處理 DTOs
 │   ├── ChartTools/                 # 圖表與工具 DTOs
 │   │   ├── ChartDto.cs
-│   │   └── ToolsDto.cs
+│   │   └── ToolsDto.cs ✅
 │   ├── SystemExit/                 # 系統退出 DTOs
 │   │   └── SystemExitDto.cs
 │   ├── InvoiceExtension/           # 電子發票擴展 DTOs
@@ -1516,120 +1552,120 @@ src/ErpCore.Application/
 │       └── ErrorDto.cs
 │
 ├── Mappings/                        # 物件對應（AutoMapper）
-│   ├── UserMappingProfile.cs
-│   ├── RoleMappingProfile.cs
-│   └── CommonMappingProfile.cs
+│   ├── UserMappingProfile.cs        # ✅
+│   ├── RoleMappingProfile.cs        # ✅
+│   └── CommonMappingProfile.cs      # ✅
 │
 ├── Validators/                     # 驗證器（FluentValidation）
-│   ├── UserValidator.cs
-│   ├── RoleValidator.cs
-│   └── CommonValidator.cs
+│   ├── UserValidator.cs             # ✅
+│   ├── RoleValidator.cs             # ✅
+│   └── CommonValidator.cs           # ✅
 │
 ├── Commands/                       # CQRS 命令（如採用 CQRS）
 │   ├── Users/                      # 使用者命令
-│   │   ├── CreateUserCommand.cs
-│   │   ├── UpdateUserCommand.cs
-│   │   ├── DeleteUserCommand.cs
-│   │   ├── ChangePasswordCommand.cs
-│   │   └── ResetPasswordCommand.cs
+│   │   ├── CreateUserCommand.cs     # ✅
+│   │   ├── UpdateUserCommand.cs     # ✅
+│   │   ├── DeleteUserCommand.cs     # ✅
+│   │   ├── ChangePasswordCommand.cs # ✅
+│   │   └── ResetPasswordCommand.cs  # ✅
 │   ├── Roles/                      # 角色命令
-│   │   ├── CreateRoleCommand.cs
-│   │   ├── UpdateRoleCommand.cs
-│   │   └── DeleteRoleCommand.cs
+│   │   ├── CreateRoleCommand.cs     # ✅
+│   │   ├── UpdateRoleCommand.cs     # ✅
+│   │   └── DeleteRoleCommand.cs     # ✅
 │   ├── Products/                   # 商品命令
-│   │   ├── CreateProductCommand.cs
-│   │   ├── UpdateProductCommand.cs
-│   │   └── DeleteProductCommand.cs
+│   │   ├── CreateProductCommand.cs  # ✅
+│   │   ├── UpdateProductCommand.cs  # ✅
+│   │   └── DeleteProductCommand.cs  # ✅
 │   └── [其他模組命令]
 │
 ├── Queries/                        # CQRS 查詢（如採用 CQRS）
 │   ├── Users/                      # 使用者查詢
-│   │   ├── GetUserQuery.cs
-│   │   ├── GetUsersQuery.cs
-│   │   └── GetUserPermissionsQuery.cs
+│   │   ├── GetUserQuery.cs          # ✅
+│   │   ├── GetUsersQuery.cs         # ✅
+│   │   └── GetUserPermissionsQuery.cs # ✅
 │   ├── Roles/                      # 角色查詢
-│   │   ├── GetRoleQuery.cs
-│   │   └── GetRolesQuery.cs
+│   │   ├── GetRoleQuery.cs          # ✅
+│   │   └── GetRolesQuery.cs         # ✅
 │   ├── Products/                   # 商品查詢
-│   │   ├── GetProductQuery.cs
-│   │   └── GetProductsQuery.cs
+│   │   ├── GetProductQuery.cs       # ✅
+│   │   └── GetProductsQuery.cs      # ✅
 │   └── [其他模組查詢]
 │
 ├── Handlers/                       # CQRS 處理器（如採用 CQRS）
 │   ├── Users/                      # 使用者處理器
-│   │   ├── CreateUserCommandHandler.cs
-│   │   ├── UpdateUserCommandHandler.cs
-│   │   ├── DeleteUserCommandHandler.cs
-│   │   └── GetUserQueryHandler.cs
+│   │   ├── CreateUserCommandHandler.cs # ✅
+│   │   ├── UpdateUserCommandHandler.cs # ✅
+│   │   ├── DeleteUserCommandHandler.cs # ✅
+│   │   └── GetUserQueryHandler.cs   # ✅
 │   └── [其他模組處理器]
 │
 └── Exceptions/                     # 應用層例外
-    ├── BusinessException.cs
-    ├── ValidationException.cs
-    └── NotFoundException.cs
+    ├── BusinessException.cs        # ✅
+    ├── ValidationException.cs      # ✅
+    └── NotFoundException.cs        # ✅
 ```
 
 ### 3. ErpCore.Domain (領域層)
 
 ```
 src/ErpCore.Domain/
-├── ErpCore.Domain.csproj
+├── ErpCore.Domain.csproj ✅
 │
 ├── Entities/                       # 實體類別
 │   ├── Base/                       # 基礎實體
-│   │   ├── BaseEntity.cs           # 基礎實體（Id, CreatedAt, UpdatedAt）
-│   │   └── AuditableEntity.cs      # 可審計實體（CreatedBy, UpdatedBy）
+│   │   ├── BaseEntity.cs           # ✅ 基礎實體（Id, CreatedAt, UpdatedAt）
+│   │   └── AuditableEntity.cs      # ✅ 可審計實體（CreatedBy, UpdatedBy）
 │   │
 │   ├── System/                     # 一、系統管理實體 (SYS0000)
-│   │   ├── User.cs                 # 使用者
-│   │   ├── Role.cs                 # 角色
-│   │   ├── Permission.cs           # 權限
-│   │   ├── UserRole.cs             # 使用者角色對應
+│   │   ├── User.cs                 # ✅ 使用者
+│   │   ├── Role.cs                 # ✅ 角色
+│   │   ├── Permission.cs ✅           # 權限
+│   │   ├── UserRole.cs             # ✅ 使用者角色對應
 │   │   ├── RolePermission.cs       # 角色權限對應
-│   │   ├── SystemConfig.cs         # 系統設定
+│   │   ├── SystemConfig.cs ✅         # 系統設定
 │   │   └── SystemLog.cs            # 系統日誌
 │   │
 │   ├── BasicData/                  # 二、基本資料實體 (SYSB000)
-│   │   ├── Parameter.cs            # 參數
-│   │   ├── Region.cs                # 地區
-│   │   ├── Bank.cs                 # 銀行
-│   │   ├── Vendor.cs               # 廠商客戶
+│   │   ├── Parameter.cs            # ✅ 參數
+│   │   ├── Region.cs                # ✅ 地區
+│   │   ├── Bank.cs                 # ✅ 銀行
+│   │   ├── Vendor.cs               # ✅ 廠商客戶
 │   │   ├── Organization.cs         # 組織
-│   │   └── ProductCategory.cs       # 商品分類
+│   │   └── ProductCategory.cs       # ✅ 商品分類
 │   │
 │   ├── Inventory/                  # 三、進銷存實體 (SYSW000)
-│   │   ├── Product.cs              # 商品
-│   │   ├── ProductCategory.cs       # 商品分類
-│   │   ├── Stock.cs                # 庫存
+│   │   ├── Product.cs              # ✅ 商品
+│   │   ├── ProductCategory.cs ✅       # 商品分類
+│   │   ├── Stock.cs ✅                # 庫存
 │   │   ├── StockTransaction.cs      # 庫存交易
 │   │   ├── Label.cs                # 標籤
 │   │   └── BatFormat.cs            # BAT格式文件
 │   │
 │   ├── Purchase/                   # 四、採購實體 (SYSP000)
-│   │   ├── PurchaseOrder.cs        # 採購單
-│   │   ├── PurchaseOrderItem.cs    # 採購單明細
-│   │   ├── Receiving.cs            # 驗收
-│   │   └── Return.cs               # 退貨
+│   │   ├── PurchaseOrder.cs        # ✅ 採購單
+│   │   ├── PurchaseOrderItem.cs    # ✅ 採購單明細
+│   │   ├── Receiving.cs            # ✅ 驗收
+│   │   └── Return.cs ✅               # 退貨
 │   │
 │   ├── Transfer/                   # 五、調撥實體 (SYSW000)
 │   │   ├── TransferOrder.cs        # 調撥單
-│   │   ├── TransferReceiving.cs    # 調撥驗收
-│   │   ├── TransferReturn.cs       # 調撥驗退
-│   │   └── TransferShortage.cs    # 調撥短溢
+│   │   ├── TransferReceiving.cs    # ✅ 調撥驗收
+│   │   ├── TransferReturn.cs       # ✅ 調撥驗退
+│   │   └── TransferShortage.cs    # ✅ 調撥短溢
 │   │
 │   ├── InventoryCheck/             # 六、盤點實體 (SYSW000)
-│   │   └── InventoryCheck.cs       # 盤點單
+│   │   └── InventoryCheck.cs       # ✅ 盤點單
 │   │
 │   ├── StockAdjustment/            # 七、庫存調整實體 (SYSW000)
-│   │   └── StockAdjustment.cs      # 庫存調整單
+│   │   └── StockAdjustment.cs      # ✅ 庫存調整單
 │   │
 │   ├── Invoice/                    # 八、電子發票實體 (ECA0000)
-│   │   ├── Invoice.cs              # 發票
+│   │   ├── Invoice.cs ✅              # 發票
 │   │   ├── InvoiceItem.cs          # 發票明細
 │   │   └── InvoiceReport.cs        # 發票報表
 │   │
 │   ├── Customer/                   # 九、客戶實體 (CUS5000)
-│   │   ├── Customer.cs             # 客戶
+│   │   ├── Customer.cs             # ✅ 客戶
 │   │   └── CustomerReport.cs       # 客戶報表
 │   │
 │   ├── AnalysisReport/             # 十、分析報表實體 (SYSA000)
@@ -1638,17 +1674,17 @@ src/ErpCore.Domain/
 │   │   └── WorkConsumables.cs      # 工務耗材
 │   │
 │   ├── BusinessReport/            # 十一、業務報表實體 (SYSL000)
-│   │   ├── BusinessReport.cs       # 業務報表
+│   │   ├── BusinessReport.cs ✅       # 業務報表
 │   │   ├── EmployeeCard.cs         # 員餐卡
-│   │   ├── ReturnCard.cs           # 銷退卡
+│   │   ├── ReturnCard.cs ✅           # 銷退卡
 │   │   └── Overtime.cs             # 加班
 │   │
 │   ├── Pos/                        # 十二、POS實體
-│   │   ├── PosTransaction.cs       # POS交易
+│   │   ├── PosTransaction.cs ✅       # POS交易
 │   │   └── PosReport.cs            # POS報表
 │   │
 │   ├── SystemExtension/            # 十三、系統擴展實體
-│   │   └── SystemExtension.cs      # 系統擴展
+│   │   └── SystemExtension.cs ✅      # 系統擴展
 │   │
 │   ├── Kiosk/                      # 十四、自助服務終端實體
 │   │   └── KioskData.cs            # Kiosk資料
@@ -1673,19 +1709,19 @@ src/ErpCore.Domain/
 │   │   └── UiComponent.cs          # UI組件
 │   │
 │   ├── Tools/                       # 十九、工具實體
-│   │   ├── FileUpload.cs            # 檔案上傳
+│   │   ├── FileUpload.cs ✅            # 檔案上傳
 │   │   ├── Barcode.cs              # 條碼
 │   │   └── Html2Pdf.cs             # HTML轉PDF
 │   │
 │   ├── HumanResource/              # 二十二、人力資源實體 (SYSH000)
-│   │   ├── Personnel.cs            # 人事
-│   │   ├── Payroll.cs              # 薪資
-│   │   └── Attendance.cs            # 考勤
+│   │   ├── Personnel.cs ✅            # 人事
+│   │   ├── Payroll.cs ✅              # 薪資
+│   │   └── Attendance.cs ✅            # 考勤
 │   │
 │   ├── Accounting/                 # 二十三、會計財務實體 (SYSN000)
-│   │   ├── Accounting.cs           # 會計
-│   │   ├── FinancialTransaction.cs # 財務交易
-│   │   ├── Asset.cs                # 資產
+│   │   ├── Accounting.cs ✅           # 會計
+│   │   ├── FinancialTransaction.cs ✅ # 財務交易
+│   │   ├── Asset.cs ✅                # 資產
 │   │   └── FinancialReport.cs      # 財務報表
 │   │
 │   ├── TaxAccounting/              # 二十四、會計稅務實體 (SYST000)
@@ -1698,15 +1734,15 @@ src/ErpCore.Domain/
 │   │
 │   ├── Procurement/               # 二十五、採購供應商實體 (SYSP000)
 │   │   ├── Procurement.cs          # 採購
-│   │   ├── Supplier.cs             # 供應商
-│   │   ├── Payment.cs               # 付款
+│   │   ├── Supplier.cs ✅             # 供應商
+│   │   ├── Payment.cs ✅               # 付款
 │   │   └── ProcurementReport.cs    # 採購報表
 │   │
 │   ├── Contract/                   # 二十六、合同實體 (SYSF000)
-│   │   └── Contract.cs             # 合同
+│   │   └── Contract.cs ✅             # 合同
 │   │
 │   ├── Lease/                       # 二十七、租賃實體 (SYS8000)
-│   │   └── Lease.cs                # 租賃
+│   │   └── Lease.cs ✅                # 租賃
 │   │
 │   ├── LeaseSYSE/                  # 二十八、租賃SYSE實體 (SYSE000)
 │   │   └── LeaseSYSE.cs            # 租賃SYSE
@@ -1715,10 +1751,10 @@ src/ErpCore.Domain/
 │   │   └── LeaseSYSM.cs            # 租賃SYSM
 │   │
 │   ├── Extension/                  # 三十、擴展實體 (SYS9000)
-│   │   └── Extension.cs            # 擴展
+│   │   └── Extension.cs ✅            # 擴展
 │   │
 │   ├── Query/                       # 三十一、查詢實體 (SYSQ000) ✅
-│   │   ├── Query.cs                # 查詢
+│   │   ├── Query.cs ✅                # 查詢
 │   │   ├── Quality.cs              # 質量
 │   │   ├── CashParams.cs           # 零用金參數 (SYSQ110) ✅
 │   │   ├── PcKeep.cs               # 保管人及額度設定 (SYSQ120) ✅
@@ -1733,7 +1769,7 @@ src/ErpCore.Domain/
 │   │
 │   ├── Sales/                       # 三十三、銷售實體 (SYSD000)
 │   │   ├── Sales.cs                 # 銷售
-│   │   └── SalesReport.cs          # 銷售報表
+│   │   └── SalesReport.cs ✅          # 銷售報表
 │   │
 │   ├── Certificate/                 # 三十四、憑證實體 (SYSK000)
 │   │   └── Certificate.cs           # 憑證
@@ -1745,17 +1781,17 @@ src/ErpCore.Domain/
 │   │   └── SystemJ.cs             # J系統
 │   │
 │   ├── CustomerInvoice/             # 三十六、客戶與發票實體 (SYS2000)
-│   │   ├── CustomerData.cs          # 客戶資料
-│   │   └── Ledger.cs                # 總帳
+│   │   ├── CustomerData.cs ✅          # 客戶資料
+│   │   └── Ledger.cs ✅                # 總帳
 │   │
 │   ├── StoreMember/                 # 三十七、商店與會員實體 (SYS3000)
 │   │   ├── Store.cs                 # 商店
-│   │   ├── Member.cs                # 會員
-│   │   └── Promotion.cs             # 促銷活動
+│   │   ├── Member.cs ✅                # 會員
+│   │   └── Promotion.cs ✅             # 促銷活動
 │   │
 │   ├── StoreFloor/                  # 三十八、商店樓層實體 (SYS6000)
 │   │   ├── Store.cs                 # 商店
-│   │   ├── Floor.cs                 # 樓層
+│   │   ├── Floor.cs ✅                 # 樓層
 │   │   ├── TypeCode.cs             # 類型代碼
 │   │   └── PosData.cs              # POS資料
 │   │
@@ -1764,11 +1800,11 @@ src/ErpCore.Domain/
 │   │   └── SalesData.cs             # 銷售資料
 │   │
 │   ├── InvoiceSalesB2B/            # 四十、發票銷售B2B實體 (SYSG000_B2B)
-│   │   ├── B2BInvoice.cs            # B2B發票
+│   │   ├── B2BInvoice.cs ✅            # B2B發票
 │   │   └── B2BSales.cs              # B2B銷售
 │   │
 │   ├── SystemExtensionE/            # 四十一、系統擴展E實體 (SYSPE00)
-│   │   ├── Employee.cs              # 員工
+│   │   ├── Employee.cs ✅              # 員工
 │   │   └── PersonnelData.cs        # 人事資料
 │   │
 │   ├── SystemExtensionH/            # 四十二、系統擴展H實體 (SYSH000_NEW)
@@ -1795,18 +1831,19 @@ src/ErpCore.Domain/
 │   │   └── Msh3000.cs               # MSH3000
 │   │
 │   ├── SapIntegration/              # 四十八、SAP整合實體
-│   │   └── TransSap.cs              # TransSAP
+│   │   └── TransSap.cs ✅              # TransSAP
 │   │
 │   ├── UniversalModule/              # 四十九、通用模組實體
-│   │   └── Univ000.cs               # UNIV000
+│   │   └── Univ000.cs ✅               # UNIV000
 │   │
 │   ├── CustomerCustomJgjn/          # 五十、客戶定制JGJN實體
 │   │   └── SysCustJgjn.cs           # SYSCUST_JGJN
 │   │
 │   ├── BusinessDevelopment/         # 五十一、招商實體 (SYSC000)
-│   │   ├── ProspectMaster.cs        # 潛客主檔
-│   │   ├── Prospect.cs              # 潛客
-│   │   └── Interview.cs              # 訪談
+│   │   ├── ProspectMaster.cs ✅        # 潛客主檔
+│   │   ├── Prospect.cs ✅              # 潛客
+│   │   ├── Interview.cs ✅              # 訪談
+│   │   └── TenantLocation.cs         # 租戶位置 (SYSC999) ✅
 │   │
 │   ├── CommunicationModule/          # 五十二、通訊模組實體 (XCOM000)
 │   │   ├── Xcom.cs                  # XCOM
@@ -1820,10 +1857,10 @@ src/ErpCore.Domain/
 │   │   └── SystemExit.cs            # 系統退出
 │   │
 │   ├── InvoiceExtension/             # 五十五、電子發票擴展實體
-│   │   └── InvoiceExtension.cs      # 電子發票擴展
+│   │   └── InvoiceExtension.cs ✅      # 電子發票擴展
 │   │
 │   ├── SalesReport/                  # 五十六、銷售報表實體 (SYS1000)
-│   │   └── SalesReport.cs           # 銷售報表
+│   │   └── SalesReport.cs ✅           # 銷售報表
 │   │
 │   ├── Energy/                      # 五十七、能源實體 (SYSO000)
 │   │   └── Energy.cs                # 能源
@@ -1832,32 +1869,32 @@ src/ErpCore.Domain/
 │       ├── FileAttachment.cs
 │       └── SystemLog.cs
 │
-├── ValueObjects/                   # 值物件
-│   ├── Address.cs
-│   ├── Money.cs
-│   └── Email.cs
+├── ValueObjects/                   # 值物件 ✅
+│   ├── Address.cs ✅
+│   ├── Money.cs ✅
+│   └── Email.cs ✅
 │
-├── Enums/                          # 列舉型別
-│   ├── UserStatus.cs
-│   ├── OrderStatus.cs
-│   ├── InvoiceType.cs
-│   └── PermissionType.cs
+├── Enums/                          # 列舉型別 ✅
+│   ├── UserStatus.cs ✅
+│   ├── OrderStatus.cs ✅
+│   ├── InvoiceType.cs ✅
+│   └── PermissionType.cs ✅
 │
-├── Interfaces/                     # 領域介面
-│   ├── IRepository.cs              # 儲存庫介面
-│   ├── IUnitOfWork.cs              # 工作單元介面
-│   └── IDomainEvent.cs             # 領域事件介面
+├── Interfaces/                     # 領域介面 ✅
+│   ├── IRepository.cs              # 儲存庫介面 ✅
+│   ├── IUnitOfWork.cs              # 工作單元介面 ✅
+│   └── IDomainEvent.cs             # 領域事件介面 ✅
 │
-└── Events/                         # 領域事件
-    ├── UserCreatedEvent.cs
-    └── OrderPlacedEvent.cs
+└── Events/                         # 領域事件 ✅
+    ├── UserCreatedEvent.cs ✅
+    └── OrderPlacedEvent.cs ✅
 ```
 
 ### 4. ErpCore.Infrastructure (基礎設施層)
 
 ```
 src/ErpCore.Infrastructure/
-├── ErpCore.Infrastructure.csproj
+├── ErpCore.Infrastructure.csproj ✅
 │
 ├── Data/                           # 資料存取
 │   ├── ErpDbContext.cs             # DbContext
@@ -1868,52 +1905,88 @@ src/ErpCore.Infrastructure/
 │   │
 │   └── Repositories/               # 儲存庫實作
 │       ├── Base/
-│       │   └── Repository.cs
+│       │   └── Repository.cs ✅
 │       ├── System/                 # 系統管理儲存庫 (SYS0000)
-│       │   ├── UserRepository.cs
-│       │   ├── RoleRepository.cs
-│       │   ├── PermissionRepository.cs
-│       │   ├── SystemConfigRepository.cs
-│       │   └── LogRepository.cs
+│       │   ├── UserRepository.cs ✅
+│       │   ├── RoleRepository.cs ✅
+│       │   ├── UserRoleRepository.cs ✅
+│       │   ├── RolePermissionRepository.cs ✅
+│       │   ├── UserPermissionRepository.cs ✅
+│       │   ├── ItemPermissionRepository.cs ✅
+│       │   ├── RoleFieldPermissionRepository.cs ✅
+│       │   ├── UserFieldPermissionRepository.cs ✅
+│       │   ├── ItemCorrespondRepository.cs ✅
+│       │   ├── ChangeLogRepository.cs ✅
+│       │   ├── ButtonLogRepository.cs ✅
+│       │   ├── ControllableFieldRepository.cs ✅
+│       │   ├── UserAgentRepository.cs ✅
+│       │   ├── PermissionRepository.cs ✅
+│       │   ├── SystemConfigRepository.cs ✅
+│       │   └── LogRepository.cs ✅
 │       ├── BasicData/              # 基本資料儲存庫 (SYSB000)
-│       │   ├── ParameterRepository.cs
-│       │   ├── RegionRepository.cs
-│       │   ├── BankRepository.cs
-│       │   ├── VendorRepository.cs
+│       │   ├── ParameterRepository.cs ✅
+│       │   ├── RegionRepository.cs ✅
+│       │   ├── AreaRepository.cs ✅
+│       │   ├── BankRepository.cs ✅
+│       │   ├── VendorRepository.cs ✅
+│       │   ├── DepartmentRepository.cs ✅
+│       │   ├── GroupRepository.cs ✅
+│       │   ├── WarehouseRepository.cs ✅
 │       │   ├── OrganizationRepository.cs
-│       │   └── ProductCategoryRepository.cs
+│       │   └── ProductCategoryRepository.cs ✅
 │       ├── Inventory/              # 進銷存儲存庫 (SYSW000)
+│       │   ├── SupplierGoodsRepository.cs ✅
+│       │   ├── ProductGoodsIdRepository.cs ✅
+│       │   ├── PriceChangeRepository.cs ✅
+│       │   ├── PopPrintRepository.cs ✅
+│       │   ├── TextFileProcessLogRepository.cs ✅
+│       │   ├── TextFileProcessDetailRepository.cs ✅
+│       │   ├── StockRepository.cs ✅
 │       │   ├── ProductRepository.cs
-│       │   ├── StockRepository.cs
 │       │   ├── LabelRepository.cs
 │       │   └── BatFormatRepository.cs
 │       ├── Purchase/               # 採購儲存庫 (SYSP000)
-│       │   ├── PurchaseOrderRepository.cs
+│       │   ├── PurchaseOrderRepository.cs ✅
+│       │   ├── PurchaseReceiptRepository.cs ✅
 │       │   ├── ReceivingRepository.cs
-│       │   └── ReturnRepository.cs
+│       │   └── ReturnRepository.cs ✅
 │       ├── Transfer/               # 調撥儲存庫 (SYSW000)
 │       │   ├── TransferReceivingRepository.cs
-│       │   ├── TransferReturnRepository.cs
-│       │   └── TransferShortageRepository.cs
+│       │   ├── TransferReturnRepository.cs ✅
+│       │   └── TransferShortageRepository.cs ✅
+│       ├── InventoryCheck/          # 盤點儲存庫 (SYSW000)
+│       │   └── StocktakingPlanRepository.cs ✅
+│       ├── StockAdjustment/         # 庫存調整儲存庫 (SYSW000)
+│       │   └── StockAdjustmentRepository.cs ✅
 │       ├── Invoice/                # 電子發票儲存庫 (ECA0000)
-│       │   ├── InvoiceRepository.cs
+│       │   ├── InvoiceRepository.cs ✅
 │       │   └── InvoiceReportRepository.cs
+│       ├── EInvoice/                # 電子發票儲存庫 (ECA0000)
+│       │   └── EInvoiceRepository.cs ✅
 │       ├── Customer/               # 客戶儲存庫 (CUS5000)
-│       │   └── CustomerRepository.cs
+│       │   └── CustomerRepository.cs ✅
 │       ├── AnalysisReport/         # 分析報表儲存庫 (SYSA000)
 │       │   ├── ConsumablesRepository.cs
 │       │   ├── InventoryAnalysisRepository.cs
-│       │   └── WorkConsumablesRepository.cs
+│       │   ├── WorkConsumablesRepository.cs
+│       │   └── AnalysisReportRepository.cs ✅
 │       ├── BusinessReport/          # 業務報表儲存庫 (SYSL000)
-│       │   ├── BusinessReportRepository.cs
+│       │   ├── BusinessReportRepository.cs ✅
 │       │   ├── EmployeeCardRepository.cs
-│       │   ├── ReturnCardRepository.cs
+│       │   ├── EmployeeMealCardRepository.cs ✅
+│       │   ├── ReturnCardRepository.cs ✅
 │       │   └── OvertimeRepository.cs
+│       │   └── OvertimePaymentRepository.cs ✅
 │       ├── Pos/                    # POS儲存庫
-│       │   ├── PosTransactionRepository.cs
+│       │   ├── PosTransactionRepository.cs ✅
 │       │   └── PosReportRepository.cs
 │       ├── SystemExtension/        # 系統擴展儲存庫
-│       │   └── SystemExtensionRepository.cs
+│       │   └── SystemExtensionRepository.cs ✅
+│       ├── SystemConfig/            # 系統設定儲存庫
+│       │   ├── ConfigSystemRepository.cs ✅
+│       │   ├── ConfigSubSystemRepository.cs ✅
+│       │   ├── ConfigProgramRepository.cs ✅
+│       │   └── ConfigButtonRepository.cs ✅
 │       ├── Kiosk/                  # 自助服務終端儲存庫
 │       │   └── KioskDataRepository.cs
 │       ├── ReportExtension/        # 報表擴展儲存庫
@@ -1926,26 +1999,29 @@ src/ErpCore.Infrastructure/
 │       │   ├── DateListRepository.cs
 │       │   ├── MenuRepository.cs ✅
 │       │   └── (SystemList 使用現有 Repository) ✅
-│       ├── Communication/          # 通訊儲存庫
-│       │   ├── MailRepository.cs
-│       │   └── SmsRepository.cs
-│       ├── UiComponent/            # UI組件儲存庫
-│       │   └── UiComponentRepository.cs
-│       ├── Tools/                   # 工具儲存庫
-│       │   ├── FileUploadRepository.cs
-│       │   ├── BarcodeRepository.cs
-│       │   └── Html2PdfRepository.cs
+│       ├── Communication/          # 通訊儲存庫 ✅
+│       │   ├── EmailLogRepository.cs ✅
+│       │   ├── SmsLogRepository.cs ✅
+│       │   ├── EmailQueueRepository.cs ✅
+│       │   ├── EmailAttachmentRepository.cs ✅
+│       │   └── EncodeLogRepository.cs ✅
+│       ├── UiComponent/            # UI組件儲存庫 ✅
+│       │   └── UIComponentRepository.cs ✅
+│       ├── Tools/                   # 工具儲存庫 ✅
+│       │   ├── FileUploadRepository.cs ✅
+│       │   └── PdfConversionLogRepository.cs ✅ (Html2Pdf 使用此 Repository)
 │       ├── HumanResource/          # 人力資源儲存庫 (SYSH000) ✅
 │       │   ├── PersonnelRepository.cs ✅
 │       │   ├── PayrollRepository.cs ✅
 │       │   └── AttendanceRepository.cs ✅
 │       ├── Accounting/              # 會計財務儲存庫 (SYSN000)
 │       │   ├── AccountingRepository.cs
-│       │   ├── FinancialTransactionRepository.cs
+│       │   ├── AccountSubjectRepository.cs ✅
+│       │   ├── FinancialTransactionRepository.cs ✅
 │       │   ├── AssetRepository.cs
 │       │   └── FinancialReportRepository.cs
 │       ├── TaxAccounting/          # 會計稅務儲存庫 (SYST000)
-│       │   ├── AccountingSubjectRepository.cs
+│       │   ├── AccountingSubjectRepository.cs ✅
 │       │   ├── AccountingVoucherRepository.cs
 │       │   ├── AccountingBookRepository.cs
 │       │   ├── InvoiceDataRepository.cs ✅
@@ -1956,21 +2032,21 @@ src/ErpCore.Infrastructure/
 │       │   └── VoucherImportRepository.cs ✅
 │       ├── Procurement/            # 採購供應商儲存庫 (SYSP000)
 │       │   ├── ProcurementRepository.cs
-│       │   ├── SupplierRepository.cs
-│       │   ├── PaymentRepository.cs
+│       │   ├── SupplierRepository.cs ✅
+│       │   ├── PaymentRepository.cs ✅
 │       │   └── ProcurementReportRepository.cs
 │       ├── Contract/               # 合同儲存庫 (SYSF000)
-│       │   └── ContractRepository.cs
+│       │   └── ContractRepository.cs ✅
 │       ├── Lease/                  # 租賃儲存庫 (SYS8000)
-│       │   └── LeaseRepository.cs
+│       │   └── LeaseRepository.cs ✅
 │       ├── LeaseSYSE/              # 租賃SYSE儲存庫 (SYSE000)
 │       │   └── LeaseSY SERepository.cs
 │       ├── LeaseSYSM/              # 租賃SYSM儲存庫 (SYSM000)
 │       │   └── LeaseSYSMRepository.cs
 │       ├── Extension/               # 擴展儲存庫 (SYS9000)
-│       │   └── ExtensionRepository.cs
+│       │   └── ExtensionRepository.cs ✅
 │       ├── Query/                  # 查詢儲存庫 (SYSQ000) ✅
-│       │   ├── QueryRepository.cs
+│       │   ├── QueryRepository.cs ✅
 │       │   ├── QualityRepository.cs
 │       │   ├── CashParamsRepository.cs ✅
 │       │   ├── PcKeepRepository.cs ✅
@@ -1978,13 +2054,15 @@ src/ErpCore.Infrastructure/
 │       │   ├── PcCashRequestRepository.cs ✅
 │       │   ├── PcCashTransferRepository.cs ✅
 │       │   ├── PcCashInventoryRepository.cs ✅
-│       │   └── VoucherAuditRepository.cs ✅
+│       │   ├── VoucherAuditRepository.cs ✅
+│       │   └── QueryFunctionRepository.cs ✅
 │       ├── ReportManagement/       # 報表管理儲存庫 (SYSR000)
 │       │   └── ReceivingRepository.cs
 │       ├── Sales/                  # 銷售儲存庫 (SYSD000)
 │       │   ├── SalesRepository.cs
-│       │   └── SalesReportRepository.cs
+│       │   └── SalesReportRepository.cs ✅
 │       ├── Certificate/             # 憑證儲存庫 (SYSK000)
+│       │   ├── VoucherRepository.cs ✅
 │       │   └── CertificateRepository.cs
 │       ├── OtherManagement/        # 其他管理儲存庫
 │       │   ├── SystemSRepository.cs
@@ -1992,30 +2070,34 @@ src/ErpCore.Infrastructure/
 │       │   ├── SystemVRepository.cs
 │       │   └── SystemJRepository.cs
 │       ├── CustomerInvoice/        # 客戶與發票儲存庫 (SYS2000)
-│       │   ├── CustomerDataRepository.cs
+│       │   ├── CustomerDataRepository.cs ✅
 │       │   └── LedgerRepository.cs
 │       ├── StoreMember/            # 商店與會員儲存庫 (SYS3000)
-│       │   ├── StoreRepository.cs
-│       │   ├── MemberRepository.cs
-│       │   └── PromotionRepository.cs
+│       │   ├── StoreRepository.cs ✅
+│       │   ├── MemberRepository.cs ✅
+│       │   └── PromotionRepository.cs ✅
 │       ├── StoreFloor/             # 商店樓層儲存庫 (SYS6000)
-│       │   ├── StoreRepository.cs
-│       │   ├── FloorRepository.cs
-│       │   ├── TypeCodeRepository.cs
+│       │   ├── StoreRepository.cs ✅
+│       │   ├── FloorRepository.cs ✅
+│       │   ├── TypeCodeRepository.cs ✅
+│       │   ├── PosTerminalRepository.cs ✅
 │       │   └── PosDataRepository.cs
 │       ├── InvoiceSales/           # 發票銷售儲存庫 (SYSG000)
-│       │   ├── InvoiceDataRepository.cs
+│       │   ├── InvoiceDataRepository.cs ✅
 │       │   └── SalesDataRepository.cs
 │       ├── InvoiceSalesB2B/        # 發票銷售B2B儲存庫 (SYSG000_B2B)
-│       │   ├── B2BInvoiceRepository.cs
+│       │   ├── B2BInvoiceRepository.cs ✅
 │       │   └── B2BSalesRepository.cs
 │       ├── SystemExtensionE/       # 系統擴展E儲存庫 (SYSPE00)
-│       │   ├── EmployeeRepository.cs
-│       │   └── PersonnelDataRepository.cs
+│       │   ├── EmployeeRepository.cs ✅
+│       │   └── PersonnelDataRepository.cs ✅
 │       ├── SystemExtensionH/        # 系統擴展H儲存庫 (SYSH000_NEW)
-│       │   └── PersonnelBatchRepository.cs
+│       │   └── PersonnelBatchRepository.cs ✅
 │       ├── Loyalty/                # 忠誠度儲存庫 (SYSLPS)
-│       │   └── LoyaltyRepository.cs
+│       │   ├── LoyaltyMemberRepository.cs ✅
+│       │   ├── LoyaltyPointTransactionRepository.cs ✅
+│       │   ├── LoyaltySystemConfigRepository.cs ✅
+│       │   └── LoyaltySystemInitLogRepository.cs ✅
 │       ├── CustomerCustom/         # 客戶定制儲存庫
 │       │   ├── Cus3000Repository.cs
 │       │   ├── Cus5000Repository.cs
@@ -2030,29 +2112,39 @@ src/ErpCore.Infrastructure/
 │       ├── MshModule/              # MSH儲存庫
 │       │   └── Msh3000Repository.cs
 │       ├── SapIntegration/         # SAP整合儲存庫
-│       │   └── TransSapRepository.cs
+│       │   └── TransSapRepository.cs ✅
 │       ├── UniversalModule/        # 通用模組儲存庫
-│       │   └── Univ000Repository.cs
+│       │   └── Univ000Repository.cs ✅
 │       ├── CustomerCustomJgjn/      # 客戶定制JGJN儲存庫
 │       │   └── SysCustJgjnRepository.cs
 │       ├── BusinessDevelopment/    # 招商儲存庫 (SYSC000)
-│       │   ├── ProspectMasterRepository.cs
-│       │   ├── ProspectRepository.cs
-│       │   └── InterviewRepository.cs
+│       │   ├── ProspectMasterRepository.cs ✅
+│       │   ├── ProspectRepository.cs ✅
+│       │   ├── InterviewRepository.cs ✅
+│       │   └── TenantLocationRepository.cs ✅
+│       ├── Recruitment/            # 招商儲存庫 (SYSC000) - 別名
+│       │   ├── TenantLocationRepository.cs ✅
+│       │   └── BusinessOtherRepository.cs ✅
 │       ├── CommunicationModule/     # 通訊模組儲存庫 (XCOM000)
 │       │   ├── XcomRepository.cs
-│       │   └── XcomMsgRepository.cs # XCOMMSG錯誤訊息處理儲存庫
+│       │   ├── XcomMsgRepository.cs # XCOMMSG錯誤訊息處理儲存庫
+│       │   ├── ErrorMessageRepository.cs ✅
+│       │   ├── XComSystemParamRepository.cs ✅
+│       │   └── SystemCommunicationRepository.cs ✅
 │       ├── ChartTools/             # 圖表與工具儲存庫
 │       │   ├── ChartRepository.cs
+│       │   ├── ChartConfigRepository.cs ✅
 │       │   └── ToolsRepository.cs
 │       ├── SystemExit/             # 系統退出儲存庫
 │       │   └── SystemExitRepository.cs
 │       ├── InvoiceExtension/       # 電子發票擴展儲存庫
-│       │   └── InvoiceExtensionRepository.cs
+│       │   └── EInvoiceExtensionRepository.cs ✅
 │       ├── SalesReport/            # 銷售報表儲存庫 (SYS1000)
-│       │   └── SalesReportRepository.cs
+│       │   └── SalesReportRepository.cs ✅
 │       ├── Energy/                 # 能源儲存庫 (SYSO000)
-│       │   └── EnergyRepository.cs
+│       │   ├── EnergyBaseRepository.cs ✅
+│       │   ├── EnergyProcessRepository.cs ✅
+│       │   └── EnergyExtensionRepository.cs ✅
 │       └── Common/                 # 共用儲存庫
 │           └── FileAttachmentRepository.cs
 │
@@ -2063,7 +2155,7 @@ src/ErpCore.Infrastructure/
 │
 ├── Services/                       # 外部服務
 │   ├── Email/                       # 郵件服務
-│   │   ├── IEmailService.cs
+│   │   ├── IEmailService.cs ✅
 │   │   ├── SmtpEmailService.cs
 │   │   └── EmailTemplateService.cs
 │   ├── FileStorage/                # 檔案儲存服務 ✅
@@ -2077,14 +2169,14 @@ src/ErpCore.Infrastructure/
 │   │   ├── ExcelReportService.cs
 │   │   └── CrystalReportService.cs
 │   ├── Barcode/                     # 條碼服務
-│   │   ├── IBarcodeService.cs
-│   │   └── BarcodeService.cs
+│   │   ├── IBarcodeService.cs ✅
+│   │   └── BarcodeService.cs ✅
 │   ├── Notification/                # 通知服務
-│   │   ├── INotificationService.cs
-│   │   ├── SmsNotificationService.cs
-│   │   └── PushNotificationService.cs
+│   │   ├── INotificationService.cs ✅
+│   │   ├── SmsNotificationService.cs ✅
+│   │   └── PushNotificationService.cs ✅
 │   ├── Payment/                     # 付款服務
-│   │   ├── IPaymentService.cs
+│   │   ├── IPaymentService.cs ✅
 │   │   └── PaymentGatewayService.cs
 │   └── Integration/                 # 整合服務
 │       ├── ISapIntegrationService.cs
@@ -2092,35 +2184,35 @@ src/ErpCore.Infrastructure/
 │       └── ExternalApiService.cs
 │
 ├── Caching/                        # 快取
-│   ├── ICacheService.cs
-│   ├── MemoryCacheService.cs
-│   ├── RedisCacheService.cs
-│   └── DistributedCacheService.cs
+│   ├── ICacheService.cs ✅
+│   ├── MemoryCacheService.cs ✅
+│   ├── RedisCacheService.cs ✅
+│   └── DistributedCacheService.cs ✅
 │
 ├── Logging/                        # 日誌
-│   ├── ILoggerService.cs
+│   ├── ILoggerService.cs ✅
 │   ├── SerilogLoggerService.cs
 │   ├── FileLoggerService.cs
 │   └── DatabaseLoggerService.cs
 │
 ├── Authentication/                 # 身份驗證
-│   ├── JwtTokenService.cs
-│   ├── PasswordHasher.cs
-│   └── TokenValidator.cs
+│   ├── JwtTokenService.cs ✅
+│   ├── PasswordHasher.cs ✅
+│   └── TokenValidator.cs ✅
 │
 ├── Authorization/                   # 授權
-│   ├── PermissionChecker.cs
-│   └── RoleBasedAuthorizationHandler.cs
+│   ├── PermissionChecker.cs ✅
+│   └── RoleBasedAuthorizationHandler.cs ✅
 │
 ├── BackgroundJobs/                  # 背景工作
-│   ├── IBackgroundJobService.cs
-│   ├── HangfireBackgroundJobService.cs
-│   └── QuartzBackgroundJobService.cs
+│   ├── IBackgroundJobService.cs ✅
+│   ├── HangfireBackgroundJobService.cs ✅
+│   └── QuartzBackgroundJobService.cs ✅
 │
 └── Messaging/                      # 訊息佇列
-    ├── IMessageQueueService.cs
-    ├── RabbitMqService.cs
-    └── AzureServiceBusService.cs
+    ├── IMessageQueueService.cs ✅
+    ├── RabbitMqService.cs ✅
+    └── AzureServiceBusService.cs ✅
 │
 └── Migrations/                     # EF Migrations（可選，通常放在 database/）
     └── [Migration Files]
@@ -2130,7 +2222,7 @@ src/ErpCore.Infrastructure/
 
 ```
 src/ErpCore.Shared/
-├── ErpCore.Shared.csproj
+├── ErpCore.Shared.csproj ✅
 │
 ├── Constants/                      # 常數
 │   ├── SystemConstants.cs
@@ -2146,10 +2238,10 @@ src/ErpCore.Shared/
 ├── Extensions/                     # 擴充方法
 │   ├── StringExtensions.cs
 │   ├── DateTimeExtensions.cs
-│   └── CollectionExtensions.cs
+│   └── CollectionExtensions.cs ✅
 │
 ├── Models/                         # 共用模型
-│   ├── ApiResponse.cs
+│   ├── ApiResponse.cs ✅
 │   ├── PagedResult.cs
 │   └── ErrorDetail.cs
 │
@@ -2162,9 +2254,9 @@ src/ErpCore.Shared/
 
 ```
 src/ErpCore.Web/
-├── package.json                    # NPM 套件設定
+├── package.json ✅                    # NPM 套件設定
 ├── package-lock.json               # 套件鎖定檔
-├── vue.config.js                   # Vue CLI 設定
+├── vue.config.js ✅                   # Vue CLI 設定
 ├── babel.config.js                 # Babel 設定
 ├── .eslintrc.js                    # ESLint 設定
 ├── .eslintrc.cjs                   # ESLint 設定（CommonJS 格式）
@@ -2186,12 +2278,12 @@ src/ErpCore.Web/
 ├── .env.production                 # 生產環境變數
 ├── .env.staging                    # 測試環境變數
 ├── .env.local                      # 本地環境變數
-├── .gitignore                      # Git 忽略檔案
+├── .gitignore                      # Git 忽略檔案 ✅
 ├── .npmrc                          # NPM 設定檔
 ├── .nvmrc                          # Node 版本設定（如使用 nvm）
 ├── .yarnrc                          # Yarn 設定檔（如使用 Yarn）
 ├── yarn.lock                       # Yarn 鎖定檔（如使用 Yarn）
-├── .editorconfig                   # 編輯器設定檔
+├── .editorconfig                   # 編輯器設定檔 ✅
 ├── .stylelintrc.js                 # Stylelint 設定（如使用）
 ├── .stylelintrc.json               # Stylelint 設定（JSON 格式）
 ├── .stylelintignore                # Stylelint 忽略檔案
@@ -2204,14 +2296,14 @@ src/ErpCore.Web/
 │       └── frontend-ci.yml         # 前端 CI 工作流程
 │
 ├── config/                         # 前端配置目錄
-│   ├── index.js                    # 主配置檔
+│   ├── index.js ✅                    # 主配置檔
 │   ├── dev.env.js                  # 開發環境配置
 │   ├── prod.env.js                 # 生產環境配置
 │   ├── staging.env.js              # 測試環境配置
 │   └── local.env.js                # 本地環境配置
 │
 ├── public/                         # 靜態檔案
-│   ├── index.html                  # HTML 模板
+│   ├── index.html ✅                  # HTML 模板
 │   ├── favicon.ico                 # 網站圖示
 │   ├── robots.txt                  # 搜尋引擎爬蟲規則
 │   ├── sitemap.xml                 # 網站地圖（可選）
@@ -2223,53 +2315,53 @@ src/ErpCore.Web/
 │           └── [字型檔案]
 │
 ├── src/                            # Vue 原始碼
-│   ├── main.js                     # 應用程式進入點
-│   ├── App.vue                     # 根元件
+│   ├── main.js ✅                     # 應用程式進入點
+│   ├── App.vue ✅                     # 根元件
 │   │
 │   ├── api/                        # API 服務
-│   │   ├── index.js                # API 設定
-│   │   ├── axios.js                # Axios 設定
+│   │   ├── index.js ✅                # API 設定
+│   │   ├── axios.js ✅                # Axios 設定
 │   │   ├── interceptors.js         # 請求/回應攔截器
 │   │   ├── modules/                # API 模組
 │   │   │   ├── system.js           # 一、系統管理 API (SYS0000)
 │   │   │   ├── basicData.js         # 二、基本資料管理 API (SYSB000)
-│   │   │   ├── inventory.js         # 三、進銷存管理 API (SYSW000)
-│   │   │   ├── purchase.js          # 四、採購管理 API (SYSP000)
-│   │   │   ├── transfer.js          # 五、調撥管理 API (SYSW000)
-│   │   │   ├── inventoryCheck.js    # 六、盤點管理 API (SYSW000)
-│   │   │   ├── stockAdjustment.js   # 七、庫存調整 API (SYSW000)
-│   │   │   ├── invoice.js           # 八、電子發票管理 API (ECA0000)
-│   │   │   ├── customer.js          # 九、客戶管理 API (CUS5000)
-│   │   │   ├── analysisReport.js    # 十、分析報表 API (SYSA000)
-│   │   │   ├── businessReport.js    # 十一、業務報表 API (SYSL000)
-│   │   │   ├── pos.js               # 十二、POS系統 API
-│   │   │   ├── systemExtension.js   # 十三、系統擴展 API
-│   │   │   ├── kiosk.js             # 十四、自助服務終端 API
-│   │   │   ├── reportExtension.js    # 十五、報表擴展 API
-│   │   │   ├── dropdownList.js      # 十六、下拉列表 API
-│   │   │   ├── communication.js     # 十七、通訊與通知 API
-│   │   │   ├── uiComponent.js       # 十八、UI組件 API
-│   │   │   ├── tools.js             # 十九、工具 API
-│   │   │   ├── core.js              # 二十、核心功能 API
-│   │   │   ├── otherModule.js       # 二十一、其他模組 API
-│   │   │   ├── humanResource.js      # 二十二、人力資源管理 API (SYSH000)
-│   │   │   ├── accounting.js        # 二十三、會計財務管理 API (SYSN000)
-│   │   │   ├── taxAccounting.js     # 二十四、會計稅務管理 API (SYST000)
-│   │   │   ├── procurement.js       # 二十五、採購供應商管理 API (SYSP000)
-│   │   │   ├── contract.js          # 二十六、合同管理 API (SYSF000)
-│   │   │   ├── lease.js              # 二十七、租賃管理 API (SYS8000)
-│   │   │   ├── leaseSYSE.js          # 二十八、租賃管理SYSE API (SYSE000)
-│   │   │   ├── leaseSYSM.js          # 二十九、租賃管理SYSM API (SYSM000)
-│   │   │   ├── extension.js          # 三十、擴展管理 API (SYS9000)
-│   │   │   ├── query.js              # 三十一、查詢管理 API (SYSQ000)
+│   │   │   ├── inventory.js ✅         # 三、進銷存管理 API (SYSW000)
+│   │   │   ├── purchase.js ✅          # 四、採購管理 API (SYSP000)
+│   │   │   ├── transfer.js ✅          # 五、調撥管理 API (SYSW000)
+│   │   │   ├── inventoryCheck.js ✅    # 六、盤點管理 API (SYSW000)
+│   │   │   ├── stockAdjustment.js ✅   # 七、庫存調整 API (SYSW000)
+│   │   │   ├── invoice.js ✅           # 八、電子發票管理 API (ECA0000)
+│   │   │   ├── customer.js ✅          # 九、客戶管理 API (CUS5000)
+│   │   │   ├── analysisReport.js ✅    # 十、分析報表 API (SYSA000)
+│   │   │   ├── businessReport.js ✅    # 十一、業務報表 API (SYSL000)
+│   │   │   ├── pos.js               # 十二、POS系統 API ✅
+│   │   │   ├── systemExtension.js ✅   # 十三、系統擴展 API
+│   │   │   ├── kiosk.js ✅             # 十四、自助服務終端 API
+│   │   │   ├── reportExtension.js    # 十五、報表擴展 API ✅
+│   │   │   ├── dropdownList.js      # 十六、下拉列表 API ✅
+│   │   │   ├── communication.js     # 十七、通訊與通知 API ✅
+│   │   │   ├── uiComponent.js       # 十八、UI組件 API ✅
+│   │   │   ├── tools.js             # 十九、工具 API ✅
+│   │   │   ├── core.js              # 二十、核心功能 API ✅
+│   │   │   ├── otherModule.js       # 二十一、其他模組 API ✅
+│   │   │   ├── humanResource.js ✅      # 二十二、人力資源管理 API (SYSH000)
+│   │   │   ├── accounting.js        # 二十三、會計財務管理 API (SYSN000) ✅
+│   │   │   ├── taxAccounting.js ✅     # 二十四、會計稅務管理 API (SYST000)
+│   │   │   ├── procurement.js       # 二十五、採購供應商管理 API (SYSP000) ✅
+│   │   │   ├── contract.js ✅          # 二十六、合同管理 API (SYSF000)
+│   │   │   ├── lease.js ✅              # 二十七、租賃管理 API (SYS8000)
+│   │   │   ├── leaseSYSE.js ✅          # 二十八、租賃管理SYSE API (SYSE000)
+│   │   │   ├── leaseSYSM.js ✅          # 二十九、租賃管理SYSM API (SYSM000)
+│   │   │   ├── extension.js ✅          # 三十、擴展管理 API (SYS9000)
+│   │   │   ├── query.js ✅              # 三十一、查詢管理 API (SYSQ000)
 │   │   │   ├── reportManagement.js   # 三十二、報表管理 API (SYSR000)
-│   │   │   ├── sales.js              # 三十三、銷售管理 API (SYSD000)
-│   │   │   ├── certificate.js        # 三十四、憑證管理 API (SYSK000)
-│   │   │   ├── otherManagement.js    # 三十五、其他管理 API
-│   │   │   ├── customerInvoice.js    # 三十六、客戶與發票管理 API (SYS2000)
-│   │   │   ├── storeMember.js        # 三十七、商店與會員管理 API (SYS3000)
-│   │   │   ├── storeFloor.js         # 三十八、商店樓層管理 API (SYS6000)
-│   │   │   ├── invoiceSales.js       # 三十九、發票銷售管理 API (SYSG000)
+│   │   │   ├── sales.js ✅              # 三十三、銷售管理 API (SYSD000)
+│   │   │   ├── certificate.js ✅        # 三十四、憑證管理 API (SYSK000)
+│   │   │   ├── otherManagement.js ✅    # 三十五、其他管理 API
+│   │   │   ├── customerInvoice.js    # 三十六、客戶與發票管理 API (SYS2000) ✅
+│   │   │   ├── storeMember.js ✅        # 三十七、商店與會員管理 API (SYS3000)
+│   │   │   ├── storeFloor.js         # 三十八、商店樓層管理 API (SYS6000) ✅
+│   │   │   ├── invoiceSales.js ✅       # 三十九、發票銷售管理 API (SYSG000)
 │   │   │   ├── invoiceSalesB2B.js   # 四十、發票銷售管理B2B API (SYSG000_B2B)
 │   │   │   ├── systemExtensionE.js   # 四十一、系統擴展E API (SYSPE00)
 │   │   │   ├── systemExtensionH.js   # 四十二、系統擴展H API (SYSH000_NEW)
@@ -2288,20 +2380,20 @@ src/ErpCore.Web/
 │   │   │   ├── systemExit.js         # 五十四、系統退出 API
 │   │   │   ├── invoiceExtension.js   # 五十五、電子發票擴展 API
 │   │   │   ├── salesReport.js        # 五十六、銷售報表管理 API (SYS1000)
-│   │   │   └── energy.js             # 五十七、能源管理 API (SYSO000)
+│   │   │   └── energy.js             # 五十七、能源管理 API (SYSO000) ✅
 │   │   └── endpoints.js             # API 端點常數
 │   │
 │   ├── assets/                     # 資源檔案
 │   │   ├── styles/                 # 樣式檔案
-│   │   │   ├── main.scss           # 主樣式
-│   │   │   ├── variables.scss      # 變數
+│   │   │   ├── main.scss ✅           # 主樣式
+│   │   │   ├── variables.scss ✅      # 變數
 │   │   │   ├── mixins.scss         # Mixins
-│   │   │   ├── reset.scss          # 樣式重置
-│   │   │   ├── base.scss           # 基礎樣式
+│   │   │   ├── reset.scss ✅          # 樣式重置
+│   │   │   ├── base.scss ✅           # 基礎樣式
 │   │   │   ├── components/         # 元件樣式
-│   │   │   │   ├── button.scss
+│   │   │   │   ├── button.scss ✅
 │   │   │   │   ├── input.scss
-│   │   │   │   ├── table.scss
+│   │   │   │   ├── table.scss ✅
 │   │   │   │   └── [其他元件樣式]
 │   │   │   └── themes/             # 主題樣式
 │   │   │       ├── default.scss
@@ -2323,7 +2415,7 @@ src/ErpCore.Web/
 │   │   │   ├── Dialog.vue          # 對話框元件
 │   │   │   ├── Form.vue            # 表單元件
 │   │   │   ├── Loading.vue          # 載入元件
-│   │   │   ├── Upload.vue          # 上傳元件
+│   │   │   ├── Upload.vue ✅          # 上傳元件
 │   │   │   ├── DatePicker.vue      # 日期選擇器元件
 │   │   │   ├── TimePicker.vue       # 時間選擇器元件
 │   │   │   ├── Tree.vue            # 樹形元件
@@ -2354,567 +2446,471 @@ src/ErpCore.Web/
 │   │       └── [其他業務元件]
 │   │
 │   ├── views/                      # 頁面元件
-│   │   ├── Layout.vue              # 主版面
+│   │   ├── Layout.vue ✅              # 主版面
 │   │   ├── Login.vue               # 登入頁
 │   │   │
-│   │   ├── System/                 # 一、系統管理模組 (SYS0000)
-│   │   │   ├── Users/              # 使用者管理 (SYS0110-SYS0140, SYS0117, SYS0610, SYS0760)
-│   │   │   │   ├── index.vue       # 使用者列表
-│   │   │   │   ├── Create.vue      # 新增使用者
-│   │   │   │   ├── Edit.vue        # 編輯使用者
-│   │   │   │   ├── Detail.vue      # 使用者詳情
-│   │   │   │   └── Agent.vue       # 使用者權限代理 (SYS0117)
-│   │   │   ├── Roles/              # 角色管理 (SYS0210-SYS0240, SYS0620)
-│   │   │   │   ├── index.vue       # 角色列表
-│   │   │   │   ├── Create.vue      # 新增角色
-│   │   │   │   ├── Edit.vue        # 編輯角色
-│   │   │   │   ├── UserRoles.vue   # 使用者之角色設定 (SYS0220)
-│   │   │   │   ├── RoleUsers.vue   # 角色之使用者設定 (SYS0230)
-│   │   │   │   └── Copy.vue        # 角色複製 (SYS0240)
-│   │   │   ├── Permissions/        # 權限管理 (SYS0310-SYS0360, SYS0510, SYS0710-SYS0780)
-│   │   │   │   ├── RolePermissions.vue # 角色系統權限設定 (SYS0310)
-│   │   │   │   ├── UserPermissions.vue # 使用者系統權限設定 (SYS0320)
-│   │   │   │   ├── RoleFieldPermissions.vue # 角色欄位權限設定 (SYS0330)
-│   │   │   │   ├── UserFieldPermissions.vue # 使用者欄位權限設定 (SYS0340)
-│   │   │   │   ├── SystemMappingPermissions.vue # 系統對應權限設定 (SYS0360)
-│   │   │   │   └── ControlledFields.vue # 可管控欄位資料維護 (SYS0510)
-│   │   │   ├── SystemConfig/       # 系統設定 (CFG0410-CFG0440)
-│   │   │   │   ├── MainSystem.vue  # 主系統項目資料維護 (CFG0410)
-│   │   │   │   ├── SubSystem.vue  # 子系統項目資料維護 (CFG0420)
-│   │   │   │   ├── SystemOperation.vue # 系統作業資料維護 (CFG0430)
-│   │   │   │   └── SystemButton.vue # 系統功能按鈕資料維護 (CFG0440)
-│   │   │   └── Logs/               # 日誌管理 (SYS0610-SYS0660, SYS0790, SYS0810, SYS0910, SYS0999)
-│   │   │       ├── UserChangeLog.vue # 使用者基本資料異動查詢 (SYS0610)
-│   │   │       ├── RoleChangeLog.vue # 角色基本資料異動查詢 (SYS0620)
-│   │   │       ├── UserRoleChangeLog.vue # 使用者角色對應設定異動查詢 (SYS0630)
-│   │   │       ├── PermissionChangeLog.vue # 系統權限異動記錄查詢 (SYS0640)
-│   │   │       ├── FieldChangeLog.vue # 可管控欄位異動記錄查詢 (SYS0650)
-│   │   │       ├── OtherChangeLog.vue # 其他異動記錄查詢 (SYS0660)
-│   │   │       └── ButtonLog.vue   # BUTTON LOG 查詢 (SYS0790)
+│   │   ├── System/                 # 一、系統管理模組 (SYS0000) ✅
+│   │   │   ├── Users.vue           # 使用者基本資料維護 (SYS0110) ✅
+│   │   │   ├── Roles.vue           # 角色基本資料維護 (SYS0210) ✅
+│   │   │   ├── Permissions.vue     # 權限管理 (SYS0310, SYS0320, SYS0330, SYS0340) ✅
+│   │   │   ├── SystemConfig.vue    # 系統設定 (CFG0410, CFG0420, CFG0430, CFG0440) ✅
+│   │   │   ├── ChangeLogs.vue      # 異動記錄查詢 (SYS0610-SYS0660) ✅
+│   │   │   ├── UserQueryReport.vue # 使用者查詢功能 (SYS0910) ✅
+│   │   │   ├── SystemProgramButtonReport.vue # 系統作業與功能列表查詢 (SYS0810, SYS0999) ✅
+│   │   │   ├── PermissionCategoryReport.vue # 權限分類報表查詢 (SYS0770) ✅
+│   │   │   ├── RoleUserListReport.vue # 角色之使用者列表 (SYS0750) ✅
+│   │   │   ├── RoleSystemPermissionListReport.vue # 角色系統權限列表 (SYS0731) ✅
+│   │   │   ├── ProgramRolePermissionListReport.vue # 作業權限之角色列表 (SYS0740) ✅
+│   │   │   ├── ProgramUserPermissionReport.vue # 作業權限之使用者列表 (SYS0720) ✅
+│   │   │   ├── SystemPermissionReport.vue # 系統權限列表 (SYS0710) ✅
+│   │   │   └── ButtonLogReport.vue # BUTTON LOG 查詢 (SYS0790) ✅
 │   │   │
-│   │   ├── BasicData/              # 二、基本資料管理 (SYSB000)
-│   │   │   ├── Parameters/        # 參數設定 (SYSBC40)
-│   │   │   │   └── index.vue
-│   │   │   ├── Regions/            # 地區設定 (SYSBC30, SYSB450)
-│   │   │   │   ├── index.vue
-│   │   │   │   └── Area.vue
-│   │   │   ├── Banks/              # 金融機構 (SYSBC20)
-│   │   │   │   └── index.vue
-│   │   │   ├── Vendors/            # 廠商客戶 (SYSB206)
-│   │   │   │   └── index.vue
-│   │   │   ├── Organization/        # 組織架構 (SYSWB40, SYSWB70, SYSWB60)
-│   │   │   │   ├── Department.vue  # 部別資料維護 (SYSWB40)
-│   │   │   │   ├── Group.vue       # 組別資料維護 (SYSWB70)
-│   │   │   │   └── Warehouse.vue   # 庫別資料維護 (SYSWB60)
-│   │   │   └── ProductCategory/    # 商品分類 (SYSB110)
-│   │   │       └── index.vue
+│   │   ├── BasicData/              # 二、基本資料管理 (SYSB000) ✅
+│   │   │   ├── Parameters.vue     # 參數設定 (SYSBC40) ✅
+│   │   │   ├── Regions.vue         # 地區設定 (SYSBC30) ✅
+│   │   │   ├── Areas.vue          # 區域設定 (SYSB450) ✅
+│   │   │   ├── Banks.vue          # 金融機構 (SYSBC20) ✅
+│   │   │   ├── Vendors.vue        # 廠商客戶 (SYSB206) ✅
+│   │   │   ├── Departments.vue    # 部別資料維護 (SYSWB40) ✅
+│   │   │   ├── Groups.vue         # 組別資料維護 (SYSWB70) ✅
+│   │   │   ├── Warehouses.vue    # 庫別資料維護 (SYSWB60) ✅
+│   │   │   └── ProductCategory.vue # 商品分類資料維護 (SYSB110) ✅
 │   │   │
-│   │   ├── Inventory/              # 三、進銷存管理 (SYSW000)
-│   │   │   ├── Products/          # 商品管理 (SYSW110, SYSW137, SYSW150)
-│   │   │   │   ├── index.vue       # 供應商商品資料維護 (SYSW110)
-│   │   │   │   ├── ProductCode.vue # 商品進銷碼維護 (SYSW137)
-│   │   │   │   └── PriceChange.vue # 商品永久變價 (SYSW150)
-│   │   │   ├── Stock/             # 庫存管理
-│   │   │   │   └── index.vue
-│   │   │   ├── Labels/            # 標籤列印 (SYSW170-SYSW172)
-│   │   │   │   ├── PopCard.vue     # POP卡商品卡列印 (SYSW170)
-│   │   │   │   ├── PopCardAP.vue  # POP卡商品卡列印_AP (SYSW171)
-│   │   │   │   └── PopCardUA.vue  # POP卡商品卡列印_UA (SYSW172)
-│   │   │   └── BatFormat/         # BAT格式文本文件處理 (HT680)
-│   │   │       ├── ReturnFile.vue # 退貨檔
-│   │   │       ├── InventoryFile.vue # 盤點檔
-│   │   │       ├── OrderFile.vue  # 訂貨檔
-│   │   │       ├── PopCardFile.vue # POP卡製作檔
-│   │   │       └── ProductCardFile.vue # 商品卡檔
+│   │   ├── Inventory/              # 三、進銷存管理 (SYSW000) ✅
+│   │   │   ├── SupplierGoods.vue  # 供應商商品資料維護 (SYSW110) ✅
+│   │   │   ├── ProductGoodsId.vue # 商品進銷碼維護 (SYSW137) ✅
+│   │   │   ├── PriceChange.vue   # 商品永久變價 (SYSW150) ✅
+│   │   │   ├── PopPrint.vue      # POP卡商品卡列印 (SYSW170) ✅
+│   │   │   ├── PopPrintAp.vue    # POP卡商品卡列印_AP (SYSW171) ✅
+│   │   │   └── PopPrintUa.vue    # POP卡商品卡列印_UA (SYSW172) ✅
 │   │   │
-│   │   ├── Purchase/              # 四、採購管理 (SYSP000)
-│   │   │   ├── Orders/            # 訂退貨作業 (SYSW315, SYSW316, SYSW322)
-│   │   │   │   ├── index.vue      # 訂退貨申請作業 (SYSW315, SYSW316)
-│   │   │   │   └── OnSite.vue     # 現場打單作業 (SYSW322)
-│   │   │   ├── Receiving/         # 驗收作業 (SYSW324, SYSW336, SYSW333)
-│   │   │   │   ├── index.vue      # 採購單驗收作業 (SYSW324, SYSW336)
-│   │   │   │   └── Adjustment.vue # 已日結採購單驗收調整 (SYSW333)
-│   │   │   └── Returns/           # 退貨作業 (SYSW337, SYSW530)
-│   │   │       └── Adjustment.vue # 已日結退貨單驗退調整 (SYSW337, SYSW530)
+│   │   ├── Purchase/              # 四、採購管理 (SYSP000) ✅
+│   │   │   ├── PurchaseOrder.vue  # 訂退貨申請作業 (SYSW315) ✅
+│   │   │   ├── PurchaseOrderReturn.vue # 訂退貨申請作業 (SYSW316) ✅
+│   │   │   ├── OnSitePurchaseOrder.vue # 現場打單作業 (SYSW322) ✅
+│   │   │   ├── PurchaseReceipt.vue # 採購單驗收作業 (SYSW324, SYSW336) ✅
+│   │   │   ├── SettledPurchaseReceiptAdjustment.vue # 已日結採購單驗收調整 (SYSW333) ✅
+│   │   │   ├── ClosedReturnAdjustment.vue # 已日結退貨單驗退調整 (SYSW337) ✅
+│   │   │   └── ClosedReturnAdjustmentV2.vue # 已日結退貨單驗退調整 (SYSW530) ✅
 │   │   │
-│   │   ├── Transfer/              # 五、調撥管理 (SYSW000)
-│   │   │   ├── Receiving.vue      # 調撥單驗收作業 (SYSW352)
-│   │   │   ├── Return.vue         # 調撥單驗退作業 (SYSW362)
-│   │   │   └── Shortage.vue       # 調撥短溢維護作業 (SYSW384)
+│   │   ├── Transfer/              # 五、調撥管理 (SYSW000) ✅
+│   │   │   ├── Receiving.vue      # 調撥單驗收作業 (SYSW352) ✅
+│   │   │   ├── Return.vue         # 調撥單驗退作業 (SYSW362) ✅
+│   │   │   └── Shortage.vue       # 調撥短溢維護作業 (SYSW384) ✅
 │   │   │
-│   │   ├── InventoryCheck/        # 六、盤點管理 (SYSW000)
-│   │   │   └── index.vue          # 盤點維護作業 (SYSW53M)
+│   │   ├── InventoryCheck/        # 六、盤點管理 (SYSW000) ✅
+│   │   │   └── StocktakingPlan.vue # 盤點維護作業 (SYSW53M) ✅
 │   │   │
-│   │   ├── StockAdjustment/       # 七、庫存調整 (SYSW000)
-│   │   │   └── index.vue          # 庫存調整作業 (SYSW490)
+│   │   ├── StockAdjustment/       # 七、庫存調整 (SYSW000) ✅
+│   │   │   └── InventoryAdjustment.vue # 庫存調整作業 (SYSW490) ✅
 │   │   │
-│   │   ├── Invoice/               # 八、電子發票管理 (ECA0000)
-│   │   │   ├── Upload.vue         # 電子發票上傳 (ECA2050, ECA3010, ECA3030)
-│   │   │   ├── Process.vue        # 電子發票處理 (ECA3010)
-│   │   │   ├── Query.vue          # 電子發票查詢 (ECA3020)
-│   │   │   └── Reports/           # 電子發票報表 (ECA3040, ECA4010-ECA4060)
-│   │   │       ├── index.vue      # 電子發票報表查詢 (ECA3040)
-│   │   │       ├── OrderDetail.vue # 訂單明細 (ECA4010)
-│   │   │       ├── ProductSales.vue # 商品銷售統計 (ECA4020)
-│   │   │       ├── RetailerSales.vue # 零售商銷售統計 (ECA4030)
-│   │   │       ├── ShopSales.vue   # 店別銷售統計 (ECA4040)
-│   │   │       ├── ShipDate.vue    # 出貨日期統計 (ECA4050)
-│   │   │       └── OrderDate.vue   # 訂單日期統計 (ECA4060)
+│   │   ├── EInvoice/              # 八、電子發票管理 (ECA0000) ✅
+│   │   │   ├── EInvoiceUpload.vue # 電子發票上傳 (ECA2050, ECA3010, ECA3030) ✅
+│   │   │   ├── EInvoiceProcess.vue # 電子發票處理 (ECA3010) ✅
+│   │   │   ├── EInvoiceQuery.vue # 電子發票查詢 (ECA3020) ✅
+│   │   │   └── EInvoiceReport.vue # 電子發票報表 (ECA3040) ✅
 │   │   │
-│   │   ├── Customer/              # 九、客戶管理 (CUS5000)
-│   │   │   ├── index.vue          # 客戶基本資料維護 (CUS5110)
-│   │   │   ├── Query.vue          # 客戶查詢作業 (CUS5120)
-│   │   │   └── Report.vue         # 客戶報表 (CUS5130)
+│   │   ├── Customer/              # 九、客戶管理 (CUS5000) ✅
+│   │   │   ├── CustomerMaintenance.vue # 客戶基本資料維護 (CUS5110) ✅
+│   │   │   ├── CustomerQuery.vue  # 客戶查詢作業 (CUS5120) ✅
+│   │   │   └── CustomerReport.vue # 客戶報表 (CUS5130) ✅
 │   │   │
-│   │   ├── AnalysisReport/         # 十、分析報表 (SYSA000)
-│   │   │   ├── Consumables/       # 耗材管理
-│   │   │   │   └── index.vue
-│   │   │   ├── InventoryAnalysis/ # 進銷存分析
-│   │   │   │   └── index.vue
-│   │   │   └── WorkConsumables/   # 工務耗材領用申請
-│   │   │       └── index.vue
+│   │   ├── AnalysisReport/         # 十、分析報表 (SYSA000) ✅
+│   │   │   └── AnalysisReportQuery.vue # 進銷存分析報表 (SYSA1000) ✅
 │   │   │
-│   │   ├── BusinessReport/        # 十一、業務報表 (SYSL000)
-│   │   │   ├── Business/          # 業務報表查詢
-│   │   │   │   └── index.vue
-│   │   │   ├── EmployeeCard/      # 員餐卡管理
-│   │   │   │   └── index.vue
-│   │   │   ├── ReturnCard/        # 銷退卡管理
-│   │   │   │   └── index.vue
-│   │   │   └── Overtime/          # 加班發放管理
-│   │   │       └── index.vue
+│   │   ├── BusinessReport/        # 十一、業務報表 (SYSL000) ✅
+│   │   │   └── EmployeeMealCardList.vue # 員餐卡管理 (SYSL210) ✅
 │   │   │
-│   │   ├── Pos/                    # 十二、POS系統
-│   │   │   ├── Transaction.vue     # POS交易查詢
-│   │   │   ├── Report.vue          # POS報表查詢
-│   │   │   └── Sync.vue            # POS資料同步作業
+│   │   ├── Pos/                    # 十二、POS系統 ✅
+│   │   │   ├── Transaction.vue     # POS交易查詢 ✅
+│   │   │   ├── Report.vue          # POS報表查詢 ✅
+│   │   │   └── Sync.vue            # POS資料同步作業 ✅
 │   │   │
-│   │   ├── SystemExtension/       # 十三、系統擴展
-│   │   │   ├── index.vue          # 系統擴展資料維護 (SYSX110)
-│   │   │   ├── Query.vue          # 系統擴展查詢 (SYSX120)
-│   │   │   └── Report.vue          # 系統擴展報表 (SYSX140)
+│   │   ├── SystemExtension/       # 十三、系統擴展 ✅
+│   │   │   └── SYSX140Report.vue  # 系統擴展報表 (SYSX140) ✅
 │   │   │
-│   │   ├── Kiosk/                  # 十四、自助服務終端
-│   │   │   ├── Report.vue          # Kiosk報表查詢
-│   │   │   └── Process.vue         # Kiosk資料處理作業
+│   │   ├── Kiosk/                  # 十四、自助服務終端 ✅
+│   │   │   ├── Report.vue          # Kiosk報表查詢 ✅
+│   │   │   └── Process.vue         # Kiosk資料處理作業 ✅
 │   │   │
 │   │   ├── ReportExtension/        # 十五、報表擴展
-│   │   │   ├── ModuleO/            # 報表模組O
-│   │   │   │   └── index.vue
-│   │   │   ├── ModuleN/            # 報表模組N
-│   │   │   │   └── index.vue
-│   │   │   ├── ModuleWP/           # 報表模組WP
-│   │   │   │   └── index.vue
-│   │   │   ├── Module7/            # 報表模組7 (SYS7000)
-│   │   │   │   └── index.vue
-│   │   │   ├── Print/              # 報表列印作業 (SYS7B10-SYS7B40)
-│   │   │   │   └── index.vue
-│   │   │   └── Statistics/         # 報表統計作業 (SYS7C10, SYS7C30)
-│   │   │       └── index.vue
+│   │   │   ├── ModuleO.vue         # 報表模組O ✅
+│   │   │   ├── ModuleN.vue         # 報表模組N ✅
+│   │   │   ├── ModuleWP.vue        # 報表模組WP ✅
+│   │   │   ├── Module7.vue         # 報表模組7 (SYS7000) ✅
+│   │   │   ├── Print.vue           # 報表列印作業 (SYS7B10-SYS7B40) ✅
+│   │   │   └── Statistics.vue      # 報表統計作業 (SYS7C10, SYS7C30) ✅
 │   │   │
-│   │   ├── DropdownList/           # 十六、下拉列表
-│   │   │   ├── Address/            # 地址列表 (ADDR_CITY_LIST, ADDR_ZONE_LIST)
-│   │   │   │   └── index.vue
-│   │   │   ├── Date/               # 日期列表 (DATE_LIST)
-│   │   │   │   └── index.vue
-│   │   │   ├── Menu/               # 選單列表 (MENU_LIST)
-│   │   │   │   └── index.vue
-│   │   │   ├── MultiSelect/        # 多選列表 (MULTI_AREA_LIST, MULTI_SHOP_LIST, MULTI_USERS_LIST)
-│   │   │   │   └── index.vue
-│   │   │   └── System/             # 系統列表 (SYSID_LIST, USER_LIST)
-│   │   │       └── index.vue
+│   │   ├── DropdownList/           # 十六、下拉列表 ✅
+│   │   │   ├── AddressList.vue    # 地址列表 (ADDR_CITY_LIST, ADDR_ZONE_LIST) ✅
+│   │   │   ├── DateList.vue       # 日期列表 (DATE_LIST) ✅
+│   │   │   ├── MenuList.vue       # 選單列表 (MENU_LIST) ✅
+│   │   │   ├── MultiSelectList.vue # 多選列表 (MULTI_AREA_LIST, MULTI_SHOP_LIST, MULTI_USERS_LIST) ✅
+│   │   │   └── SystemList.vue     # 系統列表 (SYSID_LIST, USER_LIST) ✅
 │   │   │
-│   │   ├── Communication/          # 十七、通訊與通知
-│   │   │   ├── AutoProcessMail.vue # 自動處理郵件作業
-│   │   │   ├── EncodeData.vue      # 資料編碼作業
-│   │   │   └── MailSms.vue         # 郵件簡訊發送作業 (SYS5000)
+│   │   ├── Communication/          # 十七、通訊與通知 ✅
+│   │   │   ├── AutoProcessMail.vue # 自動處理郵件作業 ✅
+│   │   │   ├── EncodeData.vue      # 資料編碼作業 ✅
+│   │   │   └── MailSms.vue         # 郵件簡訊發送作業 (SYS5000) ✅
 │   │   │
-│   │   ├── UiComponent/            # 十八、UI組件
-│   │   │   ├── DataMaintenance/    # 資料維護UI組件 (IMS30系列)
-│   │   │   │   └── index.vue
-│   │   │   └── QueryReport/        # UI組件查詢與報表
-│   │   │       └── index.vue
+│   │   ├── UiComponent/            # 十八、UI組件 ✅
+│   │   │   ├── DataMaintenance.vue # 資料維護UI組件 (IMS30系列) ✅
+│   │   │   └── QueryReport.vue    # UI組件查詢與報表 ✅
 │   │   │
-│   │   ├── Tools/                   # 十九、工具
-│   │   │   ├── FileUpload.vue      # 檔案上傳工具 (FILE_UPLOAD)
-│   │   │   ├── Barcode.vue          # 條碼處理工具 (RSL_BARCODE)
-│   │   │   └── Html2Pdf.vue        # HTML轉PDF工具 (RslHtml2Pdf)
+│   │   ├── Tools/                   # 十九、工具 ✅
+│   │   │   ├── FileUpload.vue      # 檔案上傳工具 (FILE_UPLOAD) ✅
+│   │   │   ├── Barcode.vue          # 條碼處理工具 (RSL_BARCODE) ✅
+│   │   │   └── Html2Pdf.vue        # HTML轉PDF工具 (RslHtml2Pdf) ✅
 │   │   │
 │   │   ├── Core/                    # 二十、核心功能
-│   │   │   ├── UserManagement/     # 使用者管理
-│   │   │   │   └── index.vue
-│   │   │   ├── Framework/          # 框架功能
-│   │   │   │   └── index.vue
-│   │   │   ├── DataMaintenance/     # 資料維護功能
-│   │   │   │   └── index.vue
-│   │   │   ├── Tools/               # 工具功能
-│   │   │   │   └── index.vue
-│   │   │   └── SystemFunction/     # 系統功能
-│   │   │       └── index.vue
+│   │   │   ├── UserManagement.vue  # 使用者管理 ✅
+│   │   │   ├── Framework.vue        # 框架功能 ✅
+│   │   │   ├── DataMaintenance.vue  # 資料維護功能 ✅ (位於UiComponent目錄)
+│   │   │   ├── Tools.vue            # 工具功能 ✅
+│   │   │   └── SystemFunction.vue   # 系統功能 ✅
 │   │   │
 │   │   ├── OtherModule/            # 二十一、其他模組
-│   │   │   ├── CrpReport/          # CRP報表模組
-│   │   │   │   └── index.vue
-│   │   │   ├── EipIntegration/      # EIP系統整合 (IMS2EIP)
-│   │   │   │   └── index.vue
-│   │   │   └── LabTest/            # 實驗室測試功能 (Lab)
-│   │   │       └── index.vue
+│   │   │   ├── CrpReport.vue       # CRP報表模組 ✅
+│   │   │   ├── EipIntegration.vue  # EIP系統整合 (IMS2EIP) ✅
+│   │   │   └── LabTest.vue         # 實驗室測試功能 (Lab) ✅
 │   │   │
 │   │   ├── HumanResource/          # 二十二、人力資源管理 (SYSH000)
 │   │   │   ├── Personnel/         # 人事管理
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── Payroll/            # 薪資管理
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── Attendance/        # 考勤管理
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── Accounting/             # 二十三、會計財務管理 (SYSN000)
-│   │   │   ├── Accounting/        # 會計管理
-│   │   │   │   └── index.vue
-│   │   │   ├── FinancialTransaction/ # 財務交易
-│   │   │   │   └── index.vue
-│   │   │   ├── Asset/              # 資產管理
-│   │   │   │   └── index.vue
-│   │   │   ├── FinancialReport/    # 財務報表
-│   │   │   │   └── index.vue
-│   │   │   └── OtherFinancial/     # 其他財務功能
-│   │   │       └── index.vue
+│   │   ├── Accounting/             # 二十三、會計財務管理 (SYSN000) ✅
+│   │   │   ├── AccountSubject.vue  # 會計科目維護 (SYSN110) ✅
+│   │   │   ├── Accounting.vue      # 會計管理 (SYSN120-SYSN154) ✅
+│   │   │   ├── FinancialTransaction.vue # 財務交易 (SYSN210-SYSN213) ✅
+│   │   │   ├── Asset.vue          # 資產管理 (SYSN310-SYSN311) ✅
+│   │   │   ├── FinancialReport.vue # 財務報表 (SYSN510-SYSN540) ✅
+│   │   │   └── OtherFinancial.vue # 其他財務功能 (SYSN610-SYSN910) ✅
 │   │   │
-│   │   ├── TaxAccounting/          # 二十四、會計稅務管理 (SYST000)
-│   │   │   ├── AccountingSubject/  # 會計科目維護 (SYST111-SYST11A)
-│   │   │   │   └── index.vue
-│   │   │   ├── AccountingVoucher/  # 會計憑證管理 (SYST121-SYST12B)
-│   │   │   │   └── index.vue
-│   │   │   ├── AccountingBook/     # 會計帳簿管理 (SYST131-SYST134)
-│   │   │   │   └── index.vue
-│   │   │   ├── InvoiceData/        # 發票資料維護 (SYST211-SYST212)
-│   │   │   │   └── index.vue
-│   │   │   ├── TransactionData/    # 交易資料處理 (SYST221, SYST311-SYST352)
-│   │   │   │   └── index.vue
-│   │   │   ├── TaxReport/          # 稅務報表查詢 (SYST411-SYST452)
-│   │   │   │   └── index.vue
-│   │   │   ├── TaxReportPrint/     # 稅務報表列印 (SYST510-SYST530)
-│   │   │   │   └── index.vue
-│   │   │   ├── VoucherAudit/       # 暫存傳票審核作業 (SYSTA00-SYSTA70)
-│   │   │   │   └── index.vue
-│   │   │   └── VoucherImport/      # 傳票轉入作業 (SYST002-SYST003)
-│   │   │       └── index.vue
+│   │   ├── TaxAccounting/          # 二十四、會計稅務管理 (SYST000) ✅
+│   │   │   ├── AccountingSubject.vue  # 會計科目維護 (SYST111-SYST11A) ✅
+│   │   │   ├── AccountingVoucher.vue  # 會計憑證管理 (SYST121-SYST12B) ✅
+│   │   │   ├── AccountingBook.vue     # 會計帳簿管理 (SYST131-SYST134) ✅
+│   │   │   ├── InvoiceData.vue        # 發票資料維護 (SYST211-SYST212) ✅
+│   │   │   ├── TransactionData.vue    # 交易資料處理 (SYST221, SYST311-SYST352) ✅
+│   │   │   ├── TaxReport.vue          # 稅務報表查詢 (SYST411-SYST452) ✅
+│   │   │   ├── TaxReportPrint.vue     # 稅務報表列印 (SYST510-SYST530) ✅
+│   │   │   ├── VoucherAudit.vue       # 暫存傳票審核作業 (SYSTA00-SYSTA70) ✅
+│   │   │   └── VoucherImport.vue      # 傳票轉入作業 (SYST002-SYST003) ✅
 │   │   │
 │   │   ├── Procurement/            # 二十五、採購供應商管理 (SYSP000)
-│   │   │   ├── Procurement/       # 採購管理
-│   │   │   │   └── index.vue
-│   │   │   ├── Supplier/           # 供應商管理
-│   │   │   │   └── index.vue
-│   │   │   ├── Payment/            # 付款管理
-│   │   │   │   └── index.vue
-│   │   │   ├── BankManagement/     # 銀行管理
-│   │   │   │   └── index.vue
-│   │   │   ├── ProcurementReport/  # 採購報表
-│   │   │   │   └── index.vue
-│   │   │   └── ProcurementOther/   # 採購其他功能
-│   │   │       └── index.vue
+│   │   │   ├── Procurement.vue    # 採購管理 (SYSP110-SYSP190) ✅
+│   │   │   ├── Supplier.vue        # 供應商管理 (SYSP210-SYSP260) ✅
+│   │   │   ├── Payment/            # 付款管理 (SYSP271-SYSP2B0) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   ├── BankManagement/     # 銀行管理 ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   ├── ProcurementReport/  # 採購報表 (SYSP410-SYSP4I0) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   └── ProcurementOther/   # 採購其他功能 (SYSP510-SYSP530) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
-│   │   ├── Contract/               # 二十六、合同管理 (SYSF000)
-│   │   │   ├── ContractData/       # 合同資料維護 (SYSF110-SYSF140)
-│   │   │   │   └── index.vue
-│   │   │   ├── ContractProcess/    # 合同處理作業 (SYSF210-SYSF220)
-│   │   │   │   └── index.vue
-│   │   │   ├── ContractExtension/  # 合同擴展維護 (SYSF350-SYSF540)
-│   │   │   │   └── index.vue
-│   │   │   └── CmsContract/        # CMS合同維護 (CMS2310-CMS2320)
-│   │   │       └── index.vue
+│   │   ├── Contract/               # 二十六、合同管理 (SYSF000) ✅
+│   │   │   ├── ContractData/       # 合同資料維護 (SYSF110-SYSF140) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── ContractProcess/    # 合同處理作業 (SYSF210-SYSF220) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   ├── ContractExtension/  # 合同擴展維護 (SYSF350-SYSF540) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   └── CmsContract/        # CMS合同維護 (CMS2310-CMS2320) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
-│   │   ├── Lease/                  # 二十七、租賃管理 (SYS8000)
-│   │   │   ├── LeaseData/          # 租賃資料維護 (SYS8110-SYS8220)
-│   │   │   │   └── index.vue
-│   │   │   ├── LeaseExtension/     # 租賃擴展維護 (SYS8A10-SYS8A45)
-│   │   │   │   └── index.vue
-│   │   │   └── LeaseProcess/      # 租賃處理作業 (SYS8B50-SYS8B90)
-│   │   │       └── index.vue
+│   │   ├── Lease/                  # 二十七、租賃管理 (SYS8000) ✅
+│   │   │   ├── LeaseData/          # 租賃資料維護 (SYS8110-SYS8220) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── LeaseExtension/     # 租賃擴展維護 (SYS8A10-SYS8A45) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   └── LeaseProcess/      # 租賃處理作業 (SYS8B50-SYS8B90) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
 │   │   ├── LeaseSYSE/              # 二十八、租賃管理SYSE (SYSE000)
 │   │   │   ├── LeaseSYSEData/      # 租賃資料維護 (SYSE110-SYSE140)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── LeaseSYSEExtension/ # 租賃擴展維護 (SYSE210-SYSE230)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── LeaseSYSEFee/       # 費用資料維護 (SYSE310-SYSE430)
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
 │   │   ├── LeaseSYSM/              # 二十九、租賃管理SYSM (SYSM000)
 │   │   │   ├── LeaseSYSMData/      # 租賃資料維護 (SYSM111-SYSM138)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── LeaseSYSMReport/    # 租賃報表查詢 (SYSM141-SYSM144)
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
 │   │   ├── Extension/              # 三十、擴展管理 (SYS9000)
 │   │   │   ├── Extension/          # 擴展功能維護 (SYS9000)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── ReportModuleWP/     # 報表模組WP (SYSWP00)
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── Query/                  # 三十一、查詢管理 (SYSQ000)
-│   │   │   ├── Query/              # 查詢功能維護 (SYSQ000)
-│   │   │   │   └── index.vue
-│   │   │   ├── QualityBase/        # 質量管理基礎功能 (SYSQ110-SYSQ120)
-│   │   │   │   └── index.vue
-│   │   │   ├── QualityProcess/     # 質量管理處理功能 (SYSQ210-SYSQ250)
-│   │   │   │   └── index.vue
-│   │   │   └── QualityReport/      # 質量管理報表功能 (SYSQ310-SYSQ340)
-│   │   │       └── index.vue
+│   │   ├── Query/                  # 三十一、查詢管理 (SYSQ000) ✅
+│   │   │   ├── Query/              # 查詢功能維護 (SYSQ000) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── QualityBase/        # 質量管理基礎功能 (SYSQ110-SYSQ120) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── QualityProcess/     # 質量管理處理功能 (SYSQ210-SYSQ250) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   └── QualityReport/      # 質量管理報表功能 (SYSQ310-SYSQ340) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
-│   │   ├── ReportManagement/       # 三十二、報表管理 (SYSR000)
-│   │   │   ├── ReceivingBase/      # 收款基礎功能 (SYSR110-SYSR120)
-│   │   │   │   └── index.vue
-│   │   │   ├── ReceivingProcess/   # 收款處理功能 (SYSR210-SYSR240)
-│   │   │   │   └── index.vue
-│   │   │   ├── ReceivingExtension/ # 收款擴展功能 (SYSR310-SYSR450)
-│   │   │   │   └── index.vue
-│   │   │   └── ReceivingOther/     # 收款其他功能 (SYSR510-SYSR570)
-│   │   │       └── index.vue
+│   │   ├── ReportManagement/       # 三十二、報表管理 (SYSR000) ✅
+│   │   │   ├── ReceivingBase/      # 收款基礎功能 (SYSR110-SYSR120) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── ReceivingProcess/   # 收款處理功能 (SYSR210-SYSR240) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── ReceivingExtension/ # 收款擴展功能 (SYSR310-SYSR450) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   └── ReceivingOther/     # 收款其他功能 (SYSR510-SYSR570) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
-│   │   ├── Sales/                  # 三十三、銷售管理 (SYSD000)
-│   │   │   ├── SalesData/          # 銷售資料維護 (SYSD110-SYSD140)
-│   │   │   │   └── index.vue
-│   │   │   ├── SalesProcess/       # 銷售處理作業 (SYSD210-SYSD230)
-│   │   │   │   └── index.vue
-│   │   │   └── SalesReport/         # 銷售報表查詢 (SYSD310-SYSD430)
-│   │   │       └── index.vue
+│   │   ├── Sales/                  # 三十三、銷售管理 (SYSD000) ✅
+│   │   │   ├── SalesData/          # 銷售資料維護 (SYSD110-SYSD140) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   ├── SalesProcess/       # 銷售處理作業 (SYSD210-SYSD230) ✅
+│   │   │   │   └── index.vue      ✅
+│   │   │   └── SalesReport/         # 銷售報表查詢 (SYSD310-SYSD430) ✅
+│   │   │       └── index.vue      ✅
 │   │   │
-│   │   ├── Certificate/             # 三十四、憑證管理 (SYSK000)
-│   │   │   ├── CertificateData/    # 憑證資料維護 (SYSK110-SYSK150)
-│   │   │   │   └── index.vue
-│   │   │   ├── CertificateProcess/ # 憑證處理作業 (SYSK210-SYSK230)
-│   │   │   │   └── index.vue
-│   │   │   └── CertificateReport/  # 憑證報表查詢 (SYSK310-SYSK500)
-│   │   │       └── index.vue
+│   │   ├── Certificate/             # 三十四、憑證管理 (SYSK000) ✅
+│   │   │   ├── CertificateData/    # 憑證資料維護 (SYSK110-SYSK150) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   ├── CertificateProcess/ # 憑證處理作業 (SYSK210-SYSK230) ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   └── CertificateReport/  # 憑證報表查詢 (SYSK310-SYSK500) ✅
+│   │   │       └── index.vue       ✅
 │   │   │
 │   │   ├── OtherManagement/         # 三十五、其他管理
 │   │   │   ├── SystemS/            # S系統功能維護 (SYSS000)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── SystemU/            # U系統功能維護 (SYSU000)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── SystemV/            # V系統功能維護 (SYSV000)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── SystemJ/            # J系統功能維護 (SYSJ000)
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── CustomerInvoice/        # 三十六、客戶與發票管理 (SYS2000)
-│   │   │   ├── CustomerData/       # 客戶資料維護
-│   │   │   │   └── index.vue
-│   │   │   ├── InvoicePrint/        # 發票列印作業
-│   │   │   │   └── index.vue
-│   │   │   ├── MailFax/            # 郵件傳真作業
-│   │   │   │   └── index.vue
-│   │   │   └── LedgerData/          # 總帳資料維護
-│   │   │       └── index.vue
+│   │   ├── CustomerInvoice/        # 三十六、客戶與發票管理 (SYS2000) ✅
+│   │   │   ├── CustomerData/       # 客戶資料維護 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── InvoicePrint/        # 發票列印作業 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── MailFax/            # 郵件傳真作業 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── LedgerData/          # 總帳資料維護 ✅
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── StoreMember/             # 三十七、商店與會員管理 (SYS3000)
-│   │   │   ├── Store/               # 商店資料維護 (SYS3130-SYS3160)
-│   │   │   │   └── index.vue
-│   │   │   ├── StoreQuery/          # 商店查詢作業 (SYS3210-SYS3299)
-│   │   │   │   └── index.vue
-│   │   │   ├── Member/              # 會員資料維護 (SYS3310-SYS3320)
-│   │   │   │   └── index.vue
-│   │   │   ├── MemberQuery/         # 會員查詢作業 (SYS3330-SYS33B0)
-│   │   │   │   └── index.vue
-│   │   │   ├── Promotion/           # 促銷活動維護 (SYS3510-SYS3600)
-│   │   │   │   └── index.vue
-│   │   │   └── StoreReport/          # 報表查詢作業 (SYS3410-SYS3440)
-│   │   │       └── index.vue
+│   │   ├── StoreMember/             # 三十七、商店與會員管理 (SYS3000) ✅
+│   │   │   ├── Store/               # 商店資料維護 (SYS3130-SYS3160) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── StoreQuery/          # 商店查詢作業 (SYS3210-SYS3299) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── Member/              # 會員資料維護 (SYS3310-SYS3320) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── MemberQuery/         # 會員查詢作業 (SYS3330-SYS33B0) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── Promotion/           # 促銷活動維護 (SYS3510-SYS3600) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── StoreReport/          # 報表查詢作業 (SYS3410-SYS3440) ✅
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── StoreFloor/              # 三十八、商店樓層管理 (SYS6000)
-│   │   │   ├── StoreManagement/    # 商店資料維護 (SYS6110-SYS6140)
-│   │   │   │   └── index.vue
-│   │   │   ├── StoreQuery/          # 商店查詢作業 (SYS6210-SYS6270)
-│   │   │   │   └── index.vue
-│   │   │   ├── Floor/               # 樓層資料維護 (SYS6310-SYS6370)
-│   │   │   │   └── index.vue
-│   │   │   ├── FloorQuery/          # 樓層查詢作業 (SYS6381-SYS63A0)
-│   │   │   │   └── index.vue
-│   │   │   ├── TypeCode/            # 類型代碼維護 (SYS6405-SYS6490)
-│   │   │   │   └── index.vue
-│   │   │   ├── TypeCodeQuery/       # 類型代碼查詢 (SYS6501-SYS6560)
-│   │   │   │   └── index.vue
-│   │   │   ├── PosData/             # POS資料維護 (SYS6610-SYS6999)
-│   │   │   │   └── index.vue
-│   │   │   └── PosQuery/            # POS查詢作業 (SYS6A04-SYS6A19)
-│   │   │       └── index.vue
+│   │   ├── StoreFloor/              # 三十八、商店樓層管理 (SYS6000) ✅
+│   │   │   ├── StoreManagement/    # 商店資料維護 (SYS6110-SYS6140) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── StoreQuery/          # 商店查詢作業 (SYS6210-SYS6270) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── Floor/               # 樓層資料維護 (SYS6310-SYS6370) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── FloorQuery/          # 樓層查詢作業 (SYS6381-SYS63A0) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── TypeCode/            # 類型代碼維護 (SYS6405-SYS6490) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── TypeCodeQuery/       # 類型代碼查詢 (SYS6501-SYS6560) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── PosData/             # POS資料維護 (SYS6610-SYS6999) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── PosQuery/            # POS查詢作業 (SYS6A04-SYS6A19) ✅
+│   │   │       └── index.vue ✅
 │   │   │
 │   │   ├── InvoiceSales/            # 三十九、發票銷售管理 (SYSG000)
 │   │   │   ├── InvoiceData/         # 發票資料維護 (SYSG110-SYSG190)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── InvoicePrint/        # 電子發票列印 (SYSG210-SYSG2B0)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── SalesData/           # 銷售資料維護 (SYSG410-SYSG460)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── SalesQuery/          # 銷售查詢作業 (SYSG510-SYSG5D0)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   ├── SalesReportQuery/    # 報表查詢作業 (SYSG610-SYSG640)
-│   │   │   │   └── index.vue
+│   │   │   │   └── index.vue ✅
 │   │   │   └── SalesReportPrint/    # 報表列印作業 (SYSG710-SYSG7I0)
-│   │   │       └── index.vue
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── InvoiceSalesB2B/          # 四十、發票銷售管理B2B (SYSG000_B2B)
-│   │   │   ├── B2BInvoiceData/      # B2B發票資料維護
-│   │   │   │   └── index.vue
-│   │   │   ├── B2BInvoicePrint/     # B2B電子發票列印
-│   │   │   │   └── index.vue
-│   │   │   ├── B2BSalesData/        # B2B銷售資料維護
-│   │   │   │   └── index.vue
-│   │   │   └── B2BSalesQuery/        # B2B銷售查詢作業
-│   │   │       └── index.vue
+│   │   ├── InvoiceSalesB2B/          # 四十、發票銷售管理B2B (SYSG000_B2B) ✅
+│   │   │   ├── B2BInvoiceData/      # B2B發票資料維護 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── B2BInvoicePrint/     # B2B電子發票列印 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   ├── B2BSalesData/        # B2B銷售資料維護 ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── B2BSalesQuery/        # B2B銷售查詢作業 ✅
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── SystemExtensionE/        # 四十一、系統擴展E (SYSPE00)
-│   │   │   ├── EmployeeData/        # 員工資料維護 (SYSPE10-SYSPE11)
-│   │   │   │   └── index.vue
-│   │   │   └── PersonnelData/       # 人事資料維護 (SYSPED0)
-│   │   │       └── index.vue
+│   │   ├── SystemExtensionE/        # 四十一、系統擴展E (SYSPE00) ✅
+│   │   │   ├── EmployeeData/        # 員工資料維護 (SYSPE10-SYSPE11) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── PersonnelData/       # 人事資料維護 (SYSPED0) ✅
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── SystemExtensionH/         # 四十二、系統擴展H (SYSH000_NEW)
-│   │   │   ├── PersonnelBatch/      # 人事批量新增 (SYSH3D0_FMI)
-│   │   │   │   └── index.vue
-│   │   │   └── SystemExtensionPH/   # 系統擴展PH (SYSPH00)
-│   │   │       └── index.vue
+│   │   ├── SystemExtensionH/         # 四十二、系統擴展H (SYSH000_NEW) ✅
+│   │   │   ├── PersonnelBatch/      # 人事批量新增 (SYSH3D0_FMI) ✅
+│   │   │   │   └── index.vue ✅
+│   │   │   └── SystemExtensionPH/   # 系統擴展PH (SYSPH00) ✅
+│   │   │       └── index.vue ✅
 │   │   │
-│   │   ├── Loyalty/                 # 四十三、忠誠度系統 (SYSLPS)
-│   │   │   ├── LoyaltyInit/         # 忠誠度系統初始化 (WEBLOYALTYINI)
-│   │   │   │   └── index.vue
-│   │   │   └── LoyaltyMaintenance/  # 忠誠度系統維護 (LPS)
-│   │   │       └── index.vue
+│   │   ├── Loyalty/                 # 四十三、忠誠度系統 (SYSLPS) ✅
+│   │   │   ├── LoyaltyInit/         # 忠誠度系統初始化 (WEBLOYALTYINI) ✅
+│   │   │   │   └── index.vue         ✅
+│   │   │   └── LoyaltyMaintenance/  # 忠誠度系統維護 (LPS) ✅
+│   │   │       └── index.vue         ✅
 │   │   │
-│   │   ├── CustomerCustom/          # 四十四、客戶定制模組
-│   │   │   ├── Cus3000/             # CUS3000系列
-│   │   │   │   └── index.vue
-│   │   │   ├── Cus3000Eskyland/     # CUS3000.ESKYLAND
-│   │   │   │   └── index.vue
-│   │   │   ├── Cus5000Eskyland/     # CUS5000.ESKYLAND
-│   │   │   │   └── index.vue
-│   │   │   ├── CusBackup/           # CUSBACKUP
-│   │   │   │   └── index.vue
-│   │   │   ├── CusCts/              # CUSCTS
-│   │   │   │   └── index.vue
-│   │   │   ├── CusHanshin/          # CUSHANSHIN
-│   │   │   │   └── index.vue
-│   │   │   └── Sys8000Eskyland/     # SYS8000.ESKYLAND
-│   │   │       └── index.vue
+│   │   ├── CustomerCustom/          # 四十四、客戶定制模組 ✅
+│   │   │   ├── Cus3000/             # CUS3000系列 ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   ├── Cus3000Eskyland/     # CUS3000.ESKYLAND ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   ├── Cus5000Eskyland/     # CUS5000.ESKYLAND ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   ├── CusBackup/           # CUSBACKUP ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   ├── CusCts/              # CUSCTS ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   ├── CusHanshin/          # CUSHANSHIN ✅
+│   │   │   │   └── index.vue       ✅
+│   │   │   └── Sys8000Eskyland/     # SYS8000.ESKYLAND ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── StandardModule/          # 四十五、標準模組
-│   │   │   ├── Std3000/             # STD3000系列
-│   │   │   │   └── index.vue
-│   │   │   └── Std5000/             # STD5000系列
-│   │   │       └── index.vue
+│   │   ├── StandardModule/          # 四十五、標準模組 ✅
+│   │   │   ├── Std3000/             # STD3000系列 ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   └── Std5000/             # STD5000系列 ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── MirModule/               # 四十六、MIR系列模組
-│   │   │   ├── MirH000/             # MIRH000系列
-│   │   │   │   └── index.vue
-│   │   │   ├── MirV000/             # MIRV000系列
-│   │   │   │   └── index.vue
-│   │   │   └── MirW000/             # MIRW000系列
-│   │   │       └── index.vue
+│   │   ├── MirModule/               # 四十六、MIR系列模組 ✅
+│   │   │   ├── MirH000/             # MIRH000系列 ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   ├── MirV000/             # MIRV000系列 ✅
+│   │   │   │   └── index.vue        ✅
+│   │   │   └── MirW000/             # MIRW000系列 ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── MshModule/               # 四十七、MSH模組
-│   │   │   └── Msh3000/             # MSH3000系列
-│   │   │       └── index.vue
+│   │   ├── MshModule/               # 四十七、MSH模組 ✅
+│   │   │   └── Msh3000/             # MSH3000系列 ✅
+│   │   │       └── index.vue       ✅
 │   │   │
-│   │   ├── SapIntegration/          # 四十八、SAP整合模組
-│   │   │   └── TransSap/            # TransSAP系列
-│   │   │       └── index.vue
+│   │   ├── SapIntegration/          # 四十八、SAP整合模組 ✅
+│   │   │   └── TransSap/            # TransSAP系列 ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── UniversalModule/         # 四十九、通用模組
-│   │   │   └── Univ000/             # UNIV000系列
-│   │   │       └── index.vue
+│   │   ├── UniversalModule/         # 四十九、通用模組 ✅
+│   │   │   └── Univ000/             # UNIV000系列 ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── CustomerCustomJgjn/      # 五十、客戶定制JGJN模組
-│   │   │   └── SysCustJgjn/         # SYSCUST_JGJN系列
-│   │   │       └── index.vue
+│   │   ├── CustomerCustomJgjn/      # 五十、客戶定制JGJN模組 ✅
+│   │   │   └── SysCustJgjn/         # SYSCUST_JGJN系列 ✅
+│   │   │       └── index.vue        ✅
 │   │   │
-│   │   ├── BusinessDevelopment/      # 五十一、招商管理 (SYSC000)
-│   │   │   ├── ProspectMaster/       # 潛客主檔 (SYSC165)
-│   │   │   │   └── index.vue
-│   │   │   ├── Prospect/            # 潛客 (SYSC180)
-│   │   │   │   └── index.vue
-│   │   │   ├── Interview/           # 訪談 (SYSC222)
-│   │   │   │   └── index.vue
-│   │   │   └── BusinessOther/       # 招商其他功能 (SYSC999)
-│   │   │       └── index.vue
+│   │   ├── BusinessDevelopment/      # 五十一、招商管理 (SYSC000) ✅
+│   │   │   ├── ProspectMaster/       # 潛客主檔 (SYSC165) ✅
+│   │   │   │   └── index.vue        ✅ (實際位於 Recruitment/ProspectMasterList.vue)
+│   │   │   ├── Prospect/            # 潛客 (SYSC180) ✅
+│   │   │   │   └── index.vue        ✅ (實際位於 Recruitment/ProspectList.vue)
+│   │   │   ├── Interview/           # 訪談 (SYSC222) ✅
+│   │   │   │   └── index.vue         ✅ (實際位於 Recruitment/InterviewList.vue)
+│   │   │   └── BusinessOther/       # 招商其他功能 (SYSC999) ✅
+│   │   │       └── index.vue         ✅ (實際位於 Recruitment/TenantLocationList.vue)
 │   │   │
-│   │   ├── CommunicationModule/     # 五十二、通訊模組 (XCOM000)
-│   │   │   ├── Xcom/                 # XCOM000系列通訊模組
-│   │   │   │   └── index.vue
-│   │   │   └── XcomMsg/              # XCOMMSG系列錯誤訊息處理
-│   │   │       ├── HttpError.vue      # HTTP錯誤頁面
-│   │   │       ├── Waiting.vue       # 等待頁面
-│   │   │       ├── Warning.vue       # 警告頁面
-│   │   │       └── ErrorMessage.vue  # 錯誤訊息處理
+│   │   ├── CommunicationModule/     # 五十二、通訊模組 (XCOM000) ✅
+│   │   │   ├── Xcom/                 # XCOM000系列通訊模組 ✅
+│   │   │   │   └── index.vue         ✅
+│   │   │   └── XcomMsg/              # XCOMMSG系列錯誤訊息處理 ✅
+│   │   │       └── index.vue         ✅
 │   │   │
-│   │   ├── ChartTools/               # 五十三、圖表與工具
-│   │   │   ├── Chart/                # 圖表功能
-│   │   │   │   └── index.vue
-│   │   │   └── Tools/                # 工具功能
-│   │   │       └── index.vue
+│   │   ├── ChartTools/               # 五十三、圖表與工具 ✅
+│   │   │   ├── Chart/                # 圖表功能 ✅
+│   │   │   │   └── index.vue         ✅
+│   │   │   └── Tools/                # 工具功能 ✅
+│   │   │       └── index.vue         ✅
 │   │   │
-│   │   ├── SystemExit/               # 五十四、系統退出
-│   │   │   └── index.vue             # 系統退出功能 (SYS9999)
+│   │   ├── SystemExit/               # 五十四、系統退出 ✅
+│   │   │   └── index.vue             # 系統退出功能 (SYS9999) ✅
 │   │   │
-│   │   ├── InvoiceExtension/         # 五十五、電子發票擴展
-│   │   │   └── index.vue             # 電子發票擴展功能
+│   │   ├── InvoiceExtension/         # 五十五、電子發票擴展 ✅
+│   │   │   └── index.vue             # 電子發票擴展功能 ✅
 │   │   │
-│   │   ├── SalesReport/              # 五十六、銷售報表管理 (SYS1000)
-│   │   │   ├── SalesReportModule/    # 銷售報表模組系列 (SYS1100-SYS1D10等)
-│   │   │   │   └── index.vue
-│   │   │   └── CrystalReport/        # Crystal Reports報表功能 (SYS1360)
-│   │   │       └── index.vue
+│   │   ├── SalesReport/              # 五十六、銷售報表管理 (SYS1000) ✅
+│   │   │   ├── SalesReportModule/    # 銷售報表模組系列 (SYS1100-SYS1D10等) ✅
+│   │   │   │   └── index.vue         ✅
+│   │   │   └── CrystalReport/        # Crystal Reports報表功能 (SYS1360) ✅
+│   │   │       └── index.vue          ✅
 │   │   │
-│   │   └── Energy/                   # 五十七、能源管理 (SYSO000)
-│   │       ├── EnergyBase/            # 能源基礎功能 (SYSO100-SYSO130)
-│   │       │   └── index.vue
-│   │       ├── EnergyProcess/        # 能源處理功能 (SYSO310)
-│   │       │   └── index.vue
-│   │       └── EnergyExtension/      # 能源擴展功能 (SYSOU10-SYSOU33)
-│   │           └── index.vue
+│   │   └── Energy/                   # 五十七、能源管理 (SYSO000) ✅
+│   │       ├── EnergyBase/            # 能源基礎功能 (SYSO100-SYSO130) ✅
+│   │       │   └── index.vue         ✅
+│   │       ├── EnergyProcess/        # 能源處理功能 (SYSO310) ✅
+│   │       │   └── index.vue         ✅
+│   │       └── EnergyExtension/      # 能源擴展功能 (SYSOU10-SYSOU33) ✅
+│   │           └── index.vue         ✅
 │   │
 │   ├── router/                     # 路由設定
-│   │   ├── index.js                # 路由主檔（匯入所有模組路由並設定路由守衛、權限控制）
+│   │   ├── index.js ✅                # 路由主檔（匯入所有模組路由並設定路由守衛、權限控制）
 │   │   ├── modules/                # 路由模組
 │   │   │   ├── system.js           # 一、系統管理路由 (SYS0000)
 │   │   │   ├── basicData.js         # 二、基本資料路由 (SYSB000)
-│   │   │   ├── inventory.js         # 三、進銷存路由 (SYSW000)
-│   │   │   ├── purchase.js          # 四、採購路由 (SYSP000)
-│   │   │   ├── transfer.js          # 五、調撥路由 (SYSW000)
-│   │   │   ├── inventoryCheck.js    # 六、盤點路由 (SYSW000)
-│   │   │   ├── stockAdjustment.js   # 七、庫存調整路由 (SYSW000)
-│   │   │   ├── invoice.js           # 八、電子發票路由 (ECA0000)
-│   │   │   ├── customer.js          # 九、客戶路由 (CUS5000)
-│   │   │   ├── analysisReport.js    # 十、分析報表路由 (SYSA000)
-│   │   │   ├── businessReport.js    # 十一、業務報表路由 (SYSL000)
-│   │   │   ├── pos.js               # 十二、POS系統路由
-│   │   │   ├── systemExtension.js   # 十三、系統擴展路由
-│   │   │   ├── kiosk.js             # 十四、自助服務終端路由
-│   │   │   ├── reportExtension.js   # 十五、報表擴展路由
-│   │   │   ├── dropdownList.js      # 十六、下拉列表路由
-│   │   │   ├── communication.js     # 十七、通訊與通知路由
-│   │   │   ├── uiComponent.js       # 十八、UI組件路由
-│   │   │   ├── tools.js             # 十九、工具路由
-│   │   │   ├── core.js              # 二十、核心功能路由
-│   │   │   ├── otherModule.js       # 二十一、其他模組路由
-│   │   │   ├── humanResource.js      # 二十二、人力資源路由 (SYSH000)
-│   │   │   ├── accounting.js         # 二十三、會計財務路由 (SYSN000)
-│   │   │   ├── taxAccounting.js      # 二十四、會計稅務路由 (SYST000)
-│   │   │   ├── procurement.js        # 二十五、採購供應商路由 (SYSP000)
-│   │   │   ├── contract.js           # 二十六、合同路由 (SYSF000)
-│   │   │   ├── lease.js              # 二十七、租賃路由 (SYS8000)
-│   │   │   ├── leaseSYSE.js          # 二十八、租賃SYSE路由 (SYSE000)
-│   │   │   ├── leaseSYSM.js          # 二十九、租賃SYSM路由 (SYSM000)
-│   │   │   ├── extension.js          # 三十、擴展管理路由 (SYS9000)
-│   │   │   ├── query.js              # 三十一、查詢管理路由 (SYSQ000)
+│   │   │   ├── inventory.js ✅         # 三、進銷存路由 (SYSW000)
+│   │   │   ├── purchase.js ✅          # 四、採購路由 (SYSP000)
+│   │   │   ├── transfer.js ✅          # 五、調撥路由 (SYSW000)
+│   │   │   ├── inventoryCheck.js ✅    # 六、盤點路由 (SYSW000)
+│   │   │   ├── stockAdjustment.js ✅   # 七、庫存調整路由 (SYSW000)
+│   │   │   ├── invoice.js ✅           # 八、電子發票路由 (ECA0000)
+│   │   │   ├── customer.js ✅          # 九、客戶路由 (CUS5000)
+│   │   │   ├── analysisReport.js ✅    # 十、分析報表路由 (SYSA000)
+│   │   │   ├── businessReport.js ✅    # 十一、業務報表路由 (SYSL000)
+│   │   │   ├── pos.js ✅               # 十二、POS系統路由
+│   │   │   ├── systemExtension.js ✅   # 十三、系統擴展路由
+│   │   │   ├── kiosk.js ✅             # 十四、自助服務終端路由
+│   │   │   ├── reportExtension.js ✅   # 十五、報表擴展路由
+│   │   │   ├── dropdownList.js ✅      # 十六、下拉列表路由
+│   │   │   ├── communication.js ✅     # 十七、通訊與通知路由
+│   │   │   ├── uiComponent.js ✅       # 十八、UI組件路由
+│   │   │   ├── tools.js ✅             # 十九、工具路由
+│   │   │   ├── core.js ✅              # 二十、核心功能路由
+│   │   │   ├── otherModule.js ✅       # 二十一、其他模組路由
+│   │   │   ├── humanResource.js ✅      # 二十二、人力資源路由 (SYSH000)
+│   │   │   ├── accounting.js ✅         # 二十三、會計財務路由 (SYSN000)
+│   │   │   ├── taxAccounting.js ✅      # 二十四、會計稅務路由 (SYST000)
+│   │   │   ├── procurement.js ✅        # 二十五、採購供應商路由 (SYSP000)
+│   │   │   ├── contract.js ✅           # 二十六、合同路由 (SYSF000)
+│   │   │   ├── lease.js ✅              # 二十七、租賃路由 (SYS8000)
+│   │   │   ├── leaseSYSE.js ✅          # 二十八、租賃SYSE路由 (SYSE000)
+│   │   │   ├── leaseSYSM.js ✅          # 二十九、租賃SYSM路由 (SYSM000)
+│   │   │   ├── extension.js ✅          # 三十、擴展管理路由 (SYS9000)
+│   │   │   ├── query.js ✅              # 三十一、查詢管理路由 (SYSQ000)
 │   │   │   ├── reportManagement.js   # 三十二、報表管理路由 (SYSR000)
-│   │   │   ├── sales.js              # 三十三、銷售路由 (SYSD000)
-│   │   │   ├── certificate.js        # 三十四、憑證路由 (SYSK000)
-│   │   │   ├── otherManagement.js    # 三十五、其他管理路由
-│   │   │   ├── customerInvoice.js    # 三十六、客戶與發票路由 (SYS2000)
-│   │   │   ├── storeMember.js        # 三十七、商店與會員路由 (SYS3000)
-│   │   │   ├── storeFloor.js         # 三十八、商店樓層路由 (SYS6000)
-│   │   │   ├── invoiceSales.js       # 三十九、發票銷售路由 (SYSG000)
+│   │   │   ├── sales.js ✅              # 三十三、銷售路由 (SYSD000)
+│   │   │   ├── certificate.js ✅        # 三十四、憑證路由 (SYSK000)
+│   │   │   ├── otherManagement.js ✅    # 三十五、其他管理路由
+│   │   │   ├── customerInvoice.js ✅    # 三十六、客戶與發票路由 (SYS2000)
+│   │   │   ├── storeMember.js ✅        # 三十七、商店與會員路由 (SYS3000)
+│   │   │   ├── storeFloor.js ✅         # 三十八、商店樓層路由 (SYS6000)
+│   │   │   ├── invoiceSales.js ✅       # 三十九、發票銷售路由 (SYSG000)
 │   │   │   ├── invoiceSalesB2B.js    # 四十、發票銷售B2B路由 (SYSG000_B2B)
 │   │   │   ├── systemExtensionE.js   # 四十一、系統擴展E路由 (SYSPE00)
 │   │   │   ├── systemExtensionH.js   # 四十二、系統擴展H路由 (SYSH000_NEW)
@@ -2932,11 +2928,11 @@ src/ErpCore.Web/
 │   │   │   ├── systemExit.js          # 五十四、系統退出路由
 │   │   │   ├── invoiceExtension.js    # 五十五、電子發票擴展路由
 │   │   │   ├── salesReport.js         # 五十六、銷售報表路由 (SYS1000)
-│   │   │   └── energy.js              # 五十七、能源管理路由 (SYSO000)
+│   │   │   └── energy.js ✅              # 五十七、能源管理路由 (SYSO000)
 │   │   └── guards.js                # 路由守衛
 │   │
 │   ├── store/                      # Vuex 狀態管理
-│   │   ├── index.js                # Store 主檔（建立 Vuex Store 並匯入所有模組、設定 plugins）（建立 Vuex Store 並匯入所有模組）
+│   │   ├── index.js ✅                # Store 主檔（建立 Vuex Store 並匯入所有模組、設定 plugins）（建立 Vuex Store 並匯入所有模組）
 │   │   ├── modules/                # Store 模組
 │   │   │   ├── auth.js             # 身份驗證
 │   │   │   ├── user.js             # 使用者狀態
@@ -2944,43 +2940,43 @@ src/ErpCore.Web/
 │   │   │   ├── app.js              # 應用程式狀態
 │   │   │   ├── system.js           # 一、系統管理狀態 (SYS0000)
 │   │   │   ├── basicData.js         # 二、基本資料狀態 (SYSB000)
-│   │   │   ├── inventory.js         # 三、進銷存狀態 (SYSW000)
-│   │   │   ├── purchase.js          # 四、採購狀態 (SYSP000)
-│   │   │   ├── transfer.js          # 五、調撥狀態 (SYSW000)
-│   │   │   ├── inventoryCheck.js    # 六、盤點狀態 (SYSW000)
-│   │   │   ├── stockAdjustment.js   # 七、庫存調整狀態 (SYSW000)
-│   │   │   ├── invoice.js           # 八、電子發票狀態 (ECA0000)
-│   │   │   ├── customer.js          # 九、客戶狀態 (CUS5000)
-│   │   │   ├── analysisReport.js    # 十、分析報表狀態 (SYSA000)
-│   │   │   ├── businessReport.js    # 十一、業務報表狀態 (SYSL000)
-│   │   │   ├── pos.js               # 十二、POS系統狀態
-│   │   │   ├── systemExtension.js   # 十三、系統擴展狀態
-│   │   │   ├── kiosk.js             # 十四、自助服務終端狀態
-│   │   │   ├── reportExtension.js   # 十五、報表擴展狀態
-│   │   │   ├── dropdownList.js      # 十六、下拉列表狀態
-│   │   │   ├── communication.js     # 十七、通訊與通知狀態
-│   │   │   ├── uiComponent.js       # 十八、UI組件狀態
-│   │   │   ├── tools.js             # 十九、工具狀態
-│   │   │   ├── core.js              # 二十、核心功能狀態
-│   │   │   ├── otherModule.js       # 二十一、其他模組狀態
-│   │   │   ├── humanResource.js     # 二十二、人力資源狀態 (SYSH000)
-│   │   │   ├── accounting.js        # 二十三、會計財務狀態 (SYSN000)
-│   │   │   ├── taxAccounting.js     # 二十四、會計稅務狀態 (SYST000)
-│   │   │   ├── procurement.js       # 二十五、採購供應商狀態 (SYSP000)
-│   │   │   ├── contract.js          # 二十六、合同狀態 (SYSF000)
-│   │   │   ├── lease.js             # 二十七、租賃狀態 (SYS8000)
-│   │   │   ├── leaseSYSE.js         # 二十八、租賃SYSE狀態 (SYSE000)
-│   │   │   ├── leaseSYSM.js         # 二十九、租賃SYSM狀態 (SYSM000)
-│   │   │   ├── extension.js         # 三十、擴展管理狀態 (SYS9000)
-│   │   │   ├── query.js             # 三十一、查詢管理狀態 (SYSQ000)
+│   │   │   ├── inventory.js ✅         # 三、進銷存狀態 (SYSW000)
+│   │   │   ├── purchase.js ✅          # 四、採購狀態 (SYSP000)
+│   │   │   ├── transfer.js ✅          # 五、調撥狀態 (SYSW000)
+│   │   │   ├── inventoryCheck.js ✅    # 六、盤點狀態 (SYSW000)
+│   │   │   ├── stockAdjustment.js ✅   # 七、庫存調整狀態 (SYSW000)
+│   │   │   ├── invoice.js ✅           # 八、電子發票狀態 (ECA0000)
+│   │   │   ├── customer.js ✅          # 九、客戶狀態 (CUS5000)
+│   │   │   ├── analysisReport.js ✅    # 十、分析報表狀態 (SYSA000)
+│   │   │   ├── businessReport.js ✅    # 十一、業務報表狀態 (SYSL000)
+│   │   │   ├── pos.js ✅               # 十二、POS系統狀態
+│   │   │   ├── systemExtension.js ✅   # 十三、系統擴展狀態
+│   │   │   ├── kiosk.js ✅             # 十四、自助服務終端狀態
+│   │   │   ├── reportExtension.js ✅   # 十五、報表擴展狀態
+│   │   │   ├── dropdownList.js ✅      # 十六、下拉列表狀態
+│   │   │   ├── communication.js ✅     # 十七、通訊與通知狀態
+│   │   │   ├── uiComponent.js ✅       # 十八、UI組件狀態
+│   │   │   ├── tools.js ✅             # 十九、工具狀態
+│   │   │   ├── core.js ✅              # 二十、核心功能狀態
+│   │   │   ├── otherModule.js ✅       # 二十一、其他模組狀態
+│   │   │   ├── humanResource.js ✅     # 二十二、人力資源狀態 (SYSH000)
+│   │   │   ├── accounting.js ✅        # 二十三、會計財務狀態 (SYSN000)
+│   │   │   ├── taxAccounting.js ✅     # 二十四、會計稅務狀態 (SYST000)
+│   │   │   ├── procurement.js ✅       # 二十五、採購供應商狀態 (SYSP000)
+│   │   │   ├── contract.js ✅          # 二十六、合同狀態 (SYSF000)
+│   │   │   ├── lease.js ✅             # 二十七、租賃狀態 (SYS8000)
+│   │   │   ├── leaseSYSE.js ✅         # 二十八、租賃SYSE狀態 (SYSE000)
+│   │   │   ├── leaseSYSM.js ✅         # 二十九、租賃SYSM狀態 (SYSM000)
+│   │   │   ├── extension.js ✅         # 三十、擴展管理狀態 (SYS9000)
+│   │   │   ├── query.js ✅             # 三十一、查詢管理狀態 (SYSQ000)
 │   │   │   ├── reportManagement.js  # 三十二、報表管理狀態 (SYSR000)
-│   │   │   ├── sales.js             # 三十三、銷售狀態 (SYSD000)
-│   │   │   ├── certificate.js       # 三十四、憑證狀態 (SYSK000)
-│   │   │   ├── otherManagement.js   # 三十五、其他管理狀態
-│   │   │   ├── customerInvoice.js   # 三十六、客戶與發票狀態 (SYS2000)
-│   │   │   ├── storeMember.js       # 三十七、商店與會員狀態 (SYS3000)
-│   │   │   ├── storeFloor.js        # 三十八、商店樓層狀態 (SYS6000)
-│   │   │   ├── invoiceSales.js      # 三十九、發票銷售狀態 (SYSG000)
+│   │   │   ├── sales.js ✅             # 三十三、銷售狀態 (SYSD000)
+│   │   │   ├── certificate.js ✅       # 三十四、憑證狀態 (SYSK000)
+│   │   │   ├── otherManagement.js ✅   # 三十五、其他管理狀態
+│   │   │   ├── customerInvoice.js ✅   # 三十六、客戶與發票狀態 (SYS2000)
+│   │   │   ├── storeMember.js ✅       # 三十七、商店與會員狀態 (SYS3000)
+│   │   │   ├── storeFloor.js ✅        # 三十八、商店樓層狀態 (SYS6000)
+│   │   │   ├── invoiceSales.js ✅      # 三十九、發票銷售狀態 (SYSG000)
 │   │   │   ├── invoiceSalesB2B.js   # 四十、發票銷售B2B狀態 (SYSG000_B2B)
 │   │   │   ├── systemExtensionE.js  # 四十一、系統擴展E狀態 (SYSPE00)
 │   │   │   ├── systemExtensionH.js  # 四十二、系統擴展H狀態 (SYSH000_NEW)
@@ -2998,7 +2994,7 @@ src/ErpCore.Web/
 │   │   │   ├── systemExit.js        # 五十四、系統退出狀態
 │   │   │   ├── invoiceExtension.js  # 五十五、電子發票擴展狀態
 │   │   │   ├── salesReport.js       # 五十六、銷售報表狀態 (SYS1000)
-│   │   │   ├── energy.js            # 五十七、能源管理狀態 (SYSO000)
+│   │   │   ├── energy.js ✅            # 五十七、能源管理狀態 (SYSO000)
 │   │   │   └── common.js           # 共用狀態
 │   │   ├── getters.js              # 全域 Getters
 │   │   └── mutations.js            # 全域 Mutations（如需要）
@@ -3034,7 +3030,7 @@ src/ErpCore.Web/
 │   │
 │   ├── plugins/                    # 外掛
 │   │   ├── element-ui.js           # Element UI 設定
-│   │   ├── axios.js                # Axios 設定
+│   │   ├── axios.js ✅                # Axios 設定
 │   │   ├── vue-router.js           # Vue Router 設定
 │   │   ├── vuex.js                 # Vuex 設定
 │   │   ├── echarts.js              # ECharts 設定（如使用）
@@ -3061,7 +3057,7 @@ src/ErpCore.Web/
 │       └── support/               # 測試支援檔案
 │
 ├── dist/                           # 建置輸出目錄（不納入版本控制）
-│   ├── index.html                  # 建置後的 HTML
+│   ├── index.html ✅                  # 建置後的 HTML
 │   ├── static/                     # 靜態資源
 │   │   ├── css/                   # CSS 檔案
 │   │   ├── js/                    # JavaScript 檔案
@@ -3073,9 +3069,9 @@ src/ErpCore.Web/
 │   └── [NPM 套件檔案]
 │
 └── .vscode/                        # VS Code 設定（可選）
-    ├── settings.json               # VS Code 工作區設定
+    ├── settings.json ✅               # VS Code 工作區設定
     ├── extensions.json             # 推薦擴充功能
-    └── launch.json                 # 除錯設定
+    └── launch.json ✅                 # 除錯設定
 ```
 
 ### 7. Database (資料庫目錄)
@@ -3420,7 +3416,7 @@ database/
 ```
 tests/
 ├── ErpCore.UnitTests/
-│   ├── ErpCore.UnitTests.csproj
+│   ├── ErpCore.UnitTests.csproj ✅
 │   ├── Controllers/                  # 控制器測試
 │   │   ├── System/                   # 系統管理控制器測試
 │   │   │   ├── UsersControllerTests.cs
@@ -3458,7 +3454,7 @@ tests/
 │       └── MockDataFactory.cs
 │
 ├── ErpCore.IntegrationTests/
-│   ├── ErpCore.IntegrationTests.csproj
+│   ├── ErpCore.IntegrationTests.csproj ✅
 │   ├── Controllers/                  # 控制器整合測試
 │   │   ├── System/                   # 系統管理控制器整合測試
 │   │   │   ├── UsersControllerIntegrationTests.cs
@@ -3478,7 +3474,7 @@ tests/
 │   └── TestFixture.cs                # 測試固定裝置
 │
 └── ErpCore.E2ETests/
-    ├── ErpCore.E2ETests.csproj
+    ├── ErpCore.E2ETests.csproj ✅
     ├── Scenarios/                     # 端對端測試場景
     │   ├── System/                    # 系統管理端對端測試
     │   │   ├── UserManagementE2ETests.cs
@@ -3501,29 +3497,29 @@ tests/
 ```
 docs/
 ├── api/                            # API 文件
-│   ├── swagger.json                # Swagger 定義檔
-│   └── api-documentation.md        # API 說明文件
+│   ├── swagger.json ✅                # Swagger 定義檔
+│   └── api-documentation.md ✅        # API 說明文件
 │
 ├── architecture/                   # 架構文件
-│   ├── system-architecture.md      # 系統架構
-│   ├── database-design.md          # 資料庫設計
-│   └── deployment-architecture.md  # 部署架構
+│   ├── system-architecture.md ✅      # 系統架構
+│   ├── database-design.md ✅          # 資料庫設計
+│   └── deployment-architecture.md ✅  # 部署架構
 │
 └── deployment/                     # 部署文件
-    ├── deployment-guide.md          # 部署指南
-    └── environment-setup.md         # 環境設定
+    ├── deployment-guide.md ✅          # 部署指南
+    └── environment-setup.md ✅         # 環境設定
 ```
 
 ### 10. Scripts (腳本目錄)
 
 ```
 scripts/
-├── build.ps1                       # 建置腳本
-├── build.sh                         # Linux/Mac 建置腳本
-├── deploy.ps1                       # 部署腳本
-├── database.ps1                     # 資料庫腳本
-├── migrate.ps1                      # Migration 腳本
-└── seed.ps1                         # 種子資料腳本
+├── build.ps1                       # 建置腳本 ✅
+├── build.sh                         # Linux/Mac 建置腳本 ✅
+├── deploy.ps1                       # 部署腳本 ✅
+├── database.ps1                     # 資料庫腳本 ✅
+├── migrate.ps1                      # Migration 腳本 ✅
+└── seed.ps1                         # 種子資料腳本 ✅
 ```
 
 ---
@@ -5267,22 +5263,22 @@ database/Schema/
 
 ```
 docker/
-├── Dockerfile                       # 後端 API Dockerfile
+├── Dockerfile                       # 後端 API Dockerfile ✅
 │   # 多階段建置，包含 .NET SDK 和 Runtime
 │
-├── Dockerfile.web                   # 前端 Web Dockerfile
+├── Dockerfile.web                   # 前端 Web Dockerfile ✅
 │   # 使用 Node.js 建置，Nginx 服務
 │
-├── docker-compose.yml               # Docker Compose 主設定檔
+├── docker-compose.yml               # Docker Compose 主設定檔 ✅
 │   # 包含後端、前端、資料庫服務
 │
-├── docker-compose.dev.yml            # 開發環境 Docker Compose
+├── docker-compose.dev.yml            # 開發環境 Docker Compose ✅
 │   # 開發環境專用設定（熱重載、除錯等）
 │
-├── docker-compose.prod.yml          # 生產環境 Docker Compose
+├── docker-compose.prod.yml          # 生產環境 Docker Compose ✅
 │   # 生產環境專用設定（優化、安全等）
 │
-└── .dockerignore                    # Docker 忽略檔案
+└── .dockerignore                    # Docker 忽略檔案 ✅
     # 排除不需要的檔案（node_modules、bin、obj 等）
 ```
 
@@ -5291,13 +5287,13 @@ docker/
 #### GitHub Actions
 ```
 .github/workflows/
-├── ci.yml                           # 持續整合工作流程
+├── ci.yml                           # 持續整合工作流程 ✅
 │   # 包含：建置、測試、程式碼檢查
 │
-├── cd.yml                           # 持續部署工作流程
+├── cd.yml                           # 持續部署工作流程 ✅
 │   # 包含：部署到測試/生產環境
 │
-└── test.yml                         # 測試工作流程
+└── test.yml                         # 測試工作流程 ✅
     # 包含：單元測試、整合測試、端對端測試
 ```
 
@@ -5315,13 +5311,13 @@ docker/
 
 ```
 .vscode/
-├── settings.json                    # VS Code 工作區設定
+├── settings.json ✅                    # VS Code 工作區設定
 │   # 包含：編輯器設定、檔案關聯、排除檔案等
 │
-├── launch.json                      # 除錯啟動設定
+├── launch.json ✅                      # 除錯啟動設定
 │   # 包含：後端 API 除錯、前端除錯配置
 │
-└── tasks.json                       # 任務設定
+└── tasks.json ✅                       # 任務設定
     # 包含：建置、測試、清理等任務
 ```
 
@@ -6661,9 +6657,9 @@ ErpCore/
     - 前端：`ErpCore.Web/src/views/Accounting/`、`ErpCore.Web/src/api/modules/accounting.js`、`ErpCore.Web/src/router/modules/accounting.js`、`ErpCore.Web/src/store/modules/accounting.js`
     - 資料庫：`database/Scripts/Schema/Tables/Accounting/`、`database/Migrations/Accounting/`
 
-24. ✅ **會計稅務管理類 (SYST000)**
-    - 後端：`ErpCore.Api/Controllers/TaxAccounting/`、`ErpCore.Application/Services/TaxAccounting/`、`ErpCore.Domain/Entities/TaxAccounting/`
-    - 前端：`ErpCore.Web/src/views/TaxAccounting/`、`ErpCore.Web/src/api/modules/taxAccounting.js`、`ErpCore.Web/src/router/modules/taxAccounting.js`、`ErpCore.Web/src/store/modules/taxAccounting.js`
+24. ✅ **會計稅務管理類 (SYST000)** ✅
+    - 後端：`ErpCore.Api/Controllers/TaxAccounting/`、`ErpCore.Application/Services/TaxAccounting/`、`ErpCore.Domain/Entities/TaxAccounting/` ✅
+    - 前端：`ErpCore.Web/src/views/TaxAccounting/`、`ErpCore.Web/src/api/taxAccounting.js`、路由配置 ✅
     - 資料庫：`database/Scripts/Schema/Tables/TaxAccounting/`、`database/Migrations/TaxAccounting/`
 
 25. ✅ **採購供應商管理類 (SYSP000)** - 已完成
@@ -6693,7 +6689,7 @@ ErpCore/
 
 27. ✅ **租賃管理類 (SYS8000)** - 已完成
     - 後端：`ErpCore.Api/Controllers/Lease/`、`ErpCore.Application/Services/Lease/`、`ErpCore.Domain/Entities/Lease/`
-    - 前端：`ErpCore.Web/src/views/Lease/`、`ErpCore.Web/src/api/modules/lease.js`、`ErpCore.Web/src/router/modules/lease.js`、`ErpCore.Web/src/store/modules/lease.js`
+    - 前端：`ErpCore.Web/src/views/Lease/`、`ErpCore.Web/src/api/lease.js`、`ErpCore.Web/src/router/index.js` ✅
     - 資料庫：`database/Scripts/CreateLeaseTables.sql` ✅
     - ✅ LeaseDataController - 租賃資料維護 (SYS8110-SYS8220) ✅
     - ✅ LeaseExtensionController - 租賃擴展維護 (SYS8A10-SYS8A45) ✅
@@ -6701,20 +6697,43 @@ ErpCore/
     - ✅ Repository接口和實作：ILeaseRepository, ILeaseExtensionRepository, ILeaseProcessRepository ✅
     - ✅ Service接口和實作：ILeaseService, ILeaseExtensionService, ILeaseProcessService ✅
     - ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+    - ✅ 前端頁面：LeaseData/index.vue、LeaseExtension/index.vue、LeaseProcess/index.vue ✅
+    - ✅ API 檔案：lease.js ✅
+    - ✅ 路由配置：已在 router/index.js 註冊所有頁面路由 ✅
 
-28. ✅ **租賃管理SYSE類 (SYSE000)**
-    - 後端：`ErpCore.Api/Controllers/LeaseSYSE/`、`ErpCore.Application/Services/LeaseSYSE/`、`ErpCore.Domain/Entities/LeaseSYSE/`
-    - 前端：`ErpCore.Web/src/views/LeaseSYSE/`、`ErpCore.Web/src/api/modules/leaseSYSE.js`、`ErpCore.Web/src/router/modules/leaseSYSE.js`、`ErpCore.Web/src/store/modules/leaseSYSE.js`
-    - 資料庫：`database/Scripts/Schema/Tables/LeaseSYSE/`、`database/Migrations/LeaseSYSE/`
+28. ✅ **租賃管理SYSE類 (SYSE000)** - 已完成
+    - 後端：`ErpCore.Api/Controllers/Lease/LeaseSYSEDataController.cs`、`ErpCore.Api/Controllers/Lease/LeaseSYSEFeeController.cs` ✅
+    - 前端：`ErpCore.Web/src/views/LeaseSYSE/`、`ErpCore.Web/src/api/leaseSYSE.js`、`ErpCore.Web/src/router/index.js` ✅
+    - 資料庫：`database/Scripts/CreateLeaseSYSETables.sql` ✅
+    - ✅ LeaseSYSEDataController - 租賃資料維護 (SYSE110-SYSE140) ✅
+    - ✅ LeaseSYSEFeeController - 費用資料維護 (SYSE310-SYSE430) ✅
+    - ✅ Repository接口和實作：ILeaseTermRepository, ILeaseAccountingCategoryRepository, ILeaseFeeRepository, ILeaseFeeItemRepository ✅
+    - ✅ Service接口和實作：ILeaseTermService, ILeaseAccountingCategoryService, ILeaseFeeService, ILeaseFeeItemService ✅
+    - ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+    - ✅ 前端頁面：LeaseSYSEData/index.vue (SYSE110-SYSE140) ✅、LeaseSYSEExtension/index.vue (SYSE210-SYSE230) ✅
+    - ✅ 前端頁面：LeaseSYSEFee/index.vue (SYSE310-SYSE430) ✅
+    - ✅ API 檔案：leaseSYSE.js ✅
+    - ✅ 路由配置：已在 router/index.js 註冊所有頁面路由 ✅
 
-29. ✅ **租賃管理SYSM類 (SYSM000)**
-    - 後端：`ErpCore.Api/Controllers/LeaseSYSM/`、`ErpCore.Application/Services/LeaseSYSM/`、`ErpCore.Domain/Entities/LeaseSYSM/`
-    - 前端：`ErpCore.Web/src/views/LeaseSYSM/`、`ErpCore.Web/src/api/modules/leaseSYSM.js`、`ErpCore.Web/src/router/modules/leaseSYSM.js`、`ErpCore.Web/src/store/modules/leaseSYSM.js`
-    - 資料庫：`database/Scripts/Schema/Tables/LeaseSYSM/`、`database/Migrations/LeaseSYSM/`
+29. ✅ **租賃管理SYSM類 (SYSM000)** - 已完成
+    - 後端：`ErpCore.Api/Controllers/Lease/LeaseSYSMDataController.cs`、`ErpCore.Api/Controllers/Lease/LeaseSYSMReportController.cs` ✅
+    - 前端：`ErpCore.Web/src/views/LeaseSYSM/`、`ErpCore.Web/src/api/leaseSYSM.js`、`ErpCore.Web/src/router/index.js` ✅
+    - 資料庫：`database/Scripts/CreateLeaseSYSMTables.sql` ✅
+    - ✅ LeaseSYSMDataController - 租賃資料維護 (SYSM111-SYSM138) ✅
+    - ✅ LeaseSYSMReportController - 租賃報表查詢 (SYSM141-SYSM144) ✅
+    - ✅ Repository接口和實作：IParkingSpaceRepository, ILeaseContractRepository, ILeaseReportQueryRepository ✅
+    - ✅ Service接口和實作：IParkingSpaceService, ILeaseContractService, ILeaseReportQueryService ✅
+    - ✅ 依賴注入註冊：已在 Program.cs 註冊所有 Repository 和 Service ✅
+    - ✅ 前端頁面：LeaseSYSMData/index.vue (SYSM111-SYSM138) ✅
+    - ✅ 前端頁面：LeaseSYSMReport/index.vue (SYSM141-SYSM144) ✅
+    - ✅ API 檔案：leaseSYSM.js ✅
+    - ✅ 路由配置：已在 router/index.js 註冊所有頁面路由 ✅
 
 30. ✅ **擴展管理類 (SYS9000)**
     - 後端：`ErpCore.Api/Controllers/Extension/`、`ErpCore.Application/Services/Extension/`、`ErpCore.Domain/Entities/Extension/`
-    - 前端：`ErpCore.Web/src/views/Extension/`、`ErpCore.Web/src/api/modules/extension.js`、`ErpCore.Web/src/router/modules/extension.js`、`ErpCore.Web/src/store/modules/extension.js`
+    - ✅ 前端頁面：Extension/index.vue ✅
+    - ✅ 前端 API：extension.js ✅
+    - ✅ 前端路由：已在 router/index.js 中註冊 ✅
     - 資料庫：`database/Scripts/Schema/Tables/Extension/`、`database/Migrations/Extension/`
 
 31. ✅ **查詢管理類 (SYSQ000)**

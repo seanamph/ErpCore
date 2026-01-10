@@ -289,23 +289,29 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .areas {
   padding: 20px;
 }
 
 .page-header {
   margin-bottom: 20px;
-}
-
-.page-header h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 0;
+  
+  h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: $primary-color;
+    margin: 0;
+  }
 }
 
 .search-card {
   margin-bottom: 20px;
+  background-color: $card-bg;
+  border-color: $card-border;
+  color: $card-text;
 }
 
 .search-form {
@@ -314,6 +320,9 @@ onMounted(() => {
 
 .table-card {
   margin-bottom: 20px;
+  background-color: $card-bg;
+  border-color: $card-border;
+  color: $card-text;
 }
 </style>
 

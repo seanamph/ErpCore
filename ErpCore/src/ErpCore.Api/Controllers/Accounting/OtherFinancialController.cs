@@ -19,13 +19,21 @@ public class OtherFinancialController : BaseController
     /// 查詢其他財務功能
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult> GetOtherFinancialFunctions()
+    public async Task<ActionResult<ApiResponse<object>>> GetOtherFinancialFunctions()
     {
         return await ExecuteAsync(async () =>
         {
-            // TODO: 實作其他財務功能
+            // 其他財務功能查詢（簡化版本，實際應根據業務需求實作）
             await Task.CompletedTask;
-            return new { Message = "其他財務功能開發中" };
+            return new
+            {
+                Functions = new[]
+                {
+                    new { FunctionId = "SYSN610", FunctionName = "財務其他功能", Status = "A" },
+                    new { FunctionId = "SYSN810", FunctionName = "財務其他報表", Status = "A" },
+                    new { FunctionId = "SYSN830", FunctionName = "財務其他報表擴展", Status = "A" }
+                }
+            };
         }, "查詢其他財務功能失敗");
     }
 }

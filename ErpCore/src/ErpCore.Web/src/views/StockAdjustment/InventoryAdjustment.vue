@@ -641,31 +641,38 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .inventory-adjustment {
   padding: 20px;
-}
 
-.page-header {
-  margin-bottom: 20px;
-}
+  .page-header {
+    margin-bottom: 20px;
+    
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 500;
+      color: $primary-color;
+    }
+  }
 
-.page-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 500;
-}
+  .search-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    
+    .search-form {
+      margin: 0;
+    }
+  }
 
-.search-card {
-  margin-bottom: 20px;
-}
-
-.search-form {
-  margin: 0;
-}
-
-.table-card {
-  margin-bottom: 20px;
+  .table-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+  }
 }
 </style>
 

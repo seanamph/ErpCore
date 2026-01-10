@@ -285,5 +285,51 @@ public class PosTerminalRepository : BaseRepository, IPosTerminalRepository
             throw;
         }
     }
+
+    public async Task<int> GetTransactionCountAsync(string posTerminalId, DateTime? startDate = null, DateTime? endDate = null)
+    {
+        try
+        {
+            // 查詢POS終端的交易次數
+            // 這裡需要根據實際業務邏輯查詢相關表
+            // 假設有一個 PosTransactions 表記錄交易記錄
+            // 如果表不存在，返回0
+            var sql = @"
+                SELECT COUNT(*) 
+                FROM PosTransactions 
+                WHERE PosTerminalId = @PosTerminalId";
+            
+            var parameters = new DynamicParameters();
+            parameters.Add("PosTerminalId", posTerminalId);
+
+            if (startDate.HasValue)
+            {
+                sql += " AND TransDate >= @StartDate";
+                parameters.Add("StartDate", startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                sql += " AND TransDate <= @EndDate";
+                parameters.Add("EndDate", endDate.Value);
+            }
+
+            try
+            {
+                return await QuerySingleAsync<int>(sql, parameters);
+            }
+            catch
+            {
+                // 如果表不存在，返回0
+                return 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢POS終端交易次數失敗: {posTerminalId}", ex);
+            // 發生錯誤時返回0，不影響主流程
+            return 0;
+        }
+    }
 }
 

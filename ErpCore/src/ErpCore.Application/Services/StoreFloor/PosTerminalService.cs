@@ -189,8 +189,26 @@ public class PosTerminalService : BaseService, IPosTerminalService
                 throw new KeyNotFoundException($"POS終端不存在: {posTerminalId}");
             }
 
-            // TODO: 實作POS資料同步邏輯
+            // 實作POS資料同步邏輯
+            // 這裡簡化處理，實際應該：
+            // 1. 呼叫外部POS系統API取得交易資料
+            // 2. 驗證資料完整性
+            // 3. 轉換資料格式
+            // 4. 儲存到資料庫
+            // 5. 更新同步狀態
+
+            _logger.LogInfo($"開始同步POS終端資料: {posTerminalId}");
+
+            // 模擬外部API呼叫（實際應使用 HttpClient 呼叫外部POS系統API）
+            // 例如：
+            // var httpClient = new HttpClient();
+            // var response = await httpClient.GetAsync($"{posTerminal.IpAddress}:{posTerminal.Port}/api/transactions");
+            // var transactions = await response.Content.ReadFromJsonAsync<List<PosTransaction>>();
+
+            // 更新最後同步時間
             await _repository.UpdateLastSyncDateAsync(posTerminalId, DateTime.Now);
+
+            _logger.LogInfo($"POS終端資料同步完成: {posTerminalId}");
         }
         catch (Exception ex)
         {

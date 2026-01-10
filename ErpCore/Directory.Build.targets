@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <Authors>ErpCore Team</Authors>
+    <Company>ErpCore</Company>
+    <Product>ErpCore</Product>
+    <Copyright>Copyright © ErpCore $(Year)</Copyright>
+  </PropertyGroup>
+</Project>
+

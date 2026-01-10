@@ -52,9 +52,20 @@ public class EmailQueueService : BaseService, IEmailQueueService
                         continue;
                     }
 
-                    // TODO: 實作實際的郵件發送邏輯
-                    // 目前先標記為已發送
-                    await _emailLogRepository.UpdateStatusAsync(emailLog.Id, "Sent", DateTime.Now);
+                    // 實作實際的郵件發送邏輯
+                    var sendRequest = new SendEmailRequestDto
+                    {
+                        FromAddress = emailLog.FromAddress,
+                        FromName = emailLog.FromName,
+                        ToAddress = emailLog.ToAddress,
+                        CcAddress = emailLog.CcAddress,
+                        BccAddress = emailLog.BccAddress,
+                        Subject = emailLog.Subject,
+                        Body = emailLog.Body,
+                        BodyType = emailLog.BodyType
+                    };
+                    
+                    await _emailService.SendEmailAsync(sendRequest);
                     await _emailQueueRepository.UpdateStatusAsync(queueItem.Id, "Sent", DateTime.Now);
 
                     result.SuccessCount++;

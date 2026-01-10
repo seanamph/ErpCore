@@ -128,3 +128,44 @@ export const interviewApi = {
   }
 }
 
+/**
+ * 招商其他功能 API (SYSC999)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const tenantLocationApi = {
+  // 查詢租戶位置列表
+  getTenantLocations: (params) => {
+    return axios.get('/tenant-locations', { params })
+  },
+
+  // 查詢單筆租戶位置
+  getTenantLocation: (tKey) => {
+    return axios.get(`/tenant-locations/${tKey}`)
+  },
+
+  // 根據租戶查詢位置列表
+  getTenantLocationsByTenant: (agmTKey) => {
+    return axios.get(`/tenant-locations/by-tenant/${agmTKey}`)
+  },
+
+  // 新增租戶位置
+  createTenantLocation: (data) => {
+    return axios.post('/tenant-locations', data)
+  },
+
+  // 修改租戶位置
+  updateTenantLocation: (tKey, data) => {
+    return axios.put(`/tenant-locations/${tKey}`, data)
+  },
+
+  // 刪除租戶位置
+  deleteTenantLocation: (tKey) => {
+    return axios.delete(`/tenant-locations/${tKey}`)
+  },
+
+  // 批次刪除租戶位置
+  batchDeleteTenantLocations: (data) => {
+    return axios.delete('/tenant-locations/batch', { data })
+  }
+}
+

@@ -10,7 +10,7 @@ public interface IPcCashTransferRepository
 {
     Task<PcCashTransfer?> GetByIdAsync(long tKey);
     Task<PcCashTransfer?> GetByTransferIdAsync(string transferId);
-    Task<PagedResult<PcCashTransferDto>> QueryAsync(PcCashRequestQueryDto query);
+    Task<PagedResult<PcCashTransferDto>> QueryAsync(PcCashTransferQueryDto query);
     Task<PcCashTransfer> CreateAsync(PcCashTransfer entity);
     Task<PcCashTransfer> UpdateAsync(PcCashTransfer entity);
     Task DeleteAsync(long tKey);

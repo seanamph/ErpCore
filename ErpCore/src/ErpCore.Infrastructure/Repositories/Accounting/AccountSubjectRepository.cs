@@ -326,11 +326,21 @@ public class AccountSubjectRepository : BaseRepository, IAccountSubjectRepositor
     {
         try
         {
-            // TODO: 實作未沖帳餘額查詢邏輯
-            // 目前先返回 0，後續需要根據實際業務邏輯實作
+            // 查詢傳票明細表，排除已作廢傳票（VoucherStatus != '2'）
+            // 計算借方金額減去貸方金額的總和
             const string sql = @"
-                SELECT ISNULL(SUM(Amt1 - Amt0), 0) FROM AccountSubjects
-                WHERE StypeId = @StypeId";
+                SELECT ISNULL(SUM(
+                    CASE 
+                        WHEN VD.Dc = 'D' THEN VD.Amount
+                        WHEN VD.Dc = 'C' THEN -VD.Amount
+                        ELSE 0
+                    END
+                ), 0) AS UnsettledBalance
+                FROM VoucherDetails VD
+                INNER JOIN Vouchers V ON VD.VoucherId = V.VoucherId
+                WHERE VD.StypeId = @StypeId
+                    AND V.VoucherStatus != '2'  -- 排除已作廢傳票
+                    AND V.Status != '2'";
 
             var balance = await QuerySingleAsync<decimal>(sql, new { StypeId = stypeId });
             return balance;

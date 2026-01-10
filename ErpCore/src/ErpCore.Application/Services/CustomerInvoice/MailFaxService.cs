@@ -4,6 +4,9 @@ using ErpCore.Domain.Entities.CustomerInvoice;
 using ErpCore.Infrastructure.Repositories.CustomerInvoice;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using System.Net;
+using System.Net.Mail;
+using System.Text.Json;
 
 namespace ErpCore.Application.Services.CustomerInvoice;
 
@@ -13,13 +16,16 @@ namespace ErpCore.Application.Services.CustomerInvoice;
 public class MailFaxService : BaseService, IMailFaxService
 {
     private readonly IMailFaxRepository _repository;
+    private readonly IConfiguration _configuration;
 
     public MailFaxService(
         IMailFaxRepository repository,
         ILoggerService logger,
-        IUserContext userContext) : base(logger, userContext)
+        IUserContext userContext,
+        IConfiguration configuration) : base(logger, userContext)
     {
         _repository = repository;
+        _configuration = configuration;
     }
 
     public async Task<PagedResult<EmailFaxJobDto>> GetEmailFaxJobsAsync(EmailFaxJobQueryDto query)
@@ -101,11 +107,20 @@ public class MailFaxService : BaseService, IMailFaxService
 
             await _repository.CreateAsync(job);
 
-            // TODO: 實作實際的郵件發送邏輯
-            // 目前先標記為已發送
-            await _repository.UpdateStatusAsync(jobId, "SENT", DateTime.Now);
+            try
+            {
+                // 實作郵件發送邏輯
+                await SendEmailInternalAsync(job, request.AttachmentPaths);
+                await _repository.UpdateStatusAsync(jobId, "SENT", DateTime.Now);
+                _logger.LogInfo($"發送郵件成功: {jobId}");
+            }
+            catch (Exception ex)
+            {
+                await _repository.UpdateStatusAsync(jobId, "FAILED", null, ex.Message);
+                _logger.LogError($"發送郵件失敗: {jobId}", ex);
+                throw;
+            }
 
-            _logger.LogInfo($"發送郵件成功: {jobId}");
             return jobId;
         }
         catch (Exception ex)
@@ -137,11 +152,20 @@ public class MailFaxService : BaseService, IMailFaxService
 
             await _repository.CreateAsync(job);
 
-            // TODO: 實作實際的傳真發送邏輯
-            // 目前先標記為已發送
-            await _repository.UpdateStatusAsync(jobId, "SENT", DateTime.Now);
+            try
+            {
+                // 實作傳真發送邏輯（需要外部傳真服務）
+                await SendFaxInternalAsync(job, request.AttachmentPaths);
+                await _repository.UpdateStatusAsync(jobId, "SENT", DateTime.Now);
+                _logger.LogInfo($"發送傳真成功: {jobId}");
+            }
+            catch (Exception ex)
+            {
+                await _repository.UpdateStatusAsync(jobId, "FAILED", null, ex.Message);
+                _logger.LogError($"發送傳真失敗: {jobId}", ex);
+                throw;
+            }
 
-            _logger.LogInfo($"發送傳真成功: {jobId}");
             return jobId;
         }
         catch (Exception ex)
@@ -195,6 +219,134 @@ public class MailFaxService : BaseService, IMailFaxService
             TemplateId = job.TemplateId,
             Memo = job.Memo
         };
+    }
+
+    /// <summary>
+    /// 內部郵件發送方法
+    /// </summary>
+    private async Task SendEmailInternalAsync(EmailFaxJob job, IEnumerable<string>? attachmentPaths)
+    {
+        try
+        {
+            var smtpHost = _configuration["EmailSettings:SmtpHost"] ?? "localhost";
+            var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"] ?? "25");
+            var smtpUser = _configuration["EmailSettings:SmtpUser"];
+            var smtpPassword = _configuration["EmailSettings:SmtpPassword"];
+            var fromEmail = _configuration["EmailSettings:FromEmail"] ?? "noreply@erpcore.com";
+            var fromName = _configuration["EmailSettings:FromName"] ?? "ErpCore System";
+
+            using var client = new SmtpClient(smtpHost, smtpPort);
+            if (!string.IsNullOrEmpty(smtpUser) && !string.IsNullOrEmpty(smtpPassword))
+            {
+                client.Credentials = new NetworkCredential(smtpUser, smtpPassword);
+                client.EnableSsl = bool.Parse(_configuration["EmailSettings:EnableSsl"] ?? "false");
+            }
+
+            using var message = new MailMessage
+            {
+                From = new MailAddress(fromEmail, fromName),
+                Subject = job.Subject,
+                Body = job.Content,
+                IsBodyHtml = job.Content?.Contains("<html>") == true || job.Content?.Contains("<body>") == true
+            };
+
+            // 設定收件人
+            if (!string.IsNullOrEmpty(job.Recipient))
+            {
+                foreach (var recipient in job.Recipient.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(recipient))
+                        message.To.Add(recipient.Trim());
+                }
+            }
+
+            // 設定副本
+            if (!string.IsNullOrEmpty(job.Cc))
+            {
+                foreach (var cc in job.Cc.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(cc))
+                        message.CC.Add(cc.Trim());
+                }
+            }
+
+            // 設定密件副本
+            if (!string.IsNullOrEmpty(job.Bcc))
+            {
+                foreach (var bcc in job.Bcc.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(bcc))
+                        message.Bcc.Add(bcc.Trim());
+                }
+            }
+
+            // 加入附件
+            if (attachmentPaths != null)
+            {
+                foreach (var attachmentPath in attachmentPaths)
+                {
+                    if (File.Exists(attachmentPath))
+                    {
+                        message.Attachments.Add(new Attachment(attachmentPath));
+                    }
+                }
+            }
+
+            await client.SendMailAsync(message);
+            _logger.LogInfo($"郵件發送成功: {job.JobId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"郵件發送失敗: {job.JobId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 內部傳真發送方法
+    /// </summary>
+    private async Task SendFaxInternalAsync(EmailFaxJob job, IEnumerable<string>? attachmentPaths)
+    {
+        try
+        {
+            // 傳真發送需要外部服務（如傳真服務器或第三方API）
+            // 這裡提供基本框架，實際需要根據使用的傳真服務進行實作
+            var faxApiUrl = _configuration["FaxSettings:ApiUrl"];
+            var faxApiKey = _configuration["FaxSettings:ApiKey"];
+
+            if (string.IsNullOrEmpty(faxApiUrl))
+            {
+                throw new InvalidOperationException("傳真服務未配置，請在 appsettings.json 中設定 FaxSettings:ApiUrl");
+            }
+
+            // TODO: 實作實際的傳真API呼叫
+            // 範例：使用 HttpClient 呼叫傳真服務API
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {faxApiKey}");
+
+            var faxNumber = job.Recipient;
+            var content = job.Content;
+
+            // 建立傳真請求
+            var faxRequest = new
+            {
+                FaxNumber = faxNumber,
+                Content = content,
+                Subject = job.Subject,
+                Attachments = attachmentPaths?.ToList() ?? new List<string>()
+            };
+
+            // 發送傳真請求
+            var response = await httpClient.PostAsJsonAsync($"{faxApiUrl}/api/fax/send", faxRequest);
+            response.EnsureSuccessStatusCode();
+
+            _logger.LogInfo($"傳真發送成功: {job.JobId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"傳真發送失敗: {job.JobId}", ex);
+            throw;
+        }
     }
 }
 

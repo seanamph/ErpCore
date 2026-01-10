@@ -37,6 +37,11 @@ public interface IPosTransactionRepository
     /// 更新同步狀態
     /// </summary>
     Task UpdateSyncStatusAsync(string transactionId, string status, DateTime? syncAt, string? errorMessage);
+
+    /// <summary>
+    /// 取得待同步的交易資料
+    /// </summary>
+    Task<IEnumerable<PosTransaction>> GetPendingTransactionsAsync(string? storeId, DateTime? startDate, DateTime? endDate);
 }
 
 /// <summary>

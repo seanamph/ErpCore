@@ -266,5 +266,58 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
             throw;
         }
     }
+
+    public async Task<int> GetUsageCountAsync(string typeCode, string? category)
+    {
+        try
+        {
+            // 查詢類型代碼的使用次數
+            // 這裡需要根據實際業務邏輯查詢相關表
+            // 假設有一個 TypeCodeUsages 表記錄使用記錄
+            // 如果表不存在，返回0
+            const string sql = @"
+                SELECT COUNT(*) 
+                FROM TypeCodeUsages 
+                WHERE TypeCode = @TypeCode";
+            
+            var parameters = new DynamicParameters();
+            parameters.Add("TypeCode", typeCode);
+
+            if (!string.IsNullOrEmpty(category))
+            {
+                const string sqlWithCategory = @"
+                    SELECT COUNT(*) 
+                    FROM TypeCodeUsages 
+                    WHERE TypeCode = @TypeCode AND Category = @Category";
+                parameters.Add("Category", category);
+                
+                try
+                {
+                    return await QuerySingleAsync<int>(sqlWithCategory, parameters);
+                }
+                catch
+                {
+                    // 如果表不存在，返回0
+                    return 0;
+                }
+            }
+
+            try
+            {
+                return await QuerySingleAsync<int>(sql, parameters);
+            }
+            catch
+            {
+                // 如果表不存在，返回0
+                return 0;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢類型代碼使用次數失敗: {typeCode}/{category}", ex);
+            // 發生錯誤時返回0，不影響主流程
+            return 0;
+        }
+    }
 }
 

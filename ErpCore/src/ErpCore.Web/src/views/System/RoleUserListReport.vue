@@ -198,6 +198,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .role-user-list-report {
   .search-card {
     margin-bottom: 20px;

@@ -1,0 +1,27 @@
+name: CD
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '7.0.x'
+    
+    - name: Build
+      run: dotnet build --configuration Release
+    
+    - name: Publish
+      run: dotnet publish -c Release -o ./publish
+    
+    # 部署步驟（根據實際部署環境配置）
+    - name: Deploy
+      run: echo "部署到生產環境"

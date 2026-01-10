@@ -641,6 +641,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .customer-maintenance {
   .search-card {
     margin-bottom: 20px;

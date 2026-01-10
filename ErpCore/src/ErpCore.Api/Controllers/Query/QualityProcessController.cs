@@ -15,12 +15,15 @@ namespace ErpCore.Api.Controllers.Query;
 public class QualityProcessController : BaseController
 {
     private readonly IPcCashService _pcCashService;
+    private readonly IVoucherAuditService _voucherAuditService;
 
     public QualityProcessController(
         IPcCashService pcCashService,
+        IVoucherAuditService voucherAuditService,
         ILoggerService logger) : base(logger)
     {
         _pcCashService = pcCashService;
+        _voucherAuditService = voucherAuditService;
     }
 
     #region 零用金維護 (SYSQ210)
@@ -105,6 +108,91 @@ public class QualityProcessController : BaseController
             var result = await _pcCashService.BatchCreateAsync(dto);
             return result;
         }, "批量新增零用金失敗");
+    }
+
+    #endregion
+
+    #region 傳票審核傳送 (SYSQ250)
+
+    /// <summary>
+    /// 查詢傳票審核傳送檔列表
+    /// </summary>
+    [HttpGet("voucher-audit")]
+    public async Task<ActionResult<ApiResponse<PagedResult<VoucherAuditDto>>>> GetVoucherAuditList(
+        [FromQuery] VoucherAuditQueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _voucherAuditService.QueryAsync(query);
+            return result;
+        }, "查詢傳票審核傳送檔列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢單筆傳票審核傳送檔
+    /// </summary>
+    [HttpGet("voucher-audit/{tKey}")]
+    public async Task<ActionResult<ApiResponse<VoucherAuditDto>>> GetVoucherAudit(long tKey)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _voucherAuditService.GetByIdAsync(tKey);
+            return result;
+        }, $"查詢傳票審核傳送檔失敗: {tKey}");
+    }
+
+    /// <summary>
+    /// 依傳票編號查詢傳票審核傳送檔
+    /// </summary>
+    [HttpGet("voucher-audit/voucher/{voucherId}")]
+    public async Task<ActionResult<ApiResponse<VoucherAuditDto>>> GetVoucherAuditByVoucherId(string voucherId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _voucherAuditService.GetByVoucherIdAsync(voucherId);
+            return result;
+        }, $"查詢傳票審核傳送檔失敗: {voucherId}");
+    }
+
+    /// <summary>
+    /// 新增傳票審核傳送檔
+    /// </summary>
+    [HttpPost("voucher-audit")]
+    public async Task<ActionResult<ApiResponse<VoucherAuditDto>>> CreateVoucherAudit(
+        [FromBody] VoucherAuditDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _voucherAuditService.CreateAsync(dto);
+            return result;
+        }, "新增傳票審核傳送檔失敗");
+    }
+
+    /// <summary>
+    /// 修改傳票審核傳送檔
+    /// </summary>
+    [HttpPut("voucher-audit/{tKey}")]
+    public async Task<ActionResult<ApiResponse<VoucherAuditDto>>> UpdateVoucherAudit(
+        long tKey,
+        [FromBody] UpdateVoucherAuditDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _voucherAuditService.UpdateAsync(tKey, dto);
+            return result;
+        }, $"修改傳票審核傳送檔失敗: {tKey}");
+    }
+
+    /// <summary>
+    /// 刪除傳票審核傳送檔
+    /// </summary>
+    [HttpDelete("voucher-audit/{tKey}")]
+    public async Task<ActionResult<ApiResponse<object>>> DeleteVoucherAudit(long tKey)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _voucherAuditService.DeleteAsync(tKey);
+        }, $"刪除傳票審核傳送檔失敗: {tKey}");
     }
 
     #endregion

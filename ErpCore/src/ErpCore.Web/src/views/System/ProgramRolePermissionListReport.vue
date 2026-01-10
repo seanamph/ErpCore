@@ -199,6 +199,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .program-role-permission-list-report {
   .search-card {
     margin-bottom: 20px;

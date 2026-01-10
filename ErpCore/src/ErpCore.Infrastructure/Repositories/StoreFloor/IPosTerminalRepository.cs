@@ -16,6 +16,7 @@ public interface IPosTerminalRepository
     Task DeleteAsync(string posTerminalId);
     Task<bool> ExistsAsync(string posTerminalId);
     Task UpdateLastSyncDateAsync(string posTerminalId, DateTime syncDate);
+    Task<int> GetTransactionCountAsync(string posTerminalId, DateTime? startDate = null, DateTime? endDate = null);
 }
 
 /// <summary>

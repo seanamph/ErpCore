@@ -548,7 +548,9 @@ onMounted(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .stocktaking-plan {
   padding: 20px;
 
@@ -558,16 +560,20 @@ onMounted(() => {
     h1 {
       font-size: 24px;
       font-weight: 500;
-      color: #303133;
+      color: $primary-color;
     }
   }
 
   .search-card {
     margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
   }
 
   .table-card {
     margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
   }
 }
 </style>

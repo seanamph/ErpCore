@@ -43,25 +43,29 @@ public class PosTerminalQueryService : BaseService, IPosTerminalQueryService
 
             var result = await _repository.QueryAsync(query);
 
-            var dtos = result.Items.Select(x => new PosTerminalDto
+            var dtos = new List<PosTerminalDto>();
+            foreach (var x in result.Items)
             {
-                PosTerminalId = x.PosTerminalId,
-                PosSystemId = x.PosSystemId,
-                TerminalCode = x.TerminalCode,
-                TerminalName = x.TerminalName,
-                ShopId = x.ShopId,
-                FloorId = x.FloorId,
-                TerminalType = x.TerminalType,
-                IpAddress = x.IpAddress,
-                Port = x.Port,
-                Config = x.Config,
-                Status = x.Status,
-                LastSyncDate = x.LastSyncDate,
-                CreatedBy = x.CreatedBy,
-                CreatedAt = x.CreatedAt,
-                UpdatedBy = x.UpdatedBy,
-                UpdatedAt = x.UpdatedAt
-            }).ToList();
+                dtos.Add(new PosTerminalDto
+                {
+                    PosTerminalId = x.PosTerminalId,
+                    PosSystemId = x.PosSystemId,
+                    TerminalCode = x.TerminalCode,
+                    TerminalName = x.TerminalName,
+                    ShopId = x.ShopId,
+                    FloorId = x.FloorId,
+                    TerminalType = x.TerminalType,
+                    IpAddress = x.IpAddress,
+                    Port = x.Port,
+                    Config = x.Config,
+                    Status = x.Status,
+                    LastSyncDate = x.LastSyncDate,
+                    CreatedBy = x.CreatedBy,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedBy = x.UpdatedBy,
+                    UpdatedAt = x.UpdatedAt
+                });
+            }
 
             return new PagedResult<PosTerminalDto>
             {
@@ -97,15 +101,22 @@ public class PosTerminalQueryService : BaseService, IPosTerminalQueryService
             {
                 TotalTerminals = result.TotalCount,
                 ActiveTerminals = result.Items.Count(t => t.Status == "A"),
-                TerminalStatistics = result.Items.Select(x => new PosTerminalStatisticsItemDto
+                TerminalStatistics = new List<PosTerminalStatisticsItemDto>()
+            };
+
+            // 計算各終端的交易次數
+            foreach (var x in result.Items)
+            {
+                var transactionCount = await _repository.GetTransactionCountAsync(x.PosTerminalId);
+                statistics.TerminalStatistics.Add(new PosTerminalStatisticsItemDto
                 {
                     PosTerminalId = x.PosTerminalId,
                     TerminalName = x.TerminalName,
                     ShopId = x.ShopId,
-                    TransactionCount = 0, // TODO: 實作交易次數統計
+                    TransactionCount = transactionCount,
                     LastSyncDate = x.LastSyncDate
-                }).ToList()
-            };
+                });
+            }
 
             return statistics;
         }

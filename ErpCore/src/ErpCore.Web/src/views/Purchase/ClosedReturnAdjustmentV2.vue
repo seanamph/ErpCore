@@ -621,6 +621,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .closed-return-adjustment-v2 {
   .search-card {
     margin-bottom: 20px;

@@ -754,31 +754,40 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .on-site-purchase-order {
   padding: 20px;
-}
 
-.page-header {
-  margin-bottom: 20px;
-}
+  .page-header {
+    margin-bottom: 20px;
 
-.page-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: bold;
-}
+    h1 {
+      color: $primary-color;
+      font-size: 24px;
+      font-weight: bold;
+      margin: 0;
+    }
+  }
 
-.search-card {
-  margin-bottom: 20px;
-}
+  .search-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
+  }
 
-.search-form {
-  margin: 0;
-}
+  .search-form {
+    margin: 0;
+  }
 
-.table-card {
-  margin-bottom: 20px;
+  .table-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
+  }
 }
 </style>
 

@@ -297,5 +297,35 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
             throw;
         }
     }
+
+    public async Task<decimal> CalculateBalanceAsync(string bankAccountId)
+    {
+        try
+        {
+            // 從付款單計算餘額：已確認的付款單金額（支出為負，收入為正）
+            // 假設初始餘額為0，實際應從 BankAccounts 表的初始餘額欄位取得
+            const string sql = @"
+                SELECT ISNULL(SUM(
+                    CASE 
+                        WHEN Status = 'A' THEN Amount  -- 已確認的付款單
+                        ELSE 0
+                    END
+                ), 0) AS Balance
+                FROM Payments
+                WHERE BankAccountId = @BankAccountId";
+
+            var balance = await QuerySingleAsync<decimal>(sql, new { BankAccountId = bankAccountId });
+            
+            // TODO: 如果有其他影響餘額的交易（如收款、轉帳等），需要在此處加入計算
+            // 目前僅計算付款單的影響
+            
+            return balance;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"計算銀行帳戶餘額失敗: {bankAccountId}", ex);
+            throw;
+        }
+    }
 }
 

@@ -242,6 +242,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .button-log-report {
   .search-card {
     margin-bottom: 20px;

@@ -17,15 +17,18 @@ public class KioskReportService : BaseService, IKioskReportService
 {
     private readonly IKioskTransactionRepository _transactionRepository;
     private readonly IDbConnectionFactory _connectionFactory;
+    private readonly ExportHelper _exportHelper;
 
     public KioskReportService(
         IKioskTransactionRepository transactionRepository,
         IDbConnectionFactory connectionFactory,
+        ExportHelper exportHelper,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _transactionRepository = transactionRepository;
         _connectionFactory = connectionFactory;
+        _exportHelper = exportHelper;
     }
 
     public async Task<PagedResult<KioskTransactionDto>> GetTransactionsAsync(KioskTransactionQueryDto query)
@@ -238,6 +241,8 @@ public class KioskReportService : BaseService, IKioskReportService
     {
         try
         {
+            _logger.LogInfo($"匯出Kiosk交易報表: {dto.ExportType}");
+
             var query = new KioskTransactionQueryDto
             {
                 PageIndex = 1,
@@ -247,13 +252,33 @@ public class KioskReportService : BaseService, IKioskReportService
 
             var transactions = await GetTransactionsAsync(query);
 
-            if (dto.ExportType == "Excel")
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
             {
-                return ExportToExcel(transactions.Items.ToList());
+                new ExportColumn { PropertyName = "TransactionId", DisplayName = "交易編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "KioskId", DisplayName = "Kiosk代號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FunctionCode", DisplayName = "功能代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FunctionCodeName", DisplayName = "功能名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CardNumber", DisplayName = "卡號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MemberId", DisplayName = "會員代號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TransactionDate", DisplayName = "交易日期", DataType = ExportDataType.DateTime },
+                new ExportColumn { PropertyName = "Status", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReturnCode", DisplayName = "回傳代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ErrorMessage", DisplayName = "錯誤訊息", DataType = ExportDataType.String }
+            };
+
+            // 根據匯出類型產生檔案
+            if (dto.ExportType.ToUpper() == "EXCEL")
+            {
+                return _exportHelper.ExportToExcel(transactions.Items, columns, "Kiosk交易報表", "Kiosk交易報表");
+            }
+            else if (dto.ExportType.ToUpper() == "PDF")
+            {
+                return _exportHelper.ExportToPdf(transactions.Items, columns, "Kiosk交易報表");
             }
             else
             {
-                throw new NotImplementedException("PDF匯出功能待實作");
+                throw new ArgumentException($"不支援的匯出格式: {dto.ExportType}");
             }
         }
         catch (Exception ex)
@@ -261,13 +286,6 @@ public class KioskReportService : BaseService, IKioskReportService
             _logger.LogError("匯出Kiosk交易報表失敗", ex);
             throw;
         }
-    }
-
-    private byte[] ExportToExcel(List<KioskTransactionDto> items)
-    {
-        // 使用 EPPlus 或其他 Excel 庫實作
-        // 這裡僅為範例，需根據實際需求實作
-        throw new NotImplementedException("Excel匯出功能待實作（需安裝EPPlus套件）");
     }
 
     private string GetFunctionCodeName(string functionCode)

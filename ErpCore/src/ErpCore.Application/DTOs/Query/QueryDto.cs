@@ -203,6 +203,16 @@ public class CreatePcCashRequestDto
 }
 
 /// <summary>
+/// 修改零用金請款檔 DTO
+/// </summary>
+public class UpdatePcCashRequestDto
+{
+    public DateTime RequestDate { get; set; }
+    public List<string> CashIds { get; set; } = new();
+    public string? Notes { get; set; }
+}
+
+/// <summary>
 /// 零用金請款查詢 DTO
 /// </summary>
 public class PcCashRequestQueryDto
@@ -249,6 +259,34 @@ public class CreatePcCashTransferDto
     public DateTime? VoucherDate { get; set; }
     public decimal TransferAmount { get; set; }
     public string? Notes { get; set; }
+}
+
+/// <summary>
+/// 修改零用金拋轉檔 DTO
+/// </summary>
+public class UpdatePcCashTransferDto
+{
+    public DateTime TransferDate { get; set; }
+    public string? VoucherId { get; set; }
+    public string? VoucherKind { get; set; }
+    public DateTime? VoucherDate { get; set; }
+    public decimal TransferAmount { get; set; }
+    public string? TransferStatus { get; set; }
+    public string? Notes { get; set; }
+}
+
+/// <summary>
+/// 零用金拋轉查詢 DTO
+/// </summary>
+public class PcCashTransferQueryDto
+{
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 20;
+    public string? SiteId { get; set; }
+    public DateTime? TransferDateFrom { get; set; }
+    public DateTime? TransferDateTo { get; set; }
+    public string? TransferStatus { get; set; }
+    public string? VoucherId { get; set; }
 }
 
 /// <summary>
@@ -356,5 +394,103 @@ public class UpdateVoucherAuditDto
     public string? AuditNotes { get; set; }
     public string? SendStatus { get; set; }
     public string? Notes { get; set; }
+}
+
+// ============================================
+// 查詢功能維護 DTO (SYSQ000)
+// ============================================
+
+/// <summary>
+/// 查詢功能 DTO (SYSQ000)
+/// </summary>
+public class QueryFunctionDto
+{
+    public long TKey { get; set; }
+    public string QueryId { get; set; } = string.Empty;
+    public string QueryName { get; set; } = string.Empty;
+    public string? QueryType { get; set; }
+    public string? QuerySql { get; set; }
+    public string? QueryConfig { get; set; }
+    public int SeqNo { get; set; }
+    public string Status { get; set; } = "1";
+    public string? Notes { get; set; }
+    public string? CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public string? UpdatedBy { get; set; }
+    public DateTime UpdatedAt { get; set; }
+    public int? CreatedPriority { get; set; }
+    public string? CreatedGroup { get; set; }
+}
+
+/// <summary>
+/// 建立查詢功能 DTO
+/// </summary>
+public class CreateQueryFunctionDto
+{
+    public string QueryId { get; set; } = string.Empty;
+    public string QueryName { get; set; } = string.Empty;
+    public string? QueryType { get; set; }
+    public string? QuerySql { get; set; }
+    public string? QueryConfig { get; set; }
+    public int SeqNo { get; set; }
+    public string Status { get; set; } = "1";
+    public string? Notes { get; set; }
+    public int? CreatedPriority { get; set; }
+    public string? CreatedGroup { get; set; }
+}
+
+/// <summary>
+/// 修改查詢功能 DTO
+/// </summary>
+public class UpdateQueryFunctionDto
+{
+    public string QueryName { get; set; } = string.Empty;
+    public string? QueryType { get; set; }
+    public string? QuerySql { get; set; }
+    public string? QueryConfig { get; set; }
+    public int SeqNo { get; set; }
+    public string Status { get; set; } = "1";
+    public string? Notes { get; set; }
+}
+
+/// <summary>
+/// 查詢功能查詢 DTO
+/// </summary>
+public class QueryFunctionQueryDto
+{
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 20;
+    public string? SortField { get; set; }
+    public string? SortOrder { get; set; }
+    public string? QueryId { get; set; }
+    public string? QueryName { get; set; }
+    public string? QueryType { get; set; }
+    public string? Status { get; set; }
+}
+
+/// <summary>
+/// 執行查詢 DTO
+/// </summary>
+public class ExecuteQueryDto
+{
+    public Dictionary<string, object>? Parameters { get; set; }
+}
+
+/// <summary>
+/// 查詢結果 DTO
+/// </summary>
+public class QueryResultDto
+{
+    public List<string> Columns { get; set; } = new();
+    public List<List<object>> Rows { get; set; } = new();
+    public int TotalCount { get; set; }
+}
+
+/// <summary>
+/// 更新狀態 DTO
+/// </summary>
+public class UpdateStatusDto
+{
+    public string Status { get; set; } = "1";
 }
 

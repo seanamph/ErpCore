@@ -279,5 +279,44 @@ public class PosTransactionRepository : BaseRepository, IPosTransactionRepositor
             throw;
         }
     }
+
+    public async Task<IEnumerable<PosTransaction>> GetPendingTransactionsAsync(string? storeId, DateTime? startDate, DateTime? endDate)
+    {
+        try
+        {
+            var sql = @"
+                SELECT * FROM PosTransactions
+                WHERE Status = 'Pending'";
+
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrEmpty(storeId))
+            {
+                sql += " AND StoreId = @StoreId";
+                parameters.Add("StoreId", storeId);
+            }
+
+            if (startDate.HasValue)
+            {
+                sql += " AND TransactionDate >= @StartDate";
+                parameters.Add("StartDate", startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                sql += " AND TransactionDate <= @EndDate";
+                parameters.Add("EndDate", endDate.Value);
+            }
+
+            sql += " ORDER BY TransactionDate ASC";
+
+            return await QueryAsync<PosTransaction>(sql, parameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢待同步POS交易失敗", ex);
+            throw;
+        }
+    }
 }
 

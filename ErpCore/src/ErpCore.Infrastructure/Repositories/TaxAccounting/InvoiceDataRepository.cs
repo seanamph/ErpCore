@@ -476,5 +476,77 @@ public class InvoiceDataRepository : BaseRepository, IInvoiceDataRepository
             throw;
         }
     }
+
+    public async Task<VoucherDetail> CreateVoucherDetailAsync(VoucherDetail detail)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO VoucherDetails (
+                    VoucherId, SeqNo, StypeId, Dc, Amount, Description,
+                    VoucherTKey, OrgId, ActId, AbatId, VendorId, CustomField1,
+                    DAmt, CAmt,
+                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt
+                )
+                OUTPUT INSERTED.*
+                VALUES (
+                    @VoucherId, @SeqNo, @StypeId, @Dc, @Amount, @Description,
+                    @VoucherTKey, @OrgId, @ActId, @AbatId, @VendorId, @CustomField1,
+                    @DAmt, @CAmt,
+                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt
+                )";
+
+            // 根據 Dc 設定 DAmt 和 CAmt
+            var dAmt = detail.Dc == "D" ? detail.Amount : 0;
+            var cAmt = detail.Dc == "C" ? detail.Amount : 0;
+
+            var parameters = new
+            {
+                detail.VoucherId,
+                detail.SeqNo,
+                detail.StypeId,
+                detail.Dc,
+                detail.Amount,
+                detail.Description,
+                VoucherTKey = (long?)null, // 如果需要可以從傳票取得
+                OrgId = (string?)null,
+                ActId = (string?)null,
+                AbatId = (string?)null,
+                VendorId = (string?)null,
+                CustomField1 = (string?)null,
+                DAmt = dAmt,
+                CAmt = cAmt,
+                detail.CreatedBy,
+                detail.CreatedAt,
+                detail.UpdatedBy,
+                detail.UpdatedAt
+            };
+
+            return await QuerySingleAsync<VoucherDetail>(sql, parameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增傳票明細失敗: {detail.VoucherId}, SeqNo: {detail.SeqNo}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<VoucherDetail>> GetVoucherDetailsAsync(string voucherId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM VoucherDetails 
+                WHERE VoucherId = @VoucherId
+                ORDER BY SeqNo";
+
+            return (await QueryAsync<VoucherDetail>(sql, new { VoucherId = voucherId })).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢傳票明細失敗: {voucherId}", ex);
+            throw;
+        }
+    }
 }
 

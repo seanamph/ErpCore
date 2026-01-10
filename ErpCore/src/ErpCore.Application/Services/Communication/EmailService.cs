@@ -4,6 +4,8 @@ using ErpCore.Domain.Entities.Communication;
 using ErpCore.Infrastructure.Repositories.Communication;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using System.Net;
+using System.Net.Mail;
 
 namespace ErpCore.Application.Services.Communication;
 
@@ -14,15 +16,18 @@ public class EmailService : BaseService, IEmailService
 {
     private readonly IEmailLogRepository _emailLogRepository;
     private readonly IEmailAttachmentRepository _emailAttachmentRepository;
+    private readonly IConfiguration _configuration;
 
     public EmailService(
         IEmailLogRepository emailLogRepository,
         IEmailAttachmentRepository emailAttachmentRepository,
         ILoggerService logger,
-        IUserContext userContext) : base(logger, userContext)
+        IUserContext userContext,
+        IConfiguration configuration) : base(logger, userContext)
     {
         _emailLogRepository = emailLogRepository;
         _emailAttachmentRepository = emailAttachmentRepository;
+        _configuration = configuration;
     }
 
     public async Task<SendEmailResponseDto> SendEmailAsync(SendEmailRequestDto request)
@@ -70,8 +75,8 @@ public class EmailService : BaseService, IEmailService
                 }
             }
 
-            // TODO: 實作實際的郵件發送邏輯（使用 MailKit 或 System.Net.Mail）
-            // 目前先標記為已發送
+            // 實作實際的郵件發送邏輯（使用 System.Net.Mail）
+            await SendEmailInternalAsync(savedLog, request);
             await _emailLogRepository.UpdateStatusAsync(savedLog.Id, "Sent", DateTime.Now);
 
             _logger.LogInfo($"郵件發送成功: {savedLog.Id}");
@@ -226,6 +231,89 @@ public class EmailService : BaseService, IEmailService
         catch (Exception ex)
         {
             _logger.LogError($"查詢郵件附件失敗: {emailLogId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 內部郵件發送方法
+    /// </summary>
+    private async Task SendEmailInternalAsync(EmailLog emailLog, SendEmailRequestDto? request = null)
+    {
+        try
+        {
+            var smtpHost = _configuration["EmailSettings:SmtpHost"] ?? "localhost";
+            var smtpPort = int.Parse(_configuration["EmailSettings:SmtpPort"] ?? "25");
+            var smtpUser = _configuration["EmailSettings:SmtpUser"];
+            var smtpPassword = _configuration["EmailSettings:SmtpPassword"];
+            var fromEmail = request?.FromAddress ?? _configuration["EmailSettings:FromEmail"] ?? emailLog.FromAddress ?? "noreply@erpcore.com";
+            var fromName = request?.FromName ?? _configuration["EmailSettings:FromName"] ?? emailLog.FromName ?? "ErpCore System";
+
+            using var client = new SmtpClient(smtpHost, smtpPort);
+            if (!string.IsNullOrEmpty(smtpUser) && !string.IsNullOrEmpty(smtpPassword))
+            {
+                client.Credentials = new NetworkCredential(smtpUser, smtpPassword);
+                client.EnableSsl = bool.Parse(_configuration["EmailSettings:EnableSsl"] ?? "false");
+            }
+
+            using var message = new MailMessage
+            {
+                From = new MailAddress(fromEmail, fromName),
+                Subject = emailLog.Subject,
+                Body = emailLog.Body,
+                IsBodyHtml = emailLog.BodyType == "HTML" || (emailLog.Body?.Contains("<html>") == true || emailLog.Body?.Contains("<body>") == true)
+            };
+
+            // 設定收件人
+            if (!string.IsNullOrEmpty(emailLog.ToAddress))
+            {
+                foreach (var recipient in emailLog.ToAddress.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(recipient))
+                        message.To.Add(recipient.Trim());
+                }
+            }
+
+            // 設定副本
+            if (!string.IsNullOrEmpty(emailLog.CcAddress))
+            {
+                foreach (var cc in emailLog.CcAddress.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(cc))
+                        message.CC.Add(cc.Trim());
+                }
+            }
+
+            // 設定密件副本
+            if (!string.IsNullOrEmpty(emailLog.BccAddress))
+            {
+                foreach (var bcc in emailLog.BccAddress.Split(';', ','))
+                {
+                    if (!string.IsNullOrWhiteSpace(bcc))
+                        message.Bcc.Add(bcc.Trim());
+                }
+            }
+
+            // 加入附件
+            if (emailLog.HasAttachment)
+            {
+                var attachments = await _emailAttachmentRepository.GetByEmailLogIdAsync(emailLog.Id);
+                foreach (var attachment in attachments)
+                {
+                    if (!string.IsNullOrEmpty(attachment.FilePath) && File.Exists(attachment.FilePath))
+                    {
+                        message.Attachments.Add(new Attachment(attachment.FilePath));
+                    }
+                }
+            }
+
+            await client.SendMailAsync(message);
+            _logger.LogInfo($"郵件發送成功: {emailLog.Id}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"郵件發送失敗: {emailLog.Id}", ex);
+            await _emailLogRepository.UpdateStatusAsync(emailLog.Id, "Failed", null, ex.Message);
             throw;
         }
     }

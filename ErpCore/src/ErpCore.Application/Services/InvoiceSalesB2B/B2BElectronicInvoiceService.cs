@@ -4,6 +4,7 @@ using ErpCore.Domain.Entities.InvoiceSalesB2B;
 using ErpCore.Infrastructure.Repositories.InvoiceSalesB2B;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using ErpCore.Infrastructure.Services.FileStorage;
 
 namespace ErpCore.Application.Services.InvoiceSalesB2B;
 
@@ -13,13 +14,19 @@ namespace ErpCore.Application.Services.InvoiceSalesB2B;
 public class B2BElectronicInvoiceService : BaseService, IB2BElectronicInvoiceService
 {
     private readonly IB2BElectronicInvoiceRepository _repository;
+    private readonly ExportHelper _exportHelper;
+    private readonly IFileStorageService _fileStorageService;
 
     public B2BElectronicInvoiceService(
         IB2BElectronicInvoiceRepository repository,
+        ExportHelper exportHelper,
+        IFileStorageService fileStorageService,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = exportHelper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<PagedResult<B2BElectronicInvoiceDto>> GetB2BElectronicInvoicesAsync(B2BElectronicInvoiceQueryDto query)
@@ -211,15 +218,48 @@ public class B2BElectronicInvoiceService : BaseService, IB2BElectronicInvoiceSer
     {
         try
         {
-            // TODO: 實作B2B手動取號列印邏輯
-            // 1. 查詢選定的B2B電子發票
-            // 2. 產生列印資料
-            // 3. 返回列印資料
+            _logger.LogInfo($"B2B電子發票手動取號列印: {string.Join(",", dto.TKeys)}");
 
+            // 查詢選定的B2B電子發票
+            var invoices = new List<B2BElectronicInvoice>();
+            foreach (var tKey in dto.TKeys)
+            {
+                var invoice = await _repository.GetByIdAsync(tKey);
+                if (invoice != null)
+                {
+                    invoices.Add(invoice);
+                }
+            }
+
+            if (invoices.Count == 0)
+            {
+                throw new InvalidOperationException("未找到選定的B2B電子發票");
+            }
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvoiceId", DisplayName = "發票編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PosId", DisplayName = "POS代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvYm", DisplayName = "發票年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Track", DisplayName = "字軌", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNoB", DisplayName = "發票號碼起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNoE", DisplayName = "發票號碼迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrintCode", DisplayName = "列印條碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvoiceDate", DisplayName = "發票日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "PrizeType", DisplayName = "獎項類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeAmt", DisplayName = "獎項金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TransferType", DisplayName = "傳輸類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TransferStatus", DisplayName = "傳輸狀態", DataType = ExportDataType.String }
+            };
+
+            // 產生PDF
+            var pdfBytes = _exportHelper.ExportToPdf(invoices, columns, "B2B電子發票列印");
+
+            // 儲存檔案
             var reportId = $"B2BRPT{DateTime.Now:yyyyMMddHHmmss}";
             var fileName = $"B2B電子發票列印_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-
-            _logger.LogInfo($"B2B電子發票手動取號列印: {string.Join(",", dto.TKeys)}");
+            var filePath = await _fileStorageService.SaveFileAsync(pdfBytes, fileName, "B2BElectronicInvoices");
 
             return new B2BPrintDataDto
             {
@@ -271,11 +311,41 @@ public class B2BElectronicInvoiceService : BaseService, IB2BElectronicInvoiceSer
     {
         try
         {
-            // TODO: 實作B2B中獎清冊列印邏輯
-            // 1. 查詢B2B中獎清冊資料
-            // 2. 產生列印資料
-            // 3. 返回列印資料
+            _logger.LogInfo($"B2B中獎清冊列印: InvYm={dto.InvYm}, PrizeType={dto.PrizeType}");
 
+            // 查詢B2B中獎清冊資料
+            var query = new B2BAwardListQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                InvYm = dto.InvYm,
+                PrizeType = dto.PrizeType,
+                B2BFlag = "Y"
+            };
+
+            var result = await GetAwardListAsync(query);
+
+            if (result.Items.Count == 0)
+            {
+                throw new InvalidOperationException("未找到B2B中獎清冊資料");
+            }
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvYm", DisplayName = "發票年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Track", DisplayName = "字軌", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNo", DisplayName = "發票號碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeType", DisplayName = "獎項類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeAmt", DisplayName = "獎項金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AwardDate", DisplayName = "中獎日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "B2BFlag", DisplayName = "B2B標記", DataType = ExportDataType.String }
+            };
+
+            // 產生PDF
+            var pdfBytes = _exportHelper.ExportToPdf(result.Items, columns, "B2B中獎清冊");
+
+            // 儲存檔案
             var reportId = $"B2BAWARD{DateTime.Now:yyyyMMddHHmmss}";
             var fileName = $"B2B中獎清冊_{dto.InvYm ?? "ALL"}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
 

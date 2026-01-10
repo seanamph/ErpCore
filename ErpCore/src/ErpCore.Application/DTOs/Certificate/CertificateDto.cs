@@ -215,3 +215,43 @@ public class VoucherStatisticsGroupDto
     public decimal TotalAmount { get; set; }
 }
 
+/// <summary>
+/// 列印憑證 DTO (SYSK210-SYSK230)
+/// </summary>
+public class PrintVoucherDto
+{
+    public List<string> VoucherIds { get; set; } = new();
+    public string PrintFormat { get; set; } = "PDF";
+    public string? TemplateId { get; set; }
+}
+
+/// <summary>
+/// 列印結果 DTO
+/// </summary>
+public class PrintResultDto
+{
+    public string FileName { get; set; } = string.Empty;
+    public string FileUrl { get; set; } = string.Empty;
+    public long FileSize { get; set; }
+}
+
+/// <summary>
+/// 匯出憑證 DTO (SYSK210-SYSK230)
+/// </summary>
+public class ExportVoucherDto
+{
+    public List<string> VoucherIds { get; set; } = new();
+    public string ExportFormat { get; set; } = "EXCEL";
+    public bool IncludeDetails { get; set; } = true;
+}
+
+/// <summary>
+/// 批量更新憑證狀態 DTO (SYSK210-SYSK230)
+/// </summary>
+public class BatchUpdateVoucherStatusDto
+{
+    public List<string> VoucherIds { get; set; } = new();
+    public string Status { get; set; } = string.Empty;
+    public string? Memo { get; set; }
+}
+

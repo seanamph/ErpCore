@@ -433,7 +433,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .e-invoice-upload {
   padding: 20px;
 }

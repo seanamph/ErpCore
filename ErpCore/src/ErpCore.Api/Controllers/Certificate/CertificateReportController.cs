@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using ErpCore.Api.Controllers.Base;
 using ErpCore.Application.DTOs.Certificate;
+using ErpCore.Application.Services.Certificate;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
 namespace ErpCore.Api.Controllers.Certificate;
@@ -12,22 +14,26 @@ namespace ErpCore.Api.Controllers.Certificate;
 [Route("api/v1/vouchers/reports")]
 public class CertificateReportController : BaseController
 {
-    public CertificateReportController(ILoggerService logger) : base(logger)
+    private readonly ICertificateReportService _reportService;
+
+    public CertificateReportController(
+        ICertificateReportService reportService,
+        ILoggerService logger) : base(logger)
     {
+        _reportService = reportService;
     }
 
     /// <summary>
     /// 憑證明細報表查詢
     /// </summary>
     [HttpPost("detail")]
-    public async Task<ActionResult<ApiResponse<object>>> GetVoucherDetailReport(
+    public async Task<ActionResult<ApiResponse<PagedResult<VoucherDto>>>> GetVoucherDetailReport(
         [FromBody] VoucherReportQueryDto query)
     {
         return await ExecuteAsync(async () =>
         {
-            // TODO: 實作憑證明細報表查詢邏輯
-            await Task.CompletedTask;
-            return new object();
+            var result = await _reportService.GetVoucherDetailReportAsync(query);
+            return result;
         }, "查詢憑證明細報表失敗");
     }
 
@@ -40,9 +46,8 @@ public class CertificateReportController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            // TODO: 實作憑證統計報表查詢邏輯
-            await Task.CompletedTask;
-            return new VoucherStatisticsReportDto();
+            var result = await _reportService.GetVoucherStatisticsReportAsync(query);
+            return result;
         }, "查詢憑證統計報表失敗");
     }
 
@@ -50,14 +55,13 @@ public class CertificateReportController : BaseController
     /// 憑證分析報表查詢
     /// </summary>
     [HttpPost("analysis")]
-    public async Task<ActionResult<ApiResponse<object>>> GetVoucherAnalysisReport(
+    public async Task<ActionResult<ApiResponse<PagedResult<VoucherDto>>>> GetVoucherAnalysisReport(
         [FromBody] VoucherReportQueryDto query)
     {
         return await ExecuteAsync(async () =>
         {
-            // TODO: 實作憑證分析報表查詢邏輯
-            await Task.CompletedTask;
-            return new object();
+            var result = await _reportService.GetVoucherAnalysisReportAsync(query);
+            return result;
         }, "查詢憑證分析報表失敗");
     }
 }

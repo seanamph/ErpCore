@@ -13,13 +13,16 @@ namespace ErpCore.Application.Services.StoreFloor;
 public class FloorQueryService : BaseService, IFloorQueryService
 {
     private readonly IFloorRepository _repository;
+    private readonly ExportHelper _exportHelper;
 
     public FloorQueryService(
         IFloorRepository repository,
+        ExportHelper exportHelper,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = exportHelper;
     }
 
     public async Task<PagedResult<FloorQueryDto>> QueryFloorsAsync(FloorQueryRequestDto request)
@@ -140,17 +143,27 @@ public class FloorQueryService : BaseService, IFloorQueryService
 
             var result = await QueryFloorsAsync(request);
 
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "FloorId", DisplayName = "樓層代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FloorName", DisplayName = "樓層名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FloorNameEn", DisplayName = "樓層名稱(英文)", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FloorNumber", DisplayName = "樓層編號", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "Description", DisplayName = "說明", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Status", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShopCount", DisplayName = "商店數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "CreatedAt", DisplayName = "建立時間", DataType = ExportDataType.DateTime }
+            };
+
             // 根據格式匯出
             if (dto.Format.Equals("PDF", StringComparison.OrdinalIgnoreCase))
             {
-                // TODO: 實作PDF匯出
-                throw new NotImplementedException("PDF匯出功能尚未實作");
+                return _exportHelper.ExportToPdf(result.Items, columns, dto.Title ?? "樓層查詢報表");
             }
             else
             {
-                // Excel匯出
-                // TODO: 實作Excel匯出
-                throw new NotImplementedException("Excel匯出功能尚未實作");
+                return _exportHelper.ExportToExcel(result.Items, columns, "樓層查詢", dto.Title ?? "樓層查詢報表");
             }
         }
         catch (Exception ex)

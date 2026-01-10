@@ -243,6 +243,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .role-system-permission-list-report {
   .search-card {
     margin-bottom: 20px;

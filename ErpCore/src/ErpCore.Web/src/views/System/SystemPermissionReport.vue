@@ -179,6 +179,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .system-permission-report {
   .search-card {
     margin-bottom: 20px;

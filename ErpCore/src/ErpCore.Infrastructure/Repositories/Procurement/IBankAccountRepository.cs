@@ -15,6 +15,11 @@ public interface IBankAccountRepository
     Task<BankAccount> CreateAsync(BankAccount bankAccount);
     Task<BankAccount> UpdateAsync(BankAccount bankAccount);
     Task DeleteAsync(string bankAccountId);
+    
+    /// <summary>
+    /// 計算銀行帳戶餘額（從付款單等相關表計算）
+    /// </summary>
+    Task<decimal> CalculateBalanceAsync(string bankAccountId);
 }
 
 /// <summary>

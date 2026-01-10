@@ -152,6 +152,7 @@ try
     builder.Services.AddScoped<IProspectMasterRepository, ProspectMasterRepository>();
     builder.Services.AddScoped<IProspectRepository, ProspectRepository>();
     builder.Services.AddScoped<IInterviewRepository, InterviewRepository>();
+    builder.Services.AddScoped<ITenantLocationRepository, TenantLocationRepository>();
     builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     builder.Services.AddScoped<IEmployeeMealCardRepository, EmployeeMealCardRepository>();
     builder.Services.AddScoped<IBusinessReportRepository, BusinessReportRepository>();
@@ -207,6 +208,12 @@ try
     builder.Services.AddScoped<IContractRepository, ContractRepository>();
     builder.Services.AddScoped<ICashParamsRepository, CashParamsRepository>();
     builder.Services.AddScoped<IPcKeepRepository, PcKeepRepository>();
+    builder.Services.AddScoped<IPcCashRepository, PcCashRepository>();
+    builder.Services.AddScoped<IPcCashRequestRepository, PcCashRequestRepository>();
+    builder.Services.AddScoped<IPcCashTransferRepository, PcCashTransferRepository>();
+    builder.Services.AddScoped<IPcCashInventoryRepository, PcCashInventoryRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Query.IVoucherAuditRepository, ErpCore.Infrastructure.Repositories.Query.VoucherAuditRepository>();
+    builder.Services.AddScoped<IQueryFunctionRepository, QueryFunctionRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.ReportManagement.IArItemsRepository, ErpCore.Infrastructure.Repositories.ReportManagement.ArItemsRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.ReportManagement.IAccountsReceivableRepository, ErpCore.Infrastructure.Repositories.ReportManagement.AccountsReceivableRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.ReportManagement.IReceiptVoucherTransferRepository, ErpCore.Infrastructure.Repositories.ReportManagement.ReceiptVoucherTransferRepository>();
@@ -320,6 +327,7 @@ try
     builder.Services.AddScoped<IProspectMasterService, ProspectMasterService>();
     builder.Services.AddScoped<IProspectService, ProspectService>();
     builder.Services.AddScoped<IInterviewService, InterviewService>();
+    builder.Services.AddScoped<IBusinessOtherService, BusinessOtherService>();
     builder.Services.AddScoped<IEmployeeMealCardService, EmployeeMealCardService>();
     builder.Services.AddScoped<IBusinessReportService, BusinessReportService>();
     builder.Services.AddScoped<IBusinessReportManagementService, BusinessReportManagementService>();
@@ -362,6 +370,7 @@ try
     builder.Services.AddScoped<ILabTestService, LabTestService>();
     builder.Services.AddScoped<IEmployeeService, EmployeeService>();
     builder.Services.AddScoped<IAccountSubjectService, AccountSubjectService>();
+    builder.Services.AddScoped<IFinancialReportService, FinancialReportService>();
     builder.Services.AddScoped<ITaxAccountingSubjectService, TaxAccountingSubjectService>();
     builder.Services.AddScoped<IVoucherTypeService, VoucherTypeService>();
     builder.Services.AddScoped<ICommonVoucherService, CommonVoucherService>();
@@ -383,6 +392,12 @@ try
     builder.Services.AddScoped<IContractService, ContractService>();
     builder.Services.AddScoped<ICashParamsService, CashParamsService>();
     builder.Services.AddScoped<IPcKeepService, PcKeepService>();
+    builder.Services.AddScoped<IPcCashService, PcCashService>();
+    builder.Services.AddScoped<IPcCashRequestService, PcCashRequestService>();
+    builder.Services.AddScoped<IPcCashTransferService, PcCashTransferService>();
+    builder.Services.AddScoped<IPcCashInventoryService, PcCashInventoryService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Query.IVoucherAuditService, ErpCore.Application.Services.Query.VoucherAuditService>();
+    builder.Services.AddScoped<IQueryFunctionService, QueryFunctionService>();
     builder.Services.AddScoped<IContractProcessRepository, ContractProcessRepository>();
     builder.Services.AddScoped<IContractProcessService, ContractProcessService>();
     builder.Services.AddScoped<ErpCore.Application.Services.ReportManagement.IArItemsService, ErpCore.Application.Services.ReportManagement.ArItemsService>();
@@ -549,6 +564,36 @@ try
 
     // 註冊檔案儲存服務
     builder.Services.AddScoped<ErpCore.Infrastructure.Services.FileStorage.IFileStorageService, ErpCore.Infrastructure.Services.FileStorage.LocalFileStorageService>();
+
+    // 註冊通知服務
+    builder.Services.AddScoped<ErpCore.Infrastructure.Services.Notification.INotificationService, ErpCore.Infrastructure.Services.Notification.SmsNotificationService>();
+
+    // 註冊快取服務
+    builder.Services.AddMemoryCache();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Caching.ICacheService, ErpCore.Infrastructure.Caching.MemoryCacheService>();
+    // 如需使用 Redis 或 DistributedCache，可取消註解以下行並安裝對應套件
+    // builder.Services.AddStackExchangeRedisCache(options => { options.Configuration = "localhost:6379"; });
+    // builder.Services.AddScoped<ErpCore.Infrastructure.Caching.ICacheService, ErpCore.Infrastructure.Caching.RedisCacheService>();
+    // builder.Services.AddScoped<ErpCore.Infrastructure.Caching.ICacheService, ErpCore.Infrastructure.Caching.DistributedCacheService>();
+
+    // 註冊身份驗證服務
+    builder.Services.AddScoped<ErpCore.Infrastructure.Authentication.JwtTokenService>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Authentication.PasswordHasher>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Authentication.TokenValidator>();
+
+    // 註冊授權服務
+    builder.Services.AddScoped<ErpCore.Infrastructure.Authorization.PermissionChecker>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Authorization.RoleBasedAuthorizationHandler>();
+
+    // 註冊背景工作服務
+    builder.Services.AddScoped<ErpCore.Infrastructure.BackgroundJobs.IBackgroundJobService, ErpCore.Infrastructure.BackgroundJobs.HangfireBackgroundJobService>();
+    // 如需使用 Quartz，可取消註解以下行並安裝對應套件
+    // builder.Services.AddScoped<ErpCore.Infrastructure.BackgroundJobs.IBackgroundJobService, ErpCore.Infrastructure.BackgroundJobs.QuartzBackgroundJobService>();
+
+    // 註冊訊息佇列服務
+    builder.Services.AddScoped<ErpCore.Infrastructure.Messaging.IMessageQueueService, ErpCore.Infrastructure.Messaging.RabbitMqService>();
+    // 如需使用 Azure Service Bus，可取消註解以下行並安裝對應套件
+    // builder.Services.AddScoped<ErpCore.Infrastructure.Messaging.IMessageQueueService, ErpCore.Infrastructure.Messaging.AzureServiceBusService>();
 
     var app = builder.Build();
 

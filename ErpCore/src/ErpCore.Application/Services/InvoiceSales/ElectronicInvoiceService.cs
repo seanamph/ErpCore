@@ -4,6 +4,7 @@ using ErpCore.Domain.Entities.InvoiceSales;
 using ErpCore.Infrastructure.Repositories.InvoiceSales;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using ErpCore.Infrastructure.Services.FileStorage;
 
 namespace ErpCore.Application.Services.InvoiceSales;
 
@@ -13,13 +14,19 @@ namespace ErpCore.Application.Services.InvoiceSales;
 public class ElectronicInvoiceService : BaseService, IElectronicInvoiceService
 {
     private readonly IElectronicInvoiceRepository _repository;
+    private readonly ExportHelper _exportHelper;
+    private readonly IFileStorageService _fileStorageService;
 
     public ElectronicInvoiceService(
         IElectronicInvoiceRepository repository,
+        ExportHelper exportHelper,
+        IFileStorageService fileStorageService,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = exportHelper;
+        _fileStorageService = fileStorageService;
     }
 
     public async Task<PagedResult<ElectronicInvoiceDto>> GetElectronicInvoicesAsync(ElectronicInvoiceQueryDto query)
@@ -187,15 +194,45 @@ public class ElectronicInvoiceService : BaseService, IElectronicInvoiceService
     {
         try
         {
-            // TODO: 實作手動取號列印邏輯
-            // 1. 查詢選定的電子發票
-            // 2. 產生列印資料
-            // 3. 返回列印資料
+            _logger.LogInfo($"電子發票手動取號列印: {string.Join(",", dto.TKeys)}");
 
+            // 查詢選定的電子發票
+            var invoices = new List<ElectronicInvoice>();
+            foreach (var tKey in dto.TKeys)
+            {
+                var invoice = await _repository.GetByIdAsync(tKey);
+                if (invoice != null)
+                {
+                    invoices.Add(invoice);
+                }
+            }
+
+            if (invoices.Count == 0)
+            {
+                throw new InvalidOperationException("未找到選定的電子發票");
+            }
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "PosId", DisplayName = "POS代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvYm", DisplayName = "發票年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Track", DisplayName = "字軌", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNoB", DisplayName = "發票號碼起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNoE", DisplayName = "發票號碼迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrintCode", DisplayName = "列印條碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvoiceDate", DisplayName = "發票日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "PrizeType", DisplayName = "獎項類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeAmt", DisplayName = "獎項金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 產生PDF
+            var pdfBytes = _exportHelper.ExportToPdf(invoices, columns, "電子發票列印");
+
+            // 儲存檔案
             var reportId = $"RPT{DateTime.Now:yyyyMMddHHmmss}";
             var fileName = $"電子發票列印_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-
-            _logger.LogInfo($"電子發票手動取號列印: {string.Join(",", dto.TKeys)}");
+            var filePath = await _fileStorageService.SaveFileAsync(pdfBytes, fileName, "ElectronicInvoices");
 
             return new PrintDataDto
             {
@@ -246,15 +283,42 @@ public class ElectronicInvoiceService : BaseService, IElectronicInvoiceService
     {
         try
         {
-            // TODO: 實作中獎清冊列印邏輯
-            // 1. 查詢中獎清冊資料
-            // 2. 產生列印資料
-            // 3. 返回列印資料
+            _logger.LogInfo($"中獎清冊列印: InvYm={dto.InvYm}, PrizeType={dto.PrizeType}");
 
+            // 查詢中獎清冊資料
+            var query = new AwardListQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                InvYm = dto.InvYm,
+                PrizeType = dto.PrizeType
+            };
+
+            var result = await GetAwardListAsync(query);
+
+            if (result.Items.Count == 0)
+            {
+                throw new InvalidOperationException("未找到中獎清冊資料");
+            }
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvYm", DisplayName = "發票年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Track", DisplayName = "字軌", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InvNo", DisplayName = "發票號碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeType", DisplayName = "獎項類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PrizeAmt", DisplayName = "獎項金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AwardDate", DisplayName = "中獎日期", DataType = ExportDataType.Date }
+            };
+
+            // 產生PDF
+            var pdfBytes = _exportHelper.ExportToPdf(result.Items, columns, "中獎清冊");
+
+            // 儲存檔案
             var reportId = $"AWARD{DateTime.Now:yyyyMMddHHmmss}";
             var fileName = $"中獎清冊_{dto.InvYm ?? "ALL"}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
-
-            _logger.LogInfo($"中獎清冊列印: InvYm={dto.InvYm}, PrizeType={dto.PrizeType}");
+            var filePath = await _fileStorageService.SaveFileAsync(pdfBytes, fileName, "AwardLists");
 
             return new PrintDataDto
             {

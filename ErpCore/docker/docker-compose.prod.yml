@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # SQL Server 資料庫 (生產環境)
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: erpcore-sqlserver-prod
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_PID=Standard
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-prod-data:/var/opt/mssql
+    networks:
+      - erpcore-prod-network
+    restart: unless-stopped
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${SA_PASSWORD} -Q "SELECT 1" || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ErpCore API (生產環境)
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: erpcore-api-prod
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ErpCore;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=true;
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - erpcore-prod-network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+  # ErpCore Web (生產環境)
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    container_name: erpcore-web-prod
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - erpcore-prod-network
+    restart: unless-stopped
+
+networks:
+  erpcore-prod-network:
+    driver: bridge
+
+volumes:
+  sqlserver-prod-data:
+

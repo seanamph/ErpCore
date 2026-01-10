@@ -200,6 +200,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .system-program-button-report {
   .search-card {
     margin-bottom: 20px;

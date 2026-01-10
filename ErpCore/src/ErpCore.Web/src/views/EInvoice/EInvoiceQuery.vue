@@ -478,7 +478,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .e-invoice-query {
   padding: 20px;
 }

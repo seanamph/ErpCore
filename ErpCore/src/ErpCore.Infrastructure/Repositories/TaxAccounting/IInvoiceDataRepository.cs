@@ -83,6 +83,16 @@ public interface IInvoiceDataRepository
     /// 刪除費用/收入分攤比率
     /// </summary>
     Task DeleteAllocationRatioAsync(long tKey);
+
+    /// <summary>
+    /// 新增傳票明細
+    /// </summary>
+    Task<VoucherDetail> CreateVoucherDetailAsync(VoucherDetail detail);
+
+    /// <summary>
+    /// 查詢傳票明細列表
+    /// </summary>
+    Task<List<VoucherDetail>> GetVoucherDetailsAsync(string voucherId);
 }
 
 /// <summary>

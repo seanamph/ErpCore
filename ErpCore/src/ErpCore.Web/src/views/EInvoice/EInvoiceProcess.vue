@@ -406,6 +406,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .einvoice-process {
   .upload-card {
     margin-bottom: 20px;

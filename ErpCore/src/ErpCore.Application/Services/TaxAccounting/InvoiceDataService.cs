@@ -5,6 +5,7 @@ using ErpCore.Domain.Entities.TaxAccounting;
 using ErpCore.Infrastructure.Repositories.TaxAccounting;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using VoucherDetail = ErpCore.Domain.Entities.Accounting.VoucherDetail;
 
 namespace ErpCore.Application.Services.TaxAccounting;
 
@@ -140,7 +141,23 @@ public class InvoiceDataService : BaseService, IInvoiceDataService
             // 新增明細
             if (dto.Details != null && dto.Details.Count > 0)
             {
-                // TODO: 實作新增明細邏輯
+                foreach (var detailDto in dto.Details)
+                {
+                    var detail = new VoucherDetail
+                    {
+                        VoucherId = voucherId,
+                        SeqNo = detailDto.SeqNo,
+                        StypeId = detailDto.StypeId,
+                        Dc = detailDto.Dc,
+                        Amount = detailDto.Amount,
+                        Description = detailDto.Description,
+                        CreatedBy = GetCurrentUserId(),
+                        CreatedAt = DateTime.Now,
+                        UpdatedBy = GetCurrentUserId(),
+                        UpdatedAt = DateTime.Now
+                    };
+                    await _repository.CreateVoucherDetailAsync(detail);
+                }
             }
 
             // 新增發票傳票
@@ -365,7 +382,31 @@ public class InvoiceDataService : BaseService, IInvoiceDataService
     {
         try
         {
-            // TODO: 實作查詢和更新邏輯
+            // 查詢現有分攤比率
+            var ratios = await _repository.QueryAllocationRatiosAsync(new AllocationRatioQuery
+            {
+                PageIndex = 1,
+                PageSize = 1
+            });
+            
+            var existingRatio = ratios.Items.FirstOrDefault(x => x.TKey == tKey);
+            if (existingRatio == null)
+            {
+                throw new InvalidOperationException($"分攤比率不存在: {tKey}");
+            }
+
+            // 更新分攤比率
+            existingRatio.DisYm = dto.DisYm ?? existingRatio.DisYm;
+            existingRatio.StypeId = dto.StypeId ?? existingRatio.StypeId;
+            existingRatio.OrgId = dto.OrgId ?? existingRatio.OrgId;
+            existingRatio.Ratio = dto.Ratio ?? existingRatio.Ratio;
+            existingRatio.VoucherTKey = dto.VoucherTKey ?? existingRatio.VoucherTKey;
+            existingRatio.VoucherDTKey = dto.VoucherDTKey ?? existingRatio.VoucherDTKey;
+            existingRatio.UpdatedBy = GetCurrentUserId();
+            existingRatio.UpdatedAt = DateTime.Now;
+
+            await _repository.UpdateAllocationRatioAsync(existingRatio);
+
             _logger.LogInfo($"修改分攤比率成功: {tKey}");
         }
         catch (Exception ex)

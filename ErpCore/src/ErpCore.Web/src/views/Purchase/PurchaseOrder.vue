@@ -693,13 +693,33 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .purchase-order {
+  padding: 20px;
+
+  .page-header {
+    margin-bottom: 20px;
+
+    h1 {
+      color: $primary-color;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  }
+
   .search-card {
     margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
   }
 
   .table-card {
     margin-top: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
   }
 }
 </style>

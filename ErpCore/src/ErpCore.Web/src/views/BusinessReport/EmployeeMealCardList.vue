@@ -821,13 +821,34 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .employee-meal-card-list {
+  padding: 20px;
+
+  .page-header {
+    margin-bottom: 20px;
+    
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: $primary-color;
+      margin: 0;
+    }
+  }
+
   .search-card {
     margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
   }
 
   .table-card {
     margin-top: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    color: $card-text;
   }
 }
 </style>

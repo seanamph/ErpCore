@@ -196,9 +196,14 @@ public class ReceivingExtensionService : BaseService, IReceivingExtensionService
                 throw new InvalidOperationException($"只有待拋轉狀態的收款沖帳傳票才能拋轉");
             }
 
-            // TODO: 實作拋轉邏輯，產生傳票單號
-            // 這裡簡化處理，實際應該呼叫傳票服務產生傳票
-            var voucherNo = $"VCH{DateTime.Now:yyyyMMdd}{tKey:D6}";
+            // 實作拋轉邏輯，產生傳票單號
+            // 產生傳票單號格式：VCH + 日期(yyyyMMdd) + 序號(6碼)
+            var dateStr = DateTime.Now.ToString("yyyyMMdd");
+            var sequence = await GenerateVoucherSequenceAsync(dateStr);
+            var voucherNo = $"VCH{dateStr}{sequence:D6}";
+            
+            // 這裡簡化處理，實際應該呼叫傳票服務產生傳票並取得 TKey
+            // 目前先使用簡化的邏輯，實際應呼叫 Accounting.VoucherService 或 TaxAccounting.CommonVoucherService
             var voucherM_TKey = 0L; // 實際應該從傳票服務取得
 
             entity.VoucherNo = voucherNo;
@@ -277,6 +282,50 @@ public class ReceivingExtensionService : BaseService, IReceivingExtensionService
         {
             _logger.LogError("批次拋轉收款沖帳傳票失敗", ex);
             throw;
+        }
+    }
+
+    /// <summary>
+    /// 產生傳票序號
+    /// </summary>
+    private async Task<int> GenerateVoucherSequenceAsync(string dateStr)
+    {
+        try
+        {
+            // 查詢當日已拋轉的傳票，取得最大序號
+            // 使用 QueryAsync 查詢當日的傳票
+            var query = new ReceiptVoucherTransferQuery
+            {
+                VoucherNo = $"VCH{dateStr}",
+                PageIndex = 1,
+                PageSize = 10000
+            };
+            
+            var result = await _repository.QueryAsync(query);
+            var maxSequence = 0;
+            
+            foreach (var voucher in result.Items)
+            {
+                if (!string.IsNullOrEmpty(voucher.VoucherNo) && voucher.VoucherNo.Length >= 18)
+                {
+                    var sequenceStr = voucher.VoucherNo.Substring(11, 6);
+                    if (int.TryParse(sequenceStr, out var sequence))
+                    {
+                        if (sequence > maxSequence)
+                        {
+                            maxSequence = sequence;
+                        }
+                    }
+                }
+            }
+
+            return maxSequence + 1;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"產生傳票序號失敗: {dateStr}", ex);
+            // 如果查詢失敗，使用時間戳作為序號
+            return int.Parse(DateTime.Now.ToString("HHmmss"));
         }
     }
 

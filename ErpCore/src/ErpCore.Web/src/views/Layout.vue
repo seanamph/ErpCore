@@ -48,8 +48,8 @@ export default {
   height: 100vh;
   
   .el-header {
-    background-color: $primary-color; // 使用主色 #198754
-    color: #FFFFFF; // 白色文字，確保對比度
+    background-color: $primary-color;
+    color: $badge-primary-text;
     display: flex;
     align-items: center;
     padding: 0 20px;
@@ -57,7 +57,7 @@ export default {
     h1 {
       margin: 0;
       font-size: 20px;
-      color: #FFFFFF; // 確保文字顏色對比度
+      color: $badge-primary-text;
     }
   }
   

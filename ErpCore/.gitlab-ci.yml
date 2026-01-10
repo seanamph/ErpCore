@@ -1,0 +1,41 @@
+stages:
+  - build
+  - test
+  - deploy
+
+variables:
+  DOTNET_VERSION: "7.0.x"
+
+build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:7.0
+  script:
+    - dotnet restore
+    - dotnet build --no-restore --configuration Release
+  artifacts:
+    paths:
+      - "**/bin/"
+      - "**/obj/"
+    expire_in: 1 hour
+
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:7.0
+  script:
+    - dotnet restore
+    - dotnet build --no-restore
+    - dotnet test --no-build --verbosity normal
+  dependencies:
+    - build
+
+deploy:
+  stage: deploy
+  image: mcr.microsoft.com/dotnet/sdk:7.0
+  script:
+    - dotnet publish ErpCore.Api/ErpCore.Api.csproj --configuration Release --output ./publish
+  only:
+    - main
+  dependencies:
+    - build
+    - test
+

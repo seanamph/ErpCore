@@ -1,0 +1,38 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "ErpCore API",
+    "version": "1.0.0",
+    "description": "ErpCore Web API 文檔",
+    "contact": {
+      "name": "ErpCore Team"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://localhost:5001",
+      "description": "開發環境"
+    },
+    {
+      "url": "https://api.erpcore.com",
+      "description": "生產環境"
+    }
+  ],
+  "paths": {},
+  "components": {
+    "schemas": {},
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": []
+    }
+  ]
+}
+

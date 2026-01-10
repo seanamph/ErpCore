@@ -4,7 +4,7 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Application.Services.Certificate;
 
 /// <summary>
-/// 憑證服務介面 (SYSK110-SYSK150)
+/// 憑證服務介面 (SYSK110-SYSK150, SYSK210-SYSK230)
 /// </summary>
 public interface IVoucherService
 {
@@ -16,5 +16,11 @@ public interface IVoucherService
     Task ApproveVoucherAsync(string voucherId, ApproveVoucherDto dto);
     Task CancelVoucherAsync(string voucherId, CancelVoucherDto dto);
     Task<List<VoucherCheckResultDto>> CheckVouchersAsync(List<string> voucherIds);
+    
+    // SYSK210-SYSK230: 憑證處理作業
+    Task<VoucherProcessResultDto> ImportVouchersAsync(byte[] fileData, string fileName);
+    Task<PrintResultDto> PrintVouchersAsync(PrintVoucherDto dto);
+    Task<byte[]> ExportVouchersAsync(ExportVoucherDto dto);
+    Task BatchUpdateVoucherStatusAsync(BatchUpdateVoucherStatusDto dto);
 }
 

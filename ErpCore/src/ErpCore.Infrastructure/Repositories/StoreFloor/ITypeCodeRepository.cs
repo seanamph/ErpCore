@@ -42,6 +42,11 @@ public interface ITypeCodeRepository
     /// 檢查類型代碼是否存在
     /// </summary>
     Task<bool> ExistsAsync(string typeCode, string? category);
+
+    /// <summary>
+    /// 取得類型代碼使用次數
+    /// </summary>
+    Task<int> GetUsageCountAsync(string typeCode, string? category);
 }
 
 /// <summary>

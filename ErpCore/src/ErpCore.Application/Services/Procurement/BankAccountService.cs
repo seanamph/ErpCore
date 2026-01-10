@@ -219,13 +219,14 @@ public class BankAccountService : BaseService, IBankAccountService
                 throw new InvalidOperationException($"銀行帳戶不存在: {bankAccountId}");
             }
 
-            // TODO: 從付款單等相關表計算實際餘額
-            // 目前先返回 0，實際應從相關交易記錄計算
+            // 從付款單等相關表計算實際餘額
+            var balance = await _repository.CalculateBalanceAsync(bankAccountId);
+            
             return new BankAccountBalanceDto
             {
                 BankAccountId = bankAccount.BankAccountId,
                 AccountName = bankAccount.AccountName,
-                Balance = 0, // TODO: 計算實際餘額
+                Balance = balance,
                 CurrencyId = bankAccount.CurrencyId ?? "TWD",
                 LastUpdateDate = bankAccount.UpdatedAt
             };

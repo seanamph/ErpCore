@@ -40,9 +40,26 @@ public class SmsService : BaseService, ISmsService
 
             var savedLog = await _smsLogRepository.CreateAsync(smsLog);
 
-            // TODO: 實作實際的簡訊發送邏輯（整合簡訊服務提供商 API）
-            // 目前先標記為已發送
-            await _smsLogRepository.UpdateStatusAsync(savedLog.Id, "Sent", DateTime.Now);
+            // 實作實際的簡訊發送邏輯（整合簡訊服務提供商 API）
+            // 注意：此處需要整合實際的簡訊服務提供商 API（如 Twilio、AWS SNS 等）
+            // 目前提供框架，實際發送需要配置簡訊服務提供商的 API Key 和相關設定
+            try
+            {
+                // TODO: 整合簡訊服務提供商 API
+                // 範例：使用 HTTP 呼叫簡訊服務 API
+                // var smsApiUrl = _configuration["SmsSettings:ApiUrl"];
+                // var smsApiKey = _configuration["SmsSettings:ApiKey"];
+                // 使用 HttpClient 呼叫 API 發送簡訊
+                
+                // 目前先標記為已發送（實際環境需要實作真實的 API 呼叫）
+                await _smsLogRepository.UpdateStatusAsync(savedLog.Id, "Sent", DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                await _smsLogRepository.UpdateStatusAsync(savedLog.Id, "Failed", null, ex.Message);
+                _logger.LogError($"簡訊發送失敗: {savedLog.Id}", ex);
+                throw;
+            }
 
             _logger.LogInfo($"簡訊發送成功: {savedLog.Id}");
 

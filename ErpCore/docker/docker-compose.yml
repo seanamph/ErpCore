@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # SQL Server 資料庫
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: erpcore-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong@Password123
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    networks:
+      - erpcore-network
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Password123 -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+
+  # ErpCore API
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: erpcore-api
+    ports:
+      - "5000:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=ErpCore;User Id=sa;Password=YourStrong@Password123;TrustServerCertificate=true;
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - erpcore-network
+    volumes:
+      - ./logs:/app/logs
+
+  # ErpCore Web (Vue 前端)
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.web
+    container_name: erpcore-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    networks:
+      - erpcore-network
+
+networks:
+  erpcore-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:
+

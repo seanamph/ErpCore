@@ -2,7 +2,9 @@ using System.Text;
 using OfficeOpenXml;
 using ErpCore.Application.DTOs.SystemExtensionH;
 using ErpCore.Application.Services.Base;
+using ErpCore.Domain.Entities.SystemExtensionE;
 using ErpCore.Domain.Entities.SystemExtensionH;
+using ErpCore.Infrastructure.Repositories.SystemExtensionE;
 using ErpCore.Infrastructure.Repositories.SystemExtensionH;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -17,17 +19,20 @@ public class PersonnelBatchService : BaseService, IPersonnelBatchService
 {
     private readonly IPersonnelImportLogRepository _logRepository;
     private readonly IPersonnelImportDetailRepository _detailRepository;
+    private readonly IPersonnelRepository _personnelRepository;
     private const long MaxFileSize = 10 * 1024 * 1024; // 10MB
     private static readonly string[] AllowedExtensions = { ".xlsx", ".xls" };
 
     public PersonnelBatchService(
         IPersonnelImportLogRepository logRepository,
         IPersonnelImportDetailRepository detailRepository,
+        IPersonnelRepository personnelRepository,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _logRepository = logRepository;
         _detailRepository = detailRepository;
+        _personnelRepository = personnelRepository;
     }
 
     /// <summary>
@@ -161,11 +166,36 @@ public class PersonnelBatchService : BaseService, IPersonnelBatchService
                         continue;
                     }
 
-                    // TODO: 實際新增人事資料到資料庫
-                    // 這裡需要根據實際業務邏輯來實作
-                    // 例如：檢查人事編號是否已存在、新增人事資料等
+                    // 實際新增人事資料到資料庫
+                    // 檢查人事編號是否已存在
+                    var exists = await _personnelRepository.ExistsAsync(detail.PersonnelId);
+                    if (exists)
+                    {
+                        detail.ImportStatus = "FAILED";
+                        detail.ErrorMessage = "人事編號已存在";
+                        failCount++;
+                        await _detailRepository.UpdateAsync(detail);
+                        continue;
+                    }
 
+                    // 新增人事資料
+                    var personnel = new Personnel
+                    {
+                        PersonnelId = detail.PersonnelId,
+                        PersonnelName = detail.PersonnelName,
+                        Status = "A", // 預設為在職
+                        CreatedBy = GetCurrentUserId(),
+                        CreatedAt = DateTime.Now,
+                        UpdatedBy = GetCurrentUserId(),
+                        UpdatedAt = DateTime.Now
+                    };
+
+                    await _personnelRepository.CreateAsync(personnel);
+
+                    // 更新明細狀態
                     detail.ImportStatus = "SUCCESS";
+                    await _detailRepository.UpdateAsync(detail);
+
                     successCount++;
                 }
                 catch (Exception ex)

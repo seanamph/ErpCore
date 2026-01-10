@@ -43,16 +43,21 @@ public class TypeCodeQueryService : BaseService, ITypeCodeQueryService
 
             var result = await _repository.QueryAsync(query);
 
-            var dtos = result.Items.Select(x => new TypeCodeQueryResultDto
+            var dtos = new List<TypeCodeQueryResultDto>();
+            foreach (var x in result.Items)
             {
-                TKey = x.TKey,
-                TypeCode = x.TypeCode,
-                TypeName = x.TypeName,
-                TypeNameEn = x.TypeNameEn,
-                Category = x.Category,
-                Status = x.Status,
-                UsageCount = 0 // TODO: 實作使用次數統計
-            }).ToList();
+                var usageCount = await _repository.GetUsageCountAsync(x.TypeCode, x.Category);
+                dtos.Add(new TypeCodeQueryResultDto
+                {
+                    TKey = x.TKey,
+                    TypeCode = x.TypeCode,
+                    TypeName = x.TypeName,
+                    TypeNameEn = x.TypeNameEn,
+                    Category = x.Category,
+                    Status = x.Status,
+                    UsageCount = usageCount
+                });
+            }
 
             return new PagedResult<TypeCodeQueryResultDto>
             {
@@ -88,15 +93,26 @@ public class TypeCodeQueryService : BaseService, ITypeCodeQueryService
             {
                 TotalTypeCodes = result.TotalCount,
                 ActiveTypeCodes = result.Items.Count(t => t.Status == "A"),
-                CategoryStatistics = result.Items
-                    .GroupBy(t => t.Category)
-                    .Select(g => new TypeCodeCategoryStatisticsDto
-                    {
-                        TypeCategory = g.Key,
-                        Count = g.Count(),
-                        UsageCount = 0 // TODO: 實作使用次數統計
-                    })
-                    .ToList()
+                CategoryStatistics = new List<TypeCodeCategoryStatisticsDto>()
+            };
+
+            // 計算各分類的使用次數
+            var categoryGroups = result.Items.GroupBy(t => t.Category);
+            foreach (var group in categoryGroups)
+            {
+                var totalUsageCount = 0;
+                foreach (var item in group)
+                {
+                    totalUsageCount += await _repository.GetUsageCountAsync(item.TypeCode, item.Category);
+                }
+
+                statistics.CategoryStatistics.Add(new TypeCodeCategoryStatisticsDto
+                {
+                    TypeCategory = group.Key,
+                    Count = group.Count(),
+                    UsageCount = totalUsageCount
+                });
+            }
             };
 
             return statistics;

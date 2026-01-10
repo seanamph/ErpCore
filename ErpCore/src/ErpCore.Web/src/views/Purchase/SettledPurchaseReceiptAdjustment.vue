@@ -610,6 +610,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/styles/variables.scss';
+
 .settled-adjustment {
   .search-card {
     margin-bottom: 20px;

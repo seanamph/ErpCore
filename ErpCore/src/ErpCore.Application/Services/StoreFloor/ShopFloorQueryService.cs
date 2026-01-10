@@ -13,13 +13,16 @@ namespace ErpCore.Application.Services.StoreFloor;
 public class ShopFloorQueryService : BaseService, IShopFloorQueryService
 {
     private readonly IShopFloorRepository _repository;
+    private readonly ExportHelper _exportHelper;
 
     public ShopFloorQueryService(
         IShopFloorRepository repository,
+        ExportHelper exportHelper,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = exportHelper;
     }
 
     public async Task<PagedResult<ShopFloorDto>> QueryShopFloorsAsync(StoreQueryDto query)
@@ -102,6 +105,8 @@ public class ShopFloorQueryService : BaseService, IShopFloorQueryService
     {
         try
         {
+            _logger.LogInfo("匯出商店查詢結果");
+
             // 查詢所有符合條件的資料（不分頁）
             var query = new StoreQueryDto
             {
@@ -112,17 +117,42 @@ public class ShopFloorQueryService : BaseService, IShopFloorQueryService
 
             var result = await QueryShopFloorsAsync(query);
 
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ShopId", DisplayName = "商店代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShopName", DisplayName = "商店名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShopNameEn", DisplayName = "商店名稱(英文)", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FloorId", DisplayName = "樓層代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FloorName", DisplayName = "樓層名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShopType", DisplayName = "商店類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Address", DisplayName = "地址", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "City", DisplayName = "城市", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Zone", DisplayName = "區域", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PostalCode", DisplayName = "郵遞區號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Phone", DisplayName = "電話", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Fax", DisplayName = "傳真", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Email", DisplayName = "電子郵件", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ManagerName", DisplayName = "店長姓名", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ManagerPhone", DisplayName = "店長電話", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OpenDate", DisplayName = "開店日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "CloseDate", DisplayName = "關店日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "Status", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PosEnabled", DisplayName = "POS啟用", DataType = ExportDataType.Boolean },
+                new ExportColumn { PropertyName = "PosSystemId", DisplayName = "POS系統代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PosTerminalId", DisplayName = "POS終端代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Notes", DisplayName = "備註", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CreatedAt", DisplayName = "建立時間", DataType = ExportDataType.DateTime }
+            };
+
             // 根據格式匯出
             if (dto.Format.Equals("PDF", StringComparison.OrdinalIgnoreCase))
             {
-                // TODO: 實作PDF匯出
-                throw new NotImplementedException("PDF匯出功能尚未實作");
+                return _exportHelper.ExportToPdf(result.Items, columns, dto.Title ?? "商店查詢報表");
             }
             else
             {
-                // Excel匯出
-                // TODO: 實作Excel匯出
-                throw new NotImplementedException("Excel匯出功能尚未實作");
+                return _exportHelper.ExportToExcel(result.Items, columns, "商店查詢", dto.Title ?? "商店查詢報表");
             }
         }
         catch (Exception ex)
