@@ -41,67 +41,6 @@
   </div>
 </template>
 
-        <el-tab-pane label="使用者列表" name="user">
-          <el-form :inline="true" :model="userQueryForm" class="search-form">
-            <el-form-item label="使用者名稱">
-              <el-input v-model="userQueryForm.UserName" placeholder="請輸入使用者名稱" clearable />
-            </el-form-item>
-            <el-form-item label="使用者代碼">
-              <el-input v-model="userQueryForm.UserId" placeholder="請輸入使用者代碼" clearable />
-            </el-form-item>
-            <el-form-item label="狀態">
-              <el-select v-model="userQueryForm.Status" placeholder="請選擇狀態" clearable>
-                <el-option label="啟用" value="A" />
-                <el-option label="停用" value="I" />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleUserSearch">查詢</el-button>
-              <el-button @click="handleUserReset">重置</el-button>
-            </el-form-item>
-          </el-form>
-
-          <!-- 使用者列表 -->
-          <el-table
-            :data="userList"
-            v-loading="userLoading"
-            border
-            stripe
-            highlight-current-row
-            @row-click="handleUserRowClick"
-            style="width: 100%; cursor: pointer"
-          >
-            <el-table-column type="index" label="序號" width="60" align="center" />
-            <el-table-column prop="UserId" label="使用者代碼" width="120" />
-            <el-table-column prop="UserName" label="使用者名稱" min-width="200" />
-            <el-table-column prop="Title" label="職稱" width="150" />
-            <el-table-column prop="OrgId" label="組織代碼" width="120" />
-            <el-table-column prop="Status" label="狀態" width="80" align="center">
-              <template #default="{ row }">
-                <el-tag :type="row.Status === 'A' ? 'success' : 'danger'" size="small">
-                  {{ row.Status === 'A' ? '啟用' : '停用' }}
-                </el-tag>
-              </template>
-            </el-table-column>
-          </el-table>
-
-          <!-- 分頁 -->
-          <el-pagination
-            v-model:current-page="userPagination.PageIndex"
-            v-model:page-size="userPagination.PageSize"
-            :total="userPagination.TotalCount"
-            :page-sizes="[20, 50, 100, 200]"
-            layout="total, sizes, prev, pager, next, jumper"
-            @size-change="handleUserSizeChange"
-            @current-change="handleUserPageChange"
-            style="margin-top: 20px; text-align: right"
-          />
-        </el-tab-pane>
-      </el-tabs>
-    </el-card>
-  </div>
-</template>
-
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
