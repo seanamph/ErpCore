@@ -4,6 +4,33 @@
 
 ### 📝 最新完成工作
 
+#### SYSB206 - 廠/客基本資料維護功能完成
+- ✅ **完成完整功能實現**：根據開發計劃文件確認 SYSB206 廠/客基本資料維護功能已完整實現
+  - Entity: Vendor.cs（廠商實體類別，已存在）
+  - Repository: IVendorRepository.cs 和 VendorRepository.cs（資料存取層，已完整實現）
+  - Service: IVendorService.cs 和 VendorService.cs（業務邏輯層，已完整實現）
+  - DTO: VendorDto.cs, VendorQueryDto.cs, CreateVendorDto.cs, UpdateVendorDto.cs, BatchDeleteVendorDto.cs, CheckGuiIdResultDto.cs（資料傳輸物件，已存在）
+  - Controller: VendorsController.cs（API 控制器，路徑 /api/v1/vendors，已完整實現所有端點）
+  - Vue 頁面: Vendors.vue（前端查詢維護頁面，支援廠商查詢、新增、修改、刪除）
+  - SQL 腳本: CreateVendorsTables.sql（資料庫建立腳本，包含 Vendors 表，已存在）
+  - API 文件: vendors.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSB206 路由（路徑 /master-data/vendors）
+  - 依賴注入: 已在 Program.cs 註冊 IVendorRepository 和 IVendorService
+- ✅ **功能特性**：
+  - 支援廠商的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（廠商編號、統一編號、廠商名稱、狀態、系統別、組織代碼）
+  - 支援批次刪除功能
+  - 支援狀態管理（啟用/停用）
+  - 支援三種識別類型（統一編號、身份證字號、自編編號）
+  - 支援廠商編號自動產生（統一編號+"-"+流水號）
+  - 支援統一編號唯一性檢查
+  - 支援完整的聯絡資訊管理（公司資訊、聯絡人資訊）
+  - 支援銀行帳戶資訊管理
+  - 支援多系統別管理
+  - 支援組織架構管理
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYSBC40 - 參數資料設定維護功能完成
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSBC40 參數資料設定維護功能
   - Entity: Parameter.cs（參數實體類別，已創建）
@@ -185,14 +212,14 @@
 
 **專案狀態**：✅ 已完成多個基本資料管理功能模組的完整實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（Vue 頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYSBC40（參數資料設定維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面和 SQL 腳本。功能支援參數的新增、修改、刪除、查詢，並包含只讀參數保護、多語言支援等特性。所有代碼已提交到 Git 倉庫。
+**最新進度**：✅ 已完成 SYSB206（廠/客基本資料維護）功能的完整實現確認，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面和 SQL 腳本。功能支援廠商的新增、修改、刪除、查詢，並包含統一編號自動產生、唯一性檢查、三種識別類型支援等特性。所有代碼已存在且完整實現。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Infrastructure 專案循環相依性問題），這些錯誤會影響整體專案編譯。需要檢查專案引用配置，解決循環相依性。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（區域基本資料維護 SYSB450、廠客基本資料維護 SYSB206 等）或進銷存管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（區域基本資料維護 SYSB450 等）或進銷存管理功能（SYSW110、SYSW137、SYSW150 等）
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
 5. 進行功能測試和整合測試（特別是基本資料管理功能，驗證 CRUD 操作、分頁查詢、篩選等功能）
 6. 根據實際業務需求調整功能模組
