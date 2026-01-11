@@ -244,6 +244,24 @@ const routes = [
         meta: { title: '使用者資料瀏覽 (SYS0120)' }
       },
       {
+        path: 'user-change-logs',
+        name: 'SYS0610Query',
+        component: () => import('../views/System/SYS0610Query.vue'),
+        meta: { title: '使用者基本資料異動查詢 (SYS0610)' }
+      },
+      {
+        path: 'role-change-logs',
+        name: 'SYS0620Query',
+        component: () => import('../views/System/SYS0620Query.vue'),
+        meta: { title: '角色基本資料異動查詢 (SYS0620)' }
+      },
+      {
+        path: 'user-role-change-logs',
+        name: 'SYS0630Query',
+        component: () => import('../views/System/SYS0630Query.vue'),
+        meta: { title: '使用者角色對應設定異動查詢 (SYS0630)' }
+      },
+      {
         path: 'user-account-policy',
         name: 'SYS0130Query',
         component: () => import('../views/System/SYS0130Query.vue'),
