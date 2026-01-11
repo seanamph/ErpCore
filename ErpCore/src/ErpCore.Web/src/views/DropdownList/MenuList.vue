@@ -38,8 +38,9 @@
         <el-table-column type="index" label="序號" width="60" align="center" />
         <el-table-column prop="MenuId" label="選單代碼" width="120" />
         <el-table-column prop="MenuName" label="選單名稱" min-width="200" />
+        <el-table-column prop="SystemId" label="系統ID" width="120" />
         <el-table-column prop="ParentMenuId" label="父選單代碼" width="120" />
-        <el-table-column prop="MenuPath" label="選單路徑" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="Url" label="連結網址" min-width="200" show-overflow-tooltip />
         <el-table-column prop="Icon" label="圖示" width="100" align="center" />
         <el-table-column prop="SeqNo" label="排序序號" width="100" align="center" />
         <el-table-column prop="Status" label="狀態" width="80" align="center">
