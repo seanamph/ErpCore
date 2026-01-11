@@ -4,6 +4,30 @@
 
 ### 📝 最新完成工作
 
+#### SYS0320 - 使用者系統權限設定功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0320 使用者系統權限設定功能
+  - Entity: UserButton.cs（使用者按鈕權限實體類別，使用 ButtonId 對應 ConfigButtons 表）
+  - Repository: IUserPermissionRepository.cs 和 UserPermissionRepository.cs（資料存取層，已完整實現）
+  - Service: IUserPermissionService.cs 和 UserPermissionService.cs（業務邏輯層，已完整實現，包含清除角色權限對應邏輯）
+  - DTO: UserPermissionDto.cs, CreateUserPermissionDto.cs, UserPermissionQueryDto.cs, BatchSetUserSystemPermissionDto.cs 等（資料傳輸物件）
+  - Controller: UserPermissionsController.cs（API 控制器，路徑 /api/v1/users/{userId}/permissions，已完整實現所有端點）
+  - Vue 頁面: SYS0320Query.vue（前端查詢維護頁面，支援使用者權限查詢、批量設定）
+  - SQL 腳本: CreatePermissionTables.sql（資料庫建立腳本，包含 UserButtons 表）
+  - API 文件: permissions.js（前端 API 調用，userPermissionsApi）
+  - 依賴注入: 已在 Program.cs 註冊 IUserPermissionRepository 和 IUserPermissionService
+- ✅ **功能特性**：
+  - 支援使用者權限的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（系統、子系統、作業、按鈕）
+  - 支援批次刪除功能
+  - 支援批量設定系統權限（全選/取消）
+  - 支援批量設定選單權限
+  - 支援批量設定作業權限
+  - 支援批量設定按鈕權限
+  - 支援權限統計查詢（系統層級）
+  - **重要功能**：設定使用者直接權限時，自動清除該使用者的角色權限對應（UserRoles表）
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYS0310 - 角色系統權限設定功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0310 角色系統權限設定功能
   - Entity: RoleButton.cs（角色按鈕權限實體類別，使用 ButtonId 對應 ConfigButtons 表）
@@ -103,16 +127,16 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0310（角色系統權限設定）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。Vue 頁面已創建並提交到 Git 倉庫。後端 API 和服務層已完整實現，支援角色權限的查詢、新增、刪除和批量設定功能。
+**最新進度**：✅ 已完成 SYS0320（使用者系統權限設定）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0320Query.vue 已創建並提交到 Git 倉庫。後端 API 和服務層已完整實現，支援使用者權限的查詢、新增、刪除和批量設定功能。重要特性：設定使用者直接權限時會自動清除該使用者的角色權限對應（UserRoles表）。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（JwtTokenService、DistributedCacheService、MemoryCacheService、AnalysisReportRepository 等），這些錯誤會影響整體專案編譯
-2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue 等），這些錯誤會影響前端構建
+2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（Xcom/index.vue、XcomMsg/index.vue、InvoiceExtension/index.vue 等），這些錯誤會影響前端構建
 3. 實作資料庫密碼加密邏輯（SystemService 中的 EncryptPassword 方法）
-4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0320（使用者系統權限設定）或 SYS0330（角色欄位權限設定）
-5. 進行功能測試和整合測試（特別是 SYS0310 的批量設定功能）
+4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0330（角色欄位權限設定）
+5. 進行功能測試和整合測試（特別是 SYS0320 的批量設定功能和清除角色權限對應功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
