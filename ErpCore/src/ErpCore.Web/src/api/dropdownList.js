@@ -37,14 +37,19 @@ export const dropdownListApi = {
   },
 
   // ========== 日期列表 (DATE_LIST) ==========
-  // 查詢日期列表
-  getDates: (params) => {
-    return axios.get('/lists/dates', { params })
+  // 取得系統日期格式設定
+  getDateFormat: () => {
+    return axios.get('/system/date-format')
   },
 
-  // 查詢日期選項（用於下拉選單）
-  getDateOptions: (params) => {
-    return axios.get('/lists/dates/options', { params })
+  // 驗證日期格式
+  validateDate: (data) => {
+    return axios.post('/system/validate-date', data)
+  },
+
+  // 解析日期字串
+  parseDate: (data) => {
+    return axios.post('/system/parse-date', data)
   },
 
   // ========== 選單列表 (MENU_LIST) ==========

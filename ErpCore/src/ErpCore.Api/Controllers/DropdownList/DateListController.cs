@@ -10,7 +10,7 @@ namespace ErpCore.Api.Controllers.DropdownList;
 /// <summary>
 /// 日期列表控制器 (DATE_LIST)
 /// </summary>
-[Route("api/v1/lists/dates")]
+[Route("api/v1/system")]
 public class DateListController : BaseController
 {
     private readonly IDateService _dateService;
@@ -25,7 +25,7 @@ public class DateListController : BaseController
     /// <summary>
     /// 取得系統日期格式設定
     /// </summary>
-    [HttpGet("format")]
+    [HttpGet("date-format")]
     public async Task<ActionResult<ApiResponse<DateFormatDto>>> GetDateFormat()
     {
         return await ExecuteAsync(async () =>
@@ -38,7 +38,7 @@ public class DateListController : BaseController
     /// <summary>
     /// 驗證日期格式
     /// </summary>
-    [HttpPost("validate")]
+    [HttpPost("validate-date")]
     public async Task<ActionResult<ApiResponse<DateValidationDto>>> ValidateDate(
         [FromBody] DateValidationRequestDto request)
     {

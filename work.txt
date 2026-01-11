@@ -3,10 +3,11 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **功能檢查完成**：檢查了 SYSW110（供應商商品資料維護）和 SYSW150（商品永久變價作業）功能，確認均已完整實現
-- ✅ **功能完整性確認**：
-  - SYSW110 供應商商品資料維護：Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本、API 文件、路由配置均已完整實現
-  - SYSW150 商品永久變價作業：相關文件均已存在並完整實現
+- ✅ **SYSID_LIST 系統ID列表功能完善**：根據開發計劃文件完善了 SYSID_LIST 功能實現
+  - 修改 SystemListService：使用正確的表名（Systems、Menus、Programs、Buttons）和 JOIN 查詢邏輯，只顯示有選單、作業、按鈕的系統
+  - 更新 SystemListController：API 路徑改為 /api/v1/lists/systems，新增查詢單筆系統端點
+  - 更新 Vue 頁面 SystemList.vue：簡化為符合開發計劃要求的系統列表選擇頁面
+  - 更新 API 文件 dropdownList.js：匹配新的 API 路徑
 - ⚠️ **構建狀態**：
   - dotnet build：存在已知的循環相依性錯誤（ErpCore.Infrastructure 專案，MSB4006 錯誤）
   - npm build：存在已知的編碼問題（CertificateData/index.vue、CertificateProcess/index.vue 等文件）
@@ -263,14 +264,23 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **SYSB450 區域基本資料維護功能確認完成**：已確認所有必要文件完整（Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本、API 文件、路由配置）
+- **SYSID_LIST 系統ID列表功能完善**：
+  - 修改 SystemListService 使用正確的表名（Systems、Menus、Programs、Buttons）和複雜的 JOIN 查詢邏輯
+  - 實現只顯示有選單、作業、按鈕的系統的過濾邏輯
+  - 實現系統排除邏輯（預設排除 EIP0000、CFG0000、XCOM000，除非是 xcom 使用者）
+  - 更新 SystemListController API 路徑為 /api/v1/lists/systems，新增查詢單筆系統端點
+  - 更新 Vue 頁面 SystemList.vue 符合開發計劃要求（簡化為系統列表選擇頁面）
+  - 更新 API 文件 dropdownList.js 匹配新的 API 路徑
+  - 所有變更已提交到 git（commit: 8edef9f）
 
 ### ⚠️ 已知問題
-- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
+- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
+- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（440 個錯誤）
 
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
-2. **繼續開發新功能**：選擇開發計劃目錄中的其他未完成功能，建議優先選擇基本資料管理類或下拉列表類的簡單功能
-3. **功能測試**：對已完成的功能進行完整測試，特別是 SYSW110、SYSW150 等進銷存管理功能
+2. **繼續開發新功能**：選擇開發計劃目錄中的其他未完成功能，建議優先選擇：
+   - 下拉列表類功能（MENU_LIST、DATE_LIST、ADDR_CITY_LIST 等）
+   - 基本資料管理類功能
+3. **功能測試**：對已完成的功能進行完整測試，特別是 SYSID_LIST 系統ID列表功能
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
