@@ -4,6 +4,28 @@
 
 ### 📝 最新完成工作
 
+#### SYS0210 - 角色基本資料維護功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0210 角色基本資料維護功能
+  - Entity: Role.cs（角色實體類別，已存在）
+  - Repository: IRoleRepository.cs 和 RoleRepository.cs（資料存取層，已完整實現）
+  - Service: IRoleService.cs 和 RoleService.cs（業務邏輯層，已完整實現）
+  - DTO: RoleDto.cs, RoleQueryDto.cs, CreateRoleDto.cs, UpdateRoleDto.cs, CopyRoleDto.cs, BatchDeleteRoleDto.cs 等（資料傳輸物件，已存在）
+  - Controller: RolesController.cs（API 控制器，路徑 /api/v1/roles，已完整實現所有端點）
+  - Vue 頁面: SYS0210Query.vue（前端查詢維護頁面，支援角色查詢、新增、修改、刪除、批次刪除、複製）
+  - SQL 腳本: CreateRolesTables.sql（資料庫建立腳本，包含 Roles、UserRoles、RolePermissions 表，已存在）
+  - API 文件: roles.js（前端 API 調用，已存在）
+  - 依賴注入: 已在 Program.cs 註冊 IRoleRepository 和 IRoleService
+- ✅ **功能特性**：
+  - 支援角色的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（角色代碼、角色名稱）
+  - 支援批次刪除功能
+  - 支援角色複製功能（複製角色及其權限設定）
+  - 刪除前檢查是否有使用者使用此角色
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+### 📝 之前完成工作
+
 #### SYS0110 - 使用者基本資料維護功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0110 使用者基本資料維護功能
   - Entity: User.cs（使用者實體類別，已存在）
@@ -240,7 +262,7 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0110（使用者基本資料維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0110Query.vue 已完整實現並提交到 Git。後端 API 和服務層已完整實現，支援使用者的查詢、新增、修改、刪除、批次刪除、重設密碼、啟用/停用功能，支援分頁查詢和多條件篩選。
+**最新進度**：✅ 已完成 SYS0210（角色基本資料維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0210Query.vue 已完整實現並提交到 Git。後端 API 和服務層已完整實現，支援角色的查詢、新增、修改、刪除、批次刪除、複製功能，支援分頁查詢和多條件篩選。角色複製功能會同時複製角色的權限設定。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
@@ -248,8 +270,8 @@
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
 3. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0210（角色基本資料維護）或 SYS0120（使用者資料瀏覽）
-5. 進行功能測試和整合測試（特別是 SYS0110 的使用者資料維護功能）
+4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0220（使用者之角色設定維護）或 SYS0120（使用者資料瀏覽）
+5. 進行功能測試和整合測試（特別是 SYS0210 的角色資料維護功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
