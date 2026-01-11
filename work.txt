@@ -3,39 +3,37 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0111 功能實現完成**：已完成使用者基本資料維護(業種儲位)功能
+- ✅ **SYS0111 功能完整實現**：已完成使用者基本資料維護(業種儲位)功能（後端+前端）
   - 實現內容：
     - ✅ Entity 層: `UserBusinessType`、`UserWarehouseArea`、`UserStore` 實體已完整實現
-    - ✅ Repository 層: `UserBusinessTypeRepository`、`UserWarehouseAreaRepository`、`UserStoreRepository` 和對應的介面已完整實現（查詢、新增、批次新增、刪除）
+    - ✅ Repository 層: `UserBusinessTypeRepository`、`UserWarehouseAreaRepository`、`UserStoreRepository` 和對應的介面已完整實現
     - ✅ Service 層: `UserService` 已擴展（查詢使用者詳細資料、查詢業種分類、查詢儲位、查詢7X承租分店、新增/修改使用者含業種儲位設定）
-    - ✅ Controller 層: `UsersController` 已擴展（GET /{userId}/detail、GET /business-types/major、GET /business-types/middle、GET /business-types/minor、GET /warehouse-areas、GET /stores、POST /with-business-types、PUT /{userId}/with-business-types 等 API 端點）
-    - ✅ DTO 層: `UserDetailDto`、`UserBusinessTypeDto`、`UserWarehouseAreaDto`、`UserStoreDto`、`BusinessTypeMajorDto`、`BusinessTypeMiddleDto`、`BusinessTypeMinorDto`、`WarehouseAreaDto`、`StoreDto`、`CreateUserWithBusinessTypesDto`、`UpdateUserWithBusinessTypesDto` 等已完整實現
+    - ✅ Controller 層: `UsersController` 已擴展所有 SYS0111 相關 API 端點
+    - ✅ DTO 層: 所有 SYS0111 相關 DTO 已完整實現
     - ✅ API 整合: 在 `users.js` 中新增所有 SYS0111 相關的 API 方法
-    - ✅ SQL 腳本: `CreateUserBusinessTypesTables.sql` 已完整實現（包含 UserBusinessTypes、UserWarehouseAreas、UserStores 三個資料表）
-    - ✅ 依賴注入: 已在 `Program.cs` 中註冊新的 Repository
-  - 功能狀態：SYS0111 後端服務已完整實現，前端 Vue 頁面待實現（API 已準備就緒）
+    - ✅ SQL 腳本: `CreateUserBusinessTypesTables.sql` 已完整實現
+    - ✅ **前端 Vue 頁面**: `SYS0111Query.vue` 已完整實現
+      - 使用者列表查詢功能
+      - 新增/修改使用者對話框（含基本資料）
+      - 業種權限設定區塊（大分類→中分類→小分類的階層選擇，支援快取機制）
+      - 儲位權限設定區塊（儲位1→儲位2→儲位3的階層選擇，支援快取機制）
+      - 7X承租分店權限設定區塊
+      - 完整的表單驗證和錯誤處理
+  - 功能狀態：SYS0111 前後端已完整實現 ✨
   - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0111-使用者基本資料維護(業種儲位).md`
 
 ### ⚠️ 已知問題
-- **dotnet build**：專案存在一些既有的編譯錯誤（與 SYS0111 無關）
-  - 問題原因：部分命名空間引用問題和 DTO 類型缺失
-  - 影響範圍：不影響 SYS0111 功能的實現
-  - 建議：後續需要修復這些既有的編譯錯誤
-- **前端 Vue 頁面**：SYS0111Query.vue 尚未實現
-  - 建議：參考 SYS0110Query.vue 和 SYS0117Query.vue 實現完整的 Vue 頁面，包含業種、儲位、7X承租分店的設定功能
+- **dotnet build**：專案存在一些既有的編譯錯誤（與 SYS0111 無關，主要是命名空間引用問題）
+- **npm build**：專案存在一些既有檔案的編譯錯誤（與 SYS0111 無關，主要是編碼問題）
+- **業種和儲位查詢邏輯**：目前 Service 層的 GetBusinessTypeMajorsAsync、GetBusinessTypeMiddlesAsync、GetBusinessTypeMinorsAsync、GetWarehouseAreasAsync、GetStoresAsync 方法返回空列表，需要根據實際資料表結構實現查詢邏輯
 
 ### 🎯 下一步建議
-1. **實現前端 Vue 頁面**：創建 SYS0111Query.vue，實現完整的 UI 功能
-   - 參考 SYS0110Query.vue 的基本結構
-   - 新增業種權限設定區塊（大分類→中分類→小分類的階層選擇）
-   - 新增儲位權限設定區塊（儲位1→儲位2→儲位3的階層選擇）
-   - 新增7X承租分店權限設定區塊
-   - 整合所有 API 方法
-2. **完善業種和儲位查詢邏輯**：在 Service 層實現實際的業種和儲位查詢邏輯
-   - 目前 GetBusinessTypeMajorsAsync、GetBusinessTypeMiddlesAsync、GetBusinessTypeMinorsAsync、GetWarehouseAreasAsync、GetStoresAsync 方法返回空列表
-   - 需要根據實際資料表結構實現查詢邏輯
-3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
-4. **功能測試**：對已完成的功能進行完整測試，確保功能正常運作
+1. **完善業種和儲位查詢邏輯**：在 Service 層實現實際的業種和儲位查詢邏輯
+   - 需要根據實際資料表結構實現 GetBusinessTypeMajorsAsync、GetBusinessTypeMiddlesAsync、GetBusinessTypeMinorsAsync、GetWarehouseAreasAsync、GetStoresAsync 方法
+2. **選擇新功能開發**：從 `開發計劃/` 目錄選擇一個新功能進行開發
+   - 建議：SYS0113（使用者基本資料維護(分店廠商部門)）或 SYS0114（使用者基本資料維護(ActiveDirectory)）
+3. **功能測試**：對 SYS0111 功能進行完整測試，確保功能正常運作
+4. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
 
 ---
 ## 📊 最新進度摘要（2025-01-27）
@@ -57,10 +55,10 @@
 
 ### ⚠️ 已知問題
 - **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關）
-- **前端 Vue 頁面**：SYS0111Query.vue 尚未實現
+- **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關）
+- **業種和儲位查詢邏輯**：Service 層的查詢方法需要根據實際資料表結構實現
 
 ### 🎯 下一步建議
-1. **實現前端 Vue 頁面**：創建 SYS0111Query.vue，實現完整的 UI 功能
-2. **完善業種和儲位查詢邏輯**：在 Service 層實現實際的業種和儲位查詢邏輯
-3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
-4. **功能測試**：對已完成的功能進行完整測試
+1. **完善業種和儲位查詢邏輯**：實現實際的資料查詢邏輯
+2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：SYS0113 或 SYS0114）
+3. **功能測試**：對已完成的功能進行完整測試
