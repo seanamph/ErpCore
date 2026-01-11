@@ -305,6 +305,9 @@ try
     builder.Services.AddScoped<IConfigProgramService, ConfigProgramService>();
     builder.Services.AddScoped<IConfigButtonService, ConfigButtonService>();
     builder.Services.AddScoped<ErpCore.Application.Services.System.ISystemService, ErpCore.Application.Services.System.SystemService>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.ISystemRepository, ErpCore.Infrastructure.Repositories.System.SystemRepository>();
+    builder.Services.AddScoped<ErpCore.Application.Services.System.IMenuService, ErpCore.Application.Services.System.MenuService>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.IMenuRepository, ErpCore.Infrastructure.Repositories.System.MenuRepository>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IUserAgentService, UserAgentService>();
     builder.Services.AddScoped<IRoleService, RoleService>();
