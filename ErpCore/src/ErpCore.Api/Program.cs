@@ -174,6 +174,7 @@ try
     builder.Services.AddScoped<ICityRepository, CityRepository>();
     builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
     builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+    builder.Services.AddScoped<IProgramRepository, ProgramRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Tools.IFileUploadRepository, ErpCore.Infrastructure.Repositories.Tools.FileUploadRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Tools.IPdfConversionLogRepository, ErpCore.Infrastructure.Repositories.Tools.PdfConversionLogRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Communication.IEmailLogRepository, ErpCore.Infrastructure.Repositories.Communication.EmailLogRepository>();
@@ -355,6 +356,7 @@ try
     builder.Services.AddScoped<IZoneService, ZoneService>();
     builder.Services.AddScoped<IDateService, DateService>();
     builder.Services.AddScoped<IMenuService, MenuService>();
+    builder.Services.AddScoped<IProgramService, ProgramService>();
     builder.Services.AddScoped<IMultiSelectListService, MultiSelectListService>();
     builder.Services.AddScoped<ISystemListService, SystemListService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Tools.IFileUploadService, ErpCore.Application.Services.Tools.FileUploadService>();

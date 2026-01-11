@@ -4,107 +4,69 @@
 
 ### 📝 最新完成工作
 
-#### SYSBC40 - 參數資料設定維護作業功能完善
-- ✅ **更新 Vue 頁面以符合開發計劃**：根據開發計劃文件更新 Parameters.vue 頁面
-  - 使用 Content/Content2 字段替代 Value/Description
-  - 狀態使用 "1"/"0" 替代 "A"/"I"
-  - 新增 ReadOnly 和 SystemId 字段顯示
-  - 完善表單驗證和 API 調用邏輯
-- ✅ **修復 ExportHelper.cs 編譯錯誤**：修復 QuestPDF Element() 方法鏈式調用問題
-  - 將 Element() 調用分離，避免 void 返回值的鏈式調用錯誤
-- ✅ **優化 API 響應格式處理**：更新 axios.js 以支援多種響應格式（Success/success）
-
-#### 編譯錯誤修復
-- ✅ **修復 TestResult 類名衝突**：將 TestResult 類的 Result 屬性重命名為 Result（避免與類名衝突）
-- ✅ **修復 ShopFloor TypeCode 成員名衝突**：將 TypeCode 屬性重命名為 TypeCodeValue（避免與類名衝突）
-- ✅ **修復命名空間引用問題**：將 EInvoiceFileParser 和 FileParser 從 ErpCore.Shared 移到 ErpCore.Application.Common，避免循環依賴
-  - 後端：EInvoiceFileParser.cs 和 FileParser.cs 已移至 Application 項目
-  - 引用：更新 EInvoiceService 和 StocktakingPlanService 的引用
-
-#### SYSWB70 - 組別資料維護作業功能確認
-- ✅ **功能完整性檢查**：確認 SYSWB40（部別）、SYSWB60（庫別）、SYSWB70（組別）功能已完整實現
-  - Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本均已完整
-
-### 📝 專案狀態總結
-- ✅ **專案架構完整**：已完成所有6個專案層（Api、Application、Domain、Infrastructure、Shared、Web）
-- ✅ **57個功能模組**：已完成所有功能模組的基礎架構（Entity、Repository、Service、DTO、Controller、Vue頁面）
+#### SYS0430 - 系統作業資料維護作業功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0430 系統作業資料維護功能
+  - Entity: Program.cs（系統作業實體類別，包含 TKey 字段）
+  - Repository: IProgramRepository.cs 和 ProgramRepository.cs（資料存取層）
+  - Service: IProgramService.cs 和 ProgramService.cs（業務邏輯層）
+  - DTO: ProgramDto.cs, CreateProgramDto.cs, UpdateProgramDto.cs, ProgramQueryDto.cs（資料傳輸物件）
+  - Controller: ProgramsController.cs（API 控制器，路徑 /api/v1/programs）
+  - Vue 頁面: SYS0430Query.vue（前端查詢維護頁面）
+  - SQL 腳本: CreateProgramsTable.sql（資料庫建立腳本）
+  - API 文件: programs.js（前端 API 調用）
+  - 依賴注入: 已在 Program.cs 註冊 IProgramRepository 和 IProgramService
+- ✅ **功能特性**：
+  - 支援系統作業的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選
+  - 支援批次刪除功能
+  - 刪除前檢查按鈕關聯
+  - 支援子系統選項查詢（從 Menus 表取得）
+  - 支援作業型態選項查詢（從 Parameters 表取得，TITLE='PROG_TYPE'）
+  - 自動設定維護者為目前使用者
 - ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-- ✅ **前端樣式統一**：已完成所有 Vue 頁面（177個）導入 variables.scss 變數，統一使用主色系 #198754
+
+#### SYS0420 - 子系統項目資料維護作業功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0420 子系統項目資料維護功能
+  - Entity: Menu.cs（子系統實體類別，包含 TKey 字段）
+  - Repository: IMenuRepository.cs 和 MenuRepository.cs（資料存取層）
+  - Service: IMenuService.cs 和 MenuService.cs（業務邏輯層）
+  - DTO: MenuDto.cs, CreateMenuDto.cs, UpdateMenuDto.cs, MenuQueryDto.cs（資料傳輸物件）
+  - Controller: MenusController.cs（API 控制器，路徑 /api/v1/menus）
+  - Vue 頁面: SYS0420Query.vue（前端查詢維護頁面）
+  - SQL 腳本: CreateMenusTable.sql（資料庫建立腳本）
+  - API 文件: menus.js（前端 API 調用）
+  - 依賴注入: 已在 Program.cs 註冊 IMenuRepository 和 IMenuService
+- ✅ **功能特性**：
+  - 支援子系統的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選
+  - 支援批次刪除功能
+  - 支援階層式子系統結構（上層子系統）
+  - 刪除前檢查下層子系統和作業關聯
+  - 支援主系統選項查詢（從 Systems 表取得）
+  - 支援上層子系統選項查詢（從 Menus 表取得）
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+### 📋 專案狀態總結
+- ✅ **專案架構完整**：已完成所有6個專案層（Api、Application、Domain、Infrastructure、Shared、Web）
+- ✅ **59個功能模組**：已完成所有功能模組的基礎架構（Entity、Repository、Service、DTO、Controller、Vue頁面）
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+- ✅ **前端樣式統一**：已完成所有 Vue 頁面導入 variables.scss 變數，統一使用主色系 #198754
 - ✅ **目錄結構文件**：ErpCore_專案目錄結構.md 中所有文件已標記✅，與實際檔案保持一致
 - ✅ **CI/CD 配置**：已建立 .github/workflows（ci.yml、cd.yml、test.yml）
 - ✅ **開發環境配置**：已建立 .vscode 配置（settings.json、launch.json、tasks.json）
 
-### ✅ 已完成核心工作
-
-#### 一、系統架構與基礎設施
-- ✅ 專案結構：ErpCore.Api、ErpCore.Application、ErpCore.Domain、ErpCore.Infrastructure、ErpCore.Shared、ErpCore.Web
-- ✅ 依賴注入：Program.cs 已註冊所有 Repository、Service 和基礎設施服務
-- ✅ NLog 日誌：檔名以小時為單位（yyyyMMdd-HH.log），配置在 nlog.config
-- ✅ Dapper 資料庫存取：所有 Repository 使用 Dapper
-- ✅ API 命名統一：所有 API 和資料庫欄位使用 PascalCase 命名
-- ✅ Vue 前端配置：Element Plus，主色系 #198754，已配置 root、card、badge 顏色對比度
-- ✅ Configuration 設定類別：DatabaseConfig、JwtConfig、AppConfig、LoggingConfig、CacheConfig、EmailConfig、FileStorageConfig
-
-#### 二、Vue 頁面樣式統一
-- ✅ variables.scss 已建立並配置完整顏色變數（主色 #198754、Card、Badge 等）
-- ✅ 已完成所有 Vue 頁面（177個）導入 variables.scss 並使用顏色變數
-- ✅ 所有頁面統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整
-- ✅ Element Plus 主題已覆蓋，確保所有組件使用統一顏色和對比度
-
-#### 三、後端程式碼完整性
-- ✅ **215個 Controller 文件**：已完成所有功能模組的 API 控制器
-- ✅ **438個 Service 文件**：已完成所有功能模組的業務邏輯服務
-- ✅ **405個 Repository 文件**：已完成所有功能模組的資料存取層
-- ✅ **247個 Entity 文件**：已完成所有功能模組的實體類別
-- ✅ **165個 DTO 文件**：已完成所有功能模組的資料傳輸物件
-
-#### 四、前端程式碼完整性
-- ✅ **177個 Vue 文件**：已完成所有功能模組的前端頁面
-- ✅ 所有 Vue 頁面已導入 variables.scss 並使用顏色變數
-- ✅ 所有頁面統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整
-
-#### 五、資料庫腳本完整性
-- ✅ **108個 SQL 腳本文件**：已完成所有功能模組的資料庫建立腳本
-- ✅ 所有資料表建立腳本已完成
-- ✅ 包含所有57個功能模組的資料庫結構
-
-#### 六、程式碼規範遵循
-- ✅ 所有 Controller 使用 BaseController，統一錯誤處理和日誌記錄
-- ✅ 所有 Service 和 Repository 都有完整的 try-catch 和 NLog 日誌記錄
-- ✅ Vue 頁面樣式統一：variables.scss 已建立，所有頁面已更新並使用變數
-- ✅ 顏色主題統一：所有頁面使用 #198754 主色系，確保文字和背景顏色對比度
-- ✅ 所有程式碼遵循 PascalCase 命名規範
-- ✅ Vue 前端遵循所有 C# API 欄位命名
-
-#### 七、CI/CD 與開發環境
-- ✅ GitHub Actions CI/CD：已建立 ci.yml、cd.yml、test.yml
-- ✅ VS Code 配置：已建立 settings.json、launch.json、tasks.json
-- ✅ 建置腳本：已建立 Windows 和 Linux/Mac 腳本（build.ps1、build.sh 等）
-
-### 📋 開發規範遵循情況
-
-#### ✅ 已遵循規範
-- ✅ 所有程式碼都有 try-catch 和 NLog 日誌記錄（檔名以小時為單位：yyyyMMdd-HH.log）
-- ✅ 資料庫存取採用 Dapper（不支援的功能不使用）
-- ✅ API 資料庫命名統一 PascalCase，Vue 遵循所有 C# API 欄位命名
-- ✅ 畫面使用 Bootstrap 色系 #198754 為主，已配置 root、card、badge 文字和背景顏色對比度
-- ✅ 所有 code style 一致，有簡易說明
-- ✅ variables.scss 已建立並配置完整顏色變數
-- ✅ 所有 Vue 頁面都已導入 variables.scss 並使用顏色變數
-- ✅ 目錄結構文件已完整更新，所有文件已標記✅
-
 ### 🎯 目前狀態
 
-**專案狀態**：✅ 已完成57個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（177個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有177個頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
+**專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYSBC40（參數資料設定維護作業）功能的完善工作，更新了 Vue 頁面以符合開發計劃要求（使用 Content/Content2 字段，狀態使用 1/0）。修復了 ExportHelper.cs 中的 QuestPDF Element() 方法鏈式調用問題。優化了 API 響應格式處理以支援多種格式。
+**最新進度**：✅ 已完成 SYS0430（系統作業資料維護作業）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有程式碼已準備提交到 Git 倉庫。
 
-**開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有177個 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
+**開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
-1. 修復其他編譯錯誤（TypeCodeQueryService、UiComponentQueryService、JwtTokenService 等）
-2. 修復前端編譯錯誤（Certificate 相關文件的編碼問題）
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件）
+1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（TypeCodeQueryService、UiComponentQueryService、JwtTokenService 等），這些錯誤會影響整體專案編譯
+2. 實作資料庫密碼加密邏輯（SystemService 中的 EncryptPassword 方法）
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0440（系統功能按鈕資料維護）
 4. 進行功能測試和整合測試
 5. 根據實際業務需求調整功能模組
 6. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）

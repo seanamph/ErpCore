@@ -113,7 +113,6 @@ public class TypeCodeQueryService : BaseService, ITypeCodeQueryService
                     UsageCount = totalUsageCount
                 });
             }
-            };
 
             return statistics;
         }

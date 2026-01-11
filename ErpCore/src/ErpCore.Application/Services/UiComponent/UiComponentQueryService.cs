@@ -49,7 +49,7 @@ public class UiComponentQueryService : BaseService, IUiComponentQueryService
 
             if (!string.IsNullOrEmpty(query.ModuleCode))
             {
-                sql += " AND EXISTS (
+                sql += @" AND EXISTS (
                     SELECT 1 FROM [dbo].[UIComponentUsages] u
                     WHERE u.ComponentId = V_UIComponentUsageStats.ComponentId
                     AND u.ModuleCode = @ModuleCode
@@ -86,7 +86,7 @@ public class UiComponentQueryService : BaseService, IUiComponentQueryService
             }
             if (!string.IsNullOrEmpty(query.ModuleCode))
             {
-                countSql += " AND EXISTS (
+                countSql += @" AND EXISTS (
                     SELECT 1 FROM [dbo].[UIComponentUsages] u
                     WHERE u.ComponentId = V_UIComponentUsageStats.ComponentId
                     AND u.ModuleCode = @ModuleCode
