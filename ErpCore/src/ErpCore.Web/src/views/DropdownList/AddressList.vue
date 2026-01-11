@@ -60,11 +60,24 @@
 
         <el-tab-pane label="區域列表" name="zone">
           <el-form :inline="true" :model="zoneQueryForm" class="search-form">
+            <el-form-item label="城市">
+              <CitySelect
+                v-model="zoneQueryForm.CityId"
+                placeholder="請選擇城市"
+                @change="handleCityChange"
+                style="width: 200px"
+              />
+            </el-form-item>
+            <el-form-item label="區域">
+              <ZoneSelect
+                v-model="zoneQueryForm.ZoneId"
+                :city-id="zoneQueryForm.CityId"
+                placeholder="請選擇區域"
+                style="width: 200px"
+              />
+            </el-form-item>
             <el-form-item label="區域名稱">
               <el-input v-model="zoneQueryForm.ZoneName" placeholder="請輸入區域名稱" clearable />
-            </el-form-item>
-            <el-form-item label="城市代碼">
-              <el-input v-model="zoneQueryForm.CityId" placeholder="請輸入城市代碼" clearable />
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="handleZoneSearch">查詢</el-button>
@@ -87,6 +100,7 @@
             <el-table-column prop="ZoneName" label="區域名稱" min-width="200" />
             <el-table-column prop="CityId" label="城市代碼" width="120" />
             <el-table-column prop="CityName" label="城市名稱" width="150" />
+            <el-table-column prop="ZipCode" label="郵遞區號" width="100" align="center" />
             <el-table-column prop="SeqNo" label="排序序號" width="100" align="center" />
             <el-table-column prop="Status" label="狀態" width="80" align="center">
               <template #default="{ row }">
@@ -118,6 +132,8 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { dropdownListApi } from '@/api/dropdownList'
+import CitySelect from '@/components/CitySelect.vue'
+import ZoneSelect from '@/components/ZoneSelect.vue'
 
 // 當前標籤
 const activeTab = ref('city')
@@ -140,7 +156,8 @@ const cityPagination = reactive({
 // 區域查詢表單
 const zoneQueryForm = reactive({
   ZoneName: '',
-  CityId: ''
+  CityId: '',
+  ZoneId: ''
 })
 
 // 區域列表
@@ -202,6 +219,12 @@ const loadZoneList = async () => {
   }
 }
 
+// 城市變更處理
+const handleCityChange = () => {
+  // 當城市變更時，清空區域選擇
+  zoneQueryForm.ZoneId = ''
+}
+
 // 城市查詢
 const handleCitySearch = () => {
   cityPagination.PageIndex = 1
@@ -243,6 +266,7 @@ const handleZoneSearch = () => {
 const handleZoneReset = () => {
   zoneQueryForm.ZoneName = ''
   zoneQueryForm.CityId = ''
+  zoneQueryForm.ZoneId = ''
   handleZoneSearch()
 }
 

@@ -12,5 +12,9 @@ public interface IZoneRepository
     Task<Zone?> GetByIdAsync(string zoneId);
     Task<PagedResult<Zone>> QueryAsync(ZoneQueryDto query);
     Task<IEnumerable<ZoneOptionDto>> GetOptionsAsync(string? cityId = null, string? status = "1");
+    Task<IEnumerable<Zone>> GetByCityIdAsync(string cityId);
+    Task<bool> CreateAsync(Zone zone);
+    Task<bool> UpdateAsync(Zone zone);
+    Task<bool> DeleteAsync(string zoneId);
 }
 

@@ -116,5 +116,60 @@ public class AddressListController : BaseController
             return result;
         }, "查詢區域選項失敗");
     }
+
+    /// <summary>
+    /// 依城市查詢區域列表
+    /// </summary>
+    [HttpGet("zones/by-city/{cityId}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<ZoneDto>>>> GetZonesByCity(string cityId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _zoneService.GetZonesByCityIdAsync(cityId);
+            return result;
+        }, $"查詢城市區域失敗: {cityId}");
+    }
+
+    /// <summary>
+    /// 新增區域
+    /// </summary>
+    [HttpPost("zones")]
+    public async Task<ActionResult<ApiResponse<object>>> CreateZone([FromBody] CreateZoneDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _zoneService.CreateZoneAsync(dto);
+            return new { zoneId = dto.ZoneId };
+        }, "新增區域失敗");
+    }
+
+    /// <summary>
+    /// 修改區域
+    /// </summary>
+    [HttpPut("zones/{zoneId}")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateZone(
+        string zoneId,
+        [FromBody] UpdateZoneDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            dto.ZoneId = zoneId;
+            await _zoneService.UpdateZoneAsync(dto);
+            return null;
+        }, $"修改區域失敗: {zoneId}");
+    }
+
+    /// <summary>
+    /// 刪除區域
+    /// </summary>
+    [HttpDelete("zones/{zoneId}")]
+    public async Task<ActionResult<ApiResponse<object>>> DeleteZone(string zoneId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _zoneService.DeleteZoneAsync(zoneId);
+            return null;
+        }, $"刪除區域失敗: {zoneId}");
+    }
 }
 

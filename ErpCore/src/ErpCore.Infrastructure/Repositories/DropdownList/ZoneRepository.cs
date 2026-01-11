@@ -58,6 +58,12 @@ public class ZoneRepository : BaseRepository, IZoneRepository
                 parameters.Add("CityId", query.CityId);
             }
 
+            if (!string.IsNullOrEmpty(query.ZipCode))
+            {
+                sql += " AND ZipCode LIKE @ZipCode";
+                parameters.Add("ZipCode", $"%{query.ZipCode}%");
+            }
+
             if (!string.IsNullOrEmpty(query.Status))
             {
                 sql += " AND Status = @Status";
@@ -104,7 +110,7 @@ public class ZoneRepository : BaseRepository, IZoneRepository
         try
         {
             var sql = @"
-                SELECT ZoneId AS Value, ZoneName AS Label 
+                SELECT ZoneId AS Value, ZoneName AS Label, ZipCode
                 FROM Zones
                 WHERE 1=1";
 
@@ -129,6 +135,111 @@ public class ZoneRepository : BaseRepository, IZoneRepository
         catch (Exception ex)
         {
             _logger.LogError("查詢區域選項失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<Zone>> GetByCityIdAsync(string cityId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM Zones 
+                WHERE CityId = @CityId 
+                AND Status = '1'
+                ORDER BY SeqNo, ZoneName";
+
+            return await QueryAsync<Zone>(sql, new { CityId = cityId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢城市區域失敗: {cityId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<bool> CreateAsync(Zone zone)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO Zones (ZoneId, ZoneName, CityId, ZipCode, SeqNo, Status, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
+                VALUES (@ZoneId, @ZoneName, @CityId, @ZipCode, @SeqNo, @Status, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt)";
+
+            var affectedRows = await ExecuteAsync(sql, new
+            {
+                zone.ZoneId,
+                zone.ZoneName,
+                zone.CityId,
+                zone.ZipCode,
+                zone.SeqNo,
+                zone.Status,
+                zone.CreatedBy,
+                zone.CreatedAt,
+                zone.UpdatedBy,
+                zone.UpdatedAt
+            });
+
+            return affectedRows > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增區域失敗: {zone.ZoneId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<bool> UpdateAsync(Zone zone)
+    {
+        try
+        {
+            const string sql = @"
+                UPDATE Zones 
+                SET ZoneName = @ZoneName, 
+                    CityId = @CityId, 
+                    ZipCode = @ZipCode, 
+                    SeqNo = @SeqNo, 
+                    Status = @Status, 
+                    UpdatedBy = @UpdatedBy, 
+                    UpdatedAt = @UpdatedAt
+                WHERE ZoneId = @ZoneId";
+
+            var affectedRows = await ExecuteAsync(sql, new
+            {
+                zone.ZoneId,
+                zone.ZoneName,
+                zone.CityId,
+                zone.ZipCode,
+                zone.SeqNo,
+                zone.Status,
+                zone.UpdatedBy,
+                zone.UpdatedAt
+            });
+
+            return affectedRows > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"更新區域失敗: {zone.ZoneId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<bool> DeleteAsync(string zoneId)
+    {
+        try
+        {
+            const string sql = @"
+                DELETE FROM Zones 
+                WHERE ZoneId = @ZoneId";
+
+            var affectedRows = await ExecuteAsync(sql, new { ZoneId = zoneId });
+
+            return affectedRows > 0;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除區域失敗: {zoneId}", ex);
             throw;
         }
     }

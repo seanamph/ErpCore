@@ -3,13 +3,13 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **DATE_LIST 日期列表功能完成**：根據開發計劃文件實現了 DATE_LIST 日期選擇器功能
-  - 更新 DateListController：API 路徑改為 /api/v1/system/date-format 和 /api/v1/system/validate-date，符合開發計劃要求
-  - 創建 DatePicker.vue：日期選擇器組件，支援日曆選擇、日期格式設定、日期驗證等功能
-  - 創建 DatePickerDialog.vue：日期選擇對話框組件，用於彈窗式日期選擇
-  - 更新前端 API 調用：dropdownList.js 中新增 getDateFormat、validateDate、parseDate 方法
-  - 所有實現均按照開發計劃文件要求，包含年份驗證（不能小於1582年）、日期格式從系統參數讀取等功能
-  - 所有變更已提交到 git（commit: acc4fde）
+- ✅ **ADDR_CITY_LIST 地址城市列表功能完善**：根據開發計劃文件完善了 ADDR_CITY_LIST 功能
+  - 創建 CitySelect.vue：城市下拉選單組件，支援單選、多選、篩選等功能
+  - 檢查並確認所有後端實現（Entity、Repository、Service、DTO、Controller）已完整
+  - 檢查並確認 SQL 腳本（Cities 表創建）已完整
+  - 檢查並確認前端頁面（AddressList.vue）已實現
+  - 所有實現均按照開發計劃文件要求
+  - 所有變更已提交到 git（commit: c5c15e8）
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
@@ -18,10 +18,10 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
 2. **繼續開發下拉列表功能**：選擇開發計劃目錄中的其他下拉列表功能，建議優先選擇：
-   - ADDR_CITY_LIST（地址城市列表）
-   - ADDR_ZONE_LIST（地址區域列表）
+   - ADDR_ZONE_LIST（地址區域列表）- 已部分實現，可繼續完善
    - MENU_LIST（選單列表）
-3. **功能測試**：對已完成的 DATE_LIST 功能進行完整測試，特別是日期選擇器組件和日期驗證功能
+   - MULTI_AREA_LIST（多選區域列表）
+3. **功能測試**：對已完成的 ADDR_CITY_LIST 功能進行完整測試，特別是 CitySelect.vue 組件的使用
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
@@ -29,11 +29,11 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **DATE_LIST 日期列表功能實現**：
-  - 更新後端 API 路徑以符合開發計劃（/api/v1/system/date-format、/api/v1/system/validate-date）
-  - 創建 DatePicker.vue 日期選擇器組件（支援日曆選擇、日期格式設定、日期驗證）
-  - 創建 DatePickerDialog.vue 日期選擇對話框組件
-  - 更新前端 API 調用（dropdownList.js）
+- **ADDR_CITY_LIST 地址城市列表功能完善**：
+  - 創建 CitySelect.vue 城市下拉選單組件（支援單選、多選、篩選、國家代碼篩選等功能）
+  - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
+  - 確認 SQL 腳本已完整（Cities 表創建）
+  - 確認前端頁面已實現（AddressList.vue）
   - 所有實現均按照開發計劃文件要求
 
 ### ⚠️ 已知問題
@@ -43,5 +43,5 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題
 2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發
-3. **功能測試**：對已完成的 DATE_LIST 功能進行完整測試
+3. **功能測試**：對已完成的 ADDR_CITY_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質

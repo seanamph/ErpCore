@@ -21,6 +21,11 @@ public class Zone
     public string? CityId { get; set; }
 
     /// <summary>
+    /// 郵遞區號
+    /// </summary>
+    public string? ZipCode { get; set; }
+
+    /// <summary>
     /// 排序序號
     /// </summary>
     public int? SeqNo { get; set; }
