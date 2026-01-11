@@ -1322,6 +1322,24 @@ const routes = [
         name: 'ProductCategory',
         component: () => import('../views/BasicData/ProductCategory.vue'),
         meta: { title: '商品分類資料維護作業 (SYSB110)' }
+      },
+      {
+        path: 'departments',
+        name: 'Departments',
+        component: () => import('../views/BasicData/Departments.vue'),
+        meta: { title: '部別資料維護作業 (SYSWB40)' }
+      },
+      {
+        path: 'parameters',
+        name: 'Parameters',
+        component: () => import('../views/BasicData/Parameters.vue'),
+        meta: { title: '參數資料設定維護作業 (SYSBC40)' }
+      },
+      {
+        path: 'banks',
+        name: 'Banks',
+        component: () => import('../views/BasicData/Banks.vue'),
+        meta: { title: '銀行基本資料維護作業 (SYSBC20)' }
       }
     ]
   }

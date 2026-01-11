@@ -9,6 +9,11 @@
   <ItemGroup>
     <ProjectReference Include="..\ErpCore.Domain\ErpCore.Domain.csproj" />
     <ProjectReference Include="..\ErpCore.Shared\ErpCore.Shared.csproj" />
+    <ProjectReference Include="..\ErpCore.Infrastructure\ErpCore.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.35" />
   </ItemGroup>
 
 </Project>
