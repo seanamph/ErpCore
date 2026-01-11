@@ -250,6 +250,12 @@ const routes = [
         meta: { title: '使用者查詢功能 (SYS0910)' }
       },
       {
+        path: 'user-agents',
+        name: 'SYS0117Query',
+        component: () => import('../views/System/SYS0117Query.vue'),
+        meta: { title: '使用者權限代理 (SYS0117)' }
+      },
+      {
         path: 'login-log-query',
         name: 'SYS0760Query',
         component: () => import('../views/System/SYS0760Query.vue'),
