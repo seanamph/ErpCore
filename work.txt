@@ -3,14 +3,13 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **ADDR_ZONE_LIST 地址區域列表功能完善**：根據開發計劃文件完善了 ADDR_ZONE_LIST 功能
-  - 改進 AddressList.vue 頁面：在區域查詢表單中使用 CitySelect 和 ZoneSelect 組件，提升用戶體驗
-  - 添加郵遞區號欄位顯示：在區域列表表格中顯示郵遞區號
+- ✅ **MULTI_AREA_LIST 多選區域列表功能開發**：根據開發計劃文件 `開發計劃/15-下拉列表/MULTI_AREA_LIST-多選區域列表.md` 完成了 MULTI_AREA_LIST 功能
+  - 創建 MultiAreaListDialog.vue 對話框組件：用於選擇區域的對話框，支援多選模式、區域名稱查詢、特殊選項（全部區域、不屬於任一區域）、分頁等功能
   - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
-  - 確認 SQL 腳本已完整（Zones 表創建，包含所有索引）
-  - 確認前端組件已實現（ZoneSelect.vue）
+  - 確認 SQL 腳本已完整（Areas 表創建，包含所有索引：AreaId、AreaName、Status、SeqNo）
+  - 確認前端組件已實現（MultiAreaListDialog.vue 對話框組件）
   - 所有實現均按照開發計劃文件要求
-  - 所有變更已提交到 git（commit: 5bc6781）
+  - 所有變更已提交到 git（commit: 0e4ddcf）
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
@@ -19,11 +18,11 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
 2. **繼續開發下拉列表功能**：選擇開發計劃目錄中的其他下拉列表功能，建議優先選擇：
-   - MENU_LIST（選單列表）
-   - MULTI_AREA_LIST（多選區域列表）
    - MULTI_SHOP_LIST（多選店別列表）
    - MULTI_USERS_LIST（多選使用者列表）
-3. **功能測試**：對已完成的 ADDR_ZONE_LIST 功能進行完整測試，特別是 ZoneSelect.vue 組件的使用和與 CitySelect 的整合
+   - SYSID_LIST（系統ID列表）
+   - USER_LIST（使用者列表）
+3. **功能測試**：對已完成的 MULTI_AREA_LIST 功能進行完整測試，特別是 MultiAreaListDialog.vue 組件的使用和與其他組件的整合
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
@@ -31,12 +30,11 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **ADDR_ZONE_LIST 地址區域列表功能完善**：
-  - 改進 AddressList.vue 頁面：在區域查詢表單中使用 CitySelect 和 ZoneSelect 組件，實現城市和區域的聯動選擇
-  - 添加郵遞區號欄位顯示：在區域列表表格中顯示郵遞區號，方便用戶查看
+- **MULTI_AREA_LIST 多選區域列表功能開發**：
+  - 創建 MultiAreaListDialog.vue 對話框組件：支援區域查詢、多選模式、特殊選項（全部區域、不屬於任一區域）、分頁等功能
   - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
-  - 確認 SQL 腳本已完整（Zones 表創建，包含所有索引：ZoneName、CityId、ZipCode、Status、SeqNo）
-  - 確認前端組件已實現（ZoneSelect.vue，支援依城市篩選、郵遞區號顯示等功能）
+  - 確認 SQL 腳本已完整（Areas 表創建，包含所有索引）
+  - 確認前端組件已實現（MultiAreaListDialog.vue 對話框組件）
   - 所有實現均按照開發計劃文件要求
 
 ### ⚠️ 已知問題
@@ -46,5 +44,5 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題
 2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發
-3. **功能測試**：對已完成的 ADDR_ZONE_LIST 功能進行完整測試
+3. **功能測試**：對已完成的 MULTI_AREA_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質

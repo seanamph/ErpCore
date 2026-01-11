@@ -10,6 +10,8 @@ BEGIN
         [SeqNo] INT NULL, -- 排序序號 (SEQ_NO)
         [SystemId] NVARCHAR(50) NOT NULL, -- 主系統代碼 (SYS_ID)
         [ParentMenuId] NVARCHAR(50) NULL, -- 上層子系統代碼 (P_MENU_ID)
+        [Icon] NVARCHAR(100) NULL, -- 圖示 (ICON)
+        [Url] NVARCHAR(500) NULL, -- 連結網址 (URL)
         [Status] NVARCHAR(10) NOT NULL DEFAULT '1', -- 狀態 (STATUS) 1:啟用, 0:停用
         [CreatedBy] NVARCHAR(50) NULL, -- 建立者 (BUSER)
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間 (BTIME)

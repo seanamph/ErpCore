@@ -101,12 +101,19 @@ public class MultiSelectListService : BaseService, IMultiSelectListService
             _logger.LogInfo("查詢多選店別列表");
             using var connection = _connectionFactory.CreateConnection();
 
+            // 使用 AreaId 映射到 RegionId（如果 Shops 表没有 RegionId 字段）
+            // 同时支持 TypeId 和 ShopLevel 筛选
             var sql = @"
                 SELECT s.ShopId, s.ShopName, s.Status,
-                       s.RegionId, r.RegionName,
-                       s.TypeId, s.ShopLevel
+                       s.AreaId AS RegionId, 
+                       a.AreaName AS RegionName,
+                       s.ShopType AS TypeId,
+                       pt.ParameterName AS TypeName,
+                       NULL AS ShopLevel,
+                       NULL AS ShopLevelName
                 FROM Shops s
-                LEFT JOIN Regions r ON s.RegionId = r.RegionId
+                LEFT JOIN Areas a ON s.AreaId = a.AreaId
+                LEFT JOIN Parameters pt ON pt.ParameterCode = 'SHOP_TYPE' AND pt.ParameterValue = s.ShopType
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
@@ -120,14 +127,46 @@ public class MultiSelectListService : BaseService, IMultiSelectListService
             if (!string.IsNullOrEmpty(query.RegionIds))
             {
                 var regionIds = query.RegionIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                sql += " AND s.RegionId IN @RegionIds";
+                sql += " AND s.AreaId IN @RegionIds";
                 parameters.Add("RegionIds", regionIds);
+            }
+
+            if (!string.IsNullOrEmpty(query.TypeIds))
+            {
+                var typeIds = query.TypeIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                sql += " AND s.ShopType IN @TypeIds";
+                parameters.Add("TypeIds", typeIds);
+            }
+
+            if (!string.IsNullOrEmpty(query.ShopLevels))
+            {
+                var shopLevels = query.ShopLevels.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                // 如果 Shops 表有 ShopLevel 字段，使用它；否则暂时忽略
+                // sql += " AND s.ShopLevel IN @ShopLevels";
+                // parameters.Add("ShopLevels", shopLevels);
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
+                // 转换状态值：'1' -> 'A', '0' -> 'I'
+                var status = query.Status == "1" ? "A" : (query.Status == "0" ? "I" : query.Status);
                 sql += " AND s.Status = @Status";
-                parameters.Add("Status", query.Status);
+                parameters.Add("Status", status);
+            }
+
+            // 特殊查询模式：KIND=1 表示仅查询供应商相关店别
+            if (query.Kind == "1")
+            {
+                // 如果有 SuppShops 表，使用它；否则暂时忽略
+                // sql += " AND EXISTS (SELECT 1 FROM SuppShops ss WHERE ss.ShopId = s.ShopId)";
+            }
+
+            // 特殊查询模式：GOODS_ID 表示查询商品相关店别
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                // 如果有 GoodsD 表，使用它；否则暂时忽略
+                // sql += " AND EXISTS (SELECT 1 FROM GoodsD gd WHERE gd.ShopId = s.ShopId AND gd.GoodsId = @GoodsId)";
+                // parameters.Add("GoodsId", query.GoodsId);
             }
 
             var sortField = query.SortField ?? "ShopId";
@@ -158,10 +197,26 @@ public class MultiSelectListService : BaseService, IMultiSelectListService
 
             var parameters = new DynamicParameters();
 
+            if (!string.IsNullOrEmpty(query.RegionIds))
+            {
+                var regionIds = query.RegionIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                sql += " AND AreaId IN @RegionIds";
+                parameters.Add("RegionIds", regionIds);
+            }
+
+            if (!string.IsNullOrEmpty(query.TypeIds))
+            {
+                var typeIds = query.TypeIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                sql += " AND ShopType IN @TypeIds";
+                parameters.Add("TypeIds", typeIds);
+            }
+
             if (!string.IsNullOrEmpty(query.Status))
             {
+                // 转换状态值：'1' -> 'A', '0' -> 'I'
+                var status = query.Status == "1" ? "A" : (query.Status == "0" ? "I" : query.Status);
                 sql += " AND Status = @Status";
-                parameters.Add("Status", query.Status);
+                parameters.Add("Status", status);
             }
 
             sql += " ORDER BY ShopId";
