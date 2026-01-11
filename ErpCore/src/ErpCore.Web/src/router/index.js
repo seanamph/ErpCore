@@ -344,6 +344,12 @@ const routes = [
         name: 'SYS0760Query',
         component: () => import('../views/System/UserAbnormalLoginReport.vue'),
         meta: { title: '使用者異常登入報表 (SYS0760)' }
+      },
+      {
+        path: 'button-logs',
+        name: 'SYS0790Query',
+        component: () => import('../views/System/ButtonLogReport.vue'),
+        meta: { title: '按鈕操作記錄查詢 (SYS0790)' }
       }
     ]
   },
