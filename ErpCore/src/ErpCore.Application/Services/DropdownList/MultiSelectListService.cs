@@ -240,9 +240,9 @@ public class MultiSelectListService : BaseService, IMultiSelectListService
 
             var sql = @"
                 SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status,
-                       d.DepartmentName AS OrgName
+                       d.DeptName AS OrgName
                 FROM Users u
-                LEFT JOIN Departments d ON u.OrgId = d.DepartmentId
+                LEFT JOIN Departments d ON u.OrgId = d.DeptId
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
@@ -276,7 +276,7 @@ public class MultiSelectListService : BaseService, IMultiSelectListService
             sql += $" ORDER BY {sortField} {sortOrder}";
 
             // 查詢總筆數
-            var countSql = sql.Replace("SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status, d.DepartmentName AS OrgName", "SELECT COUNT(*)");
+            var countSql = sql.Replace("SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status, d.DeptName AS OrgName", "SELECT COUNT(*)");
             var totalCount = await connection.QuerySingleAsync<int>(countSql, parameters);
 
             // 分頁
