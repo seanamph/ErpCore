@@ -194,3 +194,95 @@ export const userFieldPermissionsApi = {
   }
 }
 
+/**
+ * 項目對應管理 API (SYS0360)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const itemCorrespondsApi = {
+  // 查詢項目對應列表
+  getItemCorresponds: (params) => {
+    return axios.get('/api/v1/item-corresponds', { params })
+  },
+
+  // 查詢單筆項目對應
+  getItemCorrespond: (itemId) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}`)
+  },
+
+  // 新增項目對應
+  createItemCorrespond: (data) => {
+    return axios.post('/api/v1/item-corresponds', data)
+  },
+
+  // 修改項目對應
+  updateItemCorrespond: (itemId, data) => {
+    return axios.put(`/api/v1/item-corresponds/${itemId}`, data)
+  },
+
+  // 刪除項目對應
+  deleteItemCorrespond: (itemId) => {
+    return axios.delete(`/api/v1/item-corresponds/${itemId}`)
+  }
+}
+
+/**
+ * 項目權限管理 API (SYS0360)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const itemPermissionsApi = {
+  // 查詢項目權限列表
+  getItemPermissions: (itemId, params) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}/permissions`, { params })
+  },
+
+  // 查詢項目系統列表
+  getSystemList: (itemId) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}/permissions/systems`)
+  },
+
+  // 查詢項目選單列表
+  getMenuList: (itemId, systemId) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}/permissions/systems/${systemId}/menus`)
+  },
+
+  // 查詢項目作業列表
+  getProgramList: (itemId, menuId) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}/permissions/menus/${menuId}/programs`)
+  },
+
+  // 查詢項目按鈕列表
+  getButtonList: (itemId, programId) => {
+    return axios.get(`/api/v1/item-corresponds/${itemId}/permissions/programs/${programId}/buttons`)
+  },
+
+  // 設定項目系統權限
+  setSystemPermissions: (itemId, data) => {
+    return axios.post(`/api/v1/item-corresponds/${itemId}/permissions/systems/permissions`, data)
+  },
+
+  // 設定項目選單權限
+  setMenuPermissions: (itemId, data) => {
+    return axios.post(`/api/v1/item-corresponds/${itemId}/permissions/menus/permissions`, data)
+  },
+
+  // 設定項目作業權限
+  setProgramPermissions: (itemId, data) => {
+    return axios.post(`/api/v1/item-corresponds/${itemId}/permissions/programs/permissions`, data)
+  },
+
+  // 設定項目按鈕權限
+  setButtonPermissions: (itemId, data) => {
+    return axios.post(`/api/v1/item-corresponds/${itemId}/permissions/buttons/permissions`, data)
+  },
+
+  // 刪除項目權限
+  deleteItemPermission: (itemId, tKey) => {
+    return axios.delete(`/api/v1/item-corresponds/${itemId}/permissions/${tKey}`)
+  },
+
+  // 批量刪除項目權限
+  batchDeleteItemPermissions: (itemId, data) => {
+    return axios.delete(`/api/v1/item-corresponds/${itemId}/permissions/batch`, { data })
+  }
+}
+

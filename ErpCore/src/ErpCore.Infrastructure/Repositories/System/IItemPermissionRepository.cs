@@ -1,3 +1,4 @@
+using ErpCore.Application.DTOs.System;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Shared.Common;
 
@@ -97,76 +98,6 @@ public class ItemPermissionQuery
     public string? MenuId { get; set; }
     public string? ProgramId { get; set; }
     public long? ButtonKey { get; set; }
-}
-
-/// <summary>
-/// 項目權限 DTO（含關聯資訊）
-/// </summary>
-public class ItemPermissionDto
-{
-    public long TKey { get; set; }
-    public string ItemId { get; set; } = string.Empty;
-    public string ProgramId { get; set; } = string.Empty;
-    public string PageId { get; set; } = string.Empty;
-    public string ButtonId { get; set; } = string.Empty;
-    public long? ButtonKey { get; set; }
-    public string? SystemId { get; set; }
-    public string? SystemName { get; set; }
-    public string? SubSystemId { get; set; }
-    public string? SubSystemName { get; set; }
-    public string? ProgramName { get; set; }
-    public string? ButtonName { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? UpdatedBy { get; set; }
-    public DateTime? UpdatedAt { get; set; }
-}
-
-/// <summary>
-/// 項目系統列表 DTO
-/// </summary>
-public class ItemSystemDto
-{
-    public string SystemId { get; set; } = string.Empty;
-    public string SystemName { get; set; } = string.Empty;
-    public int PermissionCount { get; set; }
-    public int TotalCount { get; set; }
-    public string Status { get; set; } = string.Empty; // 全選/部份/未選
-}
-
-/// <summary>
-/// 項目選單列表 DTO
-/// </summary>
-public class ItemMenuDto
-{
-    public string MenuId { get; set; } = string.Empty;
-    public string MenuName { get; set; } = string.Empty;
-    public int PermissionCount { get; set; }
-    public int TotalCount { get; set; }
-    public string Status { get; set; } = string.Empty; // 全選/部份/未選
-}
-
-/// <summary>
-/// 項目作業列表 DTO
-/// </summary>
-public class ItemProgramDto
-{
-    public string ProgramId { get; set; } = string.Empty;
-    public string ProgramName { get; set; } = string.Empty;
-    public int PermissionCount { get; set; }
-    public int TotalCount { get; set; }
-    public string Status { get; set; } = string.Empty; // 全選/部份/未選
-}
-
-/// <summary>
-/// 項目按鈕列表 DTO
-/// </summary>
-public class ItemButtonDto
-{
-    public long ButtonKey { get; set; }
-    public string ButtonId { get; set; } = string.Empty;
-    public string ButtonName { get; set; } = string.Empty;
-    public bool IsAuthorized { get; set; }
 }
 
 /// <summary>

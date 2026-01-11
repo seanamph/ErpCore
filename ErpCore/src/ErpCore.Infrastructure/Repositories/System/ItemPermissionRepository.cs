@@ -1,4 +1,5 @@
 using Dapper;
+using ErpCore.Application.DTOs.System;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
