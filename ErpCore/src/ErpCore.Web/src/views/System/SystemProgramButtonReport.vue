@@ -10,15 +10,29 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="系統代碼" required>
-              <el-input v-model="queryForm.SystemId" placeholder="請輸入系統代碼" clearable />
+              <el-select
+                v-model="queryForm.SystemId"
+                placeholder="請選擇系統"
+                filterable
+                clearable
+                style="width: 100%"
+                @change="handleSystemChange"
+              >
+                <el-option
+                  v-for="item in systemOptions"
+                  :key="item.SystemId"
+                  :label="`${item.SystemId} - ${item.SystemName}`"
+                  :value="item.SystemId"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查詢</el-button>
           <el-button @click="handleReset">重置</el-button>
-          <el-button type="success" @click="handleExportExcel">匯出Excel</el-button>
-          <el-button type="warning" @click="handleExportPdf">匯出PDF</el-button>
+          <el-button type="success" @click="handleExportExcel" :disabled="!queryForm.SystemId">匯出Excel</el-button>
+          <el-button type="warning" @click="handleExportPdf" :disabled="!queryForm.SystemId">匯出PDF</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -72,12 +86,14 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { systemProgramButtonApi } from '@/api/systemPermission'
+import { configSystemsApi } from '@/api/systemConfig'
 
 export default {
   name: 'SystemProgramButtonReport',
   setup() {
     const loading = ref(false)
     const tableData = ref([])
+    const systemOptions = ref([])
     const systemInfo = reactive({
       SystemId: '',
       SystemName: ''
@@ -87,6 +103,24 @@ export default {
     const queryForm = reactive({
       SystemId: ''
     })
+
+    // 載入系統選項
+    const loadSystemOptions = async () => {
+      try {
+        const response = await configSystemsApi.getConfigSystems({
+          Status: 'A',
+          PageIndex: 1,
+          PageSize: 1000,
+          SortField: 'SystemId',
+          SortOrder: 'ASC'
+        })
+        if (response.data?.success && response.data.data) {
+          systemOptions.value = response.data.data.items || response.data.data || []
+        }
+      } catch (error) {
+        console.error('載入系統選項失敗:', error)
+      }
+    }
 
     // 查詢資料
     const loadData = async () => {
@@ -98,7 +132,12 @@ export default {
       loading.value = true
       try {
         const response = await systemProgramButtonApi.getSystemProgramButtons(queryForm.SystemId)
-        if (response.Data) {
+        if (response.data?.success && response.data.data) {
+          systemInfo.SystemId = response.data.data.SystemId || ''
+          systemInfo.SystemName = response.data.data.SystemName || ''
+          tableData.value = response.data.data.Programs || []
+        } else if (response.Data) {
+          // 兼容舊格式
           systemInfo.SystemId = response.Data.SystemId || ''
           systemInfo.SystemName = response.Data.SystemName || ''
           tableData.value = response.Data.Programs || []
@@ -185,15 +224,35 @@ export default {
       }
     }
 
+    // 系統變更處理
+    const handleSystemChange = (value) => {
+      if (value) {
+        // 選擇系統後自動查詢
+        loadData()
+      } else {
+        // 清空資料
+        systemInfo.SystemId = ''
+        systemInfo.SystemName = ''
+        tableData.value = []
+      }
+    }
+
+    // 初始化
+    onMounted(() => {
+      loadSystemOptions()
+    })
+
     return {
       loading,
       tableData,
+      systemOptions,
       systemInfo,
       queryForm,
       handleSearch,
       handleReset,
       handleExportExcel,
-      handleExportPdf
+      handleExportPdf,
+      handleSystemChange
     }
   }
 }

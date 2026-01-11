@@ -62,12 +62,11 @@ public class SystemProgramButtonService : BaseService, ISystemProgramButtonServi
                 SELECT DISTINCT
                     CP.ProgramId,
                     CP.ProgramName,
-                    CP.ProgramType,
                     CP.SeqNo
                 FROM ConfigPrograms CP
                 INNER JOIN ConfigSystems CS ON CP.SystemId = CS.SystemId
                 WHERE CP.SystemId = @SystemId
-                    AND CP.Status = '1'
+                    AND CP.Status = 'A'
                     AND CS.Status = 'A'
                 ORDER BY CP.SeqNo, CP.ProgramId";
 
@@ -81,7 +80,7 @@ public class SystemProgramButtonService : BaseService, ISystemProgramButtonServi
                 {
                     ProgramId = program.ProgramId,
                     ProgramName = program.ProgramName ?? string.Empty,
-                    ProgramType = program.ProgramType,
+                    ProgramType = null,
                     SeqNo = program.SeqNo ?? 0
                 };
 
@@ -91,11 +90,10 @@ public class SystemProgramButtonService : BaseService, ISystemProgramButtonServi
                         CB.ButtonId,
                         CB.ButtonName,
                         CB.ButtonType,
-                        CB.PageId,
                         CB.SeqNo
                     FROM ConfigButtons CB
                     WHERE CB.ProgramId = @ProgramId
-                        AND CB.Status = '1'
+                        AND CB.Status = 'A'
                     ORDER BY CB.SeqNo, CB.ButtonId";
 
                 var buttons = await connection.QueryAsync<dynamic>(buttonSql, new { ProgramId = program.ProgramId });
@@ -107,7 +105,7 @@ public class SystemProgramButtonService : BaseService, ISystemProgramButtonServi
                         ButtonId = button.ButtonId,
                         ButtonName = button.ButtonName ?? string.Empty,
                         ButtonType = button.ButtonType,
-                        PageId = button.PageId,
+                        PageId = null,
                         SeqNo = button.SeqNo ?? 0
                     });
                 }

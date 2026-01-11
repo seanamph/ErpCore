@@ -350,6 +350,12 @@ const routes = [
         name: 'SYS0790Query',
         component: () => import('../views/System/ButtonLogReport.vue'),
         meta: { title: '按鈕操作記錄查詢 (SYS0790)' }
+      },
+      {
+        path: 'system-program-buttons',
+        name: 'SYS0810Query',
+        component: () => import('../views/System/SystemProgramButtonReport.vue'),
+        meta: { title: '系統作業與功能列表查詢 (SYS0810)' }
       }
     ]
   },
