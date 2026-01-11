@@ -48,7 +48,7 @@ public class Parameter
     /// <summary>
     /// 只讀標誌 (1:只讀, 0:可編輯)
     /// </summary>
-    public string? ReadOnly { get; set; }
+    public string? ReadOnly { get; set; } = "0";
 
     /// <summary>
     /// 系統ID
@@ -85,4 +85,3 @@ public class Parameter
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

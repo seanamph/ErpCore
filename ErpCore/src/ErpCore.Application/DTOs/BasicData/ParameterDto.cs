@@ -1,5 +1,3 @@
-using ErpCore.Shared.Common;
-
 namespace ErpCore.Application.DTOs.BasicData;
 
 /// <summary>
@@ -15,7 +13,7 @@ public class ParameterDto
     public string? Content2 { get; set; }
     public string? Notes { get; set; }
     public string Status { get; set; } = "1";
-    public string? ReadOnly { get; set; }
+    public string? ReadOnly { get; set; } = "0";
     public string? SystemId { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -50,7 +48,7 @@ public class CreateParameterDto
     public string? Content2 { get; set; }
     public string? Notes { get; set; }
     public string Status { get; set; } = "1";
-    public string? ReadOnly { get; set; }
+    public string? ReadOnly { get; set; } = "0";
     public string? SystemId { get; set; }
 }
 
@@ -64,8 +62,16 @@ public class UpdateParameterDto
     public string? Content2 { get; set; }
     public string? Notes { get; set; }
     public string Status { get; set; } = "1";
-    public string? ReadOnly { get; set; }
+    public string? ReadOnly { get; set; } = "0";
     public string? SystemId { get; set; }
+}
+
+/// <summary>
+/// 批次刪除參數 DTO
+/// </summary>
+public class BatchDeleteParameterDto
+{
+    public List<ParameterKeyDto> Items { get; set; } = new();
 }
 
 /// <summary>
@@ -84,12 +90,3 @@ public class ParameterValueDto
 {
     public string Value { get; set; } = string.Empty;
 }
-
-/// <summary>
-/// 批次刪除參數 DTO
-/// </summary>
-public class BatchDeleteParameterDto
-{
-    public List<ParameterKeyDto> Items { get; set; } = new();
-}
-

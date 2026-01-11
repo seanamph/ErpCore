@@ -1,5 +1,5 @@
--- SYSBC40 - 參數資料設定維護作業
--- 建立 Parameters 資料表
+-- 參數資料設定維護作業資料表 (SYSBC40)
+-- 對應舊系統 PARAM 表
 
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Parameters]') AND type in (N'U'))
 BEGIN
@@ -31,12 +31,11 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_Parameters_Status] ON [dbo].[Parameters] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_Parameters_SeqNo] ON [dbo].[Parameters] ([SeqNo]);
     CREATE NONCLUSTERED INDEX [IX_Parameters_SystemId] ON [dbo].[Parameters] ([SystemId]);
-
-    PRINT 'Parameters 資料表建立成功';
+    
+    PRINT 'Parameters 表建立成功';
 END
 ELSE
 BEGIN
-    PRINT 'Parameters 資料表已存在';
+    PRINT 'Parameters 表已存在';
 END
 GO
-

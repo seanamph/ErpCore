@@ -19,7 +19,7 @@ public interface IParameterRepository
     Task<PagedResult<Parameter>> QueryAsync(ParameterQuery query);
 
     /// <summary>
-    /// 根據標題查詢參數列表
+    /// 根據參數標題查詢參數列表
     /// </summary>
     Task<List<Parameter>> GetByTitleAsync(string title);
 
@@ -58,4 +58,3 @@ public class ParameterQuery
     public string? Status { get; set; }
     public string? SystemId { get; set; }
 }
-

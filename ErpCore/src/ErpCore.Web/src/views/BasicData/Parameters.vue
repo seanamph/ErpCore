@@ -21,10 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="系統">
-          <el-select v-model="queryForm.SystemId" placeholder="請選擇系統" clearable filterable style="width: 200px">
-            <el-option label="全部" value="" />
-            <el-option v-for="system in systemList" :key="system.Value" :label="system.Label" :value="system.Value" />
-          </el-select>
+          <el-input v-model="queryForm.SystemId" placeholder="請輸入系統ID" clearable />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查詢</el-button>
@@ -45,8 +42,8 @@
       >
         <el-table-column prop="Title" label="參數標題" width="150" />
         <el-table-column prop="Tag" label="參數標籤" width="150" />
-        <el-table-column prop="Content" label="參數內容" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="Content2" label="多語言內容" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="Content" label="參數內容" width="200" show-overflow-tooltip />
+        <el-table-column prop="Content2" label="多語言內容" width="200" show-overflow-tooltip />
         <el-table-column prop="SeqNo" label="排序序號" width="100" align="right" />
         <el-table-column prop="Status" label="狀態" width="80">
           <template #default="{ row }">
@@ -130,11 +127,8 @@
             <el-option label="是" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item label="系統" prop="SystemId">
-          <el-select v-model="form.SystemId" placeholder="請選擇系統" clearable filterable style="width: 100%">
-            <el-option label="無" value="" />
-            <el-option v-for="system in systemList" :key="system.Value" :label="system.Label" :value="system.Value" />
-          </el-select>
+        <el-form-item label="系統ID" prop="SystemId">
+          <el-input v-model="form.SystemId" placeholder="請輸入系統ID" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -149,13 +143,13 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { parametersApi } from '@/api/parameters'
-import { dropdownListApi } from '@/api/dropdownList'
 
 // 查詢表單
 const queryForm = reactive({
   Title: '',
   Tag: '',
-  Status: ''
+  Status: '',
+  SystemId: ''
 })
 
 // 表格資料
@@ -188,6 +182,10 @@ const form = reactive({
   SystemId: ''
 })
 
+// 保存原始標題和標籤（用於修改）
+const originalTitle = ref('')
+const originalTag = ref('')
+
 // 表單驗證規則
 const rules = {
   Title: [{ required: true, message: '請輸入參數標題', trigger: 'blur' }],
@@ -195,8 +193,8 @@ const rules = {
   Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
 }
 
-// 載入資料
-const loadData = async () => {
+// 查詢
+const handleSearch = async () => {
   loading.value = true
   try {
     const params = {
@@ -208,31 +206,26 @@ const loadData = async () => {
       SystemId: queryForm.SystemId || undefined
     }
     const response = await parametersApi.getParameters(params)
-    if (response && response.Data) {
-      tableData.value = response.Data.Items || []
-      pagination.TotalCount = response.Data.TotalCount || 0
+    if (response.data.success) {
+      tableData.value = response.data.data.items
+      pagination.TotalCount = response.data.data.totalCount
+    } else {
+      ElMessage.error(response.data.message || '查詢失敗')
     }
   } catch (error) {
-    ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
+    ElMessage.error('查詢失敗：' + error.message)
   } finally {
     loading.value = false
   }
 }
 
-// 查詢
-const handleSearch = () => {
-  pagination.PageIndex = 1
-  loadData()
-}
-
 // 重置
 const handleReset = () => {
-  Object.assign(queryForm, {
-    Title: '',
-    Tag: '',
-    Status: '',
-    SystemId: ''
-  })
+  queryForm.Title = ''
+  queryForm.Tag = ''
+  queryForm.Status = ''
+  queryForm.SystemId = ''
+  pagination.PageIndex = 1
   handleSearch()
 }
 
@@ -240,35 +233,26 @@ const handleReset = () => {
 const handleCreate = () => {
   isEdit.value = false
   dialogTitle.value = '新增參數'
-  Object.assign(form, {
-    Title: '',
-    Tag: '',
-    SeqNo: 0,
-    Content: '',
-    Content2: '',
-    Notes: '',
-    Status: '1',
-    ReadOnly: '0',
-    SystemId: ''
-  })
+  resetForm()
   dialogVisible.value = true
 }
 
 // 修改
-const handleEdit = (row) => {
+const handleEdit = async (row) => {
   isEdit.value = true
   dialogTitle.value = '修改參數'
-  Object.assign(form, {
-    Title: row.Title,
-    Tag: row.Tag,
-    SeqNo: row.SeqNo || 0,
-    Content: row.Content || '',
-    Content2: row.Content2 || '',
-    Notes: row.Notes || '',
-    Status: row.Status || '1',
-    ReadOnly: row.ReadOnly || '0',
-    SystemId: row.SystemId || ''
-  })
+  originalTitle.value = row.Title
+  originalTag.value = row.Tag
+  try {
+    const response = await parametersApi.getParameter(row.Title, row.Tag)
+    if (response.data.success) {
+      Object.assign(form, response.data.data)
+    } else {
+      ElMessage.error(response.data.message || '查詢失敗')
+    }
+  } catch (error) {
+    ElMessage.error('查詢失敗：' + error.message)
+  }
   dialogVisible.value = true
 }
 
@@ -278,107 +262,128 @@ const handleDelete = async (row) => {
     await ElMessageBox.confirm('確定要刪除此參數嗎？', '提示', {
       type: 'warning'
     })
-    await parametersApi.deleteParameter(row.Title, row.Tag)
-    ElMessage.success('刪除成功')
-    loadData()
+    const response = await parametersApi.deleteParameter(row.Title, row.Tag)
+    if (response.data.success) {
+      ElMessage.success('刪除成功')
+      handleSearch()
+    } else {
+      ElMessage.error(response.data.message || '刪除失敗')
+    }
   } catch (error) {
     if (error !== 'cancel') {
-      ElMessage.error('刪除失敗: ' + (error.message || '未知錯誤'))
+      ElMessage.error('刪除失敗：' + error.message)
     }
   }
 }
 
 // 提交
 const handleSubmit = async () => {
-  try {
-    await formRef.value.validate()
-    if (isEdit.value) {
-      // 修改時不包含 Title 和 Tag
-      const updateData = {
-        SeqNo: form.SeqNo,
-        Content: form.Content,
-        Content2: form.Content2,
-        Notes: form.Notes,
-        Status: form.Status,
-        ReadOnly: form.ReadOnly,
-        SystemId: form.SystemId
+  if (!formRef.value) return
+  await formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        let response
+        if (isEdit.value) {
+          // 修改時使用原始標題和標籤
+          const updateData = {
+            SeqNo: form.SeqNo,
+            Content: form.Content,
+            Content2: form.Content2,
+            Notes: form.Notes,
+            Status: form.Status,
+            ReadOnly: form.ReadOnly,
+            SystemId: form.SystemId
+          }
+          response = await parametersApi.updateParameter(originalTitle.value, originalTag.value, updateData)
+        } else {
+          response = await parametersApi.createParameter(form)
+        }
+        if (response.data.success) {
+          ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
+          dialogVisible.value = false
+          handleSearch()
+        } else {
+          ElMessage.error(response.data.message || (isEdit.value ? '修改失敗' : '新增失敗'))
+        }
+      } catch (error) {
+        ElMessage.error((isEdit.value ? '修改失敗' : '新增失敗') + '：' + error.message)
       }
-      await parametersApi.updateParameter(form.Title, form.Tag, updateData)
-      ElMessage.success('修改成功')
-    } else {
-      await parametersApi.createParameter(form)
-      ElMessage.success('新增成功')
     }
-    dialogVisible.value = false
-    loadData()
-  } catch (error) {
-    if (error !== false) {
-      ElMessage.error((isEdit.value ? '修改' : '新增') + '失敗: ' + (error.message || '未知錯誤'))
-    }
-  }
+  })
 }
 
 // 關閉對話框
 const handleDialogClose = () => {
-  formRef.value?.resetFields()
   dialogVisible.value = false
+  resetForm()
+}
+
+// 重置表單
+const resetForm = () => {
+  form.Title = ''
+  form.Tag = ''
+  form.SeqNo = 0
+  form.Content = ''
+  form.Content2 = ''
+  form.Notes = ''
+  form.Status = '1'
+  form.ReadOnly = '0'
+  form.SystemId = ''
+  originalTitle.value = ''
+  originalTag.value = ''
+  formRef.value?.resetFields()
 }
 
 // 分頁大小變更
 const handleSizeChange = (size) => {
   pagination.PageSize = size
-  loadData()
+  pagination.PageIndex = 1
+  handleSearch()
 }
 
 // 分頁變更
 const handlePageChange = (page) => {
   pagination.PageIndex = page
-  loadData()
-}
-
-// 載入系統列表
-const loadSystemList = async () => {
-  try {
-    const response = await dropdownListApi.getSystemOptions()
-    if (response && response.data && response.data.success) {
-      systemList.value = response.data.data || []
-    }
-  } catch (error) {
-    console.error('載入系統列表失敗:', error)
-  }
+  handleSearch()
 }
 
 // 初始化
 onMounted(() => {
-  loadSystemList()
-  loadData()
+  handleSearch()
 })
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
-@import '@/assets/styles/base.scss';
 
 .parameters {
+  padding: 20px;
+
   .page-header {
+    margin-bottom: 20px;
+    
     h1 {
+      font-size: 24px;
+      font-weight: bold;
       color: $primary-color;
+      margin: 0;
     }
   }
-  
+
   .search-card {
     margin-bottom: 20px;
     background-color: $card-bg;
     border-color: $card-border;
-    color: $card-text;
+    
+    .search-form {
+      margin: 0;
+    }
   }
 
   .table-card {
     margin-bottom: 20px;
     background-color: $card-bg;
     border-color: $card-border;
-    color: $card-text;
   }
 }
 </style>
-

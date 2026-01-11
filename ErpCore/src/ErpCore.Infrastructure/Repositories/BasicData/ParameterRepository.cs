@@ -1,4 +1,3 @@
-using System.Data;
 using Dapper;
 using ErpCore.Domain.Entities.BasicData;
 using ErpCore.Infrastructure.Data;
@@ -244,4 +243,3 @@ public class ParameterRepository : BaseRepository, IParameterRepository
         }
     }
 }
-

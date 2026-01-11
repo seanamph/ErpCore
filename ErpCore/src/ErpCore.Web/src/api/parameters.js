@@ -12,12 +12,12 @@ export const parametersApi = {
 
   // 查詢單筆參數
   getParameter: (title, tag) => {
-    return axios.get(`/parameters/${title}/${tag}`)
+    return axios.get(`/parameters/${encodeURIComponent(title)}/${encodeURIComponent(tag)}`)
   },
 
-  // 根據標題查詢參數列表
+  // 根據參數標題查詢參數列表
   getParametersByTitle: (title) => {
-    return axios.get(`/parameters/by-title/${title}`)
+    return axios.get(`/parameters/by-title/${encodeURIComponent(title)}`)
   },
 
   // 新增參數
@@ -27,12 +27,12 @@ export const parametersApi = {
 
   // 修改參數
   updateParameter: (title, tag, data) => {
-    return axios.put(`/parameters/${title}/${tag}`, data)
+    return axios.put(`/parameters/${encodeURIComponent(title)}/${encodeURIComponent(tag)}`, data)
   },
 
   // 刪除參數
   deleteParameter: (title, tag) => {
-    return axios.delete(`/parameters/${title}/${tag}`)
+    return axios.delete(`/parameters/${encodeURIComponent(title)}/${encodeURIComponent(tag)}`)
   },
 
   // 批次刪除參數
@@ -42,7 +42,8 @@ export const parametersApi = {
 
   // 取得參數值
   getParameterValue: (title, tag, lang) => {
-    return axios.get(`/parameters/value/${title}/${tag}`, { params: { lang } })
+    return axios.get(`/parameters/value/${encodeURIComponent(title)}/${encodeURIComponent(tag)}`, {
+      params: { lang }
+    })
   }
 }
-

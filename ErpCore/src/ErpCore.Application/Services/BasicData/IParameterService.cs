@@ -19,7 +19,7 @@ public interface IParameterService
     Task<ParameterDto> GetParameterAsync(string title, string tag);
 
     /// <summary>
-    /// 根據標題查詢參數列表
+    /// 根據參數標題查詢參數列表
     /// </summary>
     Task<List<ParameterDto>> GetParametersByTitleAsync(string title);
 
@@ -46,6 +46,5 @@ public interface IParameterService
     /// <summary>
     /// 取得參數值
     /// </summary>
-    Task<string> GetParameterValueAsync(string title, string tag, string? lang = null);
+    Task<string> GetParameterValueAsync(string title, string tag, string lang = null);
 }
-

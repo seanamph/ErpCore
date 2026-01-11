@@ -1,7 +1,6 @@
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -14,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class ParameterService : BaseService, IParameterService
 {
     private readonly IParameterRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public ParameterService(
         IParameterRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<ParameterDto>> GetParametersAsync(ParameterQueryDto query)
@@ -117,7 +113,6 @@ public class ParameterService : BaseService, IParameterService
         try
         {
             var entities = await _repository.GetByTitleAsync(title);
-
             return entities.Select(x => new ParameterDto
             {
                 TKey = x.TKey,
@@ -165,13 +160,15 @@ public class ParameterService : BaseService, IParameterService
                 Content = dto.Content,
                 Content2 = dto.Content2,
                 Notes = dto.Notes,
-                Status = dto.Status,
+                Status = dto.Status ?? "1",
                 ReadOnly = dto.ReadOnly ?? "0",
                 SystemId = dto.SystemId,
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -206,12 +203,12 @@ public class ParameterService : BaseService, IParameterService
                 throw new InvalidOperationException($"參數為只讀，無法修改: {title}/{tag}");
             }
 
-            entity.SeqNo = dto.SeqNo ?? entity.SeqNo;
+            entity.SeqNo = dto.SeqNo ?? 0;
             entity.Content = dto.Content;
             entity.Content2 = dto.Content2;
             entity.Notes = dto.Notes;
-            entity.Status = dto.Status;
-            entity.ReadOnly = dto.ReadOnly ?? entity.ReadOnly;
+            entity.Status = dto.Status ?? "1";
+            entity.ReadOnly = dto.ReadOnly ?? "0";
             entity.SystemId = dto.SystemId;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
@@ -267,7 +264,7 @@ public class ParameterService : BaseService, IParameterService
         }
     }
 
-    public async Task<string> GetParameterValueAsync(string title, string tag, string? lang = null)
+    public async Task<string> GetParameterValueAsync(string title, string tag, string lang = null)
     {
         try
         {
@@ -278,7 +275,7 @@ public class ParameterService : BaseService, IParameterService
             }
 
             // 根據語言選擇內容
-            if (lang == "2" && !string.IsNullOrEmpty(entity.Content2))
+            if (!string.IsNullOrEmpty(lang) && lang.ToUpper() == "EN" && !string.IsNullOrEmpty(entity.Content2))
             {
                 return entity.Content2;
             }
@@ -304,10 +301,14 @@ public class ParameterService : BaseService, IParameterService
             throw new ArgumentException("參數標籤不能為空");
         }
 
-        if (dto.Status != "0" && dto.Status != "1")
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "1" && dto.Status != "0")
         {
-            throw new ArgumentException("狀態必須為 0(停用) 或 1(啟用)");
+            throw new ArgumentException("狀態值必須為 1 (啟用) 或 0 (停用)");
+        }
+
+        if (!string.IsNullOrEmpty(dto.ReadOnly) && dto.ReadOnly != "1" && dto.ReadOnly != "0")
+        {
+            throw new ArgumentException("只讀標誌必須為 1 (只讀) 或 0 (可編輯)");
         }
     }
 }
-

@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Api.Controllers.BasicData;
 
 /// <summary>
-/// 參數資料設定維護作業控制器 (SYSBC40)
+/// 參數資料設定維護控制器 (SYSBC40)
 /// </summary>
 [Route("api/v1/parameters")]
 public class ParametersController : BaseController
@@ -40,9 +40,7 @@ public class ParametersController : BaseController
     /// 查詢單筆參數
     /// </summary>
     [HttpGet("{title}/{tag}")]
-    public async Task<ActionResult<ApiResponse<ParameterDto>>> GetParameter(
-        string title, 
-        string tag)
+    public async Task<ActionResult<ApiResponse<ParameterDto>>> GetParameter(string title, string tag)
     {
         return await ExecuteAsync(async () =>
         {
@@ -52,11 +50,10 @@ public class ParametersController : BaseController
     }
 
     /// <summary>
-    /// 根據標題查詢參數列表
+    /// 根據參數標題查詢參數列表
     /// </summary>
     [HttpGet("by-title/{title}")]
-    public async Task<ActionResult<ApiResponse<List<ParameterDto>>>> GetParametersByTitle(
-        string title)
+    public async Task<ActionResult<ApiResponse<List<ParameterDto>>>> GetParametersByTitle(string title)
     {
         return await ExecuteAsync(async () =>
         {
@@ -98,9 +95,7 @@ public class ParametersController : BaseController
     /// 刪除參數
     /// </summary>
     [HttpDelete("{title}/{tag}")]
-    public async Task<ActionResult<ApiResponse<object>>> DeleteParameter(
-        string title,
-        string tag)
+    public async Task<ActionResult<ApiResponse<object>>> DeleteParameter(string title, string tag)
     {
         return await ExecuteAsync(async () =>
         {
@@ -128,7 +123,7 @@ public class ParametersController : BaseController
     public async Task<ActionResult<ApiResponse<ParameterValueDto>>> GetParameterValue(
         string title,
         string tag,
-        [FromQuery] string? lang = null)
+        [FromQuery] string lang = null)
     {
         return await ExecuteAsync(async () =>
         {
@@ -137,4 +132,3 @@ public class ParametersController : BaseController
         }, $"取得參數值失敗: {title}/{tag}");
     }
 }
-

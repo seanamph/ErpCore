@@ -1358,6 +1358,12 @@ const routes = [
         name: 'Groups',
         component: () => import('../views/BasicData/Groups.vue'),
         meta: { title: '組別資料維護作業 (SYSWB70)' }
+      },
+      {
+        path: 'areas',
+        name: 'Areas',
+        component: () => import('../views/BasicData/Areas.vue'),
+        meta: { title: '區域基本資料維護作業 (SYSB450)' }
       }
     ]
   }
