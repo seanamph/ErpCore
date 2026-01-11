@@ -4,6 +4,19 @@
 
 ### 📝 最新完成工作
 
+#### SYS0120 - 使用者資料瀏覽功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0120 使用者資料瀏覽功能
+  - Controller: UsersController.cs（API 控制器，已存在 BrowseUsers 和 BrowseUser 端點，路徑 /api/v1/users/browse 和 /api/v1/users/{userId}/browse）
+  - Vue 頁面: SYS0120Query.vue（前端只讀瀏覽頁面，支援使用者查詢、查看詳細資料）
+  - API 文件: users.js（前端 API 調用，已存在 browseUsers 和 browseUserById 函數）
+  - 路由配置: 已在 router/index.js 註冊 SYS0120 路由（路徑 /system/users-browse）
+- ✅ **功能特性**：
+  - 支援使用者資料的只讀瀏覽功能（不支援新增、修改、刪除）
+  - 支援分頁查詢、排序、多條件篩選（使用者編號、使用者名稱、組織、狀態、使用者型態）
+  - 支援查看使用者詳細資料（使用 el-descriptions 顯示所有欄位）
+  - 所有資料欄位均為只讀模式
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYS0210 - 角色基本資料維護功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0210 角色基本資料維護功能
   - Entity: Role.cs（角色實體類別，已存在）
@@ -262,16 +275,16 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0230（角色之使用者設定維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、API 文件。所有後端代碼已更新並正確，前端 Vue 頁面 SYS0230Query.vue 已完整實現並提交到 Git。後端 API 和服務層已完整實現，支援角色使用者的查詢、新增、移除、批量設定功能，支援分頁查詢和多條件篩選（部門、店別、使用者類型、關鍵字）。重要功能：分配角色給使用者時，自動清除使用者的直接權限設定（UserButtons表）。已添加 IUserPermissionRepository.DeleteByUserIdAsync 方法用於清除使用者直接權限。
+**最新進度**：✅ 已完成 SYS0120（使用者資料瀏覽）功能的完整實現。後端 API 端點已存在於 UsersController（BrowseUsers、BrowseUser），前端 API 函數已存在於 users.js（browseUsers、browseUserById）。已新增前端只讀瀏覽頁面 SYS0120Query.vue，支援使用者資料的查詢、分頁、查看詳細資料功能。所有資料欄位均為只讀模式，不支援新增、修改、刪除操作。路由配置已添加到 router/index.js。所有代碼已提交並推送到 Git。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0120（使用者資料瀏覽）或其他系統管理功能
-5. 進行功能測試和整合測試（特別是 SYS0230 的角色使用者設定維護功能，測試清除使用者直接權限的邏輯）
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0220（使用者之角色設定維護）或其他系統管理功能
+4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
+5. 進行功能測試和整合測試（特別是 SYS0120 的使用者資料瀏覽功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
