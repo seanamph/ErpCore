@@ -153,24 +153,44 @@ export const roleFieldPermissionsApi = {
  * 遵循 C# API 欄位命名 (PascalCase)
  */
 export const userFieldPermissionsApi = {
+  // 查詢資料庫列表
+  getDatabases: () => {
+    return axios.get('/api/v1/user-field-permissions/databases')
+  },
+
+  // 查詢表格列表
+  getTables: (dbName) => {
+    return axios.get('/api/v1/user-field-permissions/tables', { params: { dbName } })
+  },
+
+  // 查詢欄位列表
+  getFields: (dbName, tableName) => {
+    return axios.get('/api/v1/user-field-permissions/fields', { params: { dbName, tableName } })
+  },
+
   // 查詢使用者欄位權限列表
-  getUserFieldPermissions: (userId, params) => {
-    return axios.get(`/api/v1/users/${userId}/field-permissions`, { params })
+  getUserFieldPermissions: (params) => {
+    return axios.get('/api/v1/user-field-permissions', { params })
   },
 
   // 新增使用者欄位權限
-  createUserFieldPermissions: (userId, data) => {
-    return axios.post(`/api/v1/users/${userId}/field-permissions`, data)
+  createUserFieldPermission: (data) => {
+    return axios.post('/api/v1/user-field-permissions', data)
   },
 
   // 更新使用者欄位權限
-  updateUserFieldPermissions: (userId, data) => {
-    return axios.put(`/api/v1/users/${userId}/field-permissions`, data)
+  updateUserFieldPermission: (id, data) => {
+    return axios.put(`/api/v1/user-field-permissions/${id}`, data)
   },
 
   // 刪除使用者欄位權限
-  deleteUserFieldPermission: (userId, tKey) => {
-    return axios.delete(`/api/v1/users/${userId}/field-permissions/${tKey}`)
+  deleteUserFieldPermission: (id) => {
+    return axios.delete(`/api/v1/user-field-permissions/${id}`)
+  },
+
+  // 批次設定使用者欄位權限
+  batchSetPermissions: (data) => {
+    return axios.post('/api/v1/user-field-permissions/batch', data)
   }
 }
 

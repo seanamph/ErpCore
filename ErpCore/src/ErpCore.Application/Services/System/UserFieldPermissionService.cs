@@ -16,17 +16,20 @@ public class UserFieldPermissionService : BaseService, IUserFieldPermissionServi
 {
     private readonly IUserFieldPermissionRepository _repository;
     private readonly IUserRepository _userRepository;
+    private readonly IUserRoleRepository _userRoleRepository;
     private readonly IDbConnectionFactory _connectionFactory;
 
     public UserFieldPermissionService(
         IUserFieldPermissionRepository repository,
         IUserRepository userRepository,
+        IUserRoleRepository userRoleRepository,
         IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
         _userRepository = userRepository;
+        _userRoleRepository = userRoleRepository;
         _connectionFactory = connectionFactory;
     }
 
@@ -200,6 +203,15 @@ public class UserFieldPermissionService : BaseService, IUserFieldPermissionServi
                 throw new InvalidOperationException("該使用者欄位權限已存在");
             }
 
+            // 清除使用者角色權限對應（設定使用者直接權限時，需移除該使用者的角色權限對應）
+            var userRoles = await _userRoleRepository.GetByUserIdAsync(dto.UserId);
+            var userRoleList = userRoles.ToList();
+            if (userRoleList.Count > 0)
+            {
+                await _userRoleRepository.DeleteRangeAsync(userRoleList);
+                _logger.LogInfo($"清除使用者角色權限對應: {dto.UserId}, 清除數量: {userRoleList.Count}");
+            }
+
             var entity = new UserFieldPermission
             {
                 UserId = dto.UserId,
@@ -274,6 +286,15 @@ public class UserFieldPermissionService : BaseService, IUserFieldPermissionServi
             if (user == null)
             {
                 throw new InvalidOperationException($"使用者不存在: {dto.UserId}");
+            }
+
+            // 清除使用者角色權限對應（設定使用者直接權限時，需移除該使用者的角色權限對應）
+            var userRoles = await _userRoleRepository.GetByUserIdAsync(dto.UserId);
+            var userRoleList = userRoles.ToList();
+            if (userRoleList.Count > 0)
+            {
+                await _userRoleRepository.DeleteRangeAsync(userRoleList);
+                _logger.LogInfo($"清除使用者角色權限對應: {dto.UserId}, 清除數量: {userRoleList.Count}");
             }
 
             // 先刪除該使用者的所有欄位權限
