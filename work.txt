@@ -3,19 +3,21 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0710 功能實現完成**：已完成系統權限列表功能
+- ✅ **SYS0720 功能實現完成**：已完成作業權限之使用者列表功能
   - 實現內容：
-    - ✅ Service 層: 完善 `SystemPermissionService`，正確處理 Menu 層級（使用 SubSystem 作為 Menu）
-    - ✅ Vue 頁面: `SYS0710Query.vue` - 系統權限列表查詢頁面
-    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0710 路由
-    - ✅ API 整合: 使用現有的 `systemPermissionApi.getList` 和 `exportReport` API
-    - ✅ 查詢功能: 支援按使用者代碼或角色代碼查詢系統權限列表
-    - ✅ 篩選功能: 支援按系統代碼、選單代碼、作業代碼篩選
-    - ✅ 顯示功能: 以樹狀結構顯示系統→選單→作業→按鈕的階層式權限結構
+    - ✅ SQL 視圖: 建立 `V_ProgramUserPermission` 視圖，查詢指定作業下使用者權限
+    - ✅ Service 層: `ProgramUserPermissionService` 已完整實現（查詢和匯出功能）
+    - ✅ Controller 層: `ProgramUserPermissionController` 已完整實現
+    - ✅ DTO 層: `ProgramUserPermissionListRequestDto`、`ProgramUserPermissionListResponseDto` 等已完整實現
+    - ✅ Vue 頁面: `ProgramUserPermissionReport.vue` - 作業權限之使用者列表查詢頁面
+    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0720 路由
+    - ✅ API 整合: 使用 `programUserPermissionApi.getList` 和 `exportReport` API
+    - ✅ 查詢功能: 支援按作業代碼查詢使用者權限列表
+    - ✅ 顯示功能: 以表格形式顯示使用者及其按鈕權限
     - ✅ 匯出功能: 支援匯出 Excel 和 PDF 格式
-    - ✅ SQL 腳本: 建立 `V_UserButtonRoleButton` 視圖 SQL 腳本
-  - 功能狀態：SYS0710 前端頁面和後端服務已完整實現
-  - 開發依據：`開發計劃/01-系統管理/03-權限管理/SYS0710-系統權限列表.md`
+    - ✅ SQL 腳本: 建立 `CreateProgramUserPermissionView.sql` 視圖腳本
+  - 功能狀態：SYS0720 前端頁面和後端服務已完整實現
+  - 開發依據：`開發計劃/01-系統管理/03-權限管理/SYS0720-作業權限之使用者列表.md`
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
@@ -30,7 +32,7 @@
 
 ### 🎯 下一步建議
 1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0720、SYS0731、SYS0740、SYS0750 等）
+   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0731、SYS0740、SYS0750 等）
    - 按照開發計劃文件實現：Entity → Repository → Service → DTO → Controller → Vue 頁面 → SQL
    - 注意：所有開發都必須按照現有的文件，所有程式都要有 md 依據
 2. **優先修復編譯錯誤**（可選）：
@@ -65,7 +67,7 @@
 
 ### 🎯 下一步建議
 1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0720、SYS0731、SYS0740、SYS0750 等）
+   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0731、SYS0740、SYS0750 等）
 2. **優先修復編譯錯誤**（可選）：解決循環相依性問題和前端編碼問題，確保專案可以正常構建
 3. **功能測試**：對已完成的功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質
