@@ -4,6 +4,30 @@
 
 ### 📝 最新完成工作
 
+#### SYS0340 - 使用者欄位權限設定功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0340 使用者欄位權限設定功能
+  - Entity: UserFieldPermission.cs（使用者欄位權限實體類別）
+  - Repository: IUserFieldPermissionRepository.cs 和 UserFieldPermissionRepository.cs（資料存取層，已完整實現）
+  - Service: IUserFieldPermissionService.cs 和 UserFieldPermissionService.cs（業務邏輯層，已完整實現，包含清除角色權限對應邏輯）
+  - DTO: UserFieldPermissionDto.cs, CreateUserFieldPermissionDto.cs, UpdateUserFieldPermissionDto.cs, UserFieldPermissionQueryDto.cs, BatchSetUserFieldPermissionDto.cs, DatabaseDto.cs, TableDto.cs, FieldDto.cs 等（資料傳輸物件）
+  - Controller: UserFieldPermissionsController.cs（API 控制器，路徑 /api/v1/user-field-permissions，已完整實現所有端點）
+  - Vue 頁面: SYS0340Query.vue（前端查詢維護頁面，支援使用者欄位權限查詢、新增、修改、刪除、批量設定）
+  - SQL 腳本: CreateUserFieldPermissionTables.sql（資料庫建立腳本，包含 UserFieldPermissions、DatabaseInfo、TableInfo、FieldInfo 表）
+  - API 文件: permissions.js（前端 API 調用，userFieldPermissionsApi）
+  - 依賴注入: 已在 Program.cs 註冊 IUserFieldPermissionRepository 和 IUserFieldPermissionService
+- ✅ **功能特性**：
+  - 支援使用者欄位權限的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（使用者、資料庫、表格、欄位、權限類型）
+  - 支援批次刪除功能
+  - 支援批量設定使用者欄位權限（可選擇特定欄位）
+  - 支援資料庫列表查詢（從 DatabaseInfo 表取得）
+  - 支援表格列表查詢（從 TableInfo 表取得，依資料庫篩選）
+  - 支援欄位列表查詢（從 FieldInfo 表取得，依資料庫和表格篩選）
+  - 權限類型支援：READ（讀取）、WRITE（寫入）、HIDE（隱藏）
+  - **重要功能**：設定使用者直接權限時，自動清除該使用者的角色權限對應（UserRoles表）
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYS0330 - 角色欄位權限設定功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0330 角色欄位權限設定功能
   - Entity: RoleFieldPermission.cs（角色欄位權限實體類別）
@@ -150,7 +174,7 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0330（角色欄位權限設定）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0330Query.vue 已創建並提交到 Git 倉庫。後端 API 和服務層已完整實現，支援角色欄位權限的查詢、新增、修改、刪除和批量設定功能。支援多資料庫環境，可依資料庫、表格、欄位設定權限類型（READ、WRITE、HIDE）。
+**最新進度**：✅ 已完成 SYS0340（使用者欄位權限設定）功能的完整實現和優化，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。已添加重要業務邏輯：設定使用者直接權限時自動清除該使用者的角色權限對應（UserRoles表）。修復了批量設定功能，確保只使用用戶選擇的欄位而非所有欄位。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0340Query.vue 已完整實現並提交到 Git 倉庫。後端 API 和服務層已完整實現，支援使用者欄位權限的查詢、新增、修改、刪除和批量設定功能。支援多資料庫環境，可依資料庫、表格、欄位設定權限類型（READ、WRITE、HIDE）。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
@@ -158,8 +182,8 @@
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（JwtTokenService、DistributedCacheService、MemoryCacheService、AnalysisReportRepository 等），這些錯誤會影響整體專案編譯
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等），這些錯誤會影響前端構建
 3. 實作資料庫密碼加密邏輯（SystemService 中的 EncryptPassword 方法）
-4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0340（使用者欄位權限設定）或其他權限管理相關功能
-5. 進行功能測試和整合測試（特別是 SYS0330 的批量設定功能和資料庫、表格、欄位查詢功能）
+4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0360（系統對應權限設定）或其他權限管理相關功能
+5. 進行功能測試和整合測試（特別是 SYS0340 的批量設定功能和清除角色權限對應功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
