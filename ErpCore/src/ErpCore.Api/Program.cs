@@ -304,6 +304,7 @@ try
     builder.Services.AddScoped<IConfigSubSystemService, ConfigSubSystemService>();
     builder.Services.AddScoped<IConfigProgramService, ConfigProgramService>();
     builder.Services.AddScoped<IConfigButtonService, ConfigButtonService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.System.ISystemService, ErpCore.Application.Services.System.SystemService>();
     builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddScoped<IUserAgentService, UserAgentService>();
     builder.Services.AddScoped<IRoleService, RoleService>();
