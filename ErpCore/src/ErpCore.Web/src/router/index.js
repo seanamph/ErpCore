@@ -1312,6 +1312,18 @@ const routes = [
         meta: { title: '招商其他功能 - 租戶位置維護 (SYSC999)' }
       }
     ]
+  },
+  {
+    path: '/master-data',
+    component: () => import('../views/Layout.vue'),
+    children: [
+      {
+        path: 'product-category',
+        name: 'ProductCategory',
+        component: () => import('../views/BasicData/ProductCategory.vue'),
+        meta: { title: '商品分類資料維護作業 (SYSB110)' }
+      }
+    ]
   }
 ]
 

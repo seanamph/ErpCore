@@ -16,9 +16,9 @@
         <el-form-item label="分類區分">
           <el-select v-model="queryForm.ClassMode" placeholder="請選擇分類區分" clearable>
             <el-option label="全部" value="" />
-            <el-option label="大分類" value="B" />
-            <el-option label="中分類" value="M" />
-            <el-option label="小分類" value="S" />
+            <el-option label="大分類" value="1" />
+            <el-option label="中分類" value="2" />
+            <el-option label="小分類" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="狀態">
@@ -49,7 +49,7 @@
         <el-table-column prop="ClassName" label="分類名稱" width="200" />
         <el-table-column prop="ClassMode" label="分類區分" width="100">
           <template #default="{ row }">
-            {{ row.ClassMode === 'B' ? '大分類' : row.ClassMode === 'M' ? '中分類' : row.ClassMode === 'S' ? '小分類' : '' }}
+            {{ row.ClassMode === '1' ? '大分類' : row.ClassMode === '2' ? '中分類' : row.ClassMode === '3' ? '小分類' : '' }}
           </template>
         </el-table-column>
         <el-table-column prop="ClassType" label="分類型式" width="100" />
@@ -100,20 +100,45 @@
           <el-input v-model="form.ClassName" placeholder="請輸入分類名稱" />
         </el-form-item>
         <el-form-item label="分類區分" prop="ClassMode">
-          <el-select v-model="form.ClassMode" placeholder="請選擇分類區分" style="width: 100%">
-            <el-option label="大分類" value="B" />
-            <el-option label="中分類" value="M" />
-            <el-option label="小分類" value="S" />
+          <el-select v-model="form.ClassMode" placeholder="請選擇分類區分" style="width: 100%" :disabled="isEdit">
+            <el-option label="大分類" value="1" />
+            <el-option label="中分類" value="2" />
+            <el-option label="小分類" value="3" />
           </el-select>
         </el-form-item>
         <el-form-item label="分類型式" prop="ClassType">
-          <el-input v-model="form.ClassType" placeholder="請輸入分類型式" />
+          <el-select v-model="form.ClassType" placeholder="請選擇分類型式" style="width: 100%">
+            <el-option label="資料" value="1" />
+            <el-option label="耗材" value="2" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="大分類" prop="BClassId">
-          <el-input v-model="form.BClassId" placeholder="請輸入大分類" />
+        <el-form-item label="大分類" prop="BClassId" v-if="form.ClassMode === '2' || form.ClassMode === '3'">
+          <el-select v-model="form.BClassId" placeholder="請選擇大分類" style="width: 100%" filterable @change="handleBClassChange">
+            <el-option v-for="item in bClassList" :key="item.ClassId" :label="`${item.ClassId} - ${item.ClassName}`" :value="item.ClassId" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="中分類" prop="MClassId">
-          <el-input v-model="form.MClassId" placeholder="請輸入中分類" />
+        <el-form-item label="中分類" prop="MClassId" v-if="form.ClassMode === '3'">
+          <el-select v-model="form.MClassId" placeholder="請選擇中分類" style="width: 100%" filterable :disabled="!form.BClassId">
+            <el-option v-for="item in mClassList" :key="item.ClassId" :label="`${item.ClassId} - ${item.ClassName}`" :value="item.ClassId" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="所屬會計科目(借)" prop="StypeId">
+          <el-input v-model="form.StypeId" placeholder="請輸入會計科目代碼" />
+        </el-form-item>
+        <el-form-item label="所屬會計科目(貸)" prop="StypeId2">
+          <el-input v-model="form.StypeId2" placeholder="請輸入會計科目代碼" />
+        </el-form-item>
+        <el-form-item label="折舊科目(借)" prop="DepreStypeId">
+          <el-input v-model="form.DepreStypeId" placeholder="請輸入會計科目代碼" />
+        </el-form-item>
+        <el-form-item label="累計折舊科目(貸)" prop="DepreStypeId2">
+          <el-input v-model="form.DepreStypeId2" placeholder="請輸入會計科目代碼" />
+        </el-form-item>
+        <el-form-item label="進項稅額科目(借)" prop="StypeTax">
+          <el-input v-model="form.StypeTax" placeholder="請輸入會計科目代碼" />
+        </el-form-item>
+        <el-form-item label="項目個數" prop="ItemCount">
+          <el-input-number v-model="form.ItemCount" :min="0" :disabled="true" style="width: 100%" />
         </el-form-item>
         <el-form-item label="狀態" prop="Status">
           <el-select v-model="form.Status" placeholder="請選擇狀態" style="width: 100%">
@@ -168,12 +193,24 @@ const form = reactive({
   ClassId: '',
   ClassName: '',
   ClassMode: '',
-  ClassType: '',
+  ClassType: '1',
   BClassId: '',
   MClassId: '',
+  ParentTKey: null,
+  StypeId: '',
+  StypeId2: '',
+  DepreStypeId: '',
+  DepreStypeId2: '',
+  StypeTax: '',
+  ItemCount: 0,
   Status: 'A',
   Notes: ''
 })
+
+// 大分類列表
+const bClassList = ref([])
+// 中分類列表
+const mClassList = ref([])
 
 // 表單驗證規則
 const rules = {
@@ -235,6 +272,14 @@ const handleEdit = async (row) => {
     const response = await productCategoriesApi.getProductCategory(row.TKey)
     if (response.data.success) {
       Object.assign(form, response.data.data)
+      // 如果是中分類或小分類，載入大分類列表
+      if (form.ClassMode === '2' || form.ClassMode === '3') {
+        await loadBClassList()
+      }
+      // 如果是小分類，載入中分類列表
+      if (form.ClassMode === '3' && form.BClassId) {
+        await handleBClassChange()
+      }
     } else {
       ElMessage.error(response.data.message || '查詢失敗')
     }
@@ -272,9 +317,25 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          const tKey = tableData.value.find(item => item.ClassId === form.ClassId)?.TKey
-          if (tKey) {
-            response = await productCategoriesApi.updateProductCategory(tKey, form)
+          // 從當前編輯的行獲取TKey
+          const currentRow = tableData.value.find(item => item.TKey === form.TKey)
+          if (currentRow && currentRow.TKey) {
+            const updateData = {
+              ClassName: form.ClassName,
+              ClassType: form.ClassType,
+              BClassId: form.BClassId,
+              MClassId: form.MClassId,
+              ParentTKey: form.ParentTKey,
+              StypeId: form.StypeId,
+              StypeId2: form.StypeId2,
+              DepreStypeId: form.DepreStypeId,
+              DepreStypeId2: form.DepreStypeId2,
+              StypeTax: form.StypeTax,
+              ItemCount: form.ItemCount,
+              Status: form.Status,
+              Notes: form.Notes
+            }
+            response = await productCategoriesApi.updateProductCategory(currentRow.TKey, updateData)
           } else {
             ElMessage.error('找不到要修改的資料')
             return
@@ -307,12 +368,68 @@ const resetForm = () => {
   form.ClassId = ''
   form.ClassName = ''
   form.ClassMode = ''
-  form.ClassType = ''
+  form.ClassType = '1'
   form.BClassId = ''
   form.MClassId = ''
+  form.ParentTKey = null
+  form.StypeId = ''
+  form.StypeId2 = ''
+  form.DepreStypeId = ''
+  form.DepreStypeId2 = ''
+  form.StypeTax = ''
+  form.ItemCount = 0
   form.Status = 'A'
   form.Notes = ''
+  bClassList.value = []
+  mClassList.value = []
   formRef.value?.resetFields()
+}
+
+// 載入大分類列表
+const loadBClassList = async () => {
+  try {
+    const response = await productCategoriesApi.getBClassList({ Status: 'A' })
+    if (response.data.success) {
+      bClassList.value = response.data.data || []
+    }
+  } catch (error) {
+    console.error('載入大分類列表失敗：', error)
+  }
+}
+
+// 大分類變更
+const handleBClassChange = async () => {
+  form.MClassId = ''
+  mClassList.value = []
+  if (form.BClassId && form.ClassMode === '3') {
+    try {
+      const response = await productCategoriesApi.getMClassList({ BClassId: form.BClassId, Status: 'A' })
+      if (response.data.success) {
+        mClassList.value = response.data.data || []
+      }
+    } catch (error) {
+      console.error('載入中分類列表失敗：', error)
+    }
+  }
+}
+
+// 監聽分類區分變更
+const watchClassMode = () => {
+  if (form.ClassMode === '1') {
+    form.BClassId = ''
+    form.MClassId = ''
+    form.ParentTKey = null
+  } else if (form.ClassMode === '2') {
+    form.MClassId = ''
+    form.ParentTKey = null
+    loadBClassList()
+  } else if (form.ClassMode === '3') {
+    form.ParentTKey = null
+    loadBClassList()
+    if (form.BClassId) {
+      handleBClassChange()
+    }
+  }
 }
 
 // 分頁大小變更
@@ -331,6 +448,12 @@ const handlePageChange = (page) => {
 // 初始化
 onMounted(() => {
   handleSearch()
+  loadBClassList()
+})
+
+// 監聽表單分類區分變更
+watch(() => form.ClassMode, () => {
+  watchClassMode()
 })
 </script>
 
