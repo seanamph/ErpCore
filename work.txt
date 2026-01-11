@@ -4,6 +4,28 @@
 
 ### 📝 最新完成工作
 
+#### SYS0220 - 使用者之角色設定維護功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0220 使用者之角色設定維護功能
+  - Entity: UserRole.cs（使用者角色對應實體類別，已存在）
+  - Repository: IUserRoleRepository.cs 和 UserRoleRepository.cs（資料存取層，已完整實現）
+  - Service: IUserRoleService.cs 和 UserRoleService.cs（業務邏輯層，已完整實現）
+  - DTO: UserRoleDto.cs, AssignRolesDto.cs, RemoveRolesDto.cs, BatchUpdateRolesDto.cs, AssignRoleResultDto.cs, RemoveRoleResultDto.cs, BatchUpdateRoleResultDto.cs 等（資料傳輸物件，已存在）
+  - Controller: UserRolesController.cs（API 控制器，路徑 /api/v1/users/{userId}/roles，已完整實現所有端點）
+  - Vue 頁面: SYS0220Query.vue（前端查詢維護頁面，支援使用者角色查詢、新增、移除、批量更新）
+  - SQL 腳本: CreateRolesTables.sql（資料庫建立腳本，包含 UserRoles 表，已存在）
+  - API 文件: userRoles.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYS0220 路由（路徑 /system/user-roles）
+  - 依賴注入: 已在 Program.cs 註冊 IUserRoleRepository 和 IUserRoleService
+- ✅ **功能特性**：
+  - 支援為指定使用者分配一個或多個角色
+  - 支援移除使用者的角色（單個或批量）
+  - 支援查看使用者已分配的角色列表（分頁查詢）
+  - 支援查看所有可用角色列表（排除已分配的角色）
+  - 支援批量更新使用者角色（先刪除舊角色，再新增新角色）
+  - 支援角色搜尋功能（角色代碼或名稱）
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYS0120 - 使用者資料瀏覽功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0120 使用者資料瀏覽功能
   - Controller: UsersController.cs（API 控制器，已存在 BrowseUsers 和 BrowseUser 端點，路徑 /api/v1/users/browse 和 /api/v1/users/{userId}/browse）
@@ -275,16 +297,16 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0120（使用者資料瀏覽）功能的完整實現。後端 API 端點已存在於 UsersController（BrowseUsers、BrowseUser），前端 API 函數已存在於 users.js（browseUsers、browseUserById）。已新增前端只讀瀏覽頁面 SYS0120Query.vue，支援使用者資料的查詢、分頁、查看詳細資料功能。所有資料欄位均為只讀模式，不支援新增、修改、刪除操作。路由配置已添加到 router/index.js。所有代碼已提交並推送到 Git。
+**最新進度**：✅ 已完成 SYS0220（使用者之角色設定維護）功能的完整實現。後端 API 端點已存在於 UserRolesController（GetUserRoles、GetAvailableRoles、AssignRoles、RemoveRoles、BatchUpdateRoles），前端 API 函數已存在於 userRoles.js。已完整實現前端維護頁面 SYS0220Query.vue，支援使用者角色查詢、新增、移除、批量更新功能。路由配置已添加到 router/index.js。所有代碼已存在並符合開發計劃要求。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0220（使用者之角色設定維護）或其他系統管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0230（角色之使用者設定維護）或其他系統管理功能
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-5. 進行功能測試和整合測試（特別是 SYS0120 的使用者資料瀏覽功能）
+5. 進行功能測試和整合測試（特別是 SYS0220 的使用者角色設定維護功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能

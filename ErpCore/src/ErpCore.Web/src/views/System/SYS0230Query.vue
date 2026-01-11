@@ -130,7 +130,7 @@
 
       <!-- 分頁 -->
       <el-pagination
-        v-model:current-page="pagination.Page"
+        v-model:current-page="pagination.PageIndex"
         v-model:page-size="pagination.PageSize"
         :total="pagination.TotalCount"
         :page-sizes="[10, 20, 50, 100]"
@@ -195,7 +195,7 @@ const selectedRows = ref([])
 
 // 分頁
 const pagination = reactive({
-  Page: 1,
+  PageIndex: 1,
   PageSize: 20,
   TotalCount: 0
 })
@@ -263,13 +263,15 @@ const handleSearch = async () => {
       StoreId: filterForm.StoreId || undefined,
       UserType: filterForm.UserType || undefined,
       Filter: filterForm.Filter || undefined,
-      Page: pagination.Page,
+      Page: pagination.PageIndex,
       PageSize: pagination.PageSize
     }
     const response = await rolesApi.getRoleUsers(queryForm.RoleId, params)
     if (response.data.success) {
       tableData.value = response.data.data.items || []
-      pagination.TotalCount = response.data.data.totalCount || 0
+      pagination.TotalCount = response.data.data.totalCount || response.data.data.TotalCount || 0
+      pagination.PageIndex = response.data.data.pageIndex || response.data.data.PageIndex || pagination.PageIndex
+      pagination.PageSize = response.data.data.pageSize || response.data.data.PageSize || pagination.PageSize
     } else {
       ElMessage.error(response.data.message || '查詢失敗')
     }
@@ -286,7 +288,7 @@ const handleReset = () => {
   currentRole.value = null
   tableData.value = []
   handleFilterReset()
-  pagination.Page = 1
+  pagination.PageIndex = 1
   pagination.TotalCount = 0
 }
 
@@ -448,13 +450,13 @@ const handleBatchAssignDialogClose = () => {
 // 分頁大小變更
 const handleSizeChange = (size) => {
   pagination.PageSize = size
-  pagination.Page = 1
+  pagination.PageIndex = 1
   handleSearch()
 }
 
 // 分頁變更
 const handlePageChange = (page) => {
-  pagination.Page = page
+  pagination.PageIndex = page
   handleSearch()
 }
 

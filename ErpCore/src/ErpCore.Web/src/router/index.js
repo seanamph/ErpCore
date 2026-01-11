@@ -236,6 +236,18 @@ const routes = [
         name: 'SYS0120Query',
         component: () => import('../views/System/SYS0120Query.vue'),
         meta: { title: '使用者資料瀏覽 (SYS0120)' }
+      },
+      {
+        path: 'user-roles',
+        name: 'SYS0220Query',
+        component: () => import('../views/System/SYS0220Query.vue'),
+        meta: { title: '使用者之角色設定維護 (SYS0220)' }
+      },
+      {
+        path: 'role-users',
+        name: 'SYS0230Query',
+        component: () => import('../views/System/SYS0230Query.vue'),
+        meta: { title: '角色之使用者設定維護 (SYS0230)' }
       }
     ]
   },

@@ -285,7 +285,7 @@ const formatDateTime = (dateTime) => {
 // 載入使用者選項
 const loadUserOptions = async () => {
   try {
-    const response = await usersApi.getUsers({ PageIndex: 1, PageSize: 1000 })
+    const response = await getUsers({ PageIndex: 1, PageSize: 1000 })
     if (response.data.success) {
       userOptions.value = response.data.data.items || []
     }
