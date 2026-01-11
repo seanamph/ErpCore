@@ -599,5 +599,19 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
             throw;
         }
     }
+
+    public async Task<int> DeleteByUserIdAsync(string userId)
+    {
+        try
+        {
+            const string sql = @"DELETE FROM UserButtons WHERE UserId = @UserId";
+            return await ExecuteAsync(sql, new { UserId = userId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除使用者所有直接權限失敗: {userId}", ex);
+            throw;
+        }
+    }
 }
 

@@ -67,6 +67,11 @@ public interface IUserPermissionRepository
     /// 根據作業ID批量設定權限
     /// </summary>
     Task<int> SetPermissionsByProgramAsync(string userId, string programId, bool isAuthorized, string? createdBy);
+
+    /// <summary>
+    /// 根據使用者ID刪除所有直接權限（SYS0230）
+    /// </summary>
+    Task<int> DeleteByUserIdAsync(string userId);
 }
 
 /// <summary>

@@ -4,6 +4,32 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Infrastructure.Repositories.System;
 
 /// <summary>
+/// 角色使用者查詢條件 (SYS0230)
+/// </summary>
+public class RoleUserQuery
+{
+    public string RoleId { get; set; } = string.Empty;
+    public string? OrgId { get; set; }
+    public string? StoreId { get; set; }
+    public string? UserType { get; set; }
+    public string? Filter { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 20;
+}
+
+/// <summary>
+/// 角色使用者列表項目 (SYS0230)
+/// </summary>
+public class RoleUserListItem
+{
+    public string UserId { get; set; } = string.Empty;
+    public string UserName { get; set; } = string.Empty;
+    public string? OrgId { get; set; }
+    public string? OrgName { get; set; }
+    public bool IsAssigned { get; set; }
+}
+
+/// <summary>
 /// 使用者角色 Repository 介面 (SYS0220)
 /// </summary>
 public interface IUserRoleRepository
@@ -57,5 +83,15 @@ public interface IUserRoleRepository
     /// 檢查使用者角色是否存在
     /// </summary>
     Task<bool> ExistsAsync(string userId, string roleId);
+
+    /// <summary>
+    /// 根據角色編號查詢使用者列表（分頁，SYS0230）
+    /// </summary>
+    Task<PagedResult<RoleUserListItem>> GetRoleUsersAsync(RoleUserQuery query);
+
+    /// <summary>
+    /// 根據角色編號查詢使用者列表
+    /// </summary>
+    Task<IEnumerable<UserRole>> GetByRoleIdAsync(string roleId);
 }
 

@@ -14,12 +14,15 @@ namespace ErpCore.Api.Controllers.System;
 public class RolesController : BaseController
 {
     private readonly IRoleService _service;
+    private readonly IRoleUserAssignmentService _roleUserAssignmentService;
 
     public RolesController(
         IRoleService service,
+        IRoleUserAssignmentService roleUserAssignmentService,
         ILoggerService logger) : base(logger)
     {
         _service = service;
+        _roleUserAssignmentService = roleUserAssignmentService;
     }
 
     /// <summary>
@@ -116,5 +119,74 @@ public class RolesController : BaseController
             return result;
         }, $"複製角色失敗: {roleId}");
     }
+
+    // ========== SYS0230 - 角色之使用者設定維護 ==========
+
+    /// <summary>
+    /// 查詢角色使用者列表 (SYS0230)
+    /// </summary>
+    [HttpGet("{roleId}/users")]
+    public async Task<ActionResult<ApiResponse<PagedResult<RoleUserListItemDto>>>> GetRoleUsers(
+        string roleId,
+        [FromQuery] RoleUserQueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            query.RoleId = roleId;
+            var result = await _roleUserAssignmentService.GetRoleUsersAsync(query);
+            return result;
+        }, $"查詢角色使用者列表失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 批量設定角色使用者 (SYS0230)
+    /// </summary>
+    [HttpPost("{roleId}/users/assign")]
+    public async Task<ActionResult<ApiResponse<BatchAssignRoleUsersResultDto>>> BatchAssignRoleUsers(
+        string roleId,
+        [FromBody] BatchAssignRoleUsersDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _roleUserAssignmentService.BatchAssignRoleUsersAsync(roleId, dto);
+            return result;
+        }, $"批量設定角色使用者失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 新增角色使用者 (SYS0230)
+    /// </summary>
+    [HttpPost("{roleId}/users")]
+    public async Task<ActionResult<ApiResponse<object>>> AssignUserToRole(
+        string roleId,
+        [FromBody] AssignUserToRoleDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _roleUserAssignmentService.AssignUserToRoleAsync(roleId, dto.UserId);
+        }, $"新增角色使用者失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 移除角色使用者 (SYS0230)
+    /// </summary>
+    [HttpDelete("{roleId}/users/{userId}")]
+    public async Task<ActionResult<ApiResponse<object>>> RemoveUserFromRole(
+        string roleId,
+        string userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _roleUserAssignmentService.RemoveUserFromRoleAsync(roleId, userId);
+        }, $"移除角色使用者失敗: {roleId}, {userId}");
+    }
+}
+
+/// <summary>
+/// 分配使用者到角色請求 DTO (SYS0230)
+/// </summary>
+public class AssignUserToRoleDto
+{
+    public string UserId { get; set; } = string.Empty;
 }
 

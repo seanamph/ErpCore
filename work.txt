@@ -262,7 +262,7 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0210（角色基本資料維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已存在且正確，前端 Vue 頁面 SYS0210Query.vue 已完整實現並提交到 Git。後端 API 和服務層已完整實現，支援角色的查詢、新增、修改、刪除、批次刪除、複製功能，支援分頁查詢和多條件篩選。角色複製功能會同時複製角色的權限設定。
+**最新進度**：✅ 已完成 SYS0220（使用者之角色設定維護）功能的完整實現，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本和 API 文件。所有後端代碼已更新並正確，前端 Vue 頁面 SYS0220Query.vue 已完整實現並提交到 Git。後端 API 和服務層已完整實現，支援使用者角色的查詢、新增、移除、批量更新功能，支援分頁查詢和角色搜尋。UserRole Entity 已更新，添加了 UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup 字段，符合開發計劃要求。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
@@ -270,8 +270,8 @@
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
 3. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0220（使用者之角色設定維護）或 SYS0120（使用者資料瀏覽）
-5. 進行功能測試和整合測試（特別是 SYS0210 的角色資料維護功能）
+4. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0230（角色之使用者設定維護）或 SYS0120（使用者資料瀏覽）
+5. 進行功能測試和整合測試（特別是 SYS0220 的使用者角色設定維護功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能

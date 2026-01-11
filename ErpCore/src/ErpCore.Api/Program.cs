@@ -313,6 +313,7 @@ try
     builder.Services.AddScoped<IUserAgentService, UserAgentService>();
     builder.Services.AddScoped<IRoleService, RoleService>();
     builder.Services.AddScoped<IUserRoleService, UserRoleService>();
+    builder.Services.AddScoped<IRoleUserAssignmentService, RoleUserAssignmentService>();
     builder.Services.AddScoped<IRolePermissionService, RolePermissionService>();
     builder.Services.AddScoped<IUserPermissionService, UserPermissionService>();
     builder.Services.AddScoped<IRoleFieldPermissionService, RoleFieldPermissionService>();

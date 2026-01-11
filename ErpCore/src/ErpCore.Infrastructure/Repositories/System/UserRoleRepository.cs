@@ -240,5 +240,88 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
             throw;
         }
     }
+
+    public async Task<PagedResult<RoleUserListItem>> GetRoleUsersAsync(RoleUserQuery query)
+    {
+        try
+        {
+            var sql = new System.Text.StringBuilder(@"
+                SELECT 
+                    u.UserId,
+                    u.UserName,
+                    u.OrgId,
+                    o.OrgName,
+                    CASE WHEN ur.UserId IS NOT NULL THEN 1 ELSE 0 END AS IsAssigned
+                FROM Users u
+                LEFT JOIN UserRoles ur ON u.UserId = ur.UserId AND ur.RoleId = @RoleId
+                LEFT JOIN Organizations o ON u.OrgId = o.OrgId
+                WHERE 1=1");
+
+            var parameters = new DynamicParameters();
+            parameters.Add("RoleId", query.RoleId);
+
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql.Append(" AND u.OrgId = @OrgId");
+                parameters.Add("OrgId", query.OrgId);
+            }
+
+            if (!string.IsNullOrEmpty(query.UserType))
+            {
+                sql.Append(" AND u.UserType = @UserType");
+                parameters.Add("UserType", query.UserType);
+            }
+
+            if (!string.IsNullOrEmpty(query.Filter))
+            {
+                sql.Append(" AND (u.UserId LIKE @Filter OR u.UserName LIKE @Filter)");
+                parameters.Add("Filter", $"%{query.Filter}%");
+            }
+
+            sql.Append(" ORDER BY u.UserId");
+
+            // 查詢總數
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS Total";
+            var total = await QueryFirstOrDefaultAsync<int>(countSql, parameters);
+
+            // 分頁處理
+            sql.Append(" OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+            parameters.Add("Offset", (query.Page - 1) * query.PageSize);
+            parameters.Add("PageSize", query.PageSize);
+
+            var items = await QueryAsync<RoleUserListItem>(sql.ToString(), parameters);
+
+            return new PagedResult<RoleUserListItem>
+            {
+                Items = items.ToList(),
+                TotalCount = total,
+                PageIndex = query.Page,
+                PageSize = query.PageSize
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色使用者列表失敗: {query.RoleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<UserRole>> GetByRoleIdAsync(string roleId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM UserRoles 
+                WHERE RoleId = @RoleId
+                ORDER BY CreatedAt DESC";
+
+            return await QueryAsync<UserRole>(sql, new { RoleId = roleId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色使用者失敗: {roleId}", ex);
+            throw;
+        }
+    }
 }
 

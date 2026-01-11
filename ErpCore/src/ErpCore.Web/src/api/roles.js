@@ -38,6 +38,28 @@ export const rolesApi = {
   // 複製角色
   copyRole: (roleId, data) => {
     return axios.post(`/roles/${roleId}/copy`, data)
+  },
+
+  // ========== SYS0230 - 角色之使用者設定維護 ==========
+
+  // 查詢角色使用者列表
+  getRoleUsers: (roleId, params) => {
+    return axios.get(`/roles/${roleId}/users`, { params })
+  },
+
+  // 批量設定角色使用者
+  batchAssignRoleUsers: (roleId, data) => {
+    return axios.post(`/roles/${roleId}/users/assign`, data)
+  },
+
+  // 新增角色使用者
+  assignUserToRole: (roleId, data) => {
+    return axios.post(`/roles/${roleId}/users`, data)
+  },
+
+  // 移除角色使用者
+  removeUserFromRole: (roleId, userId) => {
+    return axios.delete(`/roles/${roleId}/users/${userId}`)
   }
 }
 
