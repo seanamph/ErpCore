@@ -3,26 +3,40 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0140 - 使用者資料查詢**：已完成實現
-  - 後端實現：已完成（擴展 UserQueryDto 和 UserQuery 支持日期範圍查詢、Repository 日期範圍查詢支持、Controller 查詢端點）
-  - 前端實現：已完成（Vue 頁面 SYS0140Query.vue、API 呼叫函數 queryUsersGet、queryUserById、exportUsers）
-  - 功能特性：支持多條件查詢、日期範圍查詢（有效起始日、有效終止日、最後登入日期）、排序、分頁、匯出 Excel
-  - 所有實現均按照開發計劃文件 `開發計劃/01-系統管理/01-使用者管理/SYS0140-使用者資料查詢.md` 要求
+- ✅ **功能檢查完成**：已完成對 SYS0410（主系統項目資料維護）的完整檢查
+  - 檢查結果：SYS0410 已完整實現，包含以下組件：
+    - ✅ Entity: `ErpCore.Domain.Entities.System.Systems`
+    - ✅ Repository: `SystemRepository`, `ISystemRepository`
+    - ✅ Service: `SystemService`, `ISystemService`
+    - ✅ DTO: `SystemDto`, `SystemQueryDto`, `CreateSystemDto`, `UpdateSystemDto`, `BatchDeleteSystemsDto`, `SystemTypeOptionDto`
+    - ✅ Controller: `SystemsController` (路由: `/api/v1/systems`)
+    - ✅ Vue 頁面: `SYS0410Query.vue`
+    - ✅ API 文件: `systems.js`
+    - ✅ SQL 腳本: `CreateSystemsTable.sql`
+    - ✅ DI 註冊: 已在 `Program.cs` 中註冊
+  - 功能狀態：SYS0410 功能完整，符合開發計劃要求
+  - 其他檢查：SYS0420（子系統項目資料維護）、SYS0230（角色之使用者設定維護）、SYS0240（角色複製）均已完整實現
 
 ### ⚠️ 已知問題
-- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
-  - 問題原因：Infrastructure 層引用了 Application 層，而 Application 層也引用了 Infrastructure 層
+- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
+  - 問題原因：Infrastructure 層引用了 Application 層（第22行），而 Application 層也引用了 Infrastructure 層（第12行）
+  - 具體原因：Infrastructure 層的 Repository 使用了 Application 層的 DTO（如 `ErpCore.Application.DTOs.System`、`ErpCore.Application.DTOs.DropdownList` 等）
   - 影響範圍：影響整個專案的編譯，但不影響已完成的代碼邏輯
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤），需要後續修復
+  - 建議：需要重構專案依賴關係，將 DTO 移到 Shared 層或 Domain 層，或讓 Repository 使用 Entity 而非 DTO
+- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
   - 問題原因：文件編碼格式不正確，導致中文字符顯示異常
-  - 影響範圍：僅影響 Certificate 相關頁面，不影響 SYSWB40 功能
+  - 影響範圍：僅影響 Certificate 相關頁面
+  - 建議：將相關文件轉換為 UTF-8 編碼
 
 ### 🎯 下一步建議
-1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
-2. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發，建議優先選擇：
-   - 基本資料管理模組的其他功能（如 SYSWB60-庫別資料維護、SYSWB70-組別資料維護等，已實現）
-   - 系統管理模組的其他功能（如 SYS0310-角色系統權限設定、SYS0320-使用者系統權限設定、SYS0330-角色欄位權限設定、SYS0340-使用者欄位權限設定等，已實現）
-   - 其他模組的功能
+1. **優先修復編譯錯誤**：
+   - 解決循環相依性問題：將 Infrastructure 層中 Repository 使用的 DTO 移到 Shared 層，或讓 Repository 直接使用 Entity
+   - 修復前端編碼問題：將 CertificateData/index.vue、CertificateProcess/index.vue 等文件轉換為 UTF-8 編碼
+   - 確保專案可以正常構建（dotnet build 和 npm build 都成功）
+2. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
+   - 建議優先選擇相對簡單且重要的功能
+   - 按照開發計劃文件實現：Entity → Repository → Service → DTO → Controller → Vue 頁面 → SQL
+   - 注意：所有開發都必須按照現有的文件，所有程式都要有 md 依據
 3. **功能測試**：對已完成的功能進行完整測試，確保功能正常運作
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
@@ -31,19 +45,24 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 已完成功能清單
-- **下拉列表功能**：DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST、MENU_LIST、USER_LIST
-- **系統管理功能**：SYS0110（使用者基本資料維護）、SYS0120（使用者資料瀏覽）、**SYS0140（使用者資料查詢）** ✨新增、SYS0210（角色基本資料維護）、SYS0330（角色欄位權限設定）、SYS0340（使用者欄位權限設定）
+- **系統管理功能**：
+  - ✅ SYS0110（使用者基本資料維護）、SYS0120（使用者資料瀏覽）、SYS0130（使用者帳戶原則管理）、SYS0140（使用者資料查詢）
+  - ✅ SYS0210（角色基本資料維護）、SYS0220（使用者之角色設定維護）、SYS0230（角色之使用者設定維護）、SYS0240（角色複製）
+  - ✅ SYS0310（角色系統權限設定）、SYS0320（使用者系統權限設定）、SYS0330（角色欄位權限設定）、SYS0340（使用者欄位權限設定）、SYS0360（系統對應權限設定）
+  - ✅ **SYS0410（主系統項目資料維護）** ✨已完整實現
+  - ✅ SYS0420（子系統項目資料維護）、SYS0430（系統作業資料維護）、SYS0440（系統功能按鈕資料維護）
 - **基本資料管理功能**：SYSBC20（銀行基本資料維護）、SYSWB40（部別資料維護）、SYSWB60（庫別資料維護）、SYSWB70（組別資料維護）、SYSBC30（地區設定）、SYSB450（區域基本資料維護）、SYSBC40（參數資料設定維護）、SYSB110（商品分類資料維護）、SYSB206（廠/客基本資料維護）
+- **進銷存管理功能**：SYSW110（供應商商品資料維護）、SYSW137（商品進銷碼維護）、SYSW150（商品永久變價）、SYSW170（POP卡商品卡列印）
+- **下拉列表功能**：DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST、MENU_LIST、USER_LIST
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
+  - 需要重構：將 Infrastructure 層 Repository 使用的 DTO 移到 Shared 層，或讓 Repository 使用 Entity
 - **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
+  - 需要修復：將相關文件轉換為 UTF-8 編碼
 
 ### 🎯 下一步建議
-1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題（CertificateData/index.vue、CertificateProcess/index.vue 等文件的編碼問題），確保專案可以正常構建
-2. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發，建議優先選擇：
-   - 系統管理模組的其他查詢功能（如 SYS0910-使用者查詢功能、SYS0140-使用者資料查詢已實現）
-   - 系統管理模組的其他功能（如 SYS0310-角色系統權限設定、SYS0320-使用者系統權限設定、SYS0330-角色欄位權限設定、SYS0340-使用者欄位權限設定、SYS0360-系統對應權限設定等，部分已實現）
-   - 基本資料管理模組的其他功能
-3. **功能測試**：對已完成的功能（特別是 SYS0140）進行完整測試，確保功能正常運作
-4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
+1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題，確保專案可以正常構建
+2. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
+3. **功能測試**：對已完成的功能進行完整測試
+4. **代碼審查**：檢查已完成功能的代碼品質
