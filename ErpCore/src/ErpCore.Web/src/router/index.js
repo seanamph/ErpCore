@@ -326,6 +326,24 @@ const routes = [
         name: 'SYS0740Query',
         component: () => import('../views/System/ProgramRolePermissionListReport.vue'),
         meta: { title: '作業權限之角色列表 (SYS0740)' }
+      },
+      {
+        path: 'role-user-list',
+        name: 'SYS0750Query',
+        component: () => import('../views/System/RoleUserListReport.vue'),
+        meta: { title: '角色之使用者列表 (SYS0750)' }
+      },
+      {
+        path: 'role-users',
+        name: 'SYS0750Query',
+        component: () => import('../views/System/RoleUserListReport.vue'),
+        meta: { title: '角色之使用者列表 (SYS0750)' }
+      },
+      {
+        path: 'user-abnormal-login',
+        name: 'SYS0760Query',
+        component: () => import('../views/System/UserAbnormalLoginReport.vue'),
+        meta: { title: '使用者異常登入報表 (SYS0760)' }
       }
     ]
   },

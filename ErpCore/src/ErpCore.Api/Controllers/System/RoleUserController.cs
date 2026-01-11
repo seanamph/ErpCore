@@ -40,7 +40,9 @@ public class RoleUserController : BaseController
     /// 刪除使用者角色對應
     /// </summary>
     [HttpDelete("{roleId}/{userId}")]
-    public async Task<ActionResult<ApiResponse>> DeleteRoleUser(string roleId, string userId)
+    public async Task<ActionResult<ApiResponse>> DeleteRoleUser(
+        string roleId,
+        string userId)
     {
         return await ExecuteAsync(async () =>
         {
@@ -58,7 +60,9 @@ public class RoleUserController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.BatchDeleteRoleUsersAsync(request.RoleId, request.UserIds);
+            await _service.BatchDeleteRoleUsersAsync(
+                request.RoleId,
+                request.UserIds);
             return (object?)null;
         }, "批次刪除使用者角色對應失敗");
     }
@@ -91,4 +95,3 @@ public class RoleUserController : BaseController
         }
     }
 }
-

@@ -162,6 +162,35 @@ export const buttonLogApi = {
 }
 
 /**
+ * 使用者異常登入報表 API (SYS0760)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const loginLogApi = {
+  // 查詢異常登入記錄列表
+  getLoginLogs: (params) => {
+    return axios.get('/system/login-log', { params })
+  },
+
+  // 取得異常事件代碼選項
+  getEventTypes: () => {
+    return axios.get('/system/login-log/event-types')
+  },
+
+  // 刪除異常登入記錄
+  deleteLoginLogs: (data) => {
+    return axios.delete('/system/login-log', { data })
+  },
+
+  // 產生異常登入報表
+  generateReport: (data, format = 'PDF') => {
+    return axios.post('/system/login-log/report', data, {
+      params: { format },
+      responseType: 'blob'
+    })
+  }
+}
+
+/**
  * 使用者查詢結果匯出 API (SYS0910)
  * 遵循 C# API 欄位命名 (PascalCase)
  */

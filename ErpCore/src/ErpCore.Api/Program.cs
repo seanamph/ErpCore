@@ -327,9 +327,11 @@ try
     builder.Services.AddScoped<IRoleSystemPermissionService, RoleSystemPermissionService>();
     builder.Services.AddScoped<IProgramRolePermissionService, ProgramRolePermissionService>();
     builder.Services.AddScoped<IRoleUserService, RoleUserService>();
+    builder.Services.AddScoped<IRoleUserService, RoleUserService>();
     builder.Services.AddScoped<IPermissionCategoryReportService, PermissionCategoryReportService>();
     builder.Services.AddScoped<ISystemProgramButtonService, SystemProgramButtonService>();
     builder.Services.AddScoped<IButtonLogService, ButtonLogService>();
+    builder.Services.AddScoped<ILoginLogService, LoginLogService>();
     builder.Services.AddScoped<ErpCore.Application.Services.System.IButtonService, ErpCore.Application.Services.System.ButtonService>();
     builder.Services.AddScoped<IEInvoiceService, EInvoiceService>();
     builder.Services.AddScoped<IProspectMasterService, ProspectMasterService>();
