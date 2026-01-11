@@ -3,18 +3,11 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYSWB40 - 部別資料維護作業**：已完成完整實現
-  - Entity：Department.cs（部別實體類別）
-  - Repository：IDepartmentRepository.cs、DepartmentRepository.cs（資料存取層）
-  - Service：IDepartmentService.cs、DepartmentService.cs（業務邏輯層）
-  - DTO：DepartmentDto.cs（包含查詢、新增、修改、批次刪除、狀態更新 DTO）
-  - Controller：DepartmentsController.cs（API 控制器，包含 CRUD 及狀態更新）
-  - Vue 頁面：Departments.vue（完整的前端頁面，包含查詢、新增、修改、刪除功能）
-  - API 文件：departments.js（前端 API 呼叫函數）
-  - SQL 腳本：CreateDepartmentsTables.sql（資料表建立腳本）
-  - 路由配置：已配置在 router/index.js
-  - 依賴注入：已在 Program.cs 中註冊
-  - 所有實現均按照開發計劃文件 `開發計劃/02-基本資料管理/04-組織架構/SYSWB40-部別資料維護作業.md` 要求
+- ✅ **SYS0340 - 使用者欄位權限設定**：補充完成 SQL 腳本
+  - SQL 腳本：CreateUserFieldPermissionsTables.sql（使用者欄位權限資料表建立腳本）
+  - 後端實現：已完成（Entity、Repository、Service、DTO、Controller）
+  - 前端實現：已完成（Vue 頁面 SYS0340Query.vue、API 呼叫函數）
+  - 所有實現均按照開發計劃文件 `開發計劃/01-系統管理/03-權限管理/SYS0340-使用者欄位權限設定.md` 要求
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
@@ -27,9 +20,10 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
 2. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發，建議優先選擇：
-   - 基本資料管理模組的其他功能（如 SYSWB60-庫別資料維護、SYSWB70-組別資料維護等）
-   - 系統管理模組的其他功能（如 SYS0310-角色系統權限設定、SYS0320-使用者系統權限設定等）
-3. **功能測試**：對已完成的 SYSWB40 功能進行完整測試，確保功能正常運作
+   - 基本資料管理模組的其他功能（如 SYSWB60-庫別資料維護、SYSWB70-組別資料維護等，已實現）
+   - 系統管理模組的其他功能（如 SYS0310-角色系統權限設定、SYS0320-使用者系統權限設定、SYS0330-角色欄位權限設定、SYS0340-使用者欄位權限設定等，已實現）
+   - 其他模組的功能
+3. **功能測試**：對已完成的功能進行完整測試，確保功能正常運作
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
@@ -38,8 +32,8 @@
 
 ### ✅ 已完成功能清單
 - **下拉列表功能**：DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST、MENU_LIST、USER_LIST
-- **系統管理功能**：SYS0110（使用者基本資料維護）、SYS0210（角色基本資料維護）
-- **基本資料管理功能**：SYSBC20（銀行基本資料維護）、**SYSWB40（部別資料維護）** ✨新增
+- **系統管理功能**：SYS0110（使用者基本資料維護）、SYS0210（角色基本資料維護）、SYS0330（角色欄位權限設定）、**SYS0340（使用者欄位權限設定）** ✨補充 SQL
+- **基本資料管理功能**：SYSBC20（銀行基本資料維護）、SYSWB40（部別資料維護）、SYSWB60（庫別資料維護）、SYSWB70（組別資料維護）、SYSBC30（地區設定）、SYSB450（區域基本資料維護）、SYSBC40（參數資料設定維護）、SYSB110（商品分類資料維護）、SYSB206（廠/客基本資料維護）
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
