@@ -1340,6 +1340,12 @@ const routes = [
         name: 'Banks',
         component: () => import('../views/BasicData/Banks.vue'),
         meta: { title: '銀行基本資料維護作業 (SYSBC20)' }
+      },
+      {
+        path: 'regions',
+        name: 'Regions',
+        component: () => import('../views/BasicData/Regions.vue'),
+        meta: { title: '地區設定 (SYSBC30)' }
       }
     ]
   }
