@@ -1,0 +1,165 @@
+-- =============================================
+-- USER_LIST - 使用者列表系列功能 SQL 腳本說明
+-- 開發計劃文件：開發計劃/15-下拉列表/USER_LIST-使用者列表系列.md
+-- =============================================
+
+-- 說明：
+-- USER_LIST 功能需要 Users 和 Departments 資料表來儲存使用者資料
+-- 此腳本說明相關資料表的建立方式和相關設定
+
+-- =============================================
+-- Users 資料表建立
+-- =============================================
+-- Users 資料表用於儲存使用者基本資料
+-- 如果資料表已存在，請跳過建立步驟
+-- 詳細的建立腳本請參考：CreateUsersTables.sql
+
+-- 主要欄位說明：
+--   UserId          - 使用者編號（主鍵）
+--   UserName        - 使用者名稱
+--   UserPassword    - 使用者密碼（加密儲存）
+--   Title           - 職稱
+--   OrgId           - 組織代碼（外鍵至 Departments.DeptId）
+--   StartDate       - 帳號有效起始日
+--   EndDate         - 帳號終止日
+--   LastLoginDate   - 上次登入時間
+--   LastLoginIp     - 上次登入IP
+--   Status          - 帳號狀態（A:啟用, I:停用, L:鎖定）
+--   UserType        - 使用者型態
+--   Notes           - 備註
+--   UserPriority    - 使用者等級
+--   ShopId          - 所屬分店
+--   LoginCount      - 登入次數
+--   ChangePwdDate   - 密碼變更日期
+--   FloorId         - 樓層代碼
+--   AreaId          - 區域別代碼
+--   BtypeId         - 業種代碼
+--   StoreId         - 專櫃代碼
+--   CreatedBy       - 建立者
+--   CreatedAt       - 建立時間
+--   UpdatedBy       - 更新者
+--   UpdatedAt       - 更新時間
+
+-- =============================================
+-- Departments 資料表建立
+-- =============================================
+-- Departments 資料表用於儲存部門基本資料
+-- 如果資料表已存在，請跳過建立步驟
+-- 詳細的建立腳本請參考：CreateDepartmentsTables.sql
+
+-- 主要欄位說明：
+--   DeptId          - 部別代碼（主鍵）
+--   DeptName        - 部別名稱
+--   OrgId           - 組織代碼
+--   SeqNo           - 排序序號
+--   Status          - 狀態（A:啟用, I:停用）
+--   Notes           - 備註
+--   CreatedBy       - 建立者
+--   CreatedAt       - 建立時間
+--   UpdatedBy       - 更新者
+--   UpdatedAt       - 更新時間
+
+-- =============================================
+-- 資料表關聯
+-- =============================================
+-- 1. Users 與 Departments 的關聯
+--    Users.OrgId -> Departments.DeptId
+--    一個部門可以有多個使用者
+
+-- =============================================
+-- 索引說明
+-- =============================================
+-- Users 表已建立以下索引以提升查詢效能：
+--   1. PK_Users              - 使用者編號索引（主鍵）
+--   2. IX_Users_OrgId        - 組織代碼索引
+--   3. IX_Users_Status       - 狀態索引
+--   4. IX_Users_UserType      - 使用者型態索引
+--   5. IX_Users_ShopId       - 分店代碼索引
+
+-- Departments 表已建立以下索引以提升查詢效能：
+--   1. PK_Departments        - 部別代碼索引（主鍵）
+--   2. IX_Departments_DeptName - 部別名稱索引
+--   3. IX_Departments_OrgId  - 組織代碼索引
+--   4. IX_Departments_Status - 狀態索引
+--   5. IX_Departments_SeqNo  - 排序序號索引
+
+-- =============================================
+-- 查詢 SQL 範例
+-- =============================================
+-- 1. USER_LIST_USER_LIST - 查詢使用者列表
+--    SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status,
+--           d.DeptName AS OrgName
+--    FROM Users u
+--    LEFT JOIN Departments d ON u.OrgId = d.DeptId
+--    WHERE 1=1
+--      AND (u.UserId LIKE @UserId OR @UserId IS NULL)
+--      AND (u.UserName LIKE @UserName OR @UserName IS NULL)
+--      AND (u.OrgId = @OrgId OR @OrgId IS NULL)
+--      AND (u.Status = @Status OR @Status IS NULL)
+--    ORDER BY u.UserId
+--    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+
+-- 2. USER_LIST_DEPT_LIST - 查詢部門使用者列表（包含子部門）
+--    SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status,
+--           d.DeptName AS OrgName
+--    FROM Users u
+--    LEFT JOIN Departments d ON u.OrgId = d.DeptId
+--    WHERE 1=1
+--      AND u.OrgId IN (
+--          SELECT DeptId FROM Departments 
+--          WHERE DeptId = @OrgId 
+--          OR OrgId = @OrgId
+--          OR DeptId IN (
+--              SELECT DeptId FROM Departments 
+--              WHERE OrgId IN (
+--                  SELECT DeptId FROM Departments WHERE OrgId = @OrgId
+--              )
+--          )
+--      )
+--      AND (u.UserId LIKE @UserId OR @UserId IS NULL)
+--      AND (u.UserName LIKE @UserName OR @UserName IS NULL)
+--      AND (u.Status = @Status OR @Status IS NULL)
+--    ORDER BY u.UserId
+--    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+
+-- 3. USER_LIST_OTHER_LIST - 查詢其他使用者列表（外部使用者、廠商使用者等）
+--    SELECT u.UserId, u.UserName, u.OrgId, u.Title, u.Status,
+--           d.DeptName AS OrgName
+--    FROM Users u
+--    LEFT JOIN Departments d ON u.OrgId = d.DeptId
+--    WHERE 1=1
+--      AND (u.UserType IS NOT NULL AND u.UserType != '')
+--      AND (u.UserId LIKE @UserId OR @UserId IS NULL)
+--      AND (u.UserName LIKE @UserName OR @UserName IS NULL)
+--      AND (u.OrgId = @OrgId OR @OrgId IS NULL)
+--      AND (u.Status = @Status OR @Status IS NULL)
+--    ORDER BY u.UserId
+--    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+
+-- =============================================
+-- 注意事項
+-- =============================================
+-- 1. Users 資料表必須先建立，請執行 CreateUsersTables.sql
+-- 2. Departments 資料表必須先建立，請執行 CreateDepartmentsTables.sql
+-- 3. UserId 必須唯一，系統已建立唯一索引
+-- 4. DeptId 必須唯一，系統已建立唯一索引
+-- 5. 刪除使用者時需注意相關資料的處理，建議使用軟刪除（將 Status 設為 'I'）
+-- 6. 部門查詢支援階層結構，可查詢該部門及其所有子部門的使用者
+-- 7. 其他使用者列表根據 UserType 欄位篩選，UserType 不為空的使用者會被包含
+-- 8. Status 欄位用於控制使用者的啟用/停用/鎖定狀態
+
+-- =============================================
+-- 測試建議
+-- =============================================
+-- 1. 測試使用者列表查詢（分頁、篩選、排序）
+-- 2. 測試部門使用者列表查詢（包含子部門）
+-- 3. 測試其他使用者列表查詢
+-- 4. 測試使用者選擇對話框（單選模式）
+-- 5. 測試使用者列表頁面
+-- 6. 測試大量使用者資料的查詢效能
+-- 7. 測試部門階層結構的查詢
+-- 8. 測試使用者狀態篩選（啟用/停用/鎖定）
+-- 9. 測試使用者編號、名稱的模糊查詢
+-- 10. 測試部門篩選功能
+
+-- =============================================

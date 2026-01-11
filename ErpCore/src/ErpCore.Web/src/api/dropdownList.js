@@ -123,6 +123,22 @@ export const dropdownListApi = {
   // 查詢使用者選項（用於下拉選單）
   getUserListOptions: (params) => {
     return axios.get('/lists/system/users/options', { params })
+  },
+
+  // ========== 使用者列表 (USER_LIST) ==========
+  // 查詢使用者列表 (USER_LIST_USER_LIST)
+  getUserList: (params) => {
+    return axios.get('/lists/users/user-list', { params })
+  },
+
+  // 查詢部門使用者列表 (USER_LIST_DEPT_LIST)
+  getDeptUserList: (params) => {
+    return axios.get('/lists/users/dept-list', { params })
+  },
+
+  // 查詢其他使用者列表 (USER_LIST_OTHER_LIST)
+  getOtherUserList: (params) => {
+    return axios.get('/lists/users/other-list', { params })
   }
 }
 

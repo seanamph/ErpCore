@@ -52,3 +52,18 @@ public class UserListQueryDto
     public string? ListType { get; set; } // user, dept, other
 }
 
+/// <summary>
+/// 部門使用者列表查詢 DTO (USER_LIST_DEPT_LIST)
+/// </summary>
+public class DeptUserListQueryDto
+{
+    public int PageIndex { get; set; } = 1;
+    public int PageSize { get; set; } = 50;
+    public string? OrgId { get; set; }
+    public string? UserId { get; set; }
+    public string? UserName { get; set; }
+    public string? Status { get; set; } = "A";
+    public string? SortField { get; set; } = "UserId";
+    public string? SortOrder { get; set; } = "ASC";
+}
+

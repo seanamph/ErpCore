@@ -360,6 +360,7 @@ try
     builder.Services.AddScoped<IProgramService, ProgramService>();
     builder.Services.AddScoped<IMultiSelectListService, MultiSelectListService>();
     builder.Services.AddScoped<ISystemListService, SystemListService>();
+    builder.Services.AddScoped<IUserListService, UserListService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Tools.IFileUploadService, ErpCore.Application.Services.Tools.FileUploadService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Tools.IBarcodeService, ErpCore.Application.Services.Tools.BarcodeService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Tools.IHtml2PdfService, ErpCore.Application.Services.Tools.Html2PdfService>();
