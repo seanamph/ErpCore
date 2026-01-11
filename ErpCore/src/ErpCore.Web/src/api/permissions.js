@@ -61,6 +61,11 @@ export const userPermissionsApi = {
     return axios.get(`/api/v1/users/${userId}/permissions`, { params })
   },
 
+  // 查詢使用者系統權限統計
+  getSystemStats: (userId) => {
+    return axios.get(`/api/v1/users/${userId}/permissions/systems/stats`)
+  },
+
   // 新增使用者權限
   createUserPermissions: (userId, data) => {
     return axios.post(`/api/v1/users/${userId}/permissions`, data)
