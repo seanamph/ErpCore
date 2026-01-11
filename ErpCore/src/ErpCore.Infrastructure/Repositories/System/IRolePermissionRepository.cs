@@ -67,6 +67,21 @@ public interface IRolePermissionRepository
     /// 根據作業ID批量設定權限
     /// </summary>
     Task<int> SetPermissionsByProgramAsync(string roleId, string programId, bool isAuthorized, string? createdBy);
+
+    /// <summary>
+    /// 根據角色ID刪除所有權限 (SYS0240)
+    /// </summary>
+    Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null);
+
+    /// <summary>
+    /// 從來源角色複製權限到目的角色 (SYS0240)
+    /// </summary>
+    Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null);
+
+    /// <summary>
+    /// 根據角色ID查詢權限列表
+    /// </summary>
+    Task<IEnumerable<RoleButton>> GetByRoleIdAsync(string roleId);
 }
 
 /// <summary>

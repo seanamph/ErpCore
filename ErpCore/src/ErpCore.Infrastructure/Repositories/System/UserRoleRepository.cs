@@ -323,5 +323,62 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
             throw;
         }
     }
+
+    public async Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null)
+    {
+        try
+        {
+            const string sql = "DELETE FROM UserRoles WHERE RoleId = @RoleId";
+            
+            if (transaction != null)
+            {
+                await transaction.Connection!.ExecuteAsync(sql, new { RoleId = roleId }, transaction);
+            }
+            else
+            {
+                await ExecuteAsync(sql, new { RoleId = roleId });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除角色使用者分配失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup)
+                SELECT UserId, @TargetRoleId, @CreatedBy, GETDATE(),
+                       (SELECT CreatedPriority FROM Users WHERE UserId = @CreatedBy),
+                       (SELECT CreatedGroup FROM Users WHERE UserId = @CreatedBy)
+                FROM UserRoles
+                WHERE RoleId = @SourceRoleId";
+
+            var parameters = new
+            {
+                SourceRoleId = sourceRoleId,
+                TargetRoleId = targetRoleId,
+                CreatedBy = createdBy
+            };
+
+            if (transaction != null)
+            {
+                return await transaction.Connection!.ExecuteAsync(sql, parameters, transaction);
+            }
+            else
+            {
+                return await ExecuteAsync(sql, parameters);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"複製角色使用者分配失敗: {sourceRoleId} -> {targetRoleId}", ex);
+            throw;
+        }
+    }
 }
 

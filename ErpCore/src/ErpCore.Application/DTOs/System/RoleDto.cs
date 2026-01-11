@@ -124,3 +124,46 @@ public class BatchUpdateRoleResultDto
     public int RemovedCount { get; set; }
 }
 
+// ========== SYS0240 - 角色複製 ==========
+
+/// <summary>
+/// 複製角色請求 DTO (SYS0240)
+/// </summary>
+public class CopyRoleRequestDto
+{
+    public string SourceRoleId { get; set; } = string.Empty;
+    public string TargetRoleId { get; set; } = string.Empty;
+    public bool CopyUsers { get; set; } = false;
+}
+
+/// <summary>
+/// 驗證角色複製請求 DTO (SYS0240)
+/// </summary>
+public class ValidateCopyRequestDto
+{
+    public string SourceRoleId { get; set; } = string.Empty;
+    public string TargetRoleId { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 複製角色結果 DTO (SYS0240)
+/// </summary>
+public class CopyRoleResultDto
+{
+    public string SourceRoleId { get; set; } = string.Empty;
+    public string TargetRoleId { get; set; } = string.Empty;
+    public int PermissionsCopied { get; set; }
+    public int UsersCopied { get; set; }
+}
+
+/// <summary>
+/// 驗證角色複製結果 DTO (SYS0240)
+/// </summary>
+public class ValidateCopyResultDto
+{
+    public bool SourceRoleExists { get; set; }
+    public bool TargetRoleExists { get; set; }
+    public bool SourceHasPermissions { get; set; }
+    public bool IsSameRole { get; set; }
+}
+

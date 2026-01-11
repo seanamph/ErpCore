@@ -248,6 +248,12 @@ const routes = [
         name: 'SYS0230Query',
         component: () => import('../views/System/SYS0230Query.vue'),
         meta: { title: '角色之使用者設定維護 (SYS0230)' }
+      },
+      {
+        path: 'role-copy',
+        name: 'SYS0240Query',
+        component: () => import('../views/System/SYS0240Query.vue'),
+        meta: { title: '角色複製 (SYS0240)' }
       }
     ]
   },

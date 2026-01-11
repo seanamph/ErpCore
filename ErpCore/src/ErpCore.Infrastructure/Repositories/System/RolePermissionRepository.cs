@@ -599,5 +599,80 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
             throw;
         }
     }
+
+    public async Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null)
+    {
+        try
+        {
+            const string sql = "DELETE FROM RoleButtons WHERE RoleId = @RoleId";
+            
+            if (transaction != null)
+            {
+                await transaction.Connection!.ExecuteAsync(sql, new { RoleId = roleId }, transaction);
+            }
+            else
+            {
+                await ExecuteAsync(sql, new { RoleId = roleId });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"刪除角色權限失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null)
+    {
+        try
+        {
+            const string sql = @"
+                INSERT INTO RoleButtons (RoleId, ButtonId, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup)
+                SELECT @TargetRoleId, ButtonId, @CreatedBy, GETDATE(),
+                       (SELECT CreatedPriority FROM Users WHERE UserId = @CreatedBy),
+                       (SELECT CreatedGroup FROM Users WHERE UserId = @CreatedBy)
+                FROM RoleButtons
+                WHERE RoleId = @SourceRoleId";
+
+            var parameters = new
+            {
+                SourceRoleId = sourceRoleId,
+                TargetRoleId = targetRoleId,
+                CreatedBy = createdBy
+            };
+
+            if (transaction != null)
+            {
+                return await transaction.Connection!.ExecuteAsync(sql, parameters, transaction);
+            }
+            else
+            {
+                return await ExecuteAsync(sql, parameters);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"複製角色權限失敗: {sourceRoleId} -> {targetRoleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<IEnumerable<RoleButton>> GetByRoleIdAsync(string roleId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM RoleButtons 
+                WHERE RoleId = @RoleId
+                ORDER BY CreatedAt DESC";
+
+            return await QueryAsync<RoleButton>(sql, new { RoleId = roleId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色權限列表失敗: {roleId}", ex);
+            throw;
+        }
+    }
 }
 

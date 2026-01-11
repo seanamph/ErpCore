@@ -42,5 +42,15 @@ public interface IRoleService
     /// 複製角色
     /// </summary>
     Task<string> CopyRoleAsync(string roleId, CopyRoleDto dto);
+
+    /// <summary>
+    /// 複製角色到目標角色 (SYS0240)
+    /// </summary>
+    Task<CopyRoleResultDto> CopyRoleToTargetAsync(CopyRoleRequestDto dto);
+
+    /// <summary>
+    /// 驗證角色複製 (SYS0240)
+    /// </summary>
+    Task<ValidateCopyResultDto> ValidateCopyRoleAsync(ValidateCopyRequestDto dto);
 }
 

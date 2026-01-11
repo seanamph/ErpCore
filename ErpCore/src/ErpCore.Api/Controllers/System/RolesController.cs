@@ -180,6 +180,36 @@ public class RolesController : BaseController
             await _roleUserAssignmentService.RemoveUserFromRoleAsync(roleId, userId);
         }, $"移除角色使用者失敗: {roleId}, {userId}");
     }
+
+    // ========== SYS0240 - 角色複製 ==========
+
+    /// <summary>
+    /// 複製角色 (SYS0240)
+    /// </summary>
+    [HttpPost("copy")]
+    public async Task<ActionResult<ApiResponse<CopyRoleResultDto>>> CopyRoleToTarget(
+        [FromBody] CopyRoleRequestDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.CopyRoleToTargetAsync(dto);
+            return result;
+        }, "複製角色失敗");
+    }
+
+    /// <summary>
+    /// 驗證角色複製 (SYS0240)
+    /// </summary>
+    [HttpPost("copy/validate")]
+    public async Task<ActionResult<ApiResponse<ValidateCopyResultDto>>> ValidateCopyRole(
+        [FromBody] ValidateCopyRequestDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.ValidateCopyRoleAsync(dto);
+            return result;
+        }, "驗證角色複製失敗");
+    }
 }
 
 /// <summary>

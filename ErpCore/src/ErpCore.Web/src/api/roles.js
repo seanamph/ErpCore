@@ -60,6 +60,18 @@ export const rolesApi = {
   // 移除角色使用者
   removeUserFromRole: (roleId, userId) => {
     return axios.delete(`/roles/${roleId}/users/${userId}`)
+  },
+
+  // ========== SYS0240 - 角色複製 ==========
+
+  // 複製角色到目標角色
+  copyRoleToTarget: (data) => {
+    return axios.post('/roles/copy', data)
+  },
+
+  // 驗證角色複製
+  validateCopyRole: (data) => {
+    return axios.post('/roles/copy/validate', data)
   }
 }
 
