@@ -230,6 +230,12 @@ const routes = [
         name: 'ChangeLogs',
         component: () => import('../views/System/ChangeLogs.vue'),
         meta: { title: '異動記錄查詢 (SYS0610-SYS0660)' }
+      },
+      {
+        path: 'users-browse',
+        name: 'SYS0120Query',
+        component: () => import('../views/System/SYS0120Query.vue'),
+        meta: { title: '使用者資料瀏覽 (SYS0120)' }
       }
     ]
   },
