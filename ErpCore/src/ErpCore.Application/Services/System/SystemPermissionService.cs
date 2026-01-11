@@ -40,11 +40,13 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
 
             using var connection = _connectionFactory.CreateConnection();
 
-            // 查詢使用者或角色的按鈕權限
+            // 查詢使用者或角色的按鈕權限（包含 SubSystem 作為 Menu）
             var sql = @"
                 SELECT DISTINCT
                     CS.SystemId,
                     CS.SystemName,
+                    CSS.SubSystemId AS MenuId,
+                    CSS.SubSystemName AS MenuName,
                     CP.ProgramId,
                     CP.ProgramName,
                     CB.ButtonId,
@@ -53,7 +55,8 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
                 FROM ConfigButtons CB
                 INNER JOIN ConfigPrograms CP ON CB.ProgramId = CP.ProgramId
                 INNER JOIN ConfigSystems CS ON CP.SystemId = CS.SystemId
-                WHERE CB.Status = '1' AND CP.Status = '1' AND CS.Status = 'A'";
+                LEFT JOIN ConfigSubSystems CSS ON CP.SubSystemId = CSS.SubSystemId
+                WHERE CB.Status = '1' AND CP.Status = 'A' AND CS.Status = 'A'";
 
             var parameters = new DynamicParameters();
 
@@ -81,6 +84,8 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
                     SELECT DISTINCT
                         CS.SystemId,
                         CS.SystemName,
+                        CSS.SubSystemId AS MenuId,
+                        CSS.SubSystemName AS MenuName,
                         CP.ProgramId,
                         CP.ProgramName,
                         CB.ButtonId,
@@ -89,9 +94,10 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
                     FROM ConfigButtons CB
                     INNER JOIN ConfigPrograms CP ON CB.ProgramId = CP.ProgramId
                     INNER JOIN ConfigSystems CS ON CP.SystemId = CS.SystemId
+                    LEFT JOIN ConfigSubSystems CSS ON CP.SubSystemId = CSS.SubSystemId
                     INNER JOIN RoleButtons RB ON CB.ButtonId = RB.ButtonId
                     INNER JOIN UserRoles UR ON RB.RoleId = UR.RoleId
-                    WHERE CB.Status = '1' AND CP.Status = '1' AND CS.Status = 'A'
+                    WHERE CB.Status = '1' AND CP.Status = 'A' AND CS.Status = 'A'
                         AND UR.UserId = @UserId";
                 
                 var rolePermissions = await connection.QueryAsync<dynamic>(roleSql, parameters);
@@ -128,13 +134,19 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
                 parameters.Add("SystemId", request.SystemId);
             }
 
+            if (!string.IsNullOrEmpty(request.MenuId))
+            {
+                sql += " AND CSS.SubSystemId = @MenuId";
+                parameters.Add("MenuId", request.MenuId);
+            }
+
             if (!string.IsNullOrEmpty(request.ProgramId))
             {
                 sql += " AND CP.ProgramId = @ProgramId";
                 parameters.Add("ProgramId", request.ProgramId);
             }
 
-            sql += " ORDER BY CS.SystemId, CP.ProgramId, CB.ButtonId";
+            sql += " ORDER BY CS.SystemId, CSS.SubSystemId, CP.ProgramId, CB.ButtonId";
 
             var results = await connection.QueryAsync<dynamic>(sql, parameters);
 
@@ -269,6 +281,8 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
     {
         var systemId = (string)item.SystemId;
         var systemName = (string)item.SystemName;
+        var menuId = (string?)item.MenuId ?? string.Empty;
+        var menuName = (string?)item.MenuName ?? string.Empty;
         var programId = (string)item.ProgramId;
         var programName = (string)item.ProgramName;
         var buttonId = (string)item.ButtonId;
@@ -286,8 +300,33 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
             };
         }
 
-        // 作業層級（這裡簡化處理，將 Program 視為 Menu）
-        var programKey = $"{systemId}_{programId}";
+        // 選單層級（使用 SubSystem 作為 Menu）
+        var menuKey = string.IsNullOrEmpty(menuId) ? $"{systemId}_NO_MENU" : $"{systemId}_{menuId}";
+        var menuDict = new Dictionary<string, MenuPermissionDto>();
+        foreach (var menu in permissionDict[systemId].Menus)
+        {
+            menuDict[menu.MenuId] = menu;
+        }
+
+        MenuPermissionDto menuDto;
+        if (!menuDict.ContainsKey(menuId))
+        {
+            menuDto = new MenuPermissionDto
+            {
+                MenuId = menuId,
+                MenuName = string.IsNullOrEmpty(menuName) ? "(無選單)" : menuName,
+                Programs = new List<ProgramPermissionDto>()
+            };
+            permissionDict[systemId].Menus.Add(menuDto);
+            menuDict[menuId] = menuDto;
+        }
+        else
+        {
+            menuDto = menuDict[menuId];
+        }
+
+        // 作業層級
+        var programKey = $"{systemId}_{menuId}_{programId}";
         if (!programDict.ContainsKey(programKey))
         {
             var program = new ProgramPermissionDto
@@ -297,15 +336,7 @@ public class SystemPermissionService : BaseService, ISystemPermissionService
                 Buttons = new List<ButtonPermissionDto>()
             };
             programDict[programKey] = program;
-
-            // 將 Program 加入對應的 System（簡化處理，每個 Program 作為一個 Menu）
-            var menu = new MenuPermissionDto
-            {
-                MenuId = programId,
-                MenuName = programName,
-                Programs = new List<ProgramPermissionDto> { program }
-            };
-            permissionDict[systemId].Menus.Add(menu);
+            menuDto.Programs.Add(program);
         }
 
         // 按鈕層級

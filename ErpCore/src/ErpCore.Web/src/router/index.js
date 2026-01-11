@@ -280,6 +280,12 @@ const routes = [
         meta: { title: '其他異動記錄查詢 (SYS0660)' }
       },
       {
+        path: 'system-permission-list',
+        name: 'SYS0710Query',
+        component: () => import('../views/System/SYS0710Query.vue'),
+        meta: { title: '系統權限列表 (SYS0710)' }
+      },
+      {
         path: 'user-account-policy',
         name: 'SYS0130Query',
         component: () => import('../views/System/SYS0130Query.vue'),
@@ -302,6 +308,12 @@ const routes = [
         name: 'SYS0240Query',
         component: () => import('../views/System/SYS0240Query.vue'),
         meta: { title: '角色複製 (SYS0240)' }
+      },
+      {
+        path: 'program-user-permissions',
+        name: 'SYS0720Query',
+        component: () => import('../views/System/ProgramUserPermissionReport.vue'),
+        meta: { title: '作業權限之使用者列表 (SYS0720)' }
       }
     ]
   },
