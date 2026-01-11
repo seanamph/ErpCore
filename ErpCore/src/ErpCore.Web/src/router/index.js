@@ -202,6 +202,24 @@ const routes = [
         meta: { title: '權限管理 (SYS0310, SYS0320, SYS0330, SYS0340)' }
       },
       {
+        path: 'role-permissions',
+        name: 'SYS0310Query',
+        component: () => import('../views/System/SYS0310Query.vue'),
+        meta: { title: '角色系統權限設定 (SYS0310)' }
+      },
+      {
+        path: 'user-permissions',
+        name: 'SYS0320Query',
+        component: () => import('../views/System/SYS0320Query.vue'),
+        meta: { title: '使用者系統權限設定 (SYS0320)' }
+      },
+      {
+        path: 'role-field-permissions',
+        name: 'SYS0330Query',
+        component: () => import('../views/System/SYS0330Query.vue'),
+        meta: { title: '角色欄位權限設定 (SYS0330)' }
+      },
+      {
         path: 'system-config',
         name: 'SystemConfig',
         component: () => import('../views/System/SystemConfig.vue'),

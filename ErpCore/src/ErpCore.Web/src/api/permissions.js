@@ -107,24 +107,44 @@ export const userPermissionsApi = {
  * 遵循 C# API 欄位命名 (PascalCase)
  */
 export const roleFieldPermissionsApi = {
+  // 查詢資料庫列表
+  getDatabases: () => {
+    return axios.get('/api/v1/role-field-permissions/databases')
+  },
+
+  // 查詢表格列表
+  getTables: (dbName) => {
+    return axios.get('/api/v1/role-field-permissions/tables', { params: { dbName } })
+  },
+
+  // 查詢欄位列表
+  getFields: (dbName, tableName) => {
+    return axios.get('/api/v1/role-field-permissions/fields', { params: { dbName, tableName } })
+  },
+
   // 查詢角色欄位權限列表
-  getRoleFieldPermissions: (roleId, params) => {
-    return axios.get(`/api/v1/roles/${roleId}/field-permissions`, { params })
+  getRoleFieldPermissions: (params) => {
+    return axios.get('/api/v1/role-field-permissions', { params })
   },
 
   // 新增角色欄位權限
-  createRoleFieldPermissions: (roleId, data) => {
-    return axios.post(`/api/v1/roles/${roleId}/field-permissions`, data)
+  createRoleFieldPermission: (data) => {
+    return axios.post('/api/v1/role-field-permissions', data)
   },
 
   // 更新角色欄位權限
-  updateRoleFieldPermissions: (roleId, data) => {
-    return axios.put(`/api/v1/roles/${roleId}/field-permissions`, data)
+  updateRoleFieldPermission: (id, data) => {
+    return axios.put(`/api/v1/role-field-permissions/${id}`, data)
   },
 
   // 刪除角色欄位權限
-  deleteRoleFieldPermission: (roleId, tKey) => {
-    return axios.delete(`/api/v1/roles/${roleId}/field-permissions/${tKey}`)
+  deleteRoleFieldPermission: (id) => {
+    return axios.delete(`/api/v1/role-field-permissions/${id}`)
+  },
+
+  // 批次設定角色欄位權限
+  batchSetPermissions: (data) => {
+    return axios.post('/api/v1/role-field-permissions/batch', data)
   }
 }
 
