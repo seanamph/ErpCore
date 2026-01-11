@@ -48,6 +48,31 @@ export const rolePermissionsApi = {
   // 批量刪除角色權限
   batchDeleteRolePermissions: (roleId, data) => {
     return axios.delete(`/api/v1/roles/${roleId}/permissions/batch`, { data })
+  },
+
+  // 查詢角色系統列表 (SYS0310)
+  getRoleSystems: (roleId) => {
+    return axios.get(`/api/v1/roles/${roleId}/permissions/systems`)
+  },
+
+  // 查詢角色選單列表 (SYS0310)
+  getRoleMenus: (roleId, systemId) => {
+    return axios.get(`/api/v1/roles/${roleId}/permissions/menus`, { params: { systemId } })
+  },
+
+  // 查詢角色作業列表 (SYS0310)
+  getRolePrograms: (roleId, menuId) => {
+    return axios.get(`/api/v1/roles/${roleId}/permissions/programs`, { params: { menuId } })
+  },
+
+  // 查詢角色按鈕列表 (SYS0310)
+  getRoleButtons: (roleId, programId) => {
+    return axios.get(`/api/v1/roles/${roleId}/permissions/buttons`, { params: { programId } })
+  },
+
+  // 修改角色權限
+  updateRolePermission: (roleId, tKey, data) => {
+    return axios.put(`/api/v1/roles/${roleId}/permissions/${tKey}`, data)
   }
 }
 

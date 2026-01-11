@@ -185,3 +185,36 @@ export function updateStatus(userId, data) {
   })
 }
 
+/**
+ * 使用者資料查詢 (SYS0140) - GET 方法
+ */
+export function queryUsersGet(params) {
+  return request({
+    url: '/api/v1/users/query',
+    method: 'get',
+    params
+  })
+}
+
+/**
+ * 查詢單筆使用者 (SYS0140)
+ */
+export function queryUserById(userId) {
+  return request({
+    url: `/api/v1/users/${userId}/query`,
+    method: 'get'
+  })
+}
+
+/**
+ * 匯出使用者查詢結果 (SYS0140)
+ */
+export function exportUsers(data) {
+  return request({
+    url: '/api/v1/users/export',
+    method: 'post',
+    data,
+    responseType: 'blob'
+  })
+}
+

@@ -87,6 +87,38 @@ public class UserRepository : BaseRepository, IUserRepository
                 parameters.Add("ShopId", query.ShopId);
             }
 
+            // 日期范围查询 (SYS0140)
+            if (query.StartDateFrom.HasValue)
+            {
+                sql += " AND StartDate >= @StartDateFrom";
+                parameters.Add("StartDateFrom", query.StartDateFrom.Value);
+            }
+            if (query.StartDateTo.HasValue)
+            {
+                sql += " AND StartDate <= @StartDateTo";
+                parameters.Add("StartDateTo", query.StartDateTo.Value);
+            }
+            if (query.EndDateFrom.HasValue)
+            {
+                sql += " AND EndDate >= @EndDateFrom";
+                parameters.Add("EndDateFrom", query.EndDateFrom.Value);
+            }
+            if (query.EndDateTo.HasValue)
+            {
+                sql += " AND EndDate <= @EndDateTo";
+                parameters.Add("EndDateTo", query.EndDateTo.Value);
+            }
+            if (query.LastLoginDateFrom.HasValue)
+            {
+                sql += " AND LastLoginDate >= @LastLoginDateFrom";
+                parameters.Add("LastLoginDateFrom", query.LastLoginDateFrom.Value);
+            }
+            if (query.LastLoginDateTo.HasValue)
+            {
+                sql += " AND LastLoginDate <= @LastLoginDateTo";
+                parameters.Add("LastLoginDateTo", query.LastLoginDateTo.Value);
+            }
+
             // 排序
             var sortField = string.IsNullOrEmpty(query.SortField) ? "UserId" : query.SortField;
             var sortOrder = string.IsNullOrEmpty(query.SortOrder) || query.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC";
@@ -140,6 +172,37 @@ public class UserRepository : BaseRepository, IUserRepository
             {
                 countSql += " AND ShopId = @ShopId";
                 countParameters.Add("ShopId", query.ShopId);
+            }
+            // 日期范围查询 (SYS0140)
+            if (query.StartDateFrom.HasValue)
+            {
+                countSql += " AND StartDate >= @StartDateFrom";
+                countParameters.Add("StartDateFrom", query.StartDateFrom.Value);
+            }
+            if (query.StartDateTo.HasValue)
+            {
+                countSql += " AND StartDate <= @StartDateTo";
+                countParameters.Add("StartDateTo", query.StartDateTo.Value);
+            }
+            if (query.EndDateFrom.HasValue)
+            {
+                countSql += " AND EndDate >= @EndDateFrom";
+                countParameters.Add("EndDateFrom", query.EndDateFrom.Value);
+            }
+            if (query.EndDateTo.HasValue)
+            {
+                countSql += " AND EndDate <= @EndDateTo";
+                countParameters.Add("EndDateTo", query.EndDateTo.Value);
+            }
+            if (query.LastLoginDateFrom.HasValue)
+            {
+                countSql += " AND LastLoginDate >= @LastLoginDateFrom";
+                countParameters.Add("LastLoginDateFrom", query.LastLoginDateFrom.Value);
+            }
+            if (query.LastLoginDateTo.HasValue)
+            {
+                countSql += " AND LastLoginDate <= @LastLoginDateTo";
+                countParameters.Add("LastLoginDateTo", query.LastLoginDateTo.Value);
             }
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);

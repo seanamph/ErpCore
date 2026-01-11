@@ -82,6 +82,26 @@ public interface IRolePermissionRepository
     /// 根據角色ID查詢權限列表
     /// </summary>
     Task<IEnumerable<RoleButton>> GetByRoleIdAsync(string roleId);
+
+    /// <summary>
+    /// 查詢角色系統列表 (SYS0310)
+    /// </summary>
+    Task<List<RoleSystemListDto>> GetRoleSystemsAsync(string roleId);
+
+    /// <summary>
+    /// 查詢角色選單列表 (SYS0310)
+    /// </summary>
+    Task<List<RoleMenuListDto>> GetRoleMenusAsync(string roleId, string? systemId = null);
+
+    /// <summary>
+    /// 查詢角色作業列表 (SYS0310)
+    /// </summary>
+    Task<List<RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null);
+
+    /// <summary>
+    /// 查詢角色按鈕列表 (SYS0310)
+    /// </summary>
+    Task<List<RoleButtonListDto>> GetRoleButtonsAsync(string roleId, string? programId = null);
 }
 
 /// <summary>
@@ -129,5 +149,57 @@ public class RolePermissionStatsDto
     public int AuthorizedButtons { get; set; }
     public bool IsFullyAuthorized { get; set; }
     public double AuthorizedRate { get; set; }
+}
+
+/// <summary>
+/// 角色系統列表 DTO (SYS0310)
+/// </summary>
+public class RoleSystemListDto
+{
+    public string SystemId { get; set; } = string.Empty;
+    public string SystemName { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+    public double AuthorizedRate { get; set; }
+}
+
+/// <summary>
+/// 角色選單列表 DTO (SYS0310)
+/// </summary>
+public class RoleMenuListDto
+{
+    public string MenuId { get; set; } = string.Empty;
+    public string MenuName { get; set; } = string.Empty;
+    public string SystemId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 角色作業列表 DTO (SYS0310)
+/// </summary>
+public class RoleProgramListDto
+{
+    public string ProgramId { get; set; } = string.Empty;
+    public string ProgramName { get; set; } = string.Empty;
+    public string MenuId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 角色按鈕列表 DTO (SYS0310)
+/// </summary>
+public class RoleButtonListDto
+{
+    public string ButtonId { get; set; } = string.Empty;
+    public string ButtonName { get; set; } = string.Empty;
+    public string ProgramId { get; set; } = string.Empty;
+    public string? Funs { get; set; }
+    public string? PageId { get; set; }
+    public bool IsAuthorized { get; set; }
 }
 

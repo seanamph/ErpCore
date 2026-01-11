@@ -153,5 +153,79 @@ public class RolePermissionsController : BaseController
             return result;
         }, $"批量刪除角色權限失敗: {roleId}");
     }
+
+    /// <summary>
+    /// 查詢角色系統列表 (SYS0310)
+    /// </summary>
+    [HttpGet("systems")]
+    public async Task<ActionResult<ApiResponse<List<RoleSystemListDto>>>> GetRoleSystems(string roleId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetRoleSystemsAsync(roleId);
+            return result;
+        }, $"查詢角色系統列表失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 查詢角色選單列表 (SYS0310)
+    /// </summary>
+    [HttpGet("menus")]
+    public async Task<ActionResult<ApiResponse<List<RoleMenuListDto>>>> GetRoleMenus(
+        string roleId,
+        [FromQuery] string? systemId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetRoleMenusAsync(roleId, systemId);
+            return result;
+        }, $"查詢角色選單列表失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 查詢角色作業列表 (SYS0310)
+    /// </summary>
+    [HttpGet("programs")]
+    public async Task<ActionResult<ApiResponse<List<RoleProgramListDto>>>> GetRolePrograms(
+        string roleId,
+        [FromQuery] string? menuId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetRoleProgramsAsync(roleId, menuId);
+            return result;
+        }, $"查詢角色作業列表失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 查詢角色按鈕列表 (SYS0310)
+    /// </summary>
+    [HttpGet("buttons")]
+    public async Task<ActionResult<ApiResponse<List<RoleButtonListDto>>>> GetRoleButtons(
+        string roleId,
+        [FromQuery] string? programId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetRoleButtonsAsync(roleId, programId);
+            return result;
+        }, $"查詢角色按鈕列表失敗: {roleId}");
+    }
+
+    /// <summary>
+    /// 修改角色權限
+    /// </summary>
+    [HttpPut("{tKey}")]
+    public async Task<ActionResult<ApiResponse<RolePermissionDto>>> UpdateRolePermission(
+        string roleId,
+        long tKey,
+        [FromBody] UpdateRolePermissionDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.UpdateRolePermissionAsync(roleId, tKey, dto);
+            return result;
+        }, $"修改角色權限失敗: {roleId} - {tKey}");
+    }
 }
 

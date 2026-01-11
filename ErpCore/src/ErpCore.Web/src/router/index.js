@@ -232,10 +232,22 @@ const routes = [
         meta: { title: '異動記錄查詢 (SYS0610-SYS0660)' }
       },
       {
+        path: 'users',
+        name: 'SYS0110Query',
+        component: () => import('../views/System/SYS0110Query.vue'),
+        meta: { title: '使用者基本資料維護 (SYS0110)' }
+      },
+      {
         path: 'users-browse',
         name: 'SYS0120Query',
         component: () => import('../views/System/SYS0120Query.vue'),
         meta: { title: '使用者資料瀏覽 (SYS0120)' }
+      },
+      {
+        path: 'user-account-policy',
+        name: 'SYS0130Query',
+        component: () => import('../views/System/SYS0130Query.vue'),
+        meta: { title: '使用者帳戶原則管理 (SYS0130)' }
       },
       {
         path: 'user-roles',

@@ -47,7 +47,13 @@ public class UserService : BaseService, IUserService
                 Status = query.Status,
                 UserType = query.UserType,
                 Title = query.Title,
-                ShopId = query.ShopId
+                ShopId = query.ShopId,
+                StartDateFrom = query.StartDateFrom,
+                StartDateTo = query.StartDateTo,
+                EndDateFrom = query.EndDateFrom,
+                EndDateTo = query.EndDateTo,
+                LastLoginDateFrom = query.LastLoginDateFrom,
+                LastLoginDateTo = query.LastLoginDateTo
             };
 
             var result = await _repository.QueryAsync(repositoryQuery);

@@ -364,5 +364,183 @@ public class RolePermissionService : BaseService, IRolePermissionService
             throw;
         }
     }
+
+    public async Task<List<RoleSystemListDto>> GetRoleSystemsAsync(string roleId)
+    {
+        try
+        {
+            // 檢查角色是否存在
+            var role = await _roleRepository.GetByIdAsync(roleId);
+            if (role == null)
+            {
+                throw new InvalidOperationException($"角色不存在: {roleId}");
+            }
+
+            var systems = await _repository.GetRoleSystemsAsync(roleId);
+            return systems.Select(x => new RoleSystemListDto
+            {
+                SystemId = x.SystemId,
+                SystemName = x.SystemName,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized,
+                AuthorizedRate = x.AuthorizedRate
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色系統列表失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<RoleMenuListDto>> GetRoleMenusAsync(string roleId, string? systemId = null)
+    {
+        try
+        {
+            // 檢查角色是否存在
+            var role = await _roleRepository.GetByIdAsync(roleId);
+            if (role == null)
+            {
+                throw new InvalidOperationException($"角色不存在: {roleId}");
+            }
+
+            var menus = await _repository.GetRoleMenusAsync(roleId, systemId);
+            return menus.Select(x => new RoleMenuListDto
+            {
+                MenuId = x.MenuId,
+                MenuName = x.MenuName,
+                SystemId = x.SystemId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色選單列表失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null)
+    {
+        try
+        {
+            // 檢查角色是否存在
+            var role = await _roleRepository.GetByIdAsync(roleId);
+            if (role == null)
+            {
+                throw new InvalidOperationException($"角色不存在: {roleId}");
+            }
+
+            var programs = await _repository.GetRoleProgramsAsync(roleId, menuId);
+            return programs.Select(x => new RoleProgramListDto
+            {
+                ProgramId = x.ProgramId,
+                ProgramName = x.ProgramName,
+                MenuId = x.MenuId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色作業列表失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<RoleButtonListDto>> GetRoleButtonsAsync(string roleId, string? programId = null)
+    {
+        try
+        {
+            // 檢查角色是否存在
+            var role = await _roleRepository.GetByIdAsync(roleId);
+            if (role == null)
+            {
+                throw new InvalidOperationException($"角色不存在: {roleId}");
+            }
+
+            var buttons = await _repository.GetRoleButtonsAsync(roleId, programId);
+            return buttons.Select(x => new RoleButtonListDto
+            {
+                ButtonId = x.ButtonId,
+                ButtonName = x.ButtonName,
+                ProgramId = x.ProgramId,
+                Funs = x.Funs,
+                PageId = x.PageId,
+                IsAuthorized = x.IsAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢角色按鈕列表失敗: {roleId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<RolePermissionDto> UpdateRolePermissionAsync(string roleId, long tKey, UpdateRolePermissionDto dto)
+    {
+        try
+        {
+            // 檢查權限是否存在
+            var permission = await _repository.GetByIdAsync(tKey);
+            if (permission == null)
+            {
+                throw new InvalidOperationException($"角色權限不存在: {tKey}");
+            }
+
+            if (permission.RoleId != roleId)
+            {
+                throw new InvalidOperationException($"權限不屬於該角色: {roleId}");
+            }
+
+            // 檢查新的按鈕是否存在
+            if (string.IsNullOrEmpty(dto.ButtonId))
+            {
+                throw new InvalidOperationException("按鈕代碼不能為空");
+            }
+
+            // 更新權限
+            permission.ButtonId = dto.ButtonId;
+            var updated = await _repository.UpdateAsync(permission);
+
+            // 查詢更新後的完整資訊
+            var permissions = await _repository.QueryPermissionsAsync(roleId, new RolePermissionQuery
+            {
+                PageIndex = 1,
+                PageSize = 1
+            });
+
+            var result = permissions.Items.FirstOrDefault(x => x.TKey == updated.TKey);
+            if (result == null)
+            {
+                throw new InvalidOperationException("查詢更新後的權限失敗");
+            }
+
+            return new RolePermissionDto
+            {
+                TKey = result.TKey,
+                RoleId = result.RoleId,
+                ButtonId = result.ButtonId,
+                SystemId = result.SystemId,
+                SystemName = result.SystemName,
+                SubSystemId = result.SubSystemId,
+                SubSystemName = result.SubSystemName,
+                ProgramId = result.ProgramId,
+                ProgramName = result.ProgramName,
+                ButtonName = result.ButtonName,
+                CreatedBy = result.CreatedBy,
+                CreatedAt = result.CreatedAt
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改角色權限失敗: {roleId} - {tKey}", ex);
+            throw;
+        }
+    }
 }
 

@@ -261,6 +261,29 @@ public class UsersController : BaseController
     }
 
     /// <summary>
+    /// 匯出使用者查詢結果 (SYS0140)
+    /// </summary>
+    [HttpPost("export")]
+    public async Task<IActionResult> ExportUsers(
+        [FromBody] UserQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.ExportUserQueryAsync(query, "excel");
+
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = $"使用者查詢結果_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+
+            return File(fileBytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出使用者查詢結果失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// 取得當前登入使用者資訊
     /// </summary>
     [HttpGet("current")]

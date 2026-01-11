@@ -70,5 +70,11 @@ public class UserQuery
     public string? UserType { get; set; }
     public string? Title { get; set; }
     public string? ShopId { get; set; }
+    public DateTime? StartDateFrom { get; set; }
+    public DateTime? StartDateTo { get; set; }
+    public DateTime? EndDateFrom { get; set; }
+    public DateTime? EndDateTo { get; set; }
+    public DateTime? LastLoginDateFrom { get; set; }
+    public DateTime? LastLoginDateTo { get; set; }
 }
 
