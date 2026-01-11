@@ -51,22 +51,27 @@ public class RoleSystemPermissionService : BaseService, IRoleSystemPermissionSer
             };
 
             // 查詢角色按鈕權限（只查詢角色直接權限，不包含使用者權限）
+            // 使用視圖 V_RoleSystemPermission 或直接查詢
             var sql = @"
                 SELECT DISTINCT
-                    CS.SystemId,
-                    CS.SystemName,
-                    CP.ProgramId,
-                    CP.ProgramName,
-                    CB.ButtonId,
-                    CB.ButtonName,
-                    CB.PageId
+                    CS.SystemId AS SYS_ID,
+                    CS.SystemName AS SYS_NAME,
+                    ISNULL(CSS.SubSystemId, '') AS MENU_ID,
+                    ISNULL(CSS.SubSystemName, '') AS MENU_NAME,
+                    CP.ProgramId AS PROG_ID,
+                    CP.ProgramName AS PROG_NAME,
+                    CB.ButtonId AS BUTTON_ID,
+                    CB.ButtonName AS BUTTON_NAME,
+                    CB.PageId AS PAGE_ID
                 FROM ConfigButtons CB
                 INNER JOIN ConfigPrograms CP ON CB.ProgramId = CP.ProgramId
+                LEFT JOIN ConfigSubSystems CSS ON CP.SubSystemId = CSS.SubSystemId
                 INNER JOIN ConfigSystems CS ON CP.SystemId = CS.SystemId
                 INNER JOIN RoleButtons RB ON CB.ButtonId = RB.ButtonId
                 WHERE CB.Status = '1' 
-                    AND CP.Status = '1' 
+                    AND CP.Status = 'A' 
                     AND CS.Status = 'A'
+                    AND (CSS.SubSystemId IS NULL OR CSS.Status = 'A')
                     AND RB.RoleId = @RoleId
                     AND RB.UserId IS NULL";
 
@@ -80,13 +85,19 @@ public class RoleSystemPermissionService : BaseService, IRoleSystemPermissionSer
                 parameters.Add("SystemId", request.SystemId);
             }
 
+            if (!string.IsNullOrEmpty(request.MenuId))
+            {
+                sql += " AND (CSS.SubSystemId = @MenuId OR (CSS.SubSystemId IS NULL AND @MenuId = ''))";
+                parameters.Add("MenuId", request.MenuId);
+            }
+
             if (!string.IsNullOrEmpty(request.ProgramId))
             {
                 sql += " AND CP.ProgramId = @ProgramId";
                 parameters.Add("ProgramId", request.ProgramId);
             }
 
-            sql += " ORDER BY CS.SystemId, CP.ProgramId, CB.PageId, CB.ButtonId";
+            sql += " ORDER BY CS.SystemId, ISNULL(CSS.SubSystemId, ''), CP.ProgramId, CB.PageId, CB.ButtonId";
 
             var results = await connection.QueryAsync<dynamic>(sql, parameters);
 
@@ -97,13 +108,15 @@ public class RoleSystemPermissionService : BaseService, IRoleSystemPermissionSer
 
             foreach (var item in results)
             {
-                var systemId = (string)item.SystemId;
-                var systemName = (string)item.SystemName;
-                var programId = (string)item.ProgramId;
-                var programName = (string)item.ProgramName;
-                var buttonId = (string)item.ButtonId;
-                var buttonName = (string)item.ButtonName;
-                var pageId = (string?)item.PageId;
+                var systemId = (string)item.SYS_ID;
+                var systemName = (string)item.SYS_NAME;
+                var menuId = (string)item.MENU_ID ?? string.Empty;
+                var menuName = (string)item.MENU_NAME ?? string.Empty;
+                var programId = (string)item.PROG_ID;
+                var programName = (string)item.PROG_NAME;
+                var buttonId = (string)item.BUTTON_ID;
+                var buttonName = (string)item.BUTTON_NAME;
+                var pageId = (string?)item.PAGE_ID;
 
                 // 系統層級
                 if (!systemDict.ContainsKey(systemId))
@@ -116,14 +129,14 @@ public class RoleSystemPermissionService : BaseService, IRoleSystemPermissionSer
                     };
                 }
 
-                // 選單層級（簡化處理，將 Program 視為 Menu）
-                var menuKey = $"{systemId}_{programId}";
+                // 選單層級（使用 SubSystem，如果沒有則使用空字串作為預設選單）
+                var menuKey = string.IsNullOrEmpty(menuId) ? $"{systemId}_DEFAULT" : $"{systemId}_{menuId}";
                 if (!menuDict.ContainsKey(menuKey))
                 {
                     var menu = new RoleMenuPermissionDto
                     {
-                        MenuId = programId,
-                        MenuName = programName,
+                        MenuId = menuId,
+                        MenuName = string.IsNullOrEmpty(menuName) ? "(未分類)" : menuName,
                         Programs = new List<RoleProgramPermissionDto>()
                     };
                     menuDict[menuKey] = menu;
@@ -131,7 +144,7 @@ public class RoleSystemPermissionService : BaseService, IRoleSystemPermissionSer
                 }
 
                 // 作業層級
-                var programKey = $"{systemId}_{programId}";
+                var programKey = $"{systemId}_{menuId}_{programId}";
                 if (!programDict.ContainsKey(programKey))
                 {
                     var program = new RoleProgramPermissionDto

@@ -9,8 +9,15 @@
       <el-form :model="queryForm" label-width="120px">
         <el-row :gutter="20">
           <el-col :span="8">
-            <el-form-item label="角色代碼" required>
-              <el-input v-model="queryForm.RoleId" placeholder="請輸入角色代碼" clearable />
+            <el-form-item label="角色代碼" prop="RoleId" required>
+              <el-autocomplete
+                v-model="queryForm.RoleId"
+                :fetch-suggestions="searchRoles"
+                placeholder="請輸入角色代碼"
+                clearable
+                style="width: 100%"
+                @select="handleRoleSelect"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -100,6 +107,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { roleSystemPermissionApi } from '@/api/systemPermission'
+import { rolesApi } from '@/api/roles'
 
 export default {
   name: 'RoleSystemPermissionListReport',
@@ -233,6 +241,8 @@ export default {
       tableData,
       roleInfo,
       queryForm,
+      searchRoles,
+      handleRoleSelect,
       handleSearch,
       handleReset,
       handleExportExcel,
