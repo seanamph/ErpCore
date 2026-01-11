@@ -1346,6 +1346,18 @@ const routes = [
         name: 'Regions',
         component: () => import('../views/BasicData/Regions.vue'),
         meta: { title: '地區設定 (SYSBC30)' }
+      },
+      {
+        path: 'warehouses',
+        name: 'Warehouses',
+        component: () => import('../views/BasicData/Warehouses.vue'),
+        meta: { title: '庫別資料維護作業 (SYSWB60)' }
+      },
+      {
+        path: 'groups',
+        name: 'Groups',
+        component: () => import('../views/BasicData/Groups.vue'),
+        meta: { title: '組別資料維護作業 (SYSWB70)' }
       }
     ]
   }

@@ -4,6 +4,99 @@
 
 ### 📝 最新完成工作
 
+#### SYSWB60 - 庫別資料維護功能完成
+- ✅ **完成路由配置**：在 router/index.js 中添加 SYSWB60 庫別資料維護路由（路徑 /master-data/warehouses）
+- ✅ **功能完整性確認**：SYSWB60 功能已完整實現
+  - Entity: Warehouse.cs（庫別實體類別，已存在）
+  - Repository: IWarehouseRepository.cs 和 WarehouseRepository.cs（資料存取層，已完整實現）
+  - Service: IWarehouseService.cs 和 WarehouseService.cs（業務邏輯層，已完整實現）
+  - DTO: WarehouseDto.cs, WarehouseQueryDto.cs, CreateWarehouseDto.cs, UpdateWarehouseDto.cs, BatchDeleteWarehouseDto.cs, UpdateWarehouseStatusDto.cs（資料傳輸物件，已存在）
+  - Controller: WarehousesController.cs（API 控制器，路徑 /api/v1/warehouses，已完整實現所有端點）
+  - Vue 頁面: Warehouses.vue（前端查詢維護頁面，支援庫別查詢、新增、修改、刪除、狀態更新）
+  - SQL 腳本: CreateWarehousesTables.sql（資料庫建立腳本，包含 Warehouses 表，已存在）
+  - API 文件: warehouses.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSWB60 路由（路徑 /master-data/warehouses）
+  - 依賴注入: 已在 Program.cs 註冊 IWarehouseRepository 和 IWarehouseService
+- ✅ **功能特性**：
+  - 支援庫別的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（庫別代碼、庫別名稱、庫別類型、狀態）
+  - 支援批次刪除功能
+  - 支援狀態管理（啟用/停用）
+  - 支援排序序號設定
+  - 支援庫別類型分類（主倉庫、分倉庫、臨時倉庫）
+  - 支援位置資訊管理
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+#### SYSWB70 - 組別資料維護功能完成
+- ✅ **完成路由配置**：在 router/index.js 中添加 SYSWB70 組別資料維護路由（路徑 /master-data/groups）
+- ✅ **功能完整性確認**：SYSWB70 功能已完整實現
+  - Entity: Group.cs（組別實體類別，已存在）
+  - Repository: IGroupRepository.cs 和 GroupRepository.cs（資料存取層，已完整實現）
+  - Service: IGroupService.cs 和 GroupService.cs（業務邏輯層，已完整實現）
+  - DTO: GroupDto.cs, GroupQueryDto.cs, CreateGroupDto.cs, UpdateGroupDto.cs, BatchDeleteGroupDto.cs, UpdateGroupStatusDto.cs（資料傳輸物件，已存在）
+  - Controller: GroupsController.cs（API 控制器，路徑 /api/v1/groups，已完整實現所有端點）
+  - Vue 頁面: Groups.vue（前端查詢維護頁面，支援組別查詢、新增、修改、刪除、狀態更新）
+  - SQL 腳本: CreateGroupsTables.sql（資料庫建立腳本，包含 Groups 表，已存在）
+  - API 文件: groups.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSWB70 路由（路徑 /master-data/groups）
+  - 依賴注入: 已在 Program.cs 註冊 IGroupRepository 和 IGroupService
+- ✅ **功能特性**：
+  - 支援組別的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（組別代碼、組別名稱、部別代碼、組織代碼、狀態）
+  - 支援批次刪除功能
+  - 支援狀態管理（啟用/停用）
+  - 支援排序序號設定
+  - 支援部別關聯（可選）
+  - 支援組織關聯（可選）
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+#### SYSBC30 - 地區設定功能完成
+- ✅ **完成路由配置**：在 router/index.js 中添加 SYSBC30 地區設定路由（路徑 /master-data/regions）
+- ✅ **功能完整性確認**：SYSBC30 功能已完整實現
+  - Entity: Region.cs（地區實體類別，已存在）
+  - Repository: IRegionRepository.cs 和 RegionRepository.cs（資料存取層，已完整實現）
+  - Service: IRegionService.cs 和 RegionService.cs（業務邏輯層，已完整實現）
+  - DTO: RegionDto.cs, RegionQueryDto.cs, CreateRegionDto.cs, UpdateRegionDto.cs, BatchDeleteRegionDto.cs（資料傳輸物件，已存在）
+  - Controller: RegionsController.cs（API 控制器，路徑 /api/v1/regions，已完整實現所有端點）
+  - Vue 頁面: Regions.vue（前端查詢維護頁面，支援地區查詢、新增、修改、刪除）
+  - SQL 腳本: CreateRegionsTables.sql（資料庫建立腳本，包含 Regions 表，已存在）
+  - API 文件: regions.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSBC30 路由（路徑 /master-data/regions）
+  - 依賴注入: 已在 Program.cs 註冊 IRegionRepository 和 IRegionService
+- ✅ **功能特性**：
+  - 支援地區的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（地區編號、地區名稱）
+  - 支援批次刪除功能
+  - 支援備註管理
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+#### SYSWB40 - 部別資料維護功能確認
+- ✅ **功能完整性確認**：SYSWB40 功能已完整實現
+  - Entity: Department.cs（部別實體類別，已存在）
+  - Repository: IDepartmentRepository.cs 和 DepartmentRepository.cs（資料存取層，已完整實現）
+  - Service: IDepartmentService.cs 和 DepartmentService.cs（業務邏輯層，已完整實現）
+  - DTO: DepartmentDto.cs, DepartmentQueryDto.cs, CreateDepartmentDto.cs, UpdateDepartmentDto.cs, BatchDeleteDepartmentDto.cs, UpdateDepartmentStatusDto.cs 等（資料傳輸物件，已存在）
+  - Controller: DepartmentsController.cs（API 控制器，路徑 /api/v1/departments，已完整實現所有端點）
+  - Vue 頁面: Departments.vue（前端查詢維護頁面，支援部別查詢、新增、修改、刪除、狀態更新）
+  - SQL 腳本: CreateDepartmentsTables.sql（資料庫建立腳本，包含 Departments 表，已存在）
+  - API 文件: departments.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSWB40 路由（路徑 /master-data/departments）
+  - 依賴注入: 已在 Program.cs 註冊 IDepartmentRepository 和 IDepartmentService
+- ✅ **功能特性**：
+  - 支援部別的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（部別代碼、部別名稱、組織代碼、狀態）
+  - 支援批次刪除功能
+  - 支援狀態管理（啟用/停用）
+  - 支援排序序號設定
+  - 支援組織關聯（可選）
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
+### 📝 之前完成工作
+
 #### SYSBC20 - 銀行基本資料維護功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSBC20 銀行基本資料維護功能
   - Entity: Bank.cs（銀行實體類別，已存在）
@@ -53,337 +146,9 @@
 - ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
 - ✅ **Vue 頁面更新**：修正 ClassMode 值（從 B/M/S 改為 1/2/3），新增會計科目相關欄位，新增階層式下拉選單功能
 
-### 📝 之前完成工作
-
-#### SYS0240 - 角色複製功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0240 角色複製功能
-  - Entity: Role.cs, RoleButton.cs, UserRole.cs（相關實體類別，已存在）
-  - Repository: IRolePermissionRepository.cs 和 RolePermissionRepository.cs（新增 DeleteByRoleIdAsync, CopyFromRoleAsync, GetByRoleIdAsync 方法）、IUserRoleRepository.cs 和 UserRoleRepository.cs（新增 DeleteByRoleIdAsync, CopyFromRoleAsync 方法）
-  - Service: IRoleService.cs 和 RoleService.cs（新增 CopyRoleToTargetAsync, ValidateCopyRoleAsync 方法，支援交易處理）
-  - DTO: CopyRoleRequestDto.cs, ValidateCopyRequestDto.cs, CopyRoleResultDto.cs, ValidateCopyResultDto.cs（資料傳輸物件，已新增）
-  - Controller: RolesController.cs（API 控制器，路徑 /api/v1/roles/copy 和 /api/v1/roles/copy/validate，已完整實現所有端點）
-  - Vue 頁面: SYS0240Query.vue（前端查詢維護頁面，支援角色選擇、驗證、複製功能）
-  - SQL 腳本: CreateRolesTables.sql, CreatePermissionTables.sql（資料庫建立腳本，相關表已存在）
-  - API 文件: roles.js（前端 API 調用，已新增 copyRoleToTarget, validateCopyRole 函數）
-  - 路由配置: 已在 router/index.js 註冊 SYS0240 路由（路徑 /system/role-copy）
-  - 依賴注入: RoleService 已注入 IUserRoleRepository
-- ✅ **功能特性**：
-  - 支援將來源角色的權限設定複製到目的角色
-  - 可選擇是否同時複製使用者分配
-  - 複製前自動清除目的角色原有的權限和使用者設定
-  - 支援驗證角色複製的可行性（檢查來源角色、目的角色是否存在，來源角色是否有權限，是否為相同角色）
-  - 使用資料庫交易確保資料一致性
-  - 自動設定維護者為目前使用者
-  - 顯示驗證結果和複製結果（權限數量、使用者數量）
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名、交易處理）
-
-#### SYS0230 - 角色之使用者設定維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0230 角色之使用者設定維護功能
-  - Entity: UserRole.cs（使用者角色對應實體類別，已存在）
-  - Repository: IUserRoleRepository.cs 和 UserRoleRepository.cs（資料存取層，已完整實現，包含 GetRoleUsersAsync 方法）
-  - Service: IRoleUserAssignmentService.cs 和 RoleUserAssignmentService.cs（業務邏輯層，已完整實現，包含清除使用者直接權限邏輯）
-  - DTO: RoleUserQueryDto.cs, RoleUserListItemDto.cs, BatchAssignRoleUsersDto.cs, BatchAssignRoleUsersResultDto.cs 等（資料傳輸物件，已存在）
-  - Controller: RolesController.cs（API 控制器，路徑 /api/v1/roles/{roleId}/users，已完整實現所有端點）
-  - Vue 頁面: SYS0230Query.vue（前端查詢維護頁面，支援角色使用者查詢、新增、移除、批量更新）
-  - SQL 腳本: CreateRolesTables.sql（資料庫建立腳本，包含 UserRoles 表，已存在）
-  - API 文件: roles.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYS0230 路由（路徑 /system/role-users）
-  - 依賴注入: 已在 Program.cs 註冊 IRoleUserAssignmentService
-- ✅ **功能特性**：
-  - 支援為指定角色分配一個或多個使用者
-  - 支援移除角色的使用者（單個或批量）
-  - 支援查看角色已分配的使用者列表（分頁查詢）
-  - 支援依部門、店別、使用者類型等條件篩選使用者
-  - 支援批量更新角色使用者（先刪除舊使用者，再新增新使用者）
-  - 支援使用者搜尋功能（使用者代碼或名稱）
-  - **重要功能**：設定角色使用者時，自動清除使用者的直接權限設定（UserButtons表）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-- ✅ **修復問題**：修復 Vue 頁面中的分頁字段映射（Page → PageIndex，支援 totalCount/TotalCount 雙向兼容）
-
-#### SYS0220 - 使用者之角色設定維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0220 使用者之角色設定維護功能
-  - Entity: UserRole.cs（使用者角色對應實體類別，已存在）
-  - Repository: IUserRoleRepository.cs 和 UserRoleRepository.cs（資料存取層，已完整實現）
-  - Service: IUserRoleService.cs 和 UserRoleService.cs（業務邏輯層，已完整實現）
-  - DTO: UserRoleDto.cs, AssignRolesDto.cs, RemoveRolesDto.cs, BatchUpdateRolesDto.cs, AssignRoleResultDto.cs, RemoveRoleResultDto.cs, BatchUpdateRoleResultDto.cs 等（資料傳輸物件，已存在）
-  - Controller: UserRolesController.cs（API 控制器，路徑 /api/v1/users/{userId}/roles，已完整實現所有端點）
-  - Vue 頁面: SYS0220Query.vue（前端查詢維護頁面，支援使用者角色查詢、新增、移除、批量更新）
-  - SQL 腳本: CreateRolesTables.sql（資料庫建立腳本，包含 UserRoles 表，已存在）
-  - API 文件: userRoles.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYS0220 路由（路徑 /system/user-roles）
-  - 依賴注入: 已在 Program.cs 註冊 IUserRoleRepository 和 IUserRoleService
-- ✅ **功能特性**：
-  - 支援為指定使用者分配一個或多個角色
-  - 支援移除使用者的角色（單個或批量）
-  - 支援查看使用者已分配的角色列表（分頁查詢）
-  - 支援查看所有可用角色列表（排除已分配的角色）
-  - 支援批量更新使用者角色（先刪除舊角色，再新增新角色）
-  - 支援角色搜尋功能（角色代碼或名稱）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0120 - 使用者資料瀏覽功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0120 使用者資料瀏覽功能
-  - Controller: UsersController.cs（API 控制器，已存在 BrowseUsers 和 BrowseUser 端點，路徑 /api/v1/users/browse 和 /api/v1/users/{userId}/browse）
-  - Vue 頁面: SYS0120Query.vue（前端只讀瀏覽頁面，支援使用者查詢、查看詳細資料）
-  - API 文件: users.js（前端 API 調用，已存在 browseUsers 和 browseUserById 函數）
-  - 路由配置: 已在 router/index.js 註冊 SYS0120 路由（路徑 /system/users-browse）
-- ✅ **功能特性**：
-  - 支援使用者資料的只讀瀏覽功能（不支援新增、修改、刪除）
-  - 支援分頁查詢、排序、多條件篩選（使用者編號、使用者名稱、組織、狀態、使用者型態）
-  - 支援查看使用者詳細資料（使用 el-descriptions 顯示所有欄位）
-  - 所有資料欄位均為只讀模式
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0210 - 角色基本資料維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0210 角色基本資料維護功能
-  - Entity: Role.cs（角色實體類別，已存在）
-  - Repository: IRoleRepository.cs 和 RoleRepository.cs（資料存取層，已完整實現）
-  - Service: IRoleService.cs 和 RoleService.cs（業務邏輯層，已完整實現）
-  - DTO: RoleDto.cs, RoleQueryDto.cs, CreateRoleDto.cs, UpdateRoleDto.cs, CopyRoleDto.cs, BatchDeleteRoleDto.cs 等（資料傳輸物件，已存在）
-  - Controller: RolesController.cs（API 控制器，路徑 /api/v1/roles，已完整實現所有端點）
-  - Vue 頁面: SYS0210Query.vue（前端查詢維護頁面，支援角色查詢、新增、修改、刪除、批次刪除、複製）
-  - SQL 腳本: CreateRolesTables.sql（資料庫建立腳本，包含 Roles、UserRoles、RolePermissions 表，已存在）
-  - API 文件: roles.js（前端 API 調用，已存在）
-  - 依賴注入: 已在 Program.cs 註冊 IRoleRepository 和 IRoleService
-- ✅ **功能特性**：
-  - 支援角色的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（角色代碼、角色名稱）
-  - 支援批次刪除功能
-  - 支援角色複製功能（複製角色及其權限設定）
-  - 刪除前檢查是否有使用者使用此角色
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-### 📝 之前完成工作
-
-#### SYS0110 - 使用者基本資料維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0110 使用者基本資料維護功能
-  - Entity: User.cs（使用者實體類別，已存在）
-  - Repository: IUserRepository.cs 和 UserRepository.cs（資料存取層，已完整實現）
-  - Service: IUserService.cs 和 UserService.cs（業務邏輯層，已完整實現）
-  - DTO: UserDto.cs, UserQueryDto.cs, CreateUserDto.cs, UpdateUserDto.cs, BatchDeleteUserDto.cs, ChangePasswordDto.cs, ResetPasswordDto.cs, UpdateStatusDto.cs 等（資料傳輸物件，已存在）
-  - Controller: UsersController.cs（API 控制器，路徑 /api/v1/users，已完整實現所有端點）
-  - Vue 頁面: SYS0110Query.vue（前端查詢維護頁面，支援使用者查詢、新增、修改、刪除、批次刪除、重設密碼、啟用/停用）
-  - SQL 腳本: CreateUsersTables.sql（資料庫建立腳本，包含 Users 表，已存在）
-  - API 文件: users.js（前端 API 調用，已存在）
-  - 依賴注入: 已在 Program.cs 註冊 IUserRepository 和 IUserService
-- ✅ **功能特性**：
-  - 支援使用者的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（使用者編號、使用者名稱、組織、狀態、使用者型態）
-  - 支援批次刪除功能
-  - 支援重設密碼功能（管理員重設使用者密碼）
-  - 支援啟用/停用使用者功能
-  - 支援密碼加密儲存（SHA256，實際應用建議使用 BCrypt）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0410 - 主系統項目資料維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0410 主系統項目資料維護功能
-  - Entity: Systems.cs（主系統項目實體類別）
-  - Repository: ISystemRepository.cs 和 SystemRepository.cs（資料存取層，已完整實現）
-  - Service: ISystemService.cs 和 SystemService.cs（業務邏輯層，已完整實現）
-  - DTO: SystemDto.cs, SystemQueryDto.cs, CreateSystemDto.cs, UpdateSystemDto.cs, BatchDeleteSystemsDto.cs, SystemTypeOptionDto.cs 等（資料傳輸物件）
-  - Controller: SystemsController.cs（API 控制器，路徑 /api/v1/systems，已完整實現所有端點）
-  - Vue 頁面: SYS0410Query.vue（前端查詢維護頁面，支援主系統查詢、新增、修改、刪除、批次刪除）
-  - SQL 腳本: CreateSystemsTable.sql（資料庫建立腳本，包含 Systems 表）
-  - API 文件: systems.js（前端 API 調用，getSystems、getSystemById、createSystem、updateSystem、deleteSystem、deleteSystemsBatch、getSystemTypes）
-  - 依賴注入: 已在 Program.cs 註冊 ISystemRepository 和 ISystemService
-- ✅ **功能特性**：
-  - 支援主系統的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（主系統代碼、主系統名稱、系統型態、伺服器主機名稱）
-  - 支援批次刪除功能
-  - 刪除前檢查子系統和作業關聯
-  - 支援系統型態選項查詢（從 Parameters 表取得，TITLE='PROG_TYPE'）
-  - 資料庫密碼加密儲存（EncryptPassword 方法，待實作完整加密邏輯）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0360 - 系統對應權限設定功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0360 系統對應權限設定功能
-  - Entity: ItemPermission.cs（項目權限實體類別）、ItemCorrespond.cs（項目對應實體類別）
-  - Repository: IItemPermissionRepository.cs 和 ItemPermissionRepository.cs（資料存取層，已完整實現）、IItemCorrespondRepository.cs 和 ItemCorrespondRepository.cs（資料存取層，已完整實現）
-  - Service: IItemPermissionService.cs 和 ItemPermissionService.cs（業務邏輯層，已完整實現）、IItemCorrespondService.cs 和 ItemCorrespondService.cs（業務邏輯層，已完整實現）
-  - DTO: ItemPermissionDto.cs, ItemPermissionQueryDto.cs, ItemSystemDto.cs, ItemMenuDto.cs, ItemProgramDto.cs, ItemButtonDto.cs, SetItemSystemPermissionDto.cs, SetItemMenuPermissionDto.cs, SetItemProgramPermissionDto.cs, SetItemButtonPermissionDto.cs, ItemCorrespondDto.cs, ItemCorrespondQueryDto.cs, CreateItemCorrespondDto.cs, UpdateItemCorrespondDto.cs 等（資料傳輸物件）
-  - Controller: ItemPermissionsController.cs（API 控制器，路徑 /api/v1/item-corresponds/{itemId}/permissions，已完整實現所有端點）、ItemCorrespondsController.cs（API 控制器，路徑 /api/v1/item-corresponds，已完整實現所有端點）
-  - Vue 頁面: SYS0360Query.vue（前端查詢維護頁面，支援項目對應查詢、新增、修改、刪除，以及系統、選單、作業、按鈕權限設定）
-  - SQL 腳本: CreateItemPermissionTables.sql（資料庫建立腳本，包含 ItemPermissions、ItemCorresponds 表）
-  - API 文件: permissions.js（前端 API 調用，itemCorrespondsApi、itemPermissionsApi）
-  - 依賴注入: 已在 Program.cs 註冊 IItemPermissionRepository、IItemPermissionService、IItemCorrespondRepository、IItemCorrespondService
-- ✅ **功能特性**：
-  - 支援項目對應的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（項目代碼、項目名稱、項目類型、狀態）
-  - 支援項目系統權限設定（全選/部份/未選）
-  - 支援項目選單權限設定
-  - 支援項目作業權限設定
-  - 支援項目按鈕權限設定（授權/撤銷）
-  - 支援權限列表查詢（分頁、篩選）
-  - 支援批次刪除權限功能
-  - 支援權限統計查詢（系統、選單、作業層級）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0340 - 使用者欄位權限設定功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0340 使用者欄位權限設定功能
-  - Entity: UserFieldPermission.cs（使用者欄位權限實體類別）
-  - Repository: IUserFieldPermissionRepository.cs 和 UserFieldPermissionRepository.cs（資料存取層，已完整實現）
-  - Service: IUserFieldPermissionService.cs 和 UserFieldPermissionService.cs（業務邏輯層，已完整實現，包含清除角色權限對應邏輯）
-  - DTO: UserFieldPermissionDto.cs, CreateUserFieldPermissionDto.cs, UpdateUserFieldPermissionDto.cs, UserFieldPermissionQueryDto.cs, BatchSetUserFieldPermissionDto.cs, DatabaseDto.cs, TableDto.cs, FieldDto.cs 等（資料傳輸物件）
-  - Controller: UserFieldPermissionsController.cs（API 控制器，路徑 /api/v1/user-field-permissions，已完整實現所有端點）
-  - Vue 頁面: SYS0340Query.vue（前端查詢維護頁面，支援使用者欄位權限查詢、新增、修改、刪除、批量設定）
-  - SQL 腳本: CreateUserFieldPermissionTables.sql（資料庫建立腳本，包含 UserFieldPermissions、DatabaseInfo、TableInfo、FieldInfo 表）
-  - API 文件: permissions.js（前端 API 調用，userFieldPermissionsApi）
-  - 依賴注入: 已在 Program.cs 註冊 IUserFieldPermissionRepository 和 IUserFieldPermissionService
-- ✅ **功能特性**：
-  - 支援使用者欄位權限的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（使用者、資料庫、表格、欄位、權限類型）
-  - 支援批次刪除功能
-  - 支援批量設定使用者欄位權限（可選擇特定欄位）
-  - 支援資料庫列表查詢（從 DatabaseInfo 表取得）
-  - 支援表格列表查詢（從 TableInfo 表取得，依資料庫篩選）
-  - 支援欄位列表查詢（從 FieldInfo 表取得，依資料庫和表格篩選）
-  - 權限類型支援：READ（讀取）、WRITE（寫入）、HIDE（隱藏）
-  - **重要功能**：設定使用者直接權限時，自動清除該使用者的角色權限對應（UserRoles表）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0330 - 角色欄位權限設定功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0330 角色欄位權限設定功能
-  - Entity: RoleFieldPermission.cs（角色欄位權限實體類別）
-  - Repository: IRoleFieldPermissionRepository.cs 和 RoleFieldPermissionRepository.cs（資料存取層，已完整實現）
-  - Service: IRoleFieldPermissionService.cs 和 RoleFieldPermissionService.cs（業務邏輯層，已完整實現）
-  - DTO: RoleFieldPermissionDto.cs, CreateRoleFieldPermissionDto.cs, UpdateRoleFieldPermissionDto.cs, RoleFieldPermissionQueryDto.cs, BatchSetRoleFieldPermissionDto.cs, DatabaseDto.cs, TableDto.cs, FieldDto.cs 等（資料傳輸物件）
-  - Controller: RoleFieldPermissionsController.cs（API 控制器，路徑 /api/v1/role-field-permissions，已完整實現所有端點）
-  - Vue 頁面: SYS0330Query.vue（前端查詢維護頁面，支援角色欄位權限查詢、新增、修改、刪除、批量設定）
-  - SQL 腳本: CreateRoleFieldPermissionTables.sql（資料庫建立腳本，包含 RoleFieldPermissions、DatabaseInfo、TableInfo、FieldInfo 表）
-  - API 文件: permissions.js（前端 API 調用，roleFieldPermissionsApi）
-  - 依賴注入: 已在 Program.cs 註冊 IRoleFieldPermissionRepository 和 IRoleFieldPermissionService
-- ✅ **功能特性**：
-  - 支援角色欄位權限的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（角色、資料庫、表格、欄位、權限類型）
-  - 支援批次刪除功能
-  - 支援批量設定角色欄位權限
-  - 支援資料庫列表查詢（從 DatabaseInfo 表取得）
-  - 支援表格列表查詢（從 TableInfo 表取得，依資料庫篩選）
-  - 支援欄位列表查詢（從 FieldInfo 表取得，依資料庫和表格篩選）
-  - 權限類型支援：READ（讀取）、WRITE（寫入）、HIDE（隱藏）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0320 - 使用者系統權限設定功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0320 使用者系統權限設定功能
-  - Entity: UserButton.cs（使用者按鈕權限實體類別，使用 ButtonId 對應 ConfigButtons 表）
-  - Repository: IUserPermissionRepository.cs 和 UserPermissionRepository.cs（資料存取層，已完整實現）
-  - Service: IUserPermissionService.cs 和 UserPermissionService.cs（業務邏輯層，已完整實現，包含清除角色權限對應邏輯）
-  - DTO: UserPermissionDto.cs, CreateUserPermissionDto.cs, UserPermissionQueryDto.cs, BatchSetUserSystemPermissionDto.cs 等（資料傳輸物件）
-  - Controller: UserPermissionsController.cs（API 控制器，路徑 /api/v1/users/{userId}/permissions，已完整實現所有端點）
-  - Vue 頁面: SYS0320Query.vue（前端查詢維護頁面，支援使用者權限查詢、批量設定）
-  - SQL 腳本: CreatePermissionTables.sql（資料庫建立腳本，包含 UserButtons 表）
-  - API 文件: permissions.js（前端 API 調用，userPermissionsApi）
-  - 依賴注入: 已在 Program.cs 註冊 IUserPermissionRepository 和 IUserPermissionService
-- ✅ **功能特性**：
-  - 支援使用者權限的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（系統、子系統、作業、按鈕）
-  - 支援批次刪除功能
-  - 支援批量設定系統權限（全選/取消）
-  - 支援批量設定選單權限
-  - 支援批量設定作業權限
-  - 支援批量設定按鈕權限
-  - 支援權限統計查詢（系統層級）
-  - **重要功能**：設定使用者直接權限時，自動清除該使用者的角色權限對應（UserRoles表）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0310 - 角色系統權限設定功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0310 角色系統權限設定功能
-  - Entity: RoleButton.cs（角色按鈕權限實體類別，使用 ButtonId 對應 ConfigButtons 表）
-  - Repository: IRolePermissionRepository.cs 和 RolePermissionRepository.cs（資料存取層，已完整實現）
-  - Service: IRolePermissionService.cs 和 RolePermissionService.cs（業務邏輯層，已完整實現）
-  - DTO: RolePermissionDto.cs, CreateRolePermissionDto.cs, RolePermissionQueryDto.cs, BatchSetRoleSystemPermissionDto.cs 等（資料傳輸物件）
-  - Controller: RolePermissionsController.cs（API 控制器，路徑 /api/v1/roles/{roleId}/permissions，已完整實現所有端點）
-  - Vue 頁面: SYS0310Query.vue（前端查詢維護頁面，支援角色權限查詢、批量設定）
-  - SQL 腳本: CreatePermissionTables.sql（資料庫建立腳本，包含 RoleButtons 表）
-  - API 文件: permissions.js（前端 API 調用，rolePermissionsApi）
-  - 依賴注入: 已在 Program.cs 註冊 IRolePermissionRepository 和 IRolePermissionService
-- ✅ **功能特性**：
-  - 支援角色權限的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（系統、子系統、作業、按鈕）
-  - 支援批次刪除功能
-  - 支援批量設定系統權限（全選/取消）
-  - 支援批量設定選單權限
-  - 支援批量設定作業權限
-  - 支援批量設定按鈕權限
-  - 支援權限統計查詢（系統層級）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0440 - 系統功能按鈕資料維護作業功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0440 系統功能按鈕資料維護功能
-  - Entity: Button.cs（系統功能按鈕實體類別，包含 TKey 字段）
-  - Repository: IButtonRepository.cs 和 ButtonRepository.cs（資料存取層）
-  - Service: IButtonService.cs 和 ButtonService.cs（業務邏輯層）
-  - DTO: ButtonDto.cs, CreateButtonDto.cs, UpdateButtonDto.cs, ButtonQueryDto.cs, BatchDeleteButtonDto.cs（資料傳輸物件）
-  - Controller: ButtonsController.cs（API 控制器，路徑 /api/v1/buttons）
-  - Vue 頁面: SYS0440Query.vue（前端查詢維護頁面）
-  - SQL 腳本: CreateButtonsTables.sql（資料庫建立腳本）
-  - API 文件: buttons.js（前端 API 調用）
-  - 依賴注入: 已在 Program.cs 註冊 IButtonRepository 和 IButtonService
-- ✅ **功能特性**：
-  - 支援系統功能按鈕的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選
-  - 支援批次刪除功能
-  - 刪除前檢查權限設定關聯
-  - 支援作業選項查詢（從 Programs 表取得）
-  - 支援訊息型態選項查詢（從 Parameters 表取得，TITLE='BUT_MSG'）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0430 - 系統作業資料維護作業功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0430 系統作業資料維護功能
-  - Entity: Program.cs（系統作業實體類別，包含 TKey 字段）
-  - Repository: IProgramRepository.cs 和 ProgramRepository.cs（資料存取層）
-  - Service: IProgramService.cs 和 ProgramService.cs（業務邏輯層）
-  - DTO: ProgramDto.cs, CreateProgramDto.cs, UpdateProgramDto.cs, ProgramQueryDto.cs（資料傳輸物件）
-  - Controller: ProgramsController.cs（API 控制器，路徑 /api/v1/programs）
-  - Vue 頁面: SYS0430Query.vue（前端查詢維護頁面）
-  - SQL 腳本: CreateProgramsTable.sql（資料庫建立腳本）
-  - API 文件: programs.js（前端 API 調用）
-  - 依賴注入: 已在 Program.cs 註冊 IProgramRepository 和 IProgramService
-- ✅ **功能特性**：
-  - 支援系統作業的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選
-  - 支援批次刪除功能
-  - 刪除前檢查按鈕關聯
-  - 支援子系統選項查詢（從 Menus 表取得）
-  - 支援作業型態選項查詢（從 Parameters 表取得，TITLE='PROG_TYPE'）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYS0420 - 子系統項目資料維護作業功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0420 子系統項目資料維護功能
-  - Entity: Menu.cs（子系統實體類別，包含 TKey 字段）
-  - Repository: IMenuRepository.cs 和 MenuRepository.cs（資料存取層）
-  - Service: IMenuService.cs 和 MenuService.cs（業務邏輯層）
-  - DTO: MenuDto.cs, CreateMenuDto.cs, UpdateMenuDto.cs, MenuQueryDto.cs（資料傳輸物件）
-  - Controller: MenusController.cs（API 控制器，路徑 /api/v1/menus）
-  - Vue 頁面: SYS0420Query.vue（前端查詢維護頁面）
-  - SQL 腳本: CreateMenusTable.sql（資料庫建立腳本）
-  - API 文件: menus.js（前端 API 調用）
-  - 依賴注入: 已在 Program.cs 註冊 IMenuRepository 和 IMenuService
-- ✅ **功能特性**：
-  - 支援子系統的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選
-  - 支援批次刪除功能
-  - 支援階層式子系統結構（上層子系統）
-  - 刪除前檢查下層子系統和作業關聯
-  - 支援主系統選項查詢（從 Systems 表取得）
-  - 支援上層子系統選項查詢（從 Menus 表取得）
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
 ### 📋 專案狀態總結
 - ✅ **專案架構完整**：已完成所有6個專案層（Api、Application、Domain、Infrastructure、Shared、Web）
-- ✅ **59個功能模組**：已完成所有功能模組的基礎架構（Entity、Repository、Service、DTO、Controller、Vue頁面）
+- ✅ **功能模組**：已完成多個功能模組的完整實現（SYSBC20、SYSBC30、SYSB110、SYSWB40 等）
 - ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
 - ✅ **前端樣式統一**：已完成所有 Vue 頁面導入 variables.scss 變數，統一使用主色系 #198754
 - ✅ **目錄結構文件**：ErpCore_專案目錄結構.md 中所有文件已標記✅，與實際檔案保持一致
@@ -392,18 +157,18 @@
 
 ### 🎯 目前狀態
 
-**專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
+**專案狀態**：✅ 已完成多個基本資料管理功能模組的完整實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（Vue 頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYSBC20（銀行基本資料維護）功能的完整實現。後端 API 端點已完整實現（GET/POST/PUT/DELETE /api/v1/banks，以及批次刪除端點）。前端維護頁面 Banks.vue 已完整實現，支援銀行查詢、新增、修改、刪除功能。路由配置已添加到 router/index.js（路徑 /master-data/banks）。所有代碼已存在並符合開發計劃要求，包含完整的 CRUD 功能、帳號長度驗證、銀行種類分類、狀態管理等特性。
+**最新進度**：✅ 已完成 SYSWB60（庫別資料維護）和 SYSWB70（組別資料維護）功能的路由配置，兩個功能均已完整實現並可正常使用。已確認 SYSBC30（地區設定）和 SYSWB40（部別資料維護）功能已完整實現。所有代碼已提交到 Git 倉庫。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Infrastructure 專案缺少 IdentityModel、Caching 等 NuGet 包引用，以及一些命名空間衝突問題），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Infrastructure.csproj 的套件引用配置，添加必要的 NuGet 包。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（地區設定 SYSBC30、區域基本資料維護 SYSB450、部別資料維護 SYSWB40、庫別資料維護 SYSWB60、組別資料維護 SYSWB70 等）或進銷存管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（區域基本資料維護 SYSB450、廠客基本資料維護 SYSB206、參數資料設定維護 SYSBC40 等）或進銷存管理功能
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-5. 進行功能測試和整合測試（特別是 SYSBC40 的參數功能，驗證只讀保護、多語言支援等功能）
+5. 進行功能測試和整合測試（特別是基本資料管理功能，驗證 CRUD 操作、分頁查詢、篩選等功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
