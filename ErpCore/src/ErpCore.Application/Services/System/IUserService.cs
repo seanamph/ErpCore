@@ -77,5 +77,45 @@ public interface IUserService
     /// 更新使用者狀態 (SYS0110)
     /// </summary>
     Task UpdateStatusAsync(string userId, UpdateStatusDto dto);
+
+    /// <summary>
+    /// 查詢使用者詳細資料（含業種儲位）(SYS0111)
+    /// </summary>
+    Task<UserDetailDto> GetUserDetailAsync(string userId);
+
+    /// <summary>
+    /// 查詢業種大分類列表 (SYS0111)
+    /// </summary>
+    Task<List<BusinessTypeMajorDto>> GetBusinessTypeMajorsAsync();
+
+    /// <summary>
+    /// 查詢業種中分類列表 (SYS0111)
+    /// </summary>
+    Task<List<BusinessTypeMiddleDto>> GetBusinessTypeMiddlesAsync(string btypeMId);
+
+    /// <summary>
+    /// 查詢業種小分類列表 (SYS0111)
+    /// </summary>
+    Task<List<BusinessTypeMinorDto>> GetBusinessTypeMinorsAsync(string btypeId);
+
+    /// <summary>
+    /// 查詢儲位列表 (SYS0111)
+    /// </summary>
+    Task<List<WarehouseAreaDto>> GetWarehouseAreasAsync(int? level, string? parentId);
+
+    /// <summary>
+    /// 查詢7X承租分店列表 (SYS0111)
+    /// </summary>
+    Task<List<StoreDto>> GetStoresAsync();
+
+    /// <summary>
+    /// 新增使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    Task<string> CreateUserWithBusinessTypesAsync(CreateUserWithBusinessTypesDto dto);
+
+    /// <summary>
+    /// 修改使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    Task UpdateUserWithBusinessTypesAsync(string userId, UpdateUserWithBusinessTypesDto dto);
 }
 

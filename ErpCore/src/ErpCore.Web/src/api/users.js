@@ -218,3 +218,88 @@ export function exportUsers(data) {
   })
 }
 
+/**
+ * 查詢使用者詳細資料（含業種儲位）(SYS0111)
+ */
+export function getUserDetail(userId) {
+  return request({
+    url: `/api/v1/users/${userId}/detail`,
+    method: 'get'
+  })
+}
+
+/**
+ * 查詢業種大分類列表 (SYS0111)
+ */
+export function getBusinessTypeMajors() {
+  return request({
+    url: '/api/v1/users/business-types/major',
+    method: 'get'
+  })
+}
+
+/**
+ * 查詢業種中分類列表 (SYS0111)
+ */
+export function getBusinessTypeMiddles(btypeMId) {
+  return request({
+    url: '/api/v1/users/business-types/middle',
+    method: 'get',
+    params: { btypeMId }
+  })
+}
+
+/**
+ * 查詢業種小分類列表 (SYS0111)
+ */
+export function getBusinessTypeMinors(btypeId) {
+  return request({
+    url: '/api/v1/users/business-types/minor',
+    method: 'get',
+    params: { btypeId }
+  })
+}
+
+/**
+ * 查詢儲位列表 (SYS0111)
+ */
+export function getWarehouseAreas(level, parentId) {
+  return request({
+    url: '/api/v1/users/warehouse-areas',
+    method: 'get',
+    params: { level, parentId }
+  })
+}
+
+/**
+ * 查詢7X承租分店列表 (SYS0111)
+ */
+export function getStores() {
+  return request({
+    url: '/api/v1/users/stores',
+    method: 'get'
+  })
+}
+
+/**
+ * 新增使用者（含業種儲位設定）(SYS0111)
+ */
+export function createUserWithBusinessTypes(data) {
+  return request({
+    url: '/api/v1/users/with-business-types',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 修改使用者（含業種儲位設定）(SYS0111)
+ */
+export function updateUserWithBusinessTypes(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/with-business-types`,
+    method: 'put',
+    data
+  })
+}
+

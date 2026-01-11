@@ -350,5 +350,115 @@ public class UsersController : BaseController
             await _service.UpdateStatusAsync(userId, dto);
         }, $"更新使用者狀態失敗: {userId}");
     }
+
+    /// <summary>
+    /// 查詢單筆使用者（含業種儲位資訊）(SYS0111)
+    /// </summary>
+    [HttpGet("{userId}/detail")]
+    public async Task<ActionResult<ApiResponse<UserDetailDto>>> GetUserDetail(string userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserDetailAsync(userId);
+            return result;
+        }, $"查詢使用者詳細資料失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 查詢業種大分類列表 (SYS0111)
+    /// </summary>
+    [HttpGet("business-types/major")]
+    public async Task<ActionResult<ApiResponse<List<BusinessTypeMajorDto>>>> GetBusinessTypeMajors()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetBusinessTypeMajorsAsync();
+            return result;
+        }, "查詢業種大分類列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢業種中分類列表 (SYS0111)
+    /// </summary>
+    [HttpGet("business-types/middle")]
+    public async Task<ActionResult<ApiResponse<List<BusinessTypeMiddleDto>>>> GetBusinessTypeMiddles(
+        [FromQuery] string btypeMId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetBusinessTypeMiddlesAsync(btypeMId);
+            return result;
+        }, $"查詢業種中分類列表失敗: {btypeMId}");
+    }
+
+    /// <summary>
+    /// 查詢業種小分類列表 (SYS0111)
+    /// </summary>
+    [HttpGet("business-types/minor")]
+    public async Task<ActionResult<ApiResponse<List<BusinessTypeMinorDto>>>> GetBusinessTypeMinors(
+        [FromQuery] string btypeId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetBusinessTypeMinorsAsync(btypeId);
+            return result;
+        }, $"查詢業種小分類列表失敗: {btypeId}");
+    }
+
+    /// <summary>
+    /// 查詢儲位列表 (SYS0111)
+    /// </summary>
+    [HttpGet("warehouse-areas")]
+    public async Task<ActionResult<ApiResponse<List<WarehouseAreaDto>>>> GetWarehouseAreas(
+        [FromQuery] int? level,
+        [FromQuery] string? parentId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetWarehouseAreasAsync(level, parentId);
+            return result;
+        }, "查詢儲位列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢7X承租分店列表 (SYS0111)
+    /// </summary>
+    [HttpGet("stores")]
+    public async Task<ActionResult<ApiResponse<List<StoreDto>>>> GetStores()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetStoresAsync();
+            return result;
+        }, "查詢7X承租分店列表失敗");
+    }
+
+    /// <summary>
+    /// 新增使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    [HttpPost("with-business-types")]
+    public async Task<ActionResult<ApiResponse<string>>> CreateUserWithBusinessTypes(
+        [FromBody] CreateUserWithBusinessTypesDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.CreateUserWithBusinessTypesAsync(dto);
+            return result;
+        }, "新增使用者（含業種儲位設定）失敗");
+    }
+
+    /// <summary>
+    /// 修改使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    [HttpPut("{userId}/with-business-types")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateUserWithBusinessTypes(
+        string userId,
+        [FromBody] UpdateUserWithBusinessTypesDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.UpdateUserWithBusinessTypesAsync(userId, dto);
+        }, $"修改使用者（含業種儲位設定）失敗: {userId}");
+    }
 }
 

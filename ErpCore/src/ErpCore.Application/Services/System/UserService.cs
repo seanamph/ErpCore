@@ -18,17 +18,26 @@ public class UserService : BaseService, IUserService
     private readonly IUserRepository _repository;
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ExportHelper _exportHelper;
+    private readonly IUserBusinessTypeRepository _userBusinessTypeRepository;
+    private readonly IUserWarehouseAreaRepository _userWarehouseAreaRepository;
+    private readonly IUserStoreRepository _userStoreRepository;
 
     public UserService(
         IUserRepository repository,
         IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext,
-        ExportHelper exportHelper) : base(logger, userContext)
+        ExportHelper exportHelper,
+        IUserBusinessTypeRepository userBusinessTypeRepository,
+        IUserWarehouseAreaRepository userWarehouseAreaRepository,
+        IUserStoreRepository userStoreRepository) : base(logger, userContext)
     {
         _repository = repository;
         _connectionFactory = connectionFactory;
         _exportHelper = exportHelper;
+        _userBusinessTypeRepository = userBusinessTypeRepository;
+        _userWarehouseAreaRepository = userWarehouseAreaRepository;
+        _userStoreRepository = userStoreRepository;
     }
 
     public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryDto query)
@@ -610,6 +619,332 @@ public class UserService : BaseService, IUserService
         var bytes = Encoding.UTF8.GetBytes(password);
         var hash = sha256.ComputeHash(bytes);
         return Convert.ToBase64String(hash);
+    }
+
+    /// <summary>
+    /// 查詢使用者詳細資料（含業種儲位）(SYS0111)
+    /// </summary>
+    public async Task<UserDetailDto> GetUserDetailAsync(string userId)
+    {
+        try
+        {
+            var user = await _repository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            var businessTypes = await _userBusinessTypeRepository.GetByUserIdAsync(userId);
+            var warehouseAreas = await _userWarehouseAreaRepository.GetByUserIdAsync(userId);
+            var stores = await _userStoreRepository.GetByUserIdAsync(userId);
+
+            return new UserDetailDto
+            {
+                UserId = user.UserId,
+                UserName = user.UserName,
+                Title = user.Title,
+                OrgId = user.OrgId,
+                StartDate = user.StartDate,
+                EndDate = user.EndDate,
+                Status = user.Status,
+                UserType = user.UserType,
+                Notes = user.Notes,
+                UserPriority = user.UserPriority,
+                ShopId = user.ShopId,
+                BusinessTypes = businessTypes.Select(x => new UserBusinessTypeDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    BtypeMId = x.BtypeMId,
+                    BtypeId = x.BtypeId,
+                    PtypeId = x.PtypeId
+                }).ToList(),
+                WarehouseAreas = warehouseAreas.Select(x => new UserWarehouseAreaDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    WareaId1 = x.WareaId1,
+                    WareaId2 = x.WareaId2,
+                    WareaId3 = x.WareaId3
+                }).ToList(),
+                Stores = stores.Select(x => new UserStoreDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    StoreId = x.StoreId
+                }).ToList()
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者詳細資料失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 查詢業種大分類列表 (SYS0111)
+    /// </summary>
+    public async Task<List<BusinessTypeMajorDto>> GetBusinessTypeMajorsAsync()
+    {
+        try
+        {
+            // TODO: 實作查詢業種大分類的邏輯，這裡需要根據實際資料表結構實作
+            // 暫時返回空列表，實際應該從資料庫查詢
+            return new List<BusinessTypeMajorDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢業種大分類列表失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 查詢業種中分類列表 (SYS0111)
+    /// </summary>
+    public async Task<List<BusinessTypeMiddleDto>> GetBusinessTypeMiddlesAsync(string btypeMId)
+    {
+        try
+        {
+            // TODO: 實作查詢業種中分類的邏輯，這裡需要根據實際資料表結構實作
+            // 暫時返回空列表，實際應該從資料庫查詢
+            return new List<BusinessTypeMiddleDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢業種中分類列表失敗: {btypeMId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 查詢業種小分類列表 (SYS0111)
+    /// </summary>
+    public async Task<List<BusinessTypeMinorDto>> GetBusinessTypeMinorsAsync(string btypeId)
+    {
+        try
+        {
+            // TODO: 實作查詢業種小分類的邏輯，這裡需要根據實際資料表結構實作
+            // 暫時返回空列表，實際應該從資料庫查詢
+            return new List<BusinessTypeMinorDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢業種小分類列表失敗: {btypeId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 查詢儲位列表 (SYS0111)
+    /// </summary>
+    public async Task<List<WarehouseAreaDto>> GetWarehouseAreasAsync(int? level, string? parentId)
+    {
+        try
+        {
+            // TODO: 實作查詢儲位的邏輯，這裡需要根據實際資料表結構實作
+            // 暫時返回空列表，實際應該從資料庫查詢
+            return new List<WarehouseAreaDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢儲位列表失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 查詢7X承租分店列表 (SYS0111)
+    /// </summary>
+    public async Task<List<StoreDto>> GetStoresAsync()
+    {
+        try
+        {
+            // TODO: 實作查詢7X承租分店的邏輯，這裡需要根據實際資料表結構實作
+            // 暫時返回空列表，實際應該從資料庫查詢
+            return new List<StoreDto>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢7X承租分店列表失敗", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 新增使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    public async Task<string> CreateUserWithBusinessTypesAsync(CreateUserWithBusinessTypesDto dto)
+    {
+        try
+        {
+            // 先建立基本使用者資料
+            var createUserDto = new CreateUserDto
+            {
+                UserId = dto.UserId,
+                UserName = dto.UserName,
+                UserPassword = dto.UserPassword,
+                Title = dto.Title,
+                OrgId = dto.OrgId,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status,
+                UserType = dto.UserType,
+                Notes = dto.Notes,
+                UserPriority = dto.UserPriority,
+                ShopId = dto.ShopId,
+                FloorId = dto.FloorId,
+                AreaId = dto.AreaId,
+                BtypeId = dto.BtypeId,
+                StoreId = dto.StoreId
+            };
+
+            var userId = await CreateUserAsync(createUserDto);
+
+            // 建立業種權限
+            if (dto.BusinessTypes != null && dto.BusinessTypes.Count > 0)
+            {
+                var businessTypes = dto.BusinessTypes.Select(x => new UserBusinessType
+                {
+                    UserId = userId,
+                    BtypeMId = x.BtypeMId,
+                    BtypeId = x.BtypeId,
+                    PtypeId = x.PtypeId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userBusinessTypeRepository.CreateBatchAsync(businessTypes);
+            }
+
+            // 建立儲位權限
+            if (dto.WarehouseAreas != null && dto.WarehouseAreas.Count > 0)
+            {
+                var warehouseAreas = dto.WarehouseAreas.Select(x => new UserWarehouseArea
+                {
+                    UserId = userId,
+                    WareaId1 = x.WareaId1,
+                    WareaId2 = x.WareaId2,
+                    WareaId3 = x.WareaId3,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userWarehouseAreaRepository.CreateBatchAsync(warehouseAreas);
+            }
+
+            // 建立7X承租分店權限
+            if (dto.Stores != null && dto.Stores.Count > 0)
+            {
+                var stores = dto.Stores.Select(x => new UserStore
+                {
+                    UserId = userId,
+                    StoreId = x.StoreId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userStoreRepository.CreateBatchAsync(stores);
+            }
+
+            return userId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增使用者（含業種儲位設定）失敗: {dto.UserId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 修改使用者（含業種儲位設定）(SYS0111)
+    /// </summary>
+    public async Task UpdateUserWithBusinessTypesAsync(string userId, UpdateUserWithBusinessTypesDto dto)
+    {
+        try
+        {
+            // 先更新基本使用者資料
+            var updateUserDto = new UpdateUserDto
+            {
+                UserName = dto.UserName,
+                Title = dto.Title,
+                OrgId = dto.OrgId,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status,
+                UserType = dto.UserType,
+                Notes = dto.Notes,
+                UserPriority = dto.UserPriority,
+                ShopId = dto.ShopId,
+                FloorId = dto.FloorId,
+                AreaId = dto.AreaId,
+                BtypeId = dto.BtypeId,
+                StoreId = dto.StoreId
+            };
+
+            await UpdateUserAsync(userId, updateUserDto);
+
+            // 刪除舊的業種權限
+            await _userBusinessTypeRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的業種權限
+            if (dto.BusinessTypes != null && dto.BusinessTypes.Count > 0)
+            {
+                var businessTypes = dto.BusinessTypes.Select(x => new UserBusinessType
+                {
+                    UserId = userId,
+                    BtypeMId = x.BtypeMId,
+                    BtypeId = x.BtypeId,
+                    PtypeId = x.PtypeId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userBusinessTypeRepository.CreateBatchAsync(businessTypes);
+            }
+
+            // 刪除舊的儲位權限
+            await _userWarehouseAreaRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的儲位權限
+            if (dto.WarehouseAreas != null && dto.WarehouseAreas.Count > 0)
+            {
+                var warehouseAreas = dto.WarehouseAreas.Select(x => new UserWarehouseArea
+                {
+                    UserId = userId,
+                    WareaId1 = x.WareaId1,
+                    WareaId2 = x.WareaId2,
+                    WareaId3 = x.WareaId3,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userWarehouseAreaRepository.CreateBatchAsync(warehouseAreas);
+            }
+
+            // 刪除舊的7X承租分店權限
+            await _userStoreRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的7X承租分店權限
+            if (dto.Stores != null && dto.Stores.Count > 0)
+            {
+                var stores = dto.Stores.Select(x => new UserStore
+                {
+                    UserId = userId,
+                    StoreId = x.StoreId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userStoreRepository.CreateBatchAsync(stores);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改使用者（含業種儲位設定）失敗: {userId}", ex);
+            throw;
+        }
     }
 }
 

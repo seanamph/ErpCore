@@ -1,0 +1,42 @@
+namespace ErpCore.Domain.Entities.System;
+
+/// <summary>
+/// 使用者業種權限實體 (SYS0111)
+/// </summary>
+public class UserBusinessType
+{
+    /// <summary>
+    /// 主鍵
+    /// </summary>
+    public long Id { get; set; }
+
+    /// <summary>
+    /// 使用者編號
+    /// </summary>
+    public string UserId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 業種大分類
+    /// </summary>
+    public string? BtypeMId { get; set; }
+
+    /// <summary>
+    /// 業種中分類
+    /// </summary>
+    public string? BtypeId { get; set; }
+
+    /// <summary>
+    /// 業種小分類
+    /// </summary>
+    public string? PtypeId { get; set; }
+
+    /// <summary>
+    /// 建立者
+    /// </summary>
+    public string? CreatedBy { get; set; }
+
+    /// <summary>
+    /// 建立時間
+    /// </summary>
+    public DateTime CreatedAt { get; set; }
+}

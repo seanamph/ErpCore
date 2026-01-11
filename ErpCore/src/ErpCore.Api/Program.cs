@@ -137,6 +137,9 @@ try
     builder.Services.AddScoped<IConfigButtonRepository, ConfigButtonRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
     builder.Services.AddScoped<IUserAgentRepository, UserAgentRepository>();
+    builder.Services.AddScoped<IUserBusinessTypeRepository, UserBusinessTypeRepository>();
+    builder.Services.AddScoped<IUserWarehouseAreaRepository, UserWarehouseAreaRepository>();
+    builder.Services.AddScoped<IUserStoreRepository, UserStoreRepository>();
     builder.Services.AddScoped<IRoleRepository, RoleRepository>();
     builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
     builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();

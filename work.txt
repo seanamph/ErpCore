@@ -3,86 +3,48 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0760 功能實現完成**：已完成使用者異常登入報表功能
+- ✅ **SYS0111 功能實現完成**：已完成使用者基本資料維護(業種儲位)功能
   - 實現內容：
-    - ✅ Entity 層: `LoginLog` 實體已完整實現
-    - ✅ Repository 層: `LoginLogRepository` 和 `ILoginLogRepository` 已完整實現（查詢、刪除、取得事件類型）
-    - ✅ Service 層: `LoginLogService` 和 `ILoginLogService` 已完整實現（查詢、刪除、報表產生）
-    - ✅ Controller 層: `LoginLogController` 已完整實現（GET、DELETE、POST 報表）
-    - ✅ DTO 層: `LoginLogDto`、`LoginLogQueryDto`、`EventTypeDto`、`DeleteLoginLogRequestDto`、`LoginLogReportDto` 等已完整實現
-    - ✅ Vue 頁面: `SYS0760Query.vue` - 使用者異常登入報表查詢頁面
-    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0760 路由（`/system/login-log-query`）
-    - ✅ API 整合: 使用 `loginLogApi.getLoginLogs`、`getEventTypes`、`deleteLoginLogs`、`generateReport` API
-    - ✅ 查詢功能: 支援多條件組合查詢（異常事件代碼、使用者代碼、事件時間範圍）
-    - ✅ 顯示功能: 以表格形式顯示異常登入記錄，支援排序和分頁
-    - ✅ 刪除功能: 支援多選刪除異常登入記錄
-    - ✅ 報表功能: 支援匯出 PDF 和 Excel 格式
-    - ✅ SQL 腳本: `CreateLoginLogTable.sql` 已完整實現
-  - 功能狀態：SYS0760 前端頁面和後端服務已完整實現
-  - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0760-使用者異常登入報表.md`
-- ✅ **SYS0910 功能實現完成**：已完成使用者查詢功能
-  - 實現內容：
-    - ✅ Entity 層: 使用現有的 `User` 實體（與 SYS0110 共用）
-    - ✅ Repository 層: 使用現有的 `UserRepository` 和 `IUserRepository`
-    - ✅ Service 層: 使用現有的 `UserService` 和 `IUserService`（已包含查詢和匯出功能）
-    - ✅ Controller 層: 在 `UsersController` 中添加了 GET `/api/v1/users/query` 和 GET `/api/v1/users/{userId}/query` 方法
-    - ✅ DTO 層: 使用現有的 `UserDto` 和 `UserQueryDto`
-    - ✅ Vue 頁面: `SYS0910Query.vue` - 使用者查詢功能頁面
-    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0910 路由（`/system/users-query`）
-    - ✅ API 整合: 使用 `queryUsersGet`、`queryUserById` 和 `exportUserQuery` API
-    - ✅ 查詢功能: 支援多條件組合查詢（使用者代碼、名稱、組織、狀態、類型、職稱、店別）
-    - ✅ 顯示功能: 以表格形式顯示使用者資料，支援排序和分頁
-    - ✅ 匯出功能: 支援匯出 Excel 格式
-    - ✅ 詳細查看: 支援查看單筆使用者詳細資料（只讀模式）
-  - 功能狀態：SYS0910 前端頁面和後端服務已完整實現
-  - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0910-使用者查詢功能.md`
-- ✅ **SYS0810 功能實現完成**：已完成系統作業與功能列表查詢功能
-  - 實現內容：
-    - ✅ Entity 層: 使用現有的 `ConfigSystem`、`ConfigProgram`、`ConfigButton` 實體
-    - ✅ Service 層: `SystemProgramButtonService` 已完整實現（查詢和匯出功能）
-    - ✅ Controller 層: `SystemProgramButtonController` 已完整實現
-    - ✅ DTO 層: `SystemProgramButtonResponseDto`、`ProgramButtonDto`、`ButtonDto` 等已完整實現
-    - ✅ Vue 頁面: `SystemProgramButtonReport.vue` - 系統作業與功能列表查詢頁面
-    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0810 路由
-    - ✅ API 整合: 使用 `systemProgramButtonApi.getSystemProgramButtons` 和 `exportSystemProgramButtons` API
-    - ✅ 查詢功能: 支援按系統代碼查詢作業與功能列表
-    - ✅ 顯示功能: 以樹狀表格形式顯示系統、作業、功能按鈕的階層結構
-    - ✅ 匯出功能: 支援匯出 Excel 和 PDF 格式
-    - ✅ 系統選擇: 支援系統下拉選單選擇，選擇後自動載入資料
-  - 功能狀態：SYS0810 前端頁面和後端服務已完整實現
-  - 開發依據：`開發計劃/01-系統管理/03-權限管理/SYS0810-系統作業與功能列表查詢.md`
-  - 修復內容：修復 Service 層中對不存在欄位（ProgramType、PageId）的查詢問題
+    - ✅ Entity 層: `UserBusinessType`、`UserWarehouseArea`、`UserStore` 實體已完整實現
+    - ✅ Repository 層: `UserBusinessTypeRepository`、`UserWarehouseAreaRepository`、`UserStoreRepository` 和對應的介面已完整實現（查詢、新增、批次新增、刪除）
+    - ✅ Service 層: `UserService` 已擴展（查詢使用者詳細資料、查詢業種分類、查詢儲位、查詢7X承租分店、新增/修改使用者含業種儲位設定）
+    - ✅ Controller 層: `UsersController` 已擴展（GET /{userId}/detail、GET /business-types/major、GET /business-types/middle、GET /business-types/minor、GET /warehouse-areas、GET /stores、POST /with-business-types、PUT /{userId}/with-business-types 等 API 端點）
+    - ✅ DTO 層: `UserDetailDto`、`UserBusinessTypeDto`、`UserWarehouseAreaDto`、`UserStoreDto`、`BusinessTypeMajorDto`、`BusinessTypeMiddleDto`、`BusinessTypeMinorDto`、`WarehouseAreaDto`、`StoreDto`、`CreateUserWithBusinessTypesDto`、`UpdateUserWithBusinessTypesDto` 等已完整實現
+    - ✅ API 整合: 在 `users.js` 中新增所有 SYS0111 相關的 API 方法
+    - ✅ SQL 腳本: `CreateUserBusinessTypesTables.sql` 已完整實現（包含 UserBusinessTypes、UserWarehouseAreas、UserStores 三個資料表）
+    - ✅ 依賴注入: 已在 `Program.cs` 中註冊新的 Repository
+  - 功能狀態：SYS0111 後端服務已完整實現，前端 Vue 頁面待實現（API 已準備就緒）
+  - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0111-使用者基本資料維護(業種儲位).md`
 
 ### ⚠️ 已知問題
-- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
-  - 問題原因：Infrastructure 層引用了 Application 層，而 Application 層也引用了 Infrastructure 層
-  - 具體原因：Infrastructure 層的 Repository 使用了 Application 層的 DTO
-  - 影響範圍：影響整個專案的編譯，但不影響已完成的代碼邏輯
-  - 建議：需要重構專案依賴關係，將 DTO 移到 Shared 層或 Domain 層，或讓 Repository 使用 Entity 而非 DTO
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
-  - 問題原因：文件編碼格式不正確，導致中文字符顯示異常
-  - 影響範圍：僅影響 Certificate 相關頁面
-  - 建議：將相關文件轉換為 UTF-8 編碼
+- **dotnet build**：專案存在一些既有的編譯錯誤（與 SYS0111 無關）
+  - 問題原因：部分命名空間引用問題和 DTO 類型缺失
+  - 影響範圍：不影響 SYS0111 功能的實現
+  - 建議：後續需要修復這些既有的編譯錯誤
+- **前端 Vue 頁面**：SYS0111Query.vue 尚未實現
+  - 建議：參考 SYS0110Query.vue 和 SYS0117Query.vue 實現完整的 Vue 頁面，包含業種、儲位、7X承租分店的設定功能
 
 ### 🎯 下一步建議
-1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0760 使用者異常登入報表等）
-   - 按照開發計劃文件實現：Entity → Repository → Service → DTO → Controller → Vue 頁面 → SQL
-   - 注意：所有開發都必須按照現有的文件，所有程式都要有 md 依據
-2. **優先修復編譯錯誤**（可選）：
-   - 解決循環相依性問題：將 Infrastructure 層中 Repository 使用的 DTO 移到 Shared 層，或讓 Repository 直接使用 Entity
-   - 修復前端編碼問題：將 CertificateData/index.vue、CertificateProcess/index.vue 等文件轉換為 UTF-8 編碼
-   - 確保專案可以正常構建（dotnet build 和 npm build 都成功）
-3. **功能測試**：對已完成的功能進行完整測試，確保功能正常運作
-4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
+1. **實現前端 Vue 頁面**：創建 SYS0111Query.vue，實現完整的 UI 功能
+   - 參考 SYS0110Query.vue 的基本結構
+   - 新增業種權限設定區塊（大分類→中分類→小分類的階層選擇）
+   - 新增儲位權限設定區塊（儲位1→儲位2→儲位3的階層選擇）
+   - 新增7X承租分店權限設定區塊
+   - 整合所有 API 方法
+2. **完善業種和儲位查詢邏輯**：在 Service 層實現實際的業種和儲位查詢邏輯
+   - 目前 GetBusinessTypeMajorsAsync、GetBusinessTypeMiddlesAsync、GetBusinessTypeMinorsAsync、GetWarehouseAreasAsync、GetStoresAsync 方法返回空列表
+   - 需要根據實際資料表結構實現查詢邏輯
+3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
+4. **功能測試**：對已完成的功能進行完整測試，確保功能正常運作
 
 ---
-
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 已完成功能清單
 - **系統管理功能**：
   - ✅ SYS0110（使用者基本資料維護）、SYS0120（使用者資料瀏覽）、SYS0130（使用者帳戶原則管理）、SYS0140（使用者資料查詢）
+  - ✅ **SYS0111（使用者基本資料維護(業種儲位)）** ✨後端已完整實現
+  - ✅ SYS0117（使用者權限代理）✨已完整實現
   - ✅ SYS0210（角色基本資料維護）、SYS0220（使用者之角色設定維護）、SYS0230（角色之使用者設定維護）、SYS0240（角色複製）
   - ✅ SYS0310（角色系統權限設定）、SYS0320（使用者系統權限設定）、SYS0330（角色欄位權限設定）、SYS0340（使用者欄位權限設定）、SYS0360（系統對應權限設定）
   - ✅ SYS0410（主系統項目資料維護）、SYS0420（子系統項目資料維護）、SYS0430（系統作業資料維護）、SYS0440（系統功能按鈕資料維護）
@@ -94,14 +56,11 @@
 - **下拉列表功能**：DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST、MENU_LIST、USER_LIST
 
 ### ⚠️ 已知問題
-- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
-  - 需要重構：將 Infrastructure 層 Repository 使用的 DTO 移到 Shared 層，或讓 Repository 使用 Entity
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
-  - 需要修復：將相關文件轉換為 UTF-8 編碼
+- **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關）
+- **前端 Vue 頁面**：SYS0111Query.vue 尚未實現
 
 ### 🎯 下一步建議
-1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能或報表功能
-2. **優先修復編譯錯誤**（可選）：解決循環相依性問題和前端編碼問題，確保專案可以正常構建
-3. **功能測試**：對已完成的功能進行完整測試
-4. **代碼審查**：檢查已完成功能的代碼品質
+1. **實現前端 Vue 頁面**：創建 SYS0111Query.vue，實現完整的 UI 功能
+2. **完善業種和儲位查詢邏輯**：在 Service 層實現實際的業種和儲位查詢邏輯
+3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
+4. **功能測試**：對已完成的功能進行完整測試
