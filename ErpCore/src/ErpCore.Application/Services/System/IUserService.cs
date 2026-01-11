@@ -67,5 +67,15 @@ public interface IUserService
     /// 取得當前登入使用者資訊
     /// </summary>
     Task<UserDto> GetCurrentUserAsync();
+
+    /// <summary>
+    /// 重設密碼 (SYS0110)
+    /// </summary>
+    Task ResetPasswordAsync(string userId, ResetPasswordDto dto);
+
+    /// <summary>
+    /// 更新使用者狀態 (SYS0110)
+    /// </summary>
+    Task UpdateStatusAsync(string userId, UpdateStatusDto dto);
 }
 

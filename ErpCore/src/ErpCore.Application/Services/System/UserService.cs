@@ -524,6 +524,77 @@ public class UserService : BaseService, IUserService
     }
 
     /// <summary>
+    /// 重設密碼 (SYS0110)
+    /// </summary>
+    public async Task ResetPasswordAsync(string userId, ResetPasswordDto dto)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 驗證新密碼
+            if (string.IsNullOrWhiteSpace(dto.NewPassword))
+            {
+                throw new ArgumentException("新密碼不能為空");
+            }
+
+            // 加密新密碼
+            var newPasswordHash = HashPassword(dto.NewPassword);
+
+            // 更新密碼
+            await _repository.UpdatePasswordAsync(userId, newPasswordHash);
+
+            _logger.LogInfo($"管理員重設使用者密碼成功: {userId}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"重設密碼失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 更新使用者狀態 (SYS0110)
+    /// </summary>
+    public async Task UpdateStatusAsync(string userId, UpdateStatusDto dto)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 驗證狀態值
+            if (dto.Status != "A" && dto.Status != "I" && dto.Status != "L")
+            {
+                throw new ArgumentException("狀態必須為 A(啟用)、I(停用) 或 L(鎖定)");
+            }
+
+            // 更新狀態
+            entity.Status = dto.Status;
+            entity.UpdatedBy = GetCurrentUserId();
+            entity.UpdatedAt = DateTime.Now;
+
+            await _repository.UpdateAsync(entity);
+
+            _logger.LogInfo($"更新使用者狀態成功: {userId}, 狀態: {dto.Status}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"更新使用者狀態失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
     /// 密碼雜湊（使用 SHA256）
     /// 注意：實際應用中應使用更安全的加密方式，如 BCrypt 或 Argon2
     /// </summary>

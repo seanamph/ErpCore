@@ -163,3 +163,25 @@ export function exportUserQuery(data, format = 'excel') {
   })
 }
 
+/**
+ * 重設密碼 (SYS0110)
+ */
+export function resetPassword(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/reset-password`,
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 更新使用者狀態 (SYS0110)
+ */
+export function updateStatus(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/status`,
+    method: 'put',
+    data
+  })
+}
+

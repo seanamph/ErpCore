@@ -59,10 +59,18 @@
             {{ row.LastLoginDate ? new Date(row.LastLoginDate).toLocaleString('zh-TW') : '' }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="250" fixed="right">
+        <el-table-column label="操作" width="350" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleEdit(row)">修改</el-button>
             <el-button type="warning" size="small" @click="handleChangePassword(row)">變更密碼</el-button>
+            <el-button type="success" size="small" @click="handleResetPassword(row)">重設密碼</el-button>
+            <el-button 
+              :type="row.Status === 'A' ? 'info' : 'success'" 
+              size="small" 
+              @click="handleUpdateStatus(row)"
+            >
+              {{ row.Status === 'A' ? '停用' : '啟用' }}
+            </el-button>
             <el-button type="danger" size="small" @click="handleDelete(row)">刪除</el-button>
           </template>
         </el-table-column>
@@ -159,7 +167,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { getUsers, getUserById, createUser, updateUser, deleteUser, changePassword } from '@/api/users'
+import { getUsers, getUserById, createUser, updateUser, deleteUser, changePassword, resetPassword, updateStatus } from '@/api/users'
 
 // 查詢表單
 const queryForm = reactive({
@@ -303,6 +311,64 @@ const handleChangePassword = (row) => {
   passwordForm.NewPassword = ''
   passwordForm.ConfirmPassword = ''
   passwordDialogVisible.value = true
+}
+
+// 重設密碼
+const handleResetPassword = async (row) => {
+  try {
+    await ElMessageBox.prompt('請輸入新密碼', '重設密碼', {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      inputType: 'password',
+      inputPlaceholder: '請輸入新密碼',
+      inputValidator: (value) => {
+        if (!value || value.length < 6) {
+          return '密碼長度至少需要6個字元'
+        }
+        return true
+      }
+    }).then(async ({ value }) => {
+      try {
+        const response = await resetPassword(row.UserId, {
+          NewPassword: value
+        })
+        if (response.data.success) {
+          ElMessage.success('密碼重設成功')
+          handleSearch()
+        } else {
+          ElMessage.error(response.data.message || '密碼重設失敗')
+        }
+      } catch (error) {
+        ElMessage.error('密碼重設失敗：' + error.message)
+      }
+    })
+  } catch (error) {
+    // 用戶取消操作
+  }
+}
+
+// 更新狀態
+const handleUpdateStatus = async (row) => {
+  try {
+    const newStatus = row.Status === 'A' ? 'I' : 'A'
+    const statusText = newStatus === 'A' ? '啟用' : '停用'
+    await ElMessageBox.confirm(`確定要${statusText}此使用者嗎？`, '提示', {
+      type: 'warning'
+    })
+    const response = await updateStatus(row.UserId, {
+      Status: newStatus
+    })
+    if (response.data.success) {
+      ElMessage.success(`${statusText}成功`)
+      handleSearch()
+    } else {
+      ElMessage.error(response.data.message || `${statusText}失敗`)
+    }
+  } catch (error) {
+    if (error !== 'cancel') {
+      ElMessage.error('更新狀態失敗：' + error.message)
+    }
+  }
 }
 
 // 刪除

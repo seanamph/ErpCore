@@ -149,3 +149,19 @@ public class UpdateEndDateDto
     public DateTime? EndDate { get; set; }
 }
 
+/// <summary>
+/// 重設密碼 DTO (SYS0110)
+/// </summary>
+public class ResetPasswordDto
+{
+    public string NewPassword { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 更新狀態 DTO (SYS0110)
+/// </summary>
+public class UpdateStatusDto
+{
+    public string Status { get; set; } = string.Empty; // A:啟用, I:停用, L:鎖定
+}
+

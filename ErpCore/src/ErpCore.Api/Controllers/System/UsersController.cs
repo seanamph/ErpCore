@@ -272,5 +272,33 @@ public class UsersController : BaseController
             return result;
         }, "取得當前登入使用者資訊失敗");
     }
+
+    /// <summary>
+    /// 重設密碼 (SYS0110)
+    /// </summary>
+    [HttpPost("{userId}/reset-password")]
+    public async Task<ActionResult<ApiResponse<object>>> ResetPassword(
+        string userId,
+        [FromBody] ResetPasswordDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.ResetPasswordAsync(userId, dto);
+        }, $"重設密碼失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 啟用/停用使用者 (SYS0110)
+    /// </summary>
+    [HttpPut("{userId}/status")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(
+        string userId,
+        [FromBody] UpdateStatusDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.UpdateStatusAsync(userId, dto);
+        }, $"更新使用者狀態失敗: {userId}");
+    }
 }
 
