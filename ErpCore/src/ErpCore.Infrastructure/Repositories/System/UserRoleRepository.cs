@@ -138,15 +138,17 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
         try
         {
             const string sql = @"
-                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt)
-                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt)";
+                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup)
+                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt, @CreatedPriority, @CreatedGroup)";
 
             await ExecuteAsync(sql, new
             {
                 userRole.UserId,
                 userRole.RoleId,
                 userRole.CreatedBy,
-                userRole.CreatedAt
+                userRole.CreatedAt,
+                userRole.CreatedPriority,
+                userRole.CreatedGroup
             });
 
             return userRole;
@@ -163,15 +165,17 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
         try
         {
             const string sql = @"
-                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt)
-                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt)";
+                INSERT INTO UserRoles (UserId, RoleId, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup)
+                VALUES (@UserId, @RoleId, @CreatedBy, @CreatedAt, @CreatedPriority, @CreatedGroup)";
 
             await ExecuteAsync(sql, userRoles.Select(ur => new
             {
                 ur.UserId,
                 ur.RoleId,
                 ur.CreatedBy,
-                ur.CreatedAt
+                ur.CreatedAt,
+                ur.CreatedPriority,
+                ur.CreatedGroup
             }));
         }
         catch (Exception ex)

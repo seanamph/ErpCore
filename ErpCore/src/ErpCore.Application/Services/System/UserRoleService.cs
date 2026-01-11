@@ -171,12 +171,15 @@ public class UserRoleService : BaseService, IUserRoleService
 
             // 新增角色分配
             var currentUserId = GetCurrentUserId();
+            var currentUserEntity = await _userRepository.GetByIdAsync(currentUserId);
             var userRoles = newRoleIds.Select(roleId => new UserRole
             {
                 UserId = userId,
                 RoleId = roleId,
                 CreatedBy = currentUserId,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.Now,
+                CreatedPriority = currentUserEntity?.CreatedPriority,
+                CreatedGroup = currentUserEntity?.CreatedGroup
             }).ToList();
 
             await _userRoleRepository.CreateRangeAsync(userRoles);
@@ -256,6 +259,7 @@ public class UserRoleService : BaseService, IUserRoleService
             var roleIdsToRemove = currentRoleIds.Except(roleIds).ToList();
 
             var currentUserId = GetCurrentUserId();
+            var currentUserEntity = await _userRepository.GetByIdAsync(currentUserId);
 
             // 執行刪除
             if (roleIdsToRemove.Count > 0)
@@ -274,7 +278,9 @@ public class UserRoleService : BaseService, IUserRoleService
                     UserId = userId,
                     RoleId = roleId,
                     CreatedBy = currentUserId,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.Now,
+                    CreatedPriority = currentUserEntity?.CreatedPriority,
+                    CreatedGroup = currentUserEntity?.CreatedGroup
                 }).ToList();
                 await _userRoleRepository.CreateRangeAsync(userRolesToAdd);
             }
