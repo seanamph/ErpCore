@@ -3,9 +3,12 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYSB450 功能確認完成**：確認區域基本資料維護功能已完整實現，包含所有必要文件（Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本、API 文件、路由配置）
+- ✅ **功能檢查完成**：檢查了 SYSW110（供應商商品資料維護）和 SYSW150（商品永久變價作業）功能，確認均已完整實現
+- ✅ **功能完整性確認**：
+  - SYSW110 供應商商品資料維護：Entity、Repository、Service、DTO、Controller、Vue 頁面、SQL 腳本、API 文件、路由配置均已完整實現
+  - SYSW150 商品永久變價作業：相關文件均已存在並完整實現
 - ⚠️ **構建狀態**：
-  - dotnet build：存在已知的循環相依性錯誤（ErpCore.Infrastructure 專案）
+  - dotnet build：存在已知的循環相依性錯誤（ErpCore.Infrastructure 專案，MSB4006 錯誤）
   - npm build：存在已知的編碼問題（CertificateData/index.vue、CertificateProcess/index.vue 等文件）
   - 這些錯誤已在 work.txt 中記錄，需要後續修復
 
@@ -267,6 +270,7 @@
 - **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
 
 ### 🎯 下一步建議
-1. **優先修復編譯錯誤**：解決循環相依性和編碼問題，確保專案可以正常構建
-2. **繼續開發新功能**：選擇開發計劃目錄中的其他未完成功能（如進銷存管理功能 SYSW110、SYSW137、SYSW150 等）
-3. **功能測試**：對已完成的基本資料管理功能進行完整測試
+1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
+2. **繼續開發新功能**：選擇開發計劃目錄中的其他未完成功能，建議優先選擇基本資料管理類或下拉列表類的簡單功能
+3. **功能測試**：對已完成的功能進行完整測試，特別是 SYSW110、SYSW150 等進銷存管理功能
+4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
