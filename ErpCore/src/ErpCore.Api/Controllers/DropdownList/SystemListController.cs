@@ -10,7 +10,7 @@ namespace ErpCore.Api.Controllers.DropdownList;
 /// <summary>
 /// 系統列表控制器 (SYSID_LIST, USER_LIST)
 /// </summary>
-[Route("api/v1/lists/system")]
+[Route("api/v1/lists/systems")]
 public class SystemListController : BaseController
 {
     private readonly ISystemListService _systemListService;
@@ -25,7 +25,7 @@ public class SystemListController : BaseController
     /// <summary>
     /// 查詢系統列表 (SYSID_LIST)
     /// </summary>
-    [HttpGet("systems")]
+    [HttpGet]
     public async Task<ActionResult<ApiResponse<IEnumerable<SystemListDto>>>> GetSystemList(
         [FromQuery] SystemListQueryDto query)
     {
@@ -37,9 +37,23 @@ public class SystemListController : BaseController
     }
 
     /// <summary>
+    /// 查詢單筆系統
+    /// </summary>
+    [HttpGet("{systemId}")]
+    public async Task<ActionResult<ApiResponse<SystemListDto>>> GetSystemById(string systemId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var query = new SystemListQueryDto { SystemId = systemId };
+            var result = await _systemListService.GetSystemListAsync(query);
+            return result.FirstOrDefault() ?? throw new KeyNotFoundException($"系統不存在: {systemId}");
+        }, "查詢系統失敗");
+    }
+
+    /// <summary>
     /// 查詢系統選項（用於下拉選單）
     /// </summary>
-    [HttpGet("systems/options")]
+    [HttpGet("options")]
     public async Task<ActionResult<ApiResponse<IEnumerable<OptionDto>>>> GetSystemOptions(
         [FromQuery] string? status = null,
         [FromQuery] string? excludeSystems = null)

@@ -97,12 +97,17 @@ export const dropdownListApi = {
   // ========== 系統列表 (SYSID_LIST, USER_LIST) ==========
   // 查詢系統列表
   getSystems: (params) => {
-    return axios.get('/lists/system/systems', { params })
+    return axios.get('/lists/systems', { params })
+  },
+
+  // 查詢單筆系統
+  getSystem: (systemId) => {
+    return axios.get(`/lists/systems/${systemId}`)
   },
 
   // 查詢系統選項（用於下拉選單）
   getSystemOptions: (params) => {
-    return axios.get('/lists/system/systems/options', { params })
+    return axios.get('/lists/systems/options', { params })
   },
 
   // 查詢使用者列表

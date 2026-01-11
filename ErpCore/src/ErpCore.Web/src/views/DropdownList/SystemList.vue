@@ -1,50 +1,45 @@
 <template>
   <div class="system-list">
-    <div class="page-header">
-      <h1>系統列表 (SYSID_LIST, USER_LIST)</h1>
-    </div>
+    <el-card>
+      <template #header>
+        <div class="card-header">
+          <span>系統ID列表</span>
+          <el-button type="text" @click="handleClose" style="float: right;">關閉</el-button>
+        </div>
+      </template>
 
-    <!-- 查詢表單 -->
-    <el-card class="search-card" shadow="never">
-      <el-tabs v-model="activeTab" @tab-change="handleTabChange">
-        <el-tab-pane label="系統列表" name="system">
-          <el-form :inline="true" :model="systemQueryForm" class="search-form">
-            <el-form-item label="系統名稱">
-              <el-input v-model="systemQueryForm.SystemName" placeholder="請輸入系統名稱" clearable />
-            </el-form-item>
-            <el-form-item label="系統代碼">
-              <el-input v-model="systemQueryForm.SystemId" placeholder="請輸入系統代碼" clearable />
-            </el-form-item>
-            <el-form-item>
-              <el-button type="primary" @click="handleSystemSearch">查詢</el-button>
-              <el-button @click="handleSystemReset">重置</el-button>
-            </el-form-item>
-          </el-form>
+      <!-- 查詢表單 -->
+      <div class="search-bar">
+        <el-input
+          v-model="searchText"
+          placeholder="請輸入系統ID或系統名稱"
+          clearable
+          @keyup.enter="handleSearch"
+          style="width: 300px; margin-right: 10px"
+        />
+        <el-button type="primary" @click="handleSearch">開始查詢</el-button>
+        <el-button @click="handleClose">關閉</el-button>
+      </div>
 
-          <!-- 系統列表 -->
-          <el-table
-            :data="systemList"
-            v-loading="systemLoading"
-            border
-            stripe
-            highlight-current-row
-            @row-click="handleSystemRowClick"
-            style="width: 100%; cursor: pointer"
-          >
-            <el-table-column type="index" label="序號" width="60" align="center" />
-            <el-table-column prop="SystemId" label="系統代碼" width="120" />
-            <el-table-column prop="SystemName" label="系統名稱" min-width="200" />
-            <el-table-column prop="SystemType" label="系統類型" width="120" />
-            <el-table-column prop="Description" label="說明" min-width="200" show-overflow-tooltip />
-            <el-table-column prop="Status" label="狀態" width="80" align="center">
-              <template #default="{ row }">
-                <el-tag :type="row.Status === '1' ? 'success' : 'danger'" size="small">
-                  {{ row.Status === '1' ? '啟用' : '停用' }}
-                </el-tag>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
+      <!-- 系統列表 -->
+      <el-table
+        :data="systemList"
+        v-loading="systemLoading"
+        highlight-current-row
+        @row-click="handleRowClick"
+        style="width: 100%; margin-top: 20px; cursor: pointer"
+      >
+        <el-table-column type="index" label="序號" width="80" align="center" />
+        <el-table-column prop="SystemId" label="系統ID" width="120" />
+        <el-table-column prop="SystemName" label="系統名稱" />
+      </el-table>
+
+      <div class="footer" style="margin-top: 20px; text-align: right">
+        <el-button @click="handleClose">關閉</el-button>
+      </div>
+    </el-card>
+  </div>
+</template>
 
         <el-tab-pane label="使用者列表" name="user">
           <el-form :inline="true" :model="userQueryForm" class="search-form">
@@ -108,47 +103,29 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { dropdownListApi } from '@/api/dropdownList'
 
-// 當前標籤
-const activeTab = ref('system')
-
-// 系統查詢表單
-const systemQueryForm = reactive({
-  SystemName: '',
-  SystemId: ''
-})
+// 搜尋文字
+const searchText = ref('')
 
 // 系統列表
 const systemList = ref([])
 const systemLoading = ref(false)
 
-// 使用者查詢表單
-const userQueryForm = reactive({
-  UserName: '',
-  UserId: '',
-  Status: ''
-})
-
-// 使用者列表
-const userList = ref([])
-const userLoading = ref(false)
-const userPagination = reactive({
-  PageIndex: 1,
-  PageSize: 20,
-  TotalCount: 0
-})
-
 // 載入系統列表
 const loadSystemList = async () => {
   systemLoading.value = true
   try {
-    const params = {
-      SystemName: systemQueryForm.SystemName || undefined,
-      SystemId: systemQueryForm.SystemId || undefined
+    const params = {}
+    
+    // 如果搜尋文字不為空，同時搜尋系統ID和系統名稱
+    if (searchText.value) {
+      params.SystemId = searchText.value
+      params.SystemName = searchText.value
     }
+    
     const response = await dropdownListApi.getSystems(params)
     if (response.data?.success) {
       systemList.value = response.data.data || []
@@ -162,86 +139,29 @@ const loadSystemList = async () => {
   }
 }
 
-// 載入使用者列表
-const loadUserList = async () => {
-  userLoading.value = true
-  try {
-    const params = {
-      PageIndex: userPagination.PageIndex,
-      PageSize: userPagination.PageSize,
-      UserName: userQueryForm.UserName || undefined,
-      UserId: userQueryForm.UserId || undefined,
-      Status: userQueryForm.Status || undefined
-    }
-    const response = await dropdownListApi.getUsers(params)
-    if (response.data?.success) {
-      userList.value = response.data.data?.Items || []
-      userPagination.TotalCount = response.data.data?.TotalCount || 0
-    } else {
-      ElMessage.error(response.data?.message || '查詢失敗')
-    }
-  } catch (error) {
-    ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
-  } finally {
-    userLoading.value = false
-  }
-}
-
-// 系統查詢
-const handleSystemSearch = () => {
+// 搜尋系統
+const handleSearch = () => {
   loadSystemList()
 }
 
-// 系統重置
-const handleSystemReset = () => {
-  systemQueryForm.SystemName = ''
-  systemQueryForm.SystemId = ''
-  handleSystemSearch()
-}
-
-// 系統行點擊
-const handleSystemRowClick = (row) => {
+// 點擊表格列
+const handleRowClick = (row) => {
+  // 選擇系統後，可以回傳給父視窗或導向選單列表頁面
   ElMessage.success(`已選擇系統：${row.SystemName} (${row.SystemId})`)
+  
+  // 這裡可以根據實際需求處理選擇結果
+  // 例如：回傳給父視窗、導向選單列表頁面等
+  // window.opener?.handleSystemSelected?.(row.SystemId, row.SystemName)
 }
 
-// 使用者查詢
-const handleUserSearch = () => {
-  userPagination.PageIndex = 1
-  loadUserList()
-}
-
-// 使用者重置
-const handleUserReset = () => {
-  userQueryForm.UserName = ''
-  userQueryForm.UserId = ''
-  userQueryForm.Status = ''
-  handleUserSearch()
-}
-
-// 使用者行點擊
-const handleUserRowClick = (row) => {
-  ElMessage.success(`已選擇使用者：${row.UserName} (${row.UserId})`)
-}
-
-// 使用者分頁大小變更
-const handleUserSizeChange = (size) => {
-  userPagination.PageSize = size
-  userPagination.PageIndex = 1
-  loadUserList()
-}
-
-// 使用者分頁變更
-const handleUserPageChange = (page) => {
-  userPagination.PageIndex = page
-  loadUserList()
-}
-
-// 標籤切換
-const handleTabChange = (tabName) => {
-  if (tabName === 'system' && systemList.value.length === 0) {
-    loadSystemList()
-  } else if (tabName === 'user' && userList.value.length === 0) {
-    loadUserList()
+// 關閉視窗
+const handleClose = () => {
+  // 如果是彈窗模式，關閉視窗
+  if (window.opener) {
+    window.close()
+  } else {
+    // 如果是頁面模式，返回上一頁或導向首頁
+    window.history.back()
   }
 }
 
@@ -258,21 +178,21 @@ onMounted(() => {
   padding: 20px;
 }
 
-.page-header {
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
 }
 
-.page-header h1 {
-  font-size: 24px;
-  font-weight: 500;
-}
-
-.search-card {
-  margin-bottom: 20px;
-}
-
-.search-form {
-  margin: 0;
+.footer {
+  margin-top: 20px;
+  text-align: right;
 }
 </style>
 

@@ -1364,6 +1364,12 @@ const routes = [
         name: 'Areas',
         component: () => import('../views/BasicData/Areas.vue'),
         meta: { title: '區域基本資料維護作業 (SYSB450)' }
+      },
+      {
+        path: 'vendors',
+        name: 'Vendors',
+        component: () => import('../views/BasicData/Vendors.vue'),
+        meta: { title: '廠/客基本資料維護作業 (SYSB206)' }
       }
     ]
   }

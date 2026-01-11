@@ -30,14 +30,19 @@ public class SystemListService : BaseService, ISystemListService
             using var connection = _connectionFactory.CreateConnection();
 
             // 只顯示有選單、作業、按鈕的系統
+            // 根據開發計劃和舊程式邏輯，需要 JOIN Menus、Programs、Buttons 表
             var sql = @"
                 SELECT DISTINCT s.SystemId, s.SystemName, s.Status
-                FROM ConfigSystems s
+                FROM Systems s
                 WHERE EXISTS (
-                    SELECT 1 FROM ConfigPrograms p WHERE p.SystemId = s.SystemId
-                )
-                OR EXISTS (
-                    SELECT 1 FROM ConfigButtons b WHERE b.SystemId = s.SystemId
+                    SELECT 1 
+                    FROM Menus M
+                    INNER JOIN Programs P ON M.MenuId = P.MenuId
+                    INNER JOIN Buttons B ON P.ProgramId = B.ProgramId
+                    WHERE M.SystemId = s.SystemId
+                      AND (M.Status = '1' OR M.Status IS NULL)
+                      AND P.Status = '1'
+                      AND B.Status = '1'
                 )";
 
             var parameters = new DynamicParameters();
@@ -54,10 +59,16 @@ public class SystemListService : BaseService, ISystemListService
                 parameters.Add("SystemName", $"%{query.SystemName}%");
             }
 
+            // 狀態處理：狀態為NULL時視為啟用
             if (!string.IsNullOrEmpty(query.Status))
             {
                 sql += " AND (s.Status = @Status OR s.Status IS NULL)";
                 parameters.Add("Status", query.Status);
+            }
+            else
+            {
+                // 預設只顯示啟用的系統（狀態為'1'或NULL）
+                sql += " AND (s.Status = '1' OR s.Status IS NULL)";
             }
 
             // 排除特定系統（預設排除 EIP0000, CFG0000, XCOM000，除非是 xcom 使用者）
@@ -67,7 +78,7 @@ public class SystemListService : BaseService, ISystemListService
                 excludeSystems.AddRange(query.ExcludeSystems.Split(',', StringSplitOptions.RemoveEmptyEntries));
             }
 
-            // 檢查是否為 xcom 使用者（這裡簡化處理，實際應從認證上下文取得）
+            // 檢查是否為 xcom 使用者
             var currentUser = _userContext.GetUserId();
             if (string.IsNullOrEmpty(currentUser) || !currentUser.ToLower().Contains("xcom"))
             {
@@ -101,14 +112,19 @@ public class SystemListService : BaseService, ISystemListService
             _logger.LogInfo("查詢系統選項");
             using var connection = _connectionFactory.CreateConnection();
 
+            // 只顯示有選單、作業、按鈕的系統
             var sql = @"
                 SELECT DISTINCT s.SystemId AS Value, s.SystemName AS Label
-                FROM ConfigSystems s
+                FROM Systems s
                 WHERE EXISTS (
-                    SELECT 1 FROM ConfigPrograms p WHERE p.SystemId = s.SystemId
-                )
-                OR EXISTS (
-                    SELECT 1 FROM ConfigButtons b WHERE b.SystemId = s.SystemId
+                    SELECT 1 
+                    FROM Menus M
+                    INNER JOIN Programs P ON M.MenuId = P.MenuId
+                    INNER JOIN Buttons B ON P.ProgramId = B.ProgramId
+                    WHERE M.SystemId = s.SystemId
+                      AND (M.Status = '1' OR M.Status IS NULL)
+                      AND P.Status = '1'
+                      AND B.Status = '1'
                 )";
 
             var parameters = new DynamicParameters();
@@ -117,6 +133,11 @@ public class SystemListService : BaseService, ISystemListService
             {
                 sql += " AND (s.Status = @Status OR s.Status IS NULL)";
                 parameters.Add("Status", status);
+            }
+            else
+            {
+                // 預設只顯示啟用的系統（狀態為'1'或NULL）
+                sql += " AND (s.Status = '1' OR s.Status IS NULL)";
             }
 
             var excludeList = new List<string> { "EIP0000", "CFG0000" };
