@@ -126,20 +126,31 @@ export default {
         const response = await getPrograms({
           PageIndex: 1,
           PageSize: 50,
-          Filters: {
-            ProgramId: queryString || undefined,
-            ProgramName: queryString || undefined
-          }
+          ProgramId: queryString || undefined,
+          ProgramName: queryString || undefined
         })
-        if (response && response.Data && response.Data.Items) {
-          const programs = response.Data.Items.map(item => ({
+        // 處理不同的響應格式
+        let programs = []
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            const items = response.data.data.items || response.data.data.Items || []
+            programs = items.map(item => ({
+              value: item.programId || item.ProgramId,
+              label: `${item.programId || item.ProgramId} - ${item.programName || item.ProgramName}`
+            }))
+          } else if (response.data.Data && response.data.Data.Items) {
+            programs = response.data.Data.Items.map(item => ({
+              value: item.ProgramId,
+              label: `${item.ProgramId} - ${item.ProgramName}`
+            }))
+          }
+        } else if (response && response.Data && response.Data.Items) {
+          programs = response.Data.Items.map(item => ({
             value: item.ProgramId,
             label: `${item.ProgramId} - ${item.ProgramName}`
           }))
-          cb(programs)
-        } else {
-          cb([])
         }
+        cb(programs)
       } catch (error) {
         console.error('搜尋作業失敗:', error)
         cb([])
@@ -162,7 +173,21 @@ export default {
       try {
         const params = { ProgramId: queryForm.ProgramId }
         const response = await programUserPermissionApi.getList(params)
-        if (response && response.Data) {
+        // 處理不同的響應格式
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            permissionData.value = response.data.data
+            ElMessage.success('查詢成功')
+          } else if (response.data.Data) {
+            // 兼容舊格式
+            permissionData.value = response.data.Data
+            ElMessage.success('查詢成功')
+          } else {
+            ElMessage.warning(response.data.message || '查詢無資料')
+            permissionData.value = null
+          }
+        } else if (response && response.Data) {
+          // 兼容舊格式
           permissionData.value = response.Data
           ElMessage.success('查詢成功')
         } else {
@@ -170,7 +195,8 @@ export default {
           permissionData.value = null
         }
       } catch (error) {
-        ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
+        console.error('查詢失敗:', error)
+        ElMessage.error('查詢失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
         permissionData.value = null
       } finally {
         loading.value = false
@@ -208,8 +234,11 @@ export default {
         }
         const response = await programUserPermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         })
         const url = window.URL.createObjectURL(blob)
@@ -224,7 +253,7 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 
@@ -241,8 +270,11 @@ export default {
         }
         const response = await programUserPermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/pdf'
         })
         const url = window.URL.createObjectURL(blob)
@@ -257,7 +289,7 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 
