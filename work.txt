@@ -4,6 +4,29 @@
 
 ### 📝 最新完成工作
 
+#### SYSBC20 - 銀行基本資料維護功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSBC20 銀行基本資料維護功能
+  - Entity: Bank.cs（銀行實體類別，已存在）
+  - Repository: IBankRepository.cs 和 BankRepository.cs（資料存取層，已完整實現）
+  - Service: IBankService.cs 和 BankService.cs（業務邏輯層，已完整實現）
+  - DTO: BankDto.cs, BankQueryDto.cs, CreateBankDto.cs, UpdateBankDto.cs, BatchDeleteBankDto.cs（資料傳輸物件，已存在）
+  - Controller: BanksController.cs（API 控制器，路徑 /api/v1/banks，已完整實現所有端點）
+  - Vue 頁面: Banks.vue（前端查詢維護頁面，支援銀行查詢、新增、修改、刪除）
+  - SQL 腳本: CreateBanksTables.sql（資料庫建立腳本，包含 Banks 表，已存在）
+  - API 文件: banks.js（前端 API 調用，已存在）
+  - 路由配置: 已在 router/index.js 註冊 SYSBC20 路由（路徑 /master-data/banks）
+  - 依賴注入: 已在 Program.cs 註冊 IBankRepository 和 IBankService
+- ✅ **功能特性**：
+  - 支援銀行的新增、修改、刪除、查詢功能
+  - 支援分頁查詢、排序、多條件篩選（銀行代號、銀行名稱、狀態、銀行種類）
+  - 支援帳號長度驗證設定（最小長度、最大長度）
+  - 支援銀行種類分類（1:銀行, 2:郵局, 3:信用合作社）
+  - 支援銀行狀態管理（啟用/停用）
+  - 支援排序序號設定
+  - 支援備註管理
+  - 自動設定維護者為目前使用者
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
+
 #### SYSB110 - 商品分類資料維護功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSB110 商品分類資料維護功能
   - Entity: ProductCategory.cs（商品分類實體類別，已存在）
@@ -371,14 +394,14 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYSBC40（參數資料設定維護）功能的完整實現。後端 API 端點已完整實現（GET/POST/PUT/DELETE /api/v1/parameters，以及根據標題查詢、取得參數值、批次刪除等端點）。前端維護頁面 Parameters.vue 已更新，支援參數查詢、新增、修改、刪除功能，新增系統下拉選單功能（使用 dropdownListApi.getSystemOptions），支援只讀參數保護。路由配置已添加到 router/index.js（路徑 /master-data/parameters）。所有代碼已存在並符合開發計劃要求，包含完整的 CRUD 功能、只讀保護、多語言支援等特性。
+**最新進度**：✅ 已完成 SYSBC20（銀行基本資料維護）功能的完整實現。後端 API 端點已完整實現（GET/POST/PUT/DELETE /api/v1/banks，以及批次刪除端點）。前端維護頁面 Banks.vue 已完整實現，支援銀行查詢、新增、修改、刪除功能。路由配置已添加到 router/index.js（路徑 /master-data/banks）。所有代碼已存在並符合開發計劃要求，包含完整的 CRUD 功能、帳號長度驗證、銀行種類分類、狀態管理等特性。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Infrastructure 專案缺少 IdentityModel、Caching 等 NuGet 包引用，以及一些命名空間衝突問題），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Infrastructure.csproj 的套件引用配置，添加必要的 NuGet 包。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（地區設定 SYSBC30、銀行基本資料維護 SYSBC20、區域基本資料維護 SYSB450 等）或進銷存管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（地區設定 SYSBC30、區域基本資料維護 SYSB450、部別資料維護 SYSWB40、庫別資料維護 SYSWB60、組別資料維護 SYSWB70 等）或進銷存管理功能
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
 5. 進行功能測試和整合測試（特別是 SYSBC40 的參數功能，驗證只讀保護、多語言支援等功能）
 6. 根據實際業務需求調整功能模組
