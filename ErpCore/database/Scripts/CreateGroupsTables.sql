@@ -27,6 +27,19 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_Groups_Status] ON [dbo].[Groups] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_Groups_SeqNo] ON [dbo].[Groups] ([SeqNo]);
     
+    -- 外鍵約束（如果相關表存在）
+    IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Departments]') AND type in (N'U'))
+    BEGIN
+        ALTER TABLE [dbo].[Groups]
+        ADD CONSTRAINT [FK_Groups_Departments] FOREIGN KEY ([DeptId]) REFERENCES [dbo].[Departments] ([DeptId]);
+    END
+
+    IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Organizations]') AND type in (N'U'))
+    BEGIN
+        ALTER TABLE [dbo].[Groups]
+        ADD CONSTRAINT [FK_Groups_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrgId]);
+    END
+    
     PRINT 'Groups 表建立成功';
 END
 ELSE
@@ -34,4 +47,3 @@ BEGIN
     PRINT 'Groups 表已存在';
 END
 GO
-
