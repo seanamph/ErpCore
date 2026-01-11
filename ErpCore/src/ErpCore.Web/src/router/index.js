@@ -274,6 +274,12 @@ const routes = [
         meta: { title: '可管控欄位異動記錄查詢 (SYS0650)' }
       },
       {
+        path: 'other-change-logs',
+        name: 'SYS0660Query',
+        component: () => import('../views/System/SYS0660Query.vue'),
+        meta: { title: '其他異動記錄查詢 (SYS0660)' }
+      },
+      {
         path: 'user-account-policy',
         name: 'SYS0130Query',
         component: () => import('../views/System/SYS0130Query.vue'),

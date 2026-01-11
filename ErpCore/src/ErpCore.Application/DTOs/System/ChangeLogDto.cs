@@ -88,6 +88,11 @@ public class ChangeLogDto
     public string ProgramId { get; set; } = string.Empty;
 
     /// <summary>
+    /// 程式名稱
+    /// </summary>
+    public string? ProgramName { get; set; }
+
+    /// <summary>
     /// 異動使用者代碼
     /// </summary>
     public string? ChangeUserId { get; set; }

@@ -12,13 +12,19 @@ namespace ErpCore.Application.Services.System;
 public class ChangeLogService : BaseService, IChangeLogService
 {
     private readonly IChangeLogRepository _repository;
+    private readonly IUserRepository _userRepository;
+    private readonly IProgramRepository _programRepository;
 
     public ChangeLogService(
         IChangeLogRepository repository,
+        IUserRepository userRepository,
+        IProgramRepository programRepository,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _userRepository = userRepository;
+        _programRepository = programRepository;
     }
 
     public async Task<PagedResult<ChangeLogDto>> GetUserChangeLogsAsync(UserChangeLogQueryDto query)
@@ -45,9 +51,14 @@ public class ChangeLogService : BaseService, IChangeLogService
             var userNames = new Dictionary<string, string>();
             if (userIds.Any())
             {
-                // 這裡需要查詢使用者名稱，暫時先留空，後續可以加入使用者查詢邏輯
-                // var users = await _userRepository.GetUsersByIdsAsync(userIds);
-                // userNames = users.ToDictionary(x => x.UserId, x => x.UserName);
+                foreach (var userId in userIds)
+                {
+                    var user = await _userRepository.GetByIdAsync(userId);
+                    if (user != null)
+                    {
+                        userNames[userId] = user.UserName ?? userId;
+                    }
+                }
             }
 
             var dtos = result.Items.Select(x =>
@@ -132,11 +143,20 @@ public class ChangeLogService : BaseService, IChangeLogService
                 return null;
             }
 
+            // 查詢使用者名稱
+            string? changeUserName = null;
+            if (!string.IsNullOrEmpty(entity.ChangeUserId))
+            {
+                var user = await _userRepository.GetByIdAsync(entity.ChangeUserId);
+                changeUserName = user?.UserName ?? entity.ChangeUserId;
+            }
+
             var dto = new ChangeLogDto
             {
                 LogId = entity.LogId,
                 ProgramId = entity.ProgramId,
                 ChangeUserId = entity.ChangeUserId,
+                ChangeUserName = changeUserName,
                 ChangeDate = entity.ChangeDate,
                 ChangeStatus = entity.ChangeStatus,
                 ChangeField = entity.ChangeField,
@@ -214,9 +234,14 @@ public class ChangeLogService : BaseService, IChangeLogService
             var userNames = new Dictionary<string, string>();
             if (userIds.Any())
             {
-                // 這裡需要查詢使用者名稱，暫時先留空，後續可以加入使用者查詢邏輯
-                // var users = await _userRepository.GetUsersByIdsAsync(userIds);
-                // userNames = users.ToDictionary(x => x.UserId, x => x.UserName);
+                foreach (var userId in userIds)
+                {
+                    var user = await _userRepository.GetByIdAsync(userId);
+                    if (user != null)
+                    {
+                        userNames[userId] = user.UserName ?? userId;
+                    }
+                }
             }
 
             var dtos = result.Items.Select(x =>
@@ -305,7 +330,7 @@ public class ChangeLogService : BaseService, IChangeLogService
                 query.PageSize ?? 20
             );
 
-            return ConvertToDtoList(result);
+            return await ConvertToDtoListAsync(result);
         }
         catch (Exception ex)
         {
@@ -328,7 +353,7 @@ public class ChangeLogService : BaseService, IChangeLogService
                 query.PageSize ?? 20
             );
 
-            return ConvertToDtoList(result);
+            return await ConvertToDtoListAsync(result);
         }
         catch (Exception ex)
         {
@@ -351,7 +376,7 @@ public class ChangeLogService : BaseService, IChangeLogService
                 query.PageSize ?? 20
             );
 
-            return ConvertToDtoList(result);
+            return await ConvertToDtoListAsync(result);
         }
         catch (Exception ex)
         {
@@ -373,7 +398,7 @@ public class ChangeLogService : BaseService, IChangeLogService
                 query.PageSize ?? 20
             );
 
-            return ConvertToDtoList(result);
+            return await ConvertToDtoListWithProgramNameAsync(result);
         }
         catch (Exception ex)
         {
@@ -385,8 +410,28 @@ public class ChangeLogService : BaseService, IChangeLogService
     /// <summary>
     /// 轉換為 DTO 列表
     /// </summary>
-    private PagedResult<ChangeLogDto> ConvertToDtoList(PagedResult<ChangeLog> result)
+    private async Task<PagedResult<ChangeLogDto>> ConvertToDtoListAsync(PagedResult<ChangeLog> result)
     {
+        // 查詢使用者名稱
+        var userIds = result.Items
+            .Where(x => !string.IsNullOrEmpty(x.ChangeUserId))
+            .Select(x => x.ChangeUserId!)
+            .Distinct()
+            .ToList();
+
+        var userNames = new Dictionary<string, string>();
+        if (userIds.Any())
+        {
+            foreach (var userId in userIds)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user != null)
+                {
+                    userNames[userId] = user.UserName ?? userId;
+                }
+            }
+        }
+
         var dtos = result.Items.Select(x =>
         {
             var dto = new ChangeLogDto
@@ -394,7 +439,123 @@ public class ChangeLogService : BaseService, IChangeLogService
                 LogId = x.LogId,
                 ProgramId = x.ProgramId,
                 ChangeUserId = x.ChangeUserId,
-                ChangeUserName = x.ChangeUserId, // 暫時使用代碼，後續可加入使用者查詢邏輯
+                ChangeUserName = userNames.ContainsKey(x.ChangeUserId ?? string.Empty)
+                    ? userNames[x.ChangeUserId!]
+                    : x.ChangeUserId,
+                ChangeDate = x.ChangeDate,
+                ChangeStatus = x.ChangeStatus,
+                ChangeField = x.ChangeField,
+                OldValue = x.OldValue,
+                NewValue = x.NewValue
+            };
+
+            // 處理異動狀態名稱
+            dto.ChangeStatusName = GetChangeStatusName(x.ChangeStatus);
+
+            // 處理異動欄位和值列表
+            if (!string.IsNullOrEmpty(x.ChangeField))
+            {
+                dto.ChangeFields = x.ChangeField.Split(',').Select(f => f.Trim()).ToList();
+                dto.ChangeFieldDisplay = x.ChangeField;
+            }
+            else
+            {
+                dto.ChangeFields = new List<string>();
+                dto.ChangeFieldDisplay = string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(x.OldValue))
+            {
+                dto.OldValues = x.OldValue.Split(',').Select(v => v.Trim()).ToList();
+                dto.OldValueDisplay = x.OldValue;
+            }
+            else
+            {
+                dto.OldValues = new List<string>();
+                dto.OldValueDisplay = "--";
+            }
+
+            if (!string.IsNullOrEmpty(x.NewValue))
+            {
+                dto.NewValues = x.NewValue.Split(',').Select(v => v.Trim()).ToList();
+                dto.NewValueDisplay = x.NewValue;
+            }
+            else
+            {
+                dto.NewValues = new List<string>();
+                dto.NewValueDisplay = "--";
+            }
+
+            return dto;
+        }).ToList();
+
+        return new PagedResult<ChangeLogDto>
+        {
+            Items = dtos,
+            TotalCount = result.TotalCount,
+            PageIndex = result.PageIndex,
+            PageSize = result.PageSize
+        };
+    }
+
+    /// <summary>
+    /// 轉換為 DTO 列表（包含作業名稱）
+    /// </summary>
+    private async Task<PagedResult<ChangeLogDto>> ConvertToDtoListWithProgramNameAsync(PagedResult<ChangeLog> result)
+    {
+        // 查詢使用者名稱
+        var userIds = result.Items
+            .Where(x => !string.IsNullOrEmpty(x.ChangeUserId))
+            .Select(x => x.ChangeUserId!)
+            .Distinct()
+            .ToList();
+
+        var userNames = new Dictionary<string, string>();
+        if (userIds.Any())
+        {
+            foreach (var userId in userIds)
+            {
+                var user = await _userRepository.GetByIdAsync(userId);
+                if (user != null)
+                {
+                    userNames[userId] = user.UserName ?? userId;
+                }
+            }
+        }
+
+        // 查詢作業名稱
+        var programIds = result.Items
+            .Where(x => !string.IsNullOrEmpty(x.ProgramId))
+            .Select(x => x.ProgramId)
+            .Distinct()
+            .ToList();
+
+        var programNames = new Dictionary<string, string>();
+        if (programIds.Any())
+        {
+            foreach (var programId in programIds)
+            {
+                var program = await _programRepository.GetByIdAsync(programId);
+                if (program != null)
+                {
+                    programNames[programId] = program.ProgramName ?? programId;
+                }
+            }
+        }
+
+        var dtos = result.Items.Select(x =>
+        {
+            var dto = new ChangeLogDto
+            {
+                LogId = x.LogId,
+                ProgramId = x.ProgramId,
+                ProgramName = programNames.ContainsKey(x.ProgramId)
+                    ? programNames[x.ProgramId]
+                    : x.ProgramId,
+                ChangeUserId = x.ChangeUserId,
+                ChangeUserName = userNames.ContainsKey(x.ChangeUserId ?? string.Empty)
+                    ? userNames[x.ChangeUserId!]
+                    : x.ChangeUserId,
                 ChangeDate = x.ChangeDate,
                 ChangeStatus = x.ChangeStatus,
                 ChangeField = x.ChangeField,

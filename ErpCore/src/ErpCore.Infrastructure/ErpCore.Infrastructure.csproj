@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ErpCore.Domain\ErpCore.Domain.csproj" />
     <ProjectReference Include="..\ErpCore.Shared\ErpCore.Shared.csproj" />
-    <ProjectReference Include="..\ErpCore.Application\ErpCore.Application.csproj" />
   </ItemGroup>
 
 </Project>

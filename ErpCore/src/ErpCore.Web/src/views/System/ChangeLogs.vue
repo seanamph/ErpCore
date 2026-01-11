@@ -230,6 +230,84 @@
           />
         </el-card>
       </el-tab-pane>
+
+      <!-- 其他異動記錄查詢 (SYS0660) -->
+      <el-tab-pane label="其他異動記錄查詢 (SYS0660)" name="others">
+        <el-card class="search-card" shadow="never">
+          <el-form :inline="true" :model="otherChangeLogQueryForm" class="search-form">
+            <el-form-item label="異動使用者代碼">
+              <el-input v-model="otherChangeLogQueryForm.ChangeUserId" placeholder="請輸入異動使用者代碼" clearable />
+            </el-form-item>
+            <el-form-item label="程式代碼">
+              <el-input v-model="otherChangeLogQueryForm.ProgramId" placeholder="請輸入程式代碼" clearable />
+            </el-form-item>
+            <el-form-item label="起始日期">
+              <el-date-picker
+                v-model="otherChangeLogQueryForm.StartDate"
+                type="date"
+                placeholder="請選擇起始日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item label="結束日期">
+              <el-date-picker
+                v-model="otherChangeLogQueryForm.EndDate"
+                type="date"
+                placeholder="請選擇結束日期"
+                format="YYYY-MM-DD"
+                value-format="YYYY-MM-DD"
+                clearable
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="handleOtherChangeLogSearch">查詢</el-button>
+              <el-button @click="handleOtherChangeLogReset">重置</el-button>
+            </el-form-item>
+          </el-form>
+        </el-card>
+
+        <el-card class="table-card" shadow="never">
+          <el-table
+            :data="otherChangeLogTableData"
+            v-loading="otherChangeLogLoading"
+            border
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column prop="LogId" label="記錄ID" width="100" />
+            <el-table-column prop="ProgramId" label="程式代碼" width="150" />
+            <el-table-column prop="ChangeUserId" label="異動使用者代碼" width="150" />
+            <el-table-column prop="ChangeUserName" label="異動使用者名稱" width="150" />
+            <el-table-column prop="ChangeDate" label="異動時間" width="180">
+              <template #default="{ row }">
+                {{ row.ChangeDate ? new Date(row.ChangeDate).toLocaleString('zh-TW') : '' }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="ChangeStatusName" label="異動狀態" width="120">
+              <template #default="{ row }">
+                <el-tag :type="getChangeStatusTagType(row.ChangeStatus)">
+                  {{ row.ChangeStatusName }}
+                </el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column prop="ChangeFieldDisplay" label="異動欄位" min-width="150" show-overflow-tooltip />
+            <el-table-column prop="OldValueDisplay" label="異動前的值" min-width="150" show-overflow-tooltip />
+            <el-table-column prop="NewValueDisplay" label="異動後的值" min-width="150" show-overflow-tooltip />
+          </el-table>
+          <el-pagination
+            v-model:current-page="otherChangeLogPagination.PageIndex"
+            v-model:page-size="otherChangeLogPagination.PageSize"
+            :total="otherChangeLogPagination.TotalCount"
+            :page-sizes="[10, 20, 50, 100]"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleOtherChangeLogSizeChange"
+            @current-change="handleOtherChangeLogPageChange"
+            style="margin-top: 20px; text-align: right"
+          />
+        </el-card>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -292,6 +370,8 @@ const handleTabChange = (tabName) => {
     handleRoleChangeLogSearch()
   } else if (tabName === 'system-permissions') {
     handleSystemPermissionChangeLogSearch()
+  } else if (tabName === 'others') {
+    handleOtherChangeLogSearch()
   }
 }
 
