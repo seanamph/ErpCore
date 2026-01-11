@@ -262,6 +262,18 @@ const routes = [
         meta: { title: '使用者角色對應設定異動查詢 (SYS0630)' }
       },
       {
+        path: 'system-permission-change-logs',
+        name: 'SYS0640Query',
+        component: () => import('../views/System/SYS0640Query.vue'),
+        meta: { title: '系統權限異動記錄查詢 (SYS0640)' }
+      },
+      {
+        path: 'controllable-field-change-logs',
+        name: 'SYS0650Query',
+        component: () => import('../views/System/SYS0650Query.vue'),
+        meta: { title: '可管控欄位異動記錄查詢 (SYS0650)' }
+      },
+      {
         path: 'user-account-policy',
         name: 'SYS0130Query',
         component: () => import('../views/System/SYS0130Query.vue'),
