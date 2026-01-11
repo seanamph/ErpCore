@@ -220,7 +220,7 @@ public class UsersController : BaseController
     }
 
     /// <summary>
-    /// 使用者查詢功能 (SYS0910)
+    /// 使用者查詢功能 (SYS0910) - POST 方法
     /// </summary>
     [HttpPost("query")]
     public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> QueryUsers(
@@ -231,6 +231,33 @@ public class UsersController : BaseController
             var result = await _service.GetUsersAsync(query);
             return result;
         }, "查詢使用者列表失敗");
+    }
+
+    /// <summary>
+    /// 使用者查詢功能 (SYS0910) - GET 方法
+    /// </summary>
+    [HttpGet("query")]
+    public async Task<ActionResult<ApiResponse<PagedResult<UserDto>>>> QueryUsersGet(
+        [FromQuery] UserQueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUsersAsync(query);
+            return result;
+        }, "查詢使用者列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢單筆使用者 (SYS0910)
+    /// </summary>
+    [HttpGet("{userId}/query")]
+    public async Task<ActionResult<ApiResponse<UserDto>>> QueryUserById(string userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserAsync(userId);
+            return result;
+        }, $"查詢使用者失敗: {userId}");
     }
 
     /// <summary>

@@ -244,6 +244,12 @@ const routes = [
         meta: { title: '使用者資料瀏覽 (SYS0120)' }
       },
       {
+        path: 'users-query',
+        name: 'SYS0910Query',
+        component: () => import('../views/System/SYS0910Query.vue'),
+        meta: { title: '使用者查詢功能 (SYS0910)' }
+      },
+      {
         path: 'user-change-logs',
         name: 'SYS0610Query',
         component: () => import('../views/System/SYS0610Query.vue'),
