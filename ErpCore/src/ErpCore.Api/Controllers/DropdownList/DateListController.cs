@@ -52,7 +52,7 @@ public class DateListController : BaseController
     /// <summary>
     /// 解析日期字串
     /// </summary>
-    [HttpPost("parse")]
+    [HttpPost("parse-date")]
     public async Task<ActionResult<ApiResponse<DateTime?>>> ParseDate(
         [FromBody] DateValidationRequestDto request)
     {
