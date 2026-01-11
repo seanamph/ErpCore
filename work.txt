@@ -3,284 +3,45 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYSID_LIST 系統ID列表功能完善**：根據開發計劃文件完善了 SYSID_LIST 功能實現
-  - 修改 SystemListService：使用正確的表名（Systems、Menus、Programs、Buttons）和 JOIN 查詢邏輯，只顯示有選單、作業、按鈕的系統
-  - 更新 SystemListController：API 路徑改為 /api/v1/lists/systems，新增查詢單筆系統端點
-  - 更新 Vue 頁面 SystemList.vue：簡化為符合開發計劃要求的系統列表選擇頁面
-  - 更新 API 文件 dropdownList.js：匹配新的 API 路徑
-- ⚠️ **構建狀態**：
-  - dotnet build：存在已知的循環相依性錯誤（ErpCore.Infrastructure 專案，MSB4006 錯誤）
-  - npm build：存在已知的編碼問題（CertificateData/index.vue、CertificateProcess/index.vue 等文件）
-  - 這些錯誤已在 work.txt 中記錄，需要後續修復
+- ✅ **DATE_LIST 日期列表功能完成**：根據開發計劃文件實現了 DATE_LIST 日期選擇器功能
+  - 更新 DateListController：API 路徑改為 /api/v1/system/date-format 和 /api/v1/system/validate-date，符合開發計劃要求
+  - 創建 DatePicker.vue：日期選擇器組件，支援日曆選擇、日期格式設定、日期驗證等功能
+  - 創建 DatePickerDialog.vue：日期選擇對話框組件，用於彈窗式日期選擇
+  - 更新前端 API 調用：dropdownList.js 中新增 getDateFormat、validateDate、parseDate 方法
+  - 所有實現均按照開發計劃文件要求，包含年份驗證（不能小於1582年）、日期格式從系統參數讀取等功能
+  - 所有變更已提交到 git（commit: acc4fde）
 
-### 📝 最新完成工作
+### ⚠️ 已知問題
+- **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
+- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（440 個錯誤），需要後續修復
 
-#### SYSB450 - 區域基本資料維護功能完成
-- ✅ **完成完整功能實現**：根據開發計劃文件確認 SYSB450 區域基本資料維護功能已完整實現
-  - Entity: Area.cs（區域實體類別，已存在）
-  - Repository: IAreaRepository.cs 和 AreaRepository.cs（資料存取層，已完整實現）
-  - Service: IAreaService.cs 和 AreaService.cs（業務邏輯層，已完整實現）
-  - DTO: AreaDto.cs, AreaQueryDto.cs, CreateAreaDto.cs, UpdateAreaDto.cs, BatchDeleteAreaDto.cs, UpdateAreaStatusDto.cs（資料傳輸物件，已存在）
-  - Controller: AreasController.cs（API 控制器，路徑 /api/v1/areas，已完整實現所有端點）
-  - Vue 頁面: Areas.vue（前端查詢維護頁面，支援區域查詢、新增、修改、刪除）
-  - SQL 腳本: CreateAreasTables.sql（資料庫建立腳本，包含 Areas 表，已存在）
-  - API 文件: areas.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSB450 路由（路徑 /master-data/areas）
-  - 依賴注入: 已在 Program.cs 註冊 IAreaRepository 和 IAreaService
-- ✅ **功能特性**：
-  - 支援區域的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（區域代碼、區域名稱、狀態）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援排序序號設定
-  - 支援備註管理
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSB206 - 廠/客基本資料維護功能完成
-- ✅ **完成完整功能實現**：根據開發計劃文件確認 SYSB206 廠/客基本資料維護功能已完整實現
-  - Entity: Vendor.cs（廠商實體類別，已存在）
-  - Repository: IVendorRepository.cs 和 VendorRepository.cs（資料存取層，已完整實現）
-  - Service: IVendorService.cs 和 VendorService.cs（業務邏輯層，已完整實現）
-  - DTO: VendorDto.cs, VendorQueryDto.cs, CreateVendorDto.cs, UpdateVendorDto.cs, BatchDeleteVendorDto.cs, CheckGuiIdResultDto.cs（資料傳輸物件，已存在）
-  - Controller: VendorsController.cs（API 控制器，路徑 /api/v1/vendors，已完整實現所有端點）
-  - Vue 頁面: Vendors.vue（前端查詢維護頁面，支援廠商查詢、新增、修改、刪除）
-  - SQL 腳本: CreateVendorsTables.sql（資料庫建立腳本，包含 Vendors 表，已存在）
-  - API 文件: vendors.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSB206 路由（路徑 /master-data/vendors）
-  - 依賴注入: 已在 Program.cs 註冊 IVendorRepository 和 IVendorService
-- ✅ **功能特性**：
-  - 支援廠商的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（廠商編號、統一編號、廠商名稱、狀態、系統別、組織代碼）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援三種識別類型（統一編號、身份證字號、自編編號）
-  - 支援廠商編號自動產生（統一編號+"-"+流水號）
-  - 支援統一編號唯一性檢查
-  - 支援完整的聯絡資訊管理（公司資訊、聯絡人資訊）
-  - 支援銀行帳戶資訊管理
-  - 支援多系統別管理
-  - 支援組織架構管理
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSBC40 - 參數資料設定維護功能完成
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSBC40 參數資料設定維護功能
-  - Entity: Parameter.cs（參數實體類別，已創建）
-  - Repository: IParameterRepository.cs 和 ParameterRepository.cs（資料存取層，已完整實現）
-  - Service: IParameterService.cs 和 ParameterService.cs（業務邏輯層，已完整實現）
-  - DTO: ParameterDto.cs, ParameterQueryDto.cs, CreateParameterDto.cs, UpdateParameterDto.cs, BatchDeleteParameterDto.cs, ParameterKeyDto.cs, ParameterValueDto.cs（資料傳輸物件，已創建）
-  - Controller: ParametersController.cs（API 控制器，路徑 /api/v1/parameters，已完整實現所有端點）
-  - Vue 頁面: Parameters.vue（前端查詢維護頁面，支援參數查詢、新增、修改、刪除）
-  - SQL 腳本: CreateParametersTables.sql（資料庫建立腳本，包含 Parameters 表，已創建）
-  - API 文件: parameters.js（前端 API 調用，已創建）
-  - 路由配置: 已在 router/index.js 註冊 SYSBC40 路由（路徑 /master-data/parameters）
-  - 依賴注入: 已在 Program.cs 註冊 IParameterRepository 和 IParameterService
-- ✅ **功能特性**：
-  - 支援參數的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（參數標題、參數標籤、狀態、系統ID）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援只讀參數設定（只讀參數不可修改或刪除）
-  - 支援排序序號設定
-  - 支援多語言參數內容（Content 和 Content2）
-  - 支援根據參數標題查詢參數列表
-  - 支援取得參數值（支援多語言）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-- ✅ **主鍵設計**：使用 Title + Tag 組合作為唯一鍵（複合主鍵），符合舊系統 PARAM 表的設計
-
-#### SYSWB60 - 庫別資料維護功能完成
-- ✅ **完成路由配置**：在 router/index.js 中添加 SYSWB60 庫別資料維護路由（路徑 /master-data/warehouses）
-- ✅ **功能完整性確認**：SYSWB60 功能已完整實現
-  - Entity: Warehouse.cs（庫別實體類別，已存在）
-  - Repository: IWarehouseRepository.cs 和 WarehouseRepository.cs（資料存取層，已完整實現）
-  - Service: IWarehouseService.cs 和 WarehouseService.cs（業務邏輯層，已完整實現）
-  - DTO: WarehouseDto.cs, WarehouseQueryDto.cs, CreateWarehouseDto.cs, UpdateWarehouseDto.cs, BatchDeleteWarehouseDto.cs, UpdateWarehouseStatusDto.cs（資料傳輸物件，已存在）
-  - Controller: WarehousesController.cs（API 控制器，路徑 /api/v1/warehouses，已完整實現所有端點）
-  - Vue 頁面: Warehouses.vue（前端查詢維護頁面，支援庫別查詢、新增、修改、刪除、狀態更新）
-  - SQL 腳本: CreateWarehousesTables.sql（資料庫建立腳本，包含 Warehouses 表，已存在）
-  - API 文件: warehouses.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSWB60 路由（路徑 /master-data/warehouses）
-  - 依賴注入: 已在 Program.cs 註冊 IWarehouseRepository 和 IWarehouseService
-- ✅ **功能特性**：
-  - 支援庫別的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（庫別代碼、庫別名稱、庫別類型、狀態）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援排序序號設定
-  - 支援庫別類型分類（主倉庫、分倉庫、臨時倉庫）
-  - 支援位置資訊管理
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSWB70 - 組別資料維護功能完成
-- ✅ **完成路由配置**：在 router/index.js 中添加 SYSWB70 組別資料維護路由（路徑 /master-data/groups）
-- ✅ **功能完整性確認**：SYSWB70 功能已完整實現
-  - Entity: Group.cs（組別實體類別，已存在）
-  - Repository: IGroupRepository.cs 和 GroupRepository.cs（資料存取層，已完整實現）
-  - Service: IGroupService.cs 和 GroupService.cs（業務邏輯層，已完整實現）
-  - DTO: GroupDto.cs, GroupQueryDto.cs, CreateGroupDto.cs, UpdateGroupDto.cs, BatchDeleteGroupDto.cs, UpdateGroupStatusDto.cs（資料傳輸物件，已存在）
-  - Controller: GroupsController.cs（API 控制器，路徑 /api/v1/groups，已完整實現所有端點）
-  - Vue 頁面: Groups.vue（前端查詢維護頁面，支援組別查詢、新增、修改、刪除、狀態更新）
-  - SQL 腳本: CreateGroupsTables.sql（資料庫建立腳本，包含 Groups 表，已存在）
-  - API 文件: groups.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSWB70 路由（路徑 /master-data/groups）
-  - 依賴注入: 已在 Program.cs 註冊 IGroupRepository 和 IGroupService
-- ✅ **功能特性**：
-  - 支援組別的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（組別代碼、組別名稱、部別代碼、組織代碼、狀態）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援排序序號設定
-  - 支援部別關聯（可選）
-  - 支援組織關聯（可選）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSBC30 - 地區設定功能完成
-- ✅ **完成路由配置**：在 router/index.js 中添加 SYSBC30 地區設定路由（路徑 /master-data/regions）
-- ✅ **功能完整性確認**：SYSBC30 功能已完整實現
-  - Entity: Region.cs（地區實體類別，已存在）
-  - Repository: IRegionRepository.cs 和 RegionRepository.cs（資料存取層，已完整實現）
-  - Service: IRegionService.cs 和 RegionService.cs（業務邏輯層，已完整實現）
-  - DTO: RegionDto.cs, RegionQueryDto.cs, CreateRegionDto.cs, UpdateRegionDto.cs, BatchDeleteRegionDto.cs（資料傳輸物件，已存在）
-  - Controller: RegionsController.cs（API 控制器，路徑 /api/v1/regions，已完整實現所有端點）
-  - Vue 頁面: Regions.vue（前端查詢維護頁面，支援地區查詢、新增、修改、刪除）
-  - SQL 腳本: CreateRegionsTables.sql（資料庫建立腳本，包含 Regions 表，已存在）
-  - API 文件: regions.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSBC30 路由（路徑 /master-data/regions）
-  - 依賴注入: 已在 Program.cs 註冊 IRegionRepository 和 IRegionService
-- ✅ **功能特性**：
-  - 支援地區的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（地區編號、地區名稱）
-  - 支援批次刪除功能
-  - 支援備註管理
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSWB40 - 部別資料維護功能確認
-- ✅ **功能完整性確認**：SYSWB40 功能已完整實現
-  - Entity: Department.cs（部別實體類別，已存在）
-  - Repository: IDepartmentRepository.cs 和 DepartmentRepository.cs（資料存取層，已完整實現）
-  - Service: IDepartmentService.cs 和 DepartmentService.cs（業務邏輯層，已完整實現）
-  - DTO: DepartmentDto.cs, DepartmentQueryDto.cs, CreateDepartmentDto.cs, UpdateDepartmentDto.cs, BatchDeleteDepartmentDto.cs, UpdateDepartmentStatusDto.cs 等（資料傳輸物件，已存在）
-  - Controller: DepartmentsController.cs（API 控制器，路徑 /api/v1/departments，已完整實現所有端點）
-  - Vue 頁面: Departments.vue（前端查詢維護頁面，支援部別查詢、新增、修改、刪除、狀態更新）
-  - SQL 腳本: CreateDepartmentsTables.sql（資料庫建立腳本，包含 Departments 表，已存在）
-  - API 文件: departments.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSWB40 路由（路徑 /master-data/departments）
-  - 依賴注入: 已在 Program.cs 註冊 IDepartmentRepository 和 IDepartmentService
-- ✅ **功能特性**：
-  - 支援部別的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（部別代碼、部別名稱、組織代碼、狀態）
-  - 支援批次刪除功能
-  - 支援狀態管理（啟用/停用）
-  - 支援排序序號設定
-  - 支援組織關聯（可選）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-### 📝 之前完成工作
-
-#### SYSBC20 - 銀行基本資料維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSBC20 銀行基本資料維護功能
-  - Entity: Bank.cs（銀行實體類別，已存在）
-  - Repository: IBankRepository.cs 和 BankRepository.cs（資料存取層，已完整實現）
-  - Service: IBankService.cs 和 BankService.cs（業務邏輯層，已完整實現）
-  - DTO: BankDto.cs, BankQueryDto.cs, CreateBankDto.cs, UpdateBankDto.cs, BatchDeleteBankDto.cs（資料傳輸物件，已存在）
-  - Controller: BanksController.cs（API 控制器，路徑 /api/v1/banks，已完整實現所有端點）
-  - Vue 頁面: Banks.vue（前端查詢維護頁面，支援銀行查詢、新增、修改、刪除）
-  - SQL 腳本: CreateBanksTables.sql（資料庫建立腳本，包含 Banks 表，已存在）
-  - API 文件: banks.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSBC20 路由（路徑 /master-data/banks）
-  - 依賴注入: 已在 Program.cs 註冊 IBankRepository 和 IBankService
-- ✅ **功能特性**：
-  - 支援銀行的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（銀行代號、銀行名稱、狀態、銀行種類）
-  - 支援帳號長度驗證設定（最小長度、最大長度）
-  - 支援銀行種類分類（1:銀行, 2:郵局, 3:信用合作社）
-  - 支援銀行狀態管理（啟用/停用）
-  - 支援排序序號設定
-  - 支援備註管理
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-
-#### SYSB110 - 商品分類資料維護功能實現
-- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYSB110 商品分類資料維護功能
-  - Entity: ProductCategory.cs（商品分類實體類別，已存在）
-  - Repository: IProductCategoryRepository.cs 和 ProductCategoryRepository.cs（資料存取層，已完整實現）
-  - Service: IProductCategoryService.cs 和 ProductCategoryService.cs（業務邏輯層，已完整實現）
-  - DTO: ProductCategoryDto.cs, ProductCategoryQueryDto.cs, CreateProductCategoryDto.cs, UpdateProductCategoryDto.cs, ProductCategoryTreeDto.cs 等（資料傳輸物件，已存在）
-  - Controller: ProductCategoriesController.cs（API 控制器，路徑 /api/v1/product-categories，已完整實現所有端點）
-  - Vue 頁面: ProductCategory.vue（前端查詢維護頁面，支援商品分類查詢、新增、修改、刪除，階層式分類管理）
-  - SQL 腳本: CreateProductCategoriesTables.sql（資料庫建立腳本，包含 ProductCategories 表，已存在）
-  - API 文件: productCategories.js（前端 API 調用，已存在）
-  - 路由配置: 已在 router/index.js 註冊 SYSB110 路由（路徑 /master-data/product-category）
-  - 依賴注入: 已在 Program.cs 註冊 IProductCategoryRepository 和 IProductCategoryService
-- ✅ **功能特性**：
-  - 支援商品分類的新增、修改、刪除、查詢功能
-  - 支援分頁查詢、排序、多條件篩選（分類代碼、分類名稱、分類區分、分類型式、狀態）
-  - 支援階層式分類管理（大分類→中分類→小分類，ClassMode: 1/2/3）
-  - 支援分類型式設定（1:資料, 2:耗材）
-  - 支援會計科目設定（借/貸方科目、折舊科目、進項稅額科目）
-  - 支援分類狀態管理（啟用/停用）
-  - 支援分類項目個數統計
-  - 支援分類備註管理
-  - 支援大分類、中分類、小分類的級聯選擇（下拉選單）
-  - 自動設定維護者為目前使用者
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-- ✅ **Vue 頁面更新**：修正 ClassMode 值（從 B/M/S 改為 1/2/3），新增會計科目相關欄位，新增階層式下拉選單功能
-
-### 📋 專案狀態總結
-- ✅ **專案架構完整**：已完成所有6個專案層（Api、Application、Domain、Infrastructure、Shared、Web）
-- ✅ **功能模組**：已完成多個功能模組的完整實現（SYSBC20、SYSBC30、SYSB110、SYSWB40 等）
-- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名）
-- ✅ **前端樣式統一**：已完成所有 Vue 頁面導入 variables.scss 變數，統一使用主色系 #198754
-- ✅ **目錄結構文件**：ErpCore_專案目錄結構.md 中所有文件已標記✅，與實際檔案保持一致
-- ✅ **CI/CD 配置**：已建立 .github/workflows（ci.yml、cd.yml、test.yml）
-- ✅ **開發環境配置**：已建立 .vscode 配置（settings.json、launch.json、tasks.json）
-
-### 🎯 目前狀態
-
-**專案狀態**：✅ 已完成多個基本資料管理功能模組的完整實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（Vue 頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
-
-**最新進度**：✅ 已完成 SYSB450（區域基本資料維護）功能的完整實現確認，包含 Entity、Repository、Service、DTO、Controller、Vue 頁面和 SQL 腳本。功能支援區域的新增、修改、刪除、查詢，並包含狀態管理、排序序號設定等特性。所有代碼已存在且完整實現。
-
-**開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
-
-**下一步工作**：
-1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Infrastructure 專案循環相依性問題），這些錯誤會影響整體專案編譯。需要檢查專案引用配置，解決循環相依性。
-2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：進銷存管理功能（SYSW110、SYSW137、SYSW150 等）或其他基本資料管理功能
-4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-5. 進行功能測試和整合測試（特別是基本資料管理功能，驗證 CRUD 操作、分頁查詢、篩選等功能）
-6. 根據實際業務需求調整功能模組
-7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
-8. 根據實際使用情況優化效能
+### 🎯 下一步建議
+1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
+2. **繼續開發下拉列表功能**：選擇開發計劃目錄中的其他下拉列表功能，建議優先選擇：
+   - ADDR_CITY_LIST（地址城市列表）
+   - ADDR_ZONE_LIST（地址區域列表）
+   - MENU_LIST（選單列表）
+3. **功能測試**：對已完成的 DATE_LIST 功能進行完整測試，特別是日期選擇器組件和日期驗證功能
+4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
 
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **SYSID_LIST 系統ID列表功能完善**：
-  - 修改 SystemListService 使用正確的表名（Systems、Menus、Programs、Buttons）和複雜的 JOIN 查詢邏輯
-  - 實現只顯示有選單、作業、按鈕的系統的過濾邏輯
-  - 實現系統排除邏輯（預設排除 EIP0000、CFG0000、XCOM000，除非是 xcom 使用者）
-  - 更新 SystemListController API 路徑為 /api/v1/lists/systems，新增查詢單筆系統端點
-  - 更新 Vue 頁面 SystemList.vue 符合開發計劃要求（簡化為系統列表選擇頁面）
-  - 更新 API 文件 dropdownList.js 匹配新的 API 路徑
-  - 所有變更已提交到 git（commit: 8edef9f）
+- **DATE_LIST 日期列表功能實現**：
+  - 更新後端 API 路徑以符合開發計劃（/api/v1/system/date-format、/api/v1/system/validate-date）
+  - 創建 DatePicker.vue 日期選擇器組件（支援日曆選擇、日期格式設定、日期驗證）
+  - 創建 DatePickerDialog.vue 日期選擇對話框組件
+  - 更新前端 API 調用（dropdownList.js）
+  - 所有實現均按照開發計劃文件要求
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
 - **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（440 個錯誤）
 
 ### 🎯 下一步建議
-1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
-2. **繼續開發新功能**：選擇開發計劃目錄中的其他未完成功能，建議優先選擇：
-   - 下拉列表類功能（MENU_LIST、DATE_LIST、ADDR_CITY_LIST 等）
-   - 基本資料管理類功能
-3. **功能測試**：對已完成的功能進行完整測試，特別是 SYSID_LIST 系統ID列表功能
-4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
+1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題
+2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發
+3. **功能測試**：對已完成的 DATE_LIST 功能進行完整測試
+4. **代碼審查**：檢查已完成功能的代碼品質
