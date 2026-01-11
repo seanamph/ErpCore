@@ -25,32 +25,38 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
         _exportHelper = exportHelper;
     }
 
-    public async Task<ProgramRolePermissionListResponseDto> GetProgramRolePermissionListAsync(ProgramRolePermissionListRequestDto request)
+    /// <summary>
+    /// 查詢作業權限之角色列表
+    /// </summary>
+    public async Task<ProgramRolePermissionListResponseDto> GetProgramRolePermissionListAsync(
+        ProgramRolePermissionListRequestDto request,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            if (string.IsNullOrEmpty(request.ProgramId))
+            if (string.IsNullOrWhiteSpace(request.ProgramId))
             {
                 throw new ArgumentException("作業代碼為必填");
             }
 
             using var connection = _connectionFactory.CreateConnection();
 
-            // 查詢作業資訊
-            var programSql = "SELECT ProgramId, ProgramName FROM ConfigPrograms WHERE ProgramId = @ProgramId AND Status = '1'";
-            var program = await connection.QueryFirstOrDefaultAsync<dynamic>(programSql, new { ProgramId = request.ProgramId });
+            // 驗證作業是否存在
+            var programSql = @"
+                SELECT ProgramId, ProgramName
+                FROM ConfigPrograms
+                WHERE ProgramId = @ProgramId AND Status = 'A'";
+            
+            var program = await connection.QueryFirstOrDefaultAsync<dynamic>(
+                programSql, 
+                new { ProgramId = request.ProgramId });
+
             if (program == null)
             {
-                throw new KeyNotFoundException($"作業 {request.ProgramId} 不存在");
+                throw new KeyNotFoundException($"作業 {request.ProgramId} 不存在或已停用");
             }
 
-            var response = new ProgramRolePermissionListResponseDto
-            {
-                ProgramId = program.ProgramId,
-                ProgramName = program.ProgramName
-            };
-
-            // 查詢作業權限之角色列表（只查詢角色直接權限，不包含使用者權限）
+            // 查詢角色權限（只查詢角色直接權限，不包含使用者權限）
             var sql = @"
                 SELECT DISTINCT
                     R.RoleId,
@@ -59,20 +65,28 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
                     CB.ButtonName,
                     CB.PageId
                 FROM ConfigButtons CB
-                INNER JOIN ConfigPrograms CP ON CB.ProgramId = CP.ProgramId
                 INNER JOIN RoleButtons RB ON CB.ButtonId = RB.ButtonId
                 INNER JOIN Roles R ON RB.RoleId = R.RoleId
-                WHERE CB.Status = '1' 
-                    AND CP.Status = '1'
-                    AND CP.ProgramId = @ProgramId
+                WHERE CB.ProgramId = @ProgramId
+                    AND CB.Status = '1'
+                    AND R.Status = '1'
                     AND RB.RoleId IS NOT NULL
                     AND RB.UserId IS NULL
                 ORDER BY R.RoleId, CB.PageId, CB.ButtonId";
 
-            var results = await connection.QueryAsync<dynamic>(sql, new { ProgramId = request.ProgramId });
+            var results = await connection.QueryAsync<dynamic>(
+                sql, 
+                new { ProgramId = request.ProgramId });
 
             // 組織角色與按鈕權限的對應關係
-            var roleDict = new Dictionary<string, ProgramRolePermissionDto>();
+            var response = new ProgramRolePermissionListResponseDto
+            {
+                ProgramId = program.ProgramId,
+                ProgramName = program.ProgramName,
+                Roles = new List<RolePermissionDto>()
+            };
+
+            var roleDict = new Dictionary<string, RolePermissionDto>();
 
             foreach (var item in results)
             {
@@ -85,16 +99,16 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
                 // 角色層級
                 if (!roleDict.ContainsKey(roleId))
                 {
-                    roleDict[roleId] = new ProgramRolePermissionDto
+                    roleDict[roleId] = new RolePermissionDto
                     {
                         RoleId = roleId,
                         RoleName = roleName,
-                        Buttons = new List<ProgramButtonPermissionDto>()
+                        Buttons = new List<ButtonPermissionDto>()
                     };
                 }
 
                 // 按鈕層級
-                var button = new ProgramButtonPermissionDto
+                var button = new ButtonPermissionDto
                 {
                     ButtonId = buttonId,
                     ButtonName = buttonName,
@@ -108,16 +122,22 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
         }
         catch (Exception ex)
         {
-            _logger.LogError("查詢作業權限之角色列表失敗", ex);
+            _logger.LogError($"查詢作業權限之角色列表失敗: ProgramId={request.ProgramId}", ex);
             throw;
         }
     }
 
-    public async Task<byte[]> ExportProgramRolePermissionReportAsync(ProgramRolePermissionListRequestDto request, string exportFormat)
+    /// <summary>
+    /// 匯出作業權限之角色報表
+    /// </summary>
+    public async Task<byte[]> ExportProgramRolePermissionReportAsync(
+        ProgramRolePermissionListRequestDto request,
+        string exportFormat,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            var data = await GetProgramRolePermissionListAsync(request);
+            var data = await GetProgramRolePermissionListAsync(request, cancellationToken);
 
             // 扁平化結構為列表
             var exportData = new List<ProgramRolePermissionExportItem>();
@@ -167,7 +187,7 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
         }
         catch (Exception ex)
         {
-            _logger.LogError("匯出作業權限之角色報表失敗", ex);
+            _logger.LogError($"匯出作業權限之角色報表失敗: ProgramId={request.ProgramId}, Format={exportFormat}", ex);
             throw;
         }
     }
@@ -186,4 +206,3 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
         public string PageId { get; set; } = string.Empty;
     }
 }
-

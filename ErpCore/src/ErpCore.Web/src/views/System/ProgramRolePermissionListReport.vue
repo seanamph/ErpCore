@@ -1,82 +1,166 @@
 <template>
-  <div class="program-role-permission-list-report">
+  <div class="program-role-permission-report">
     <div class="page-header">
       <h1>作業權限之角色列表 (SYS0740)</h1>
     </div>
 
     <!-- 查詢表單 -->
     <el-card class="search-card" shadow="never">
-      <el-form :model="queryForm" label-width="120px">
+      <el-form :model="queryForm" :rules="queryRules" ref="queryFormRef" label-width="120px">
         <el-row :gutter="20">
-          <el-col :span="8">
-            <el-form-item label="作業代碼" required>
-              <el-input v-model="queryForm.ProgramId" placeholder="請輸入作業代碼" clearable />
+          <el-col :span="12">
+            <el-form-item label="作業代碼" prop="ProgramId">
+              <el-autocomplete
+                v-model="queryForm.ProgramId"
+                :fetch-suggestions="searchPrograms"
+                placeholder="請輸入作業代碼"
+                clearable
+                style="width: 100%"
+                @select="handleProgramSelect"
+              />
             </el-form-item>
           </el-col>
         </el-row>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">查詢</el-button>
+          <el-button type="primary" @click="handleSearch" :loading="loading">查詢</el-button>
           <el-button @click="handleReset">重置</el-button>
-          <el-button type="success" @click="handleExportExcel">匯出Excel</el-button>
-          <el-button type="warning" @click="handleExportPdf">匯出PDF</el-button>
+          <el-button type="success" @click="handleExportExcel" :disabled="!hasData">匯出Excel</el-button>
+          <el-button type="warning" @click="handleExportPdf" :disabled="!hasData">匯出PDF</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <!-- 作業資訊 -->
-    <el-card class="info-card" shadow="never" v-if="programInfo.ProgramId">
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="作業代碼">{{ programInfo.ProgramId }}</el-descriptions-item>
-        <el-descriptions-item label="作業名稱">{{ programInfo.ProgramName }}</el-descriptions-item>
-      </el-descriptions>
-    </el-card>
+    <!-- 查詢結果 -->
+    <el-card v-if="hasData" class="result-card" shadow="never">
+      <template #header>
+        <div class="result-header">
+          <span>查詢結果</span>
+          <div class="program-info">
+            <span>作業代碼：{{ permissionData.ProgramId }}</span>
+            <span>作業名稱：{{ permissionData.ProgramName }}</span>
+          </div>
+        </div>
+      </template>
 
-    <!-- 資料表格 -->
-    <el-card class="table-card" shadow="never">
+      <!-- 角色列表表格 -->
       <el-table
-        :data="tableData"
+        :data="flattenedTableData"
         v-loading="loading"
         border
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="RoleId" label="角色代碼" width="150" />
+        <el-table-column prop="RoleId" label="角色代碼" width="120" />
         <el-table-column prop="RoleName" label="角色名稱" width="200" />
-        <el-table-column label="按鈕權限" min-width="300">
-          <template #default="{ row }">
-            <el-tag
-              v-for="(button, index) in row.Buttons"
-              :key="index"
-              style="margin-right: 8px; margin-bottom: 4px;"
-            >
-              {{ button.ButtonName }}
-            </el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column prop="ButtonId" label="按鈕代碼" width="120" />
+        <el-table-column prop="ButtonName" label="按鈕名稱" width="200" />
+        <el-table-column prop="PageId" label="頁面代碼" width="120" />
       </el-table>
     </el-card>
   </div>
 </template>
 
 <script>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { programRolePermissionApi } from '@/api/systemPermission'
+import { getPrograms } from '@/api/programs'
 
 export default {
   name: 'ProgramRolePermissionListReport',
   setup() {
+    const queryFormRef = ref(null)
     const loading = ref(false)
-    const tableData = ref([])
-    const programInfo = reactive({
-      ProgramId: '',
-      ProgramName: ''
-    })
+    const permissionData = ref(null)
+    const programOptions = ref([])
 
     // 查詢表單
     const queryForm = reactive({
       ProgramId: ''
     })
+
+    // 表單驗證規則
+    const queryRules = {
+      ProgramId: [
+        { required: true, message: '請輸入作業代碼', trigger: 'blur' }
+      ]
+    }
+
+    // 是否有資料
+    const hasData = computed(() => permissionData.value !== null && permissionData.value.Roles && permissionData.value.Roles.length > 0)
+
+    // 扁平化表格資料
+    const flattenedTableData = computed(() => {
+      if (!permissionData.value || !permissionData.value.Roles) {
+        return []
+      }
+      const result = []
+      permissionData.value.Roles.forEach(role => {
+        if (role.Buttons && role.Buttons.length > 0) {
+          role.Buttons.forEach(button => {
+            result.push({
+              RoleId: role.RoleId,
+              RoleName: role.RoleName,
+              ButtonId: button.ButtonId,
+              ButtonName: button.ButtonName,
+              PageId: button.PageId || ''
+            })
+          })
+        } else {
+          // 如果沒有按鈕權限，至少顯示角色資訊
+          result.push({
+            RoleId: role.RoleId,
+            RoleName: role.RoleName,
+            ButtonId: '',
+            ButtonName: '',
+            PageId: ''
+          })
+        }
+      })
+      return result
+    })
+
+    // 搜尋作業（自動完成）
+    const searchPrograms = async (queryString, cb) => {
+      try {
+        const response = await getPrograms({
+          PageIndex: 1,
+          PageSize: 50,
+          ProgramId: queryString || undefined,
+          ProgramName: queryString || undefined
+        })
+        // 處理不同的響應格式
+        let programs = []
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            const items = response.data.data.items || response.data.data.Items || []
+            programs = items.map(item => ({
+              value: item.programId || item.ProgramId,
+              label: `${item.programId || item.ProgramId} - ${item.programName || item.ProgramName}`
+            }))
+          } else if (response.data.Data && response.data.Data.Items) {
+            programs = response.data.Data.Items.map(item => ({
+              value: item.ProgramId,
+              label: `${item.ProgramId} - ${item.ProgramName}`
+            }))
+          }
+        } else if (response && response.Data && response.Data.Items) {
+          programs = response.Data.Items.map(item => ({
+            value: item.ProgramId,
+            label: `${item.ProgramId} - ${item.ProgramName}`
+          }))
+        }
+        cb(programs)
+      } catch (error) {
+        console.error('搜尋作業失敗:', error)
+        cb([])
+      }
+    }
+
+    // 選擇作業
+    const handleProgramSelect = (item) => {
+      queryForm.ProgramId = item.value
+    }
 
     // 查詢資料
     const loadData = async () => {
@@ -87,51 +171,74 @@ export default {
 
       loading.value = true
       try {
-        const params = { ...queryForm }
+        const params = { ProgramId: queryForm.ProgramId }
         const response = await programRolePermissionApi.getList(params)
-        if (response.Data) {
-          programInfo.ProgramId = response.Data.ProgramId || ''
-          programInfo.ProgramName = response.Data.ProgramName || ''
-          tableData.value = response.Data.Roles || []
+        // 處理不同的響應格式
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            permissionData.value = response.data.data
+            ElMessage.success('查詢成功')
+          } else if (response.data.Data) {
+            // 兼容舊格式
+            permissionData.value = response.data.Data
+            ElMessage.success('查詢成功')
+          } else {
+            ElMessage.warning(response.data.message || '查詢無資料')
+            permissionData.value = null
+          }
+        } else if (response && response.Data) {
+          // 兼容舊格式
+          permissionData.value = response.Data
+          ElMessage.success('查詢成功')
+        } else {
+          ElMessage.warning('查詢無資料')
+          permissionData.value = null
         }
       } catch (error) {
-        ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
+        console.error('查詢失敗:', error)
+        ElMessage.error('查詢失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
+        permissionData.value = null
       } finally {
         loading.value = false
       }
     }
 
     // 查詢
-    const handleSearch = () => {
-      loadData()
+    const handleSearch = async () => {
+      if (!queryFormRef.value) return
+      await queryFormRef.value.validate(async (valid) => {
+        if (valid) {
+          await loadData()
+        }
+      })
     }
 
     // 重置
     const handleReset = () => {
-      Object.assign(queryForm, {
-        ProgramId: ''
-      })
-      programInfo.ProgramId = ''
-      programInfo.ProgramName = ''
-      tableData.value = []
+      if (queryFormRef.value) {
+        queryFormRef.value.resetFields()
+      }
+      permissionData.value = null
     }
 
     // 匯出Excel
     const handleExportExcel = async () => {
       if (!queryForm.ProgramId) {
-        ElMessage.warning('請輸入作業代碼')
+        ElMessage.warning('請先輸入作業代碼並查詢')
         return
       }
-
       try {
         const data = {
-          Request: { ...queryForm },
+          Request: { ProgramId: queryForm.ProgramId },
           ExportFormat: 'Excel'
         }
         const response = await programRolePermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         })
         const url = window.URL.createObjectURL(blob)
@@ -146,26 +253,28 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 
     // 匯出PDF
     const handleExportPdf = async () => {
       if (!queryForm.ProgramId) {
-        ElMessage.warning('請輸入作業代碼')
+        ElMessage.warning('請先輸入作業代碼並查詢')
         return
       }
-
       try {
         const data = {
-          Request: { ...queryForm },
+          Request: { ProgramId: queryForm.ProgramId },
           ExportFormat: 'PDF'
         }
         const response = await programRolePermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/pdf'
         })
         const url = window.URL.createObjectURL(blob)
@@ -180,15 +289,20 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 
     return {
+      queryFormRef,
       loading,
-      tableData,
-      programInfo,
+      permissionData,
       queryForm,
+      queryRules,
+      hasData,
+      flattenedTableData,
+      searchPrograms,
+      handleProgramSelect,
       handleSearch,
       handleReset,
       handleExportExcel,
@@ -201,18 +315,39 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
 
-.program-role-permission-list-report {
+.program-role-permission-report {
+  .page-header {
+    margin-bottom: 20px;
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #303133;
+    }
+  }
+
   .search-card {
     margin-bottom: 20px;
   }
 
-  .info-card {
-    margin-bottom: 20px;
-  }
-
-  .table-card {
+  .result-card {
     margin-top: 20px;
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .program-info {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: #606266;
+
+        span {
+          margin-right: 10px;
+        }
+      }
+    }
   }
 }
 </style>
-

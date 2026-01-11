@@ -32,13 +32,13 @@ public class ProgramRolePermissionListResponseDto
     /// <summary>
     /// 角色列表
     /// </summary>
-    public List<ProgramRolePermissionDto> Roles { get; set; } = new();
+    public List<RolePermissionDto> Roles { get; set; } = new();
 }
 
 /// <summary>
-/// 作業角色權限 DTO (SYS0740)
+/// 角色權限 DTO (SYS0740)
 /// </summary>
-public class ProgramRolePermissionDto
+public class RolePermissionDto
 {
     /// <summary>
     /// 角色代碼
@@ -51,30 +51,9 @@ public class ProgramRolePermissionDto
     public string RoleName { get; set; } = string.Empty;
 
     /// <summary>
-    /// 按鈕列表
+    /// 按鈕權限列表
     /// </summary>
-    public List<ProgramButtonPermissionDto> Buttons { get; set; } = new();
-}
-
-/// <summary>
-/// 作業按鈕權限 DTO (SYS0740)
-/// </summary>
-public class ProgramButtonPermissionDto
-{
-    /// <summary>
-    /// 按鈕代碼
-    /// </summary>
-    public string ButtonId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 按鈕名稱
-    /// </summary>
-    public string ButtonName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 頁面代碼
-    /// </summary>
-    public string? PageId { get; set; }
+    public List<ButtonPermissionDto> Buttons { get; set; } = new();
 }
 
 /// <summary>
@@ -92,4 +71,3 @@ public class ProgramRolePermissionExportRequestDto
     /// </summary>
     public string ExportFormat { get; set; } = "Excel";
 }
-

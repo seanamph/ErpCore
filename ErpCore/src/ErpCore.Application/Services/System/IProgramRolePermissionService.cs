@@ -10,11 +10,15 @@ public interface IProgramRolePermissionService
     /// <summary>
     /// 查詢作業權限之角色列表
     /// </summary>
-    Task<ProgramRolePermissionListResponseDto> GetProgramRolePermissionListAsync(ProgramRolePermissionListRequestDto request);
+    Task<ProgramRolePermissionListResponseDto> GetProgramRolePermissionListAsync(
+        ProgramRolePermissionListRequestDto request,
+        CancellationToken cancellationToken = default);
 
     /// <summary>
     /// 匯出作業權限之角色報表
     /// </summary>
-    Task<byte[]> ExportProgramRolePermissionReportAsync(ProgramRolePermissionListRequestDto request, string exportFormat);
+    Task<byte[]> ExportProgramRolePermissionReportAsync(
+        ProgramRolePermissionListRequestDto request,
+        string exportFormat,
+        CancellationToken cancellationToken = default);
 }
-

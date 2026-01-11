@@ -320,6 +320,12 @@ const routes = [
         name: 'SYS0731Query',
         component: () => import('../views/System/RoleSystemPermissionListReport.vue'),
         meta: { title: '角色系統權限列表 (SYS0731)' }
+      },
+      {
+        path: 'program-role-permissions',
+        name: 'SYS0740Query',
+        component: () => import('../views/System/ProgramRolePermissionListReport.vue'),
+        meta: { title: '作業權限之角色列表 (SYS0740)' }
       }
     ]
   },

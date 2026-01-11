@@ -3,21 +3,22 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0720 功能實現完成**：已完成作業權限之使用者列表功能
+- ✅ **SYS0731 功能實現完成**：已完成角色系統權限列表功能
   - 實現內容：
-    - ✅ SQL 視圖: 建立 `V_ProgramUserPermission` 視圖，查詢指定作業下使用者權限
-    - ✅ Service 層: `ProgramUserPermissionService` 已完整實現（查詢和匯出功能）
-    - ✅ Controller 層: `ProgramUserPermissionController` 已完整實現
-    - ✅ DTO 層: `ProgramUserPermissionListRequestDto`、`ProgramUserPermissionListResponseDto` 等已完整實現
-    - ✅ Vue 頁面: `ProgramUserPermissionReport.vue` - 作業權限之使用者列表查詢頁面
-    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0720 路由
-    - ✅ API 整合: 使用 `programUserPermissionApi.getList` 和 `exportReport` API
-    - ✅ 查詢功能: 支援按作業代碼查詢使用者權限列表
-    - ✅ 顯示功能: 以表格形式顯示使用者及其按鈕權限
+    - ✅ SQL 視圖: 建立 `V_RoleSystemPermission` 視圖，查詢指定角色的系統權限
+    - ✅ Service 層: `RoleSystemPermissionService` 已完整實現（查詢和匯出功能）
+    - ✅ Controller 層: `RoleSystemPermissionController` 已完整實現
+    - ✅ DTO 層: `RoleSystemPermissionListRequestDto`、`RoleSystemPermissionListResponseDto` 等已完整實現
+    - ✅ Vue 頁面: `RoleSystemPermissionListReport.vue` - 角色系統權限列表查詢頁面
+    - ✅ 路由配置: 已在 `router/index.js` 中配置 SYS0731 路由
+    - ✅ API 整合: 使用 `roleSystemPermissionApi.getList` 和 `exportReport` API
+    - ✅ 查詢功能: 支援按角色代碼查詢系統權限列表
+    - ✅ 顯示功能: 以階層式表格形式顯示系統、選單、作業及按鈕權限
     - ✅ 匯出功能: 支援匯出 Excel 和 PDF 格式
-    - ✅ SQL 腳本: 建立 `CreateProgramUserPermissionView.sql` 視圖腳本
-  - 功能狀態：SYS0720 前端頁面和後端服務已完整實現
-  - 開發依據：`開發計劃/01-系統管理/03-權限管理/SYS0720-作業權限之使用者列表.md`
+    - ✅ 角色代碼自動完成: 添加角色代碼自動完成功能，提升使用者體驗
+    - ✅ SQL 腳本: 建立 `CreateRoleSystemPermissionView.sql` 視圖腳本
+  - 功能狀態：SYS0731 前端頁面和後端服務已完整實現
+  - 開發依據：`開發計劃/01-系統管理/03-權限管理/SYS0731-角色系統權限列表.md`
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
@@ -32,7 +33,7 @@
 
 ### 🎯 下一步建議
 1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0731、SYS0740、SYS0750 等）
+   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0740、SYS0750 等）
    - 按照開發計劃文件實現：Entity → Repository → Service → DTO → Controller → Vue 頁面 → SQL
    - 注意：所有開發都必須按照現有的文件，所有程式都要有 md 依據
 2. **優先修復編譯錯誤**（可選）：
@@ -52,7 +53,7 @@
   - ✅ SYS0210（角色基本資料維護）、SYS0220（使用者之角色設定維護）、SYS0230（角色之使用者設定維護）、SYS0240（角色複製）
   - ✅ SYS0310（角色系統權限設定）、SYS0320（使用者系統權限設定）、SYS0330（角色欄位權限設定）、SYS0340（使用者欄位權限設定）、SYS0360（系統對應權限設定）
   - ✅ SYS0410（主系統項目資料維護）、SYS0420（子系統項目資料維護）、SYS0430（系統作業資料維護）、SYS0440（系統功能按鈕資料維護）
-  - ✅ SYS0640（系統權限異動記錄查詢）、SYS0650（可管控欄位異動記錄查詢）、SYS0660（其他異動記錄查詢）、**SYS0710（系統權限列表）** ✨已完整實現
+  - ✅ SYS0640（系統權限異動記錄查詢）、SYS0650（可管控欄位異動記錄查詢）、SYS0660（其他異動記錄查詢）、SYS0710（系統權限列表）、**SYS0720（作業權限之使用者列表）**、**SYS0731（角色系統權限列表）** ✨已完整實現
 - **異動記錄查詢功能**：
   - ✅ SYS0610（使用者基本資料異動查詢）、SYS0620（角色基本資料異動查詢）、SYS0630（使用者角色對應設定異動查詢）、SYS0640（系統權限異動記錄查詢）、SYS0650（可管控欄位異動記錄查詢）、SYS0660（其他異動記錄查詢）
 - **基本資料管理功能**：SYSBC20（銀行基本資料維護）、SYSWB40（部別資料維護）、SYSWB60（庫別資料維護）、SYSWB70（組別資料維護）、SYSBC30（地區設定）、SYSB450（區域基本資料維護）、SYSBC40（參數資料設定維護）、SYSB110（商品分類資料維護）、SYSB206（廠/客基本資料維護）
@@ -67,7 +68,7 @@
 
 ### 🎯 下一步建議
 1. **繼續開發新功能**：選擇開發計劃目錄中尚未實現的功能進行開發
-   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0731、SYS0740、SYS0750 等）
+   - 建議優先開發：系統管理模組中的其他查詢功能（如 SYS0740、SYS0750 等）
 2. **優先修復編譯錯誤**（可選）：解決循環相依性問題和前端編碼問題，確保專案可以正常構建
 3. **功能測試**：對已完成的功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質
