@@ -4,6 +4,28 @@
 
 ### 📝 最新完成工作
 
+#### SYS0240 - 角色複製功能實現
+- ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0240 角色複製功能
+  - Entity: Role.cs, RoleButton.cs, UserRole.cs（相關實體類別，已存在）
+  - Repository: IRolePermissionRepository.cs 和 RolePermissionRepository.cs（新增 DeleteByRoleIdAsync, CopyFromRoleAsync, GetByRoleIdAsync 方法）、IUserRoleRepository.cs 和 UserRoleRepository.cs（新增 DeleteByRoleIdAsync, CopyFromRoleAsync 方法）
+  - Service: IRoleService.cs 和 RoleService.cs（新增 CopyRoleToTargetAsync, ValidateCopyRoleAsync 方法，支援交易處理）
+  - DTO: CopyRoleRequestDto.cs, ValidateCopyRequestDto.cs, CopyRoleResultDto.cs, ValidateCopyResultDto.cs（資料傳輸物件，已新增）
+  - Controller: RolesController.cs（API 控制器，路徑 /api/v1/roles/copy 和 /api/v1/roles/copy/validate，已完整實現所有端點）
+  - Vue 頁面: SYS0240Query.vue（前端查詢維護頁面，支援角色選擇、驗證、複製功能）
+  - SQL 腳本: CreateRolesTables.sql, CreatePermissionTables.sql（資料庫建立腳本，相關表已存在）
+  - API 文件: roles.js（前端 API 調用，已新增 copyRoleToTarget, validateCopyRole 函數）
+  - 路由配置: 已在 router/index.js 註冊 SYS0240 路由（路徑 /system/role-copy）
+  - 依賴注入: RoleService 已注入 IUserRoleRepository
+- ✅ **功能特性**：
+  - 支援將來源角色的權限設定複製到目的角色
+  - 可選擇是否同時複製使用者分配
+  - 複製前自動清除目的角色原有的權限和使用者設定
+  - 支援驗證角色複製的可行性（檢查來源角色、目的角色是否存在，來源角色是否有權限，是否為相同角色）
+  - 使用資料庫交易確保資料一致性
+  - 自動設定維護者為目前使用者
+  - 顯示驗證結果和複製結果（權限數量、使用者數量）
+- ✅ **程式碼規範**：所有程式碼遵循統一規範（try-catch、NLog、Dapper、PascalCase命名、交易處理）
+
 #### SYS0230 - 角色之使用者設定維護功能實現
 - ✅ **完成完整功能實現**：根據開發計劃文件實現 SYS0230 角色之使用者設定維護功能
   - Entity: UserRole.cs（使用者角色對應實體類別，已存在）
@@ -321,16 +343,16 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYS0230（角色之使用者設定維護）功能的完整實現。後端 API 端點已存在於 RolesController（GetRoleUsers、BatchAssignRoleUsers、AssignUserToRole、RemoveUserFromRole），前端 API 函數已存在於 roles.js。已完整實現前端維護頁面 SYS0230Query.vue，支援角色使用者查詢、新增、移除、批量更新功能。路由配置已添加到 router/index.js（路徑 /system/role-users）。已修復 Vue 頁面中的分頁字段映射問題。所有代碼已存在並符合開發計劃要求，包含清除使用者直接權限的核心業務邏輯。
+**最新進度**：✅ 已完成 SYS0240（角色複製）功能的完整實現。後端 API 端點已新增到 RolesController（POST /api/v1/roles/copy 和 POST /api/v1/roles/copy/validate），前端 API 函數已新增到 roles.js（copyRoleToTarget, validateCopyRole）。已完整實現前端維護頁面 SYS0240Query.vue，支援角色選擇（LOV）、驗證、複製功能，包含確認對話框和驗證結果顯示。路由配置已添加到 router/index.js（路徑 /system/role-copy）。Repository 層已新增複製方法（DeleteByRoleIdAsync, CopyFromRoleAsync），Service 層已實現交易處理邏輯。所有代碼已存在並符合開發計劃要求，包含完整的驗證和複製流程。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
 1. ⚠️ **優先修復編譯錯誤**：修復其他編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0240（角色複製）或其他系統管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：SYS0620（角色基本資料異動查詢）或其他系統管理功能
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-5. 進行功能測試和整合測試（特別是 SYS0230 的角色使用者設定維護功能，驗證清除使用者直接權限的邏輯）
+5. 進行功能測試和整合測試（特別是 SYS0240 的角色複製功能，驗證交易處理和資料一致性）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能
