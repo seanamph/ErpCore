@@ -250,6 +250,12 @@ const routes = [
         meta: { title: '使用者查詢功能 (SYS0910)' }
       },
       {
+        path: 'login-log-query',
+        name: 'SYS0760Query',
+        component: () => import('../views/System/SYS0760Query.vue'),
+        meta: { title: '使用者異常登入報表 (SYS0760)' }
+      },
+      {
         path: 'user-change-logs',
         name: 'SYS0610Query',
         component: () => import('../views/System/SYS0610Query.vue'),

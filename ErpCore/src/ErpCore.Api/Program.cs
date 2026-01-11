@@ -148,6 +148,7 @@ try
     builder.Services.AddScoped<IControllableFieldRepository, ControllableFieldRepository>();
     builder.Services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
     builder.Services.AddScoped<IButtonLogRepository, ButtonLogRepository>();
+    builder.Services.AddScoped<ILoginLogRepository, LoginLogRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.IButtonRepository, ErpCore.Infrastructure.Repositories.System.ButtonRepository>();
     builder.Services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
     builder.Services.AddScoped<IProspectMasterRepository, ProspectMasterRepository>();
