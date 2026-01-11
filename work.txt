@@ -3,14 +3,13 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **ADDR_ZONE_LIST 地址區域列表功能開發**：根據開發計劃文件 `開發計劃/15-下拉列表/ADDR_ZONE_LIST-地址區域列表.md` 完成了 ADDR_ZONE_LIST 功能
-  - 創建 ZoneList.vue 頁面（按照開發計劃）
-  - 創建 ZoneListDialog.vue 組件（用於彈窗選擇）
-  - 創建 CreateZoneListTables.sql SQL 腳本說明文件
-  - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
-  - 確認前端組件已完整（ZoneList.vue、ZoneListDialog.vue、ZoneSelect.vue）
+- ✅ **MENU_LIST 選單列表功能開發**：根據開發計劃文件 `開發計劃/15-下拉列表/MENU_LIST-選單列表.md` 完成了 MENU_LIST 功能
+  - 創建 CreateMenuListTables.sql SQL 腳本說明文件
+  - 修復 MenuList.vue 頁面，將 MenuPath 欄位改為 Url 欄位（符合 MenuDto 定義）
+  - 確認所有後端實現已完整（MenuService、MenuListController、MenuRepository、MenuDto）
+  - 確認前端實現已完整（MenuListDialog.vue、MenuList.vue）
   - 所有實現均按照開發計劃文件要求
-  - 所有變更已提交到 git（commit: eddd45b）
+  - 所有變更已提交到 git
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
@@ -19,10 +18,8 @@
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
 2. **繼續開發下拉列表功能**：選擇開發計劃目錄中的其他下拉列表功能，建議優先選擇：
-   - DATE_LIST（日期列表）
-   - MENU_LIST（選單列表）
    - USER_LIST（使用者列表系列）
-3. **功能測試**：對已完成的 ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試
+3. **功能測試**：對已完成的 DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST 和 MENU_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
@@ -30,12 +27,11 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **ADDR_ZONE_LIST 地址區域列表功能開發**：
-  - 創建 ZoneList.vue 頁面（按照開發計劃）
-  - 創建 ZoneListDialog.vue 組件（用於彈窗選擇）
-  - 創建 CreateZoneListTables.sql SQL 腳本說明文件
-  - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
-  - 確認前端組件已完整（ZoneList.vue、ZoneListDialog.vue、ZoneSelect.vue）
+- **MENU_LIST 選單列表功能開發**：
+  - 創建 CreateMenuListTables.sql SQL 腳本說明文件
+  - 修復 MenuList.vue 頁面欄位顯示問題（MenuPath 改為 Url）
+  - 確認所有後端實現已完整（MenuService、MenuListController、MenuRepository、MenuDto）
+  - 確認前端實現已完整（MenuListDialog.vue、MenuList.vue）
   - 所有實現均按照開發計劃文件要求
 
 ### ⚠️ 已知問題
@@ -44,6 +40,6 @@
 
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題
-2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發
-3. **功能測試**：對已完成的 ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試
+2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發（建議 USER_LIST）
+3. **功能測試**：對已完成的 DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST 和 MENU_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質
