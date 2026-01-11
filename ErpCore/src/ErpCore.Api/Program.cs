@@ -148,6 +148,7 @@ try
     builder.Services.AddScoped<IControllableFieldRepository, ControllableFieldRepository>();
     builder.Services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
     builder.Services.AddScoped<IButtonLogRepository, ButtonLogRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.IButtonRepository, ErpCore.Infrastructure.Repositories.System.ButtonRepository>();
     builder.Services.AddScoped<IEInvoiceRepository, EInvoiceRepository>();
     builder.Services.AddScoped<IProspectMasterRepository, ProspectMasterRepository>();
     builder.Services.AddScoped<IProspectRepository, ProspectRepository>();
@@ -323,6 +324,7 @@ try
     builder.Services.AddScoped<IPermissionCategoryReportService, PermissionCategoryReportService>();
     builder.Services.AddScoped<ISystemProgramButtonService, SystemProgramButtonService>();
     builder.Services.AddScoped<IButtonLogService, ButtonLogService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.System.IButtonService, ErpCore.Application.Services.System.ButtonService>();
     builder.Services.AddScoped<IEInvoiceService, EInvoiceService>();
     builder.Services.AddScoped<IProspectMasterService, ProspectMasterService>();
     builder.Services.AddScoped<IProspectService, ProspectService>();

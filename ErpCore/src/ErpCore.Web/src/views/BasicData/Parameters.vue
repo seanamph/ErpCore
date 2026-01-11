@@ -7,18 +7,21 @@
     <!-- 查詢表單 -->
     <el-card class="search-card" shadow="never">
       <el-form :inline="true" :model="queryForm" class="search-form">
-        <el-form-item label="標題">
-          <el-input v-model="queryForm.Title" placeholder="請輸入標題" clearable />
+        <el-form-item label="參數標題">
+          <el-input v-model="queryForm.Title" placeholder="請輸入參數標題" clearable />
         </el-form-item>
-        <el-form-item label="標籤">
-          <el-input v-model="queryForm.Tag" placeholder="請輸入標籤" clearable />
+        <el-form-item label="參數標籤">
+          <el-input v-model="queryForm.Tag" placeholder="請輸入參數標籤" clearable />
         </el-form-item>
         <el-form-item label="狀態">
           <el-select v-model="queryForm.Status" placeholder="請選擇狀態" clearable>
             <el-option label="全部" value="" />
-            <el-option label="啟用" value="A" />
-            <el-option label="停用" value="I" />
+            <el-option label="啟用" value="1" />
+            <el-option label="停用" value="0" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="系統">
+          <el-input v-model="queryForm.SystemId" placeholder="請輸入系統ID" clearable />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查詢</el-button>
@@ -37,23 +40,38 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="Title" label="標題" width="150" />
-        <el-table-column prop="Tag" label="標籤" width="150" />
-        <el-table-column prop="Value" label="參數值" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="Description" label="說明" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="Title" label="參數標題" width="150" />
+        <el-table-column prop="Tag" label="參數標籤" width="150" />
+        <el-table-column prop="Content" label="參數內容" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="Content2" label="多語言內容" min-width="200" show-overflow-tooltip />
+        <el-table-column prop="SeqNo" label="排序序號" width="100" align="right" />
         <el-table-column prop="Status" label="狀態" width="80">
           <template #default="{ row }">
-            <el-tag :type="row.Status === 'A' ? 'success' : 'danger'">
-              {{ row.Status === 'A' ? '啟用' : '停用' }}
+            <el-tag :type="row.Status === '1' ? 'success' : 'danger'">
+              {{ row.Status === '1' ? '啟用' : '停用' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="SeqNo" label="排序序號" width="100" align="right" />
+        <el-table-column prop="ReadOnly" label="只讀" width="80">
+          <template #default="{ row }">
+            <el-tag :type="row.ReadOnly === '1' ? 'warning' : 'info'">
+              {{ row.ReadOnly === '1' ? '是' : '否' }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="SystemId" label="系統ID" width="120" />
         <el-table-column prop="Notes" label="備註" min-width="200" show-overflow-tooltip />
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleEdit(row)">修改</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(row)">刪除</el-button>
+            <el-button 
+              type="danger" 
+              size="small" 
+              @click="handleDelete(row)" 
+              :disabled="row.ReadOnly === '1'"
+            >
+              刪除
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,33 +93,42 @@
     <el-dialog
       :title="dialogTitle"
       v-model="dialogVisible"
-      width="600px"
+      width="800px"
       @close="handleDialogClose"
     >
       <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
-        <el-form-item label="標題" prop="Title">
-          <el-input v-model="form.Title" placeholder="請輸入標題" :disabled="isEdit" />
+        <el-form-item label="參數標題" prop="Title">
+          <el-input v-model="form.Title" placeholder="請輸入參數標題" :disabled="isEdit" />
         </el-form-item>
-        <el-form-item label="標籤" prop="Tag">
-          <el-input v-model="form.Tag" placeholder="請輸入標籤" :disabled="isEdit" />
-        </el-form-item>
-        <el-form-item label="參數值" prop="Value">
-          <el-input v-model="form.Value" placeholder="請輸入參數值" />
-        </el-form-item>
-        <el-form-item label="說明" prop="Description">
-          <el-input v-model="form.Description" type="textarea" :rows="3" placeholder="請輸入說明" />
-        </el-form-item>
-        <el-form-item label="狀態" prop="Status">
-          <el-select v-model="form.Status" placeholder="請選擇狀態" style="width: 100%">
-            <el-option label="啟用" value="A" />
-            <el-option label="停用" value="I" />
-          </el-select>
+        <el-form-item label="參數標籤" prop="Tag">
+          <el-input v-model="form.Tag" placeholder="請輸入參數標籤" :disabled="isEdit" />
         </el-form-item>
         <el-form-item label="排序序號" prop="SeqNo">
           <el-input-number v-model="form.SeqNo" :min="0" :step="1" style="width: 100%" />
         </el-form-item>
+        <el-form-item label="參數內容" prop="Content">
+          <el-input v-model="form.Content" type="textarea" :rows="3" placeholder="請輸入參數內容" />
+        </el-form-item>
+        <el-form-item label="多語言內容" prop="Content2">
+          <el-input v-model="form.Content2" type="textarea" :rows="3" placeholder="請輸入多語言參數內容" />
+        </el-form-item>
         <el-form-item label="備註" prop="Notes">
           <el-input v-model="form.Notes" type="textarea" :rows="3" placeholder="請輸入備註" />
+        </el-form-item>
+        <el-form-item label="狀態" prop="Status">
+          <el-select v-model="form.Status" placeholder="請選擇狀態" style="width: 100%">
+            <el-option label="啟用" value="1" />
+            <el-option label="停用" value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="只讀" prop="ReadOnly">
+          <el-select v-model="form.ReadOnly" placeholder="請選擇只讀標誌" style="width: 100%">
+            <el-option label="否" value="0" />
+            <el-option label="是" value="1" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="系統" prop="SystemId">
+          <el-input v-model="form.SystemId" placeholder="請輸入系統ID" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -165,12 +192,15 @@ const loadData = async () => {
   loading.value = true
   try {
     const params = {
-      ...queryForm,
       PageIndex: pagination.PageIndex,
-      PageSize: pagination.PageSize
+      PageSize: pagination.PageSize,
+      Title: queryForm.Title || undefined,
+      Tag: queryForm.Tag || undefined,
+      Status: queryForm.Status || undefined,
+      SystemId: queryForm.SystemId || undefined
     }
     const response = await parametersApi.getParameters(params)
-    if (response.Data) {
+    if (response && response.Data) {
       tableData.value = response.Data.Items || []
       pagination.TotalCount = response.Data.TotalCount || 0
     }
@@ -192,7 +222,8 @@ const handleReset = () => {
   Object.assign(queryForm, {
     Title: '',
     Tag: '',
-    Status: ''
+    Status: '',
+    SystemId: ''
   })
   handleSearch()
 }
@@ -204,11 +235,13 @@ const handleCreate = () => {
   Object.assign(form, {
     Title: '',
     Tag: '',
-    Value: '',
-    Description: '',
-    Status: 'A',
     SeqNo: 0,
-    Notes: ''
+    Content: '',
+    Content2: '',
+    Notes: '',
+    Status: '1',
+    ReadOnly: '0',
+    SystemId: ''
   })
   dialogVisible.value = true
 }
@@ -220,11 +253,13 @@ const handleEdit = (row) => {
   Object.assign(form, {
     Title: row.Title,
     Tag: row.Tag,
-    Value: row.Value,
-    Description: row.Description,
-    Status: row.Status,
     SeqNo: row.SeqNo || 0,
-    Notes: row.Notes || ''
+    Content: row.Content || '',
+    Content2: row.Content2 || '',
+    Notes: row.Notes || '',
+    Status: row.Status || '1',
+    ReadOnly: row.ReadOnly || '0',
+    SystemId: row.SystemId || ''
   })
   dialogVisible.value = true
 }
@@ -250,7 +285,17 @@ const handleSubmit = async () => {
   try {
     await formRef.value.validate()
     if (isEdit.value) {
-      await parametersApi.updateParameter(form.Title, form.Tag, form)
+      // 修改時不包含 Title 和 Tag
+      const updateData = {
+        SeqNo: form.SeqNo,
+        Content: form.Content,
+        Content2: form.Content2,
+        Notes: form.Notes,
+        Status: form.Status,
+        ReadOnly: form.ReadOnly,
+        SystemId: form.SystemId
+      }
+      await parametersApi.updateParameter(form.Title, form.Tag, updateData)
       ElMessage.success('修改成功')
     } else {
       await parametersApi.createParameter(form)

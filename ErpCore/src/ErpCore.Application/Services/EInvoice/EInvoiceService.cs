@@ -3,6 +3,7 @@ using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.EInvoice;
 using ErpCore.Infrastructure.Repositories.EInvoice;
 using ErpCore.Shared.Common;
+using ErpCore.Application.Common;
 using ErpCore.Shared.Logging;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;

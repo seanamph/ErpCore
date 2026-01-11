@@ -25,6 +25,17 @@ try:
 except ImportError:
     HAS_OPENCV = False
 
+# 設置 Windows 控制台為 UTF-8 編碼
+import sys
+import io
+if sys.platform == 'win32':
+    try:
+        # 設置標準輸出為 UTF-8，啟用行緩衝（line_buffering=True）以確保輸出立即顯示
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace', line_buffering=True)
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace', line_buffering=True)
+    except:
+        pass
+
 # 檢測是否支援 Windows API（用於檢測滑鼠指標類型）
 try:
     import win32api

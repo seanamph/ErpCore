@@ -443,11 +443,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.mail-sms {
-  padding: 20px;
-}
-
+<style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
 
 .mail-sms {

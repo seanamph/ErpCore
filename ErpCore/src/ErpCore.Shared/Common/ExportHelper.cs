@@ -5,6 +5,7 @@ using ErpCore.Shared.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using PdfColors = QuestPDF.Helpers.Colors;
 
 namespace ErpCore.Shared.Common;
 
@@ -64,7 +65,7 @@ public class ExportHelper
                 worksheet.Cells[currentRow, i + 1].Value = column.DisplayName;
                 worksheet.Cells[currentRow, i + 1].Style.Font.Bold = true;
                 worksheet.Cells[currentRow, i + 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
-                worksheet.Cells[currentRow, i + 1].Style.Fill.BackgroundColor.SetColor(Color.LightGray);
+                worksheet.Cells[currentRow, i + 1].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
                 worksheet.Cells[currentRow, i + 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                 worksheet.Cells[currentRow, i + 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 worksheet.Cells[currentRow, i + 1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
@@ -171,8 +172,9 @@ public class ExportHelper
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
-                    page.Margin(2, Unit.Centimeter);
-                    page.PageColor(Colors.White);
+                    // 使用数字作为点（points），2 cm ≈ 56.7 points
+                    page.Margin(56.7f);
+                    page.PageColor(PdfColors.White);
                     page.DefaultTextStyle(x => x.FontSize(10));
 
                     page.Content()
@@ -207,19 +209,18 @@ public class ExportHelper
                                     {
                                         foreach (var col in columns)
                                         {
-                                            header.Cell()
-                                                .Element(style =>
-                                                {
-                                                    style
-                                                        .Background(Colors.Grey.Lighten3)
-                                                        .Padding(8)
-                                                        .Border(1)
-                                                        .BorderColor(Colors.Grey.Lighten1);
-                                                })
-                                                .Text(col.DisplayName)
-                                                .FontSize(10)
-                                                .Bold()
-                                                .AlignCenter();
+                                            var cell = header.Cell();
+                                            cell.Element(style =>
+                                            {
+                                                style
+                                                    .Background(PdfColors.Grey.Lighten3)
+                                                    .Padding(8)
+                                                    .Border(1)
+                                                    .BorderColor(PdfColors.Grey.Lighten1);
+                                            });
+                                            cell.DefaultTextStyle(x => x.FontSize(10).Bold())
+                                                .AlignCenter()
+                                                .Text(col.DisplayName);
                                         }
                                     });
 
@@ -231,17 +232,17 @@ public class ExportHelper
                                             var value = GetPropertyValue(item, col.PropertyName);
                                             var displayValue = FormatValue(value, col.DataType);
 
-                                            table.Cell()
-                                                .Element(style =>
-                                                {
-                                                    style
-                                                        .Padding(6)
-                                                        .Border(1)
-                                                        .BorderColor(Colors.Grey.Lighten2);
-                                                })
-                                                .Text(displayValue)
-                                                .FontSize(9)
-                                                .AlignLeft();
+                                            var cell = table.Cell();
+                                            cell.Element(style =>
+                                            {
+                                                style
+                                                    .Padding(6)
+                                                    .Border(1)
+                                                    .BorderColor(PdfColors.Grey.Lighten2);
+                                            });
+                                            cell.DefaultTextStyle(x => x.FontSize(9))
+                                                .AlignLeft()
+                                                .Text(displayValue);
                                         }
                                     }
                                 });

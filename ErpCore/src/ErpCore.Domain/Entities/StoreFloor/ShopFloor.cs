@@ -210,7 +210,7 @@ public class TypeCode
     /// <summary>
     /// 類型代碼
     /// </summary>
-    public string TypeCode { get; set; } = string.Empty;
+    public string TypeCodeValue { get; set; } = string.Empty;
 
     /// <summary>
     /// 類型名稱

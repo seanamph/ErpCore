@@ -190,15 +190,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.auto-process-mail {
-  padding: 20px;
-}
-
-.page-header {
-  margin-bottom: 20px;
-}
-
+<style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
 
 .auto-process-mail {
