@@ -371,16 +371,16 @@
 
 **專案狀態**：✅ 已完成59個功能模組的基礎架構和主要功能實現，包含完整的後端（Entity, Repository, Service, DTO, Controller）和前端（179個Vue頁面），所有依賴注入已註冊。Vue 頁面樣式統一工作已完成，所有頁面已導入 variables.scss 並使用統一的顏色變數。目錄結構文件已完整更新，所有文件已標記✅，與實際檔案保持一致。CI/CD 和開發環境配置已完成。
 
-**最新進度**：✅ 已完成 SYSB110（商品分類資料維護）功能的完整實現。後端 API 端點已完整實現（GET/POST/PUT/DELETE /api/v1/product-categories，以及樹狀結構、大分類/中分類/小分類列表查詢端點）。前端維護頁面 ProductCategory.vue 已更新，支援階層式分類管理（大分類→中分類→小分類），修正 ClassMode 值為 1/2/3，新增會計科目相關欄位，新增級聯下拉選單功能。路由配置已添加到 router/index.js（路徑 /master-data/product-category）。所有代碼已存在並符合開發計劃要求，包含完整的 CRUD 功能和階層式分類管理。
+**最新進度**：✅ 已完成 SYSBC40（參數資料設定維護）功能的完整實現。後端 API 端點已完整實現（GET/POST/PUT/DELETE /api/v1/parameters，以及根據標題查詢、取得參數值、批次刪除等端點）。前端維護頁面 Parameters.vue 已更新，支援參數查詢、新增、修改、刪除功能，新增系統下拉選單功能（使用 dropdownListApi.getSystemOptions），支援只讀參數保護。路由配置已添加到 router/index.js（路徑 /master-data/parameters）。所有代碼已存在並符合開發計劃要求，包含完整的 CRUD 功能、只讀保護、多語言支援等特性。
 
 **開發規範**：所有程式碼遵循統一的開發規範，包含 try-catch、NLog、Dapper、統一命名、Bootstrap 色系等要求。variables.scss 已建立並配置完整，所有 Vue 頁面已統一使用主色系 #198754，Card 和 Badge 顏色對比度已調整。
 
 **下一步工作**：
-1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Application 專案缺少 Infrastructure 引用、缺少 Dapper 引用等），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Application.csproj 的專案引用配置，添加對 ErpCore.Infrastructure 和 Dapper 的引用。
+1. ⚠️ **優先修復編譯錯誤**：修復編譯錯誤（ErpCore.Infrastructure 專案缺少 IdentityModel、Caching 等 NuGet 包引用，以及一些命名空間衝突問題），這些錯誤會影響整體專案編譯。需要檢查 ErpCore.Infrastructure.csproj 的套件引用配置，添加必要的 NuGet 包。
 2. ⚠️ **修復前端編譯錯誤**：修復其他 Vue 頁面的編譯錯誤（CertificateData/index.vue、CertificateProcess/index.vue 等編碼問題），這些錯誤會影響前端構建
-3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（參數設定、地區設定、金融機構、組織架構等）或進銷存管理功能
+3. 繼續完善其他功能模組的 API 端點（參考開發計劃目錄中的 .md 文件），建議下一個功能：其他基本資料管理功能（地區設定 SYSBC30、銀行基本資料維護 SYSBC20、區域基本資料維護 SYSB450 等）或進銷存管理功能
 4. 實作資料庫密碼加密邏輯（UserService 中的 HashPassword 方法，目前使用 SHA256，建議改用 BCrypt 或 Argon2）
-5. 進行功能測試和整合測試（特別是 SYSB110 的商品分類功能，驗證階層式分類管理和資料一致性）
+5. 進行功能測試和整合測試（特別是 SYSBC40 的參數功能，驗證只讀保護、多語言支援等功能）
 6. 根據實際業務需求調整功能模組
 7. 安裝並配置必要的套件（Redis、Hangfire、Quartz、RabbitMQ、Azure Service Bus等）
 8. 根據實際使用情況優化效能

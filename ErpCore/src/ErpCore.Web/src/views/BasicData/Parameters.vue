@@ -21,7 +21,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="系統">
-          <el-input v-model="queryForm.SystemId" placeholder="請輸入系統ID" clearable />
+          <el-select v-model="queryForm.SystemId" placeholder="請選擇系統" clearable filterable style="width: 200px">
+            <el-option label="全部" value="" />
+            <el-option v-for="system in systemList" :key="system.Value" :label="system.Label" :value="system.Value" />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查詢</el-button>
@@ -128,7 +131,10 @@
           </el-select>
         </el-form-item>
         <el-form-item label="系統" prop="SystemId">
-          <el-input v-model="form.SystemId" placeholder="請輸入系統ID" />
+          <el-select v-model="form.SystemId" placeholder="請選擇系統" clearable filterable style="width: 100%">
+            <el-option label="無" value="" />
+            <el-option v-for="system in systemList" :key="system.Value" :label="system.Label" :value="system.Value" />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -143,6 +149,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { parametersApi } from '@/api/parameters'
+import { dropdownListApi } from '@/api/dropdownList'
 
 // 查詢表單
 const queryForm = reactive({
@@ -172,18 +179,19 @@ const formRef = ref(null)
 const form = reactive({
   Title: '',
   Tag: '',
-  Value: '',
-  Description: '',
-  Status: 'A',
   SeqNo: 0,
-  Notes: ''
+  Content: '',
+  Content2: '',
+  Notes: '',
+  Status: '1',
+  ReadOnly: '0',
+  SystemId: ''
 })
 
 // 表單驗證規則
 const rules = {
-  Title: [{ required: true, message: '請輸入標題', trigger: 'blur' }],
-  Tag: [{ required: true, message: '請輸入標籤', trigger: 'blur' }],
-  Value: [{ required: true, message: '請輸入參數值', trigger: 'blur' }],
+  Title: [{ required: true, message: '請輸入參數標題', trigger: 'blur' }],
+  Tag: [{ required: true, message: '請輸入參數標籤', trigger: 'blur' }],
   Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
 }
 
@@ -328,8 +336,21 @@ const handlePageChange = (page) => {
   loadData()
 }
 
+// 載入系統列表
+const loadSystemList = async () => {
+  try {
+    const response = await dropdownListApi.getSystemOptions()
+    if (response && response.data && response.data.success) {
+      systemList.value = response.data.data || []
+    }
+  } catch (error) {
+    console.error('載入系統列表失敗:', error)
+  }
+}
+
 // 初始化
 onMounted(() => {
+  loadSystemList()
   loadData()
 })
 </script>
