@@ -1,0 +1,54 @@
+-- =============================================
+-- ADDR_CITY_LIST - 地址城市列表
+-- 資料表建立腳本
+-- =============================================
+-- 參考開發計劃: 開發計劃/15-下拉列表/ADDR_CITY_LIST-地址城市列表.md
+
+-- 說明：
+-- ADDR_CITY_LIST 功能使用 Cities 資料表
+-- 本腳本用於確認相關資料表和索引已正確建立
+
+-- 1. Cities 表 (城市主檔)
+-- 參考: CreateDropdownListTables.sql
+-- 主要欄位：
+--   - CityId: 城市代碼 (主鍵)
+--   - CityName: 城市名稱
+--   - CountryCode: 國家代碼
+--   - SeqNo: 排序序號
+--   - Status: 狀態 (1:啟用, 0:停用)
+
+-- 2. 查詢 SQL (用於 ADDR_CITY_LIST)
+-- 查詢城市列表（支援分頁、排序、篩選）
+-- SELECT 
+--     CityId,
+--     CityName,
+--     CountryCode,
+--     SeqNo,
+--     Status
+-- FROM Cities
+-- WHERE 1 = 1
+--     AND (@CityName IS NULL OR CityName LIKE '%' + @CityName + '%')
+--     AND (@CountryCode IS NULL OR CountryCode = @CountryCode)
+--     AND (@Status IS NULL OR Status = @Status)
+-- ORDER BY 
+--     CASE WHEN @SortField = 'CityName' AND @SortOrder = 'ASC' THEN CityName END ASC,
+--     CASE WHEN @SortField = 'CityName' AND @SortOrder = 'DESC' THEN CityName END DESC,
+--     CASE WHEN @SortField = 'CityId' AND @SortOrder = 'ASC' THEN CityId END ASC,
+--     CASE WHEN @SortField = 'CityId' AND @SortOrder = 'DESC' THEN CityId END DESC,
+--     SeqNo, CityName
+-- OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+-- 3. 查詢城市選項（用於下拉選單）
+-- SELECT 
+--     CityId AS Value,
+--     CityName AS Label
+-- FROM Cities
+-- WHERE 1 = 1
+--     AND (@CountryCode IS NULL OR CountryCode = @CountryCode)
+--     AND (@Status IS NULL OR Status = @Status)
+-- ORDER BY SeqNo, CityName;
+
+-- 注意事項：
+-- 1. Cities 表已由 CreateDropdownListTables.sql 建立
+-- 2. 如需建立或更新 Cities 表，請執行 CreateDropdownListTables.sql
+-- 3. 所有索引已包含在 CreateDropdownListTables.sql 中

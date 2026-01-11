@@ -3,28 +3,26 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **MULTI_USERS_LIST 多選使用者列表功能開發**：根據開發計劃文件 `開發計劃/15-下拉列表/MULTI_USERS_LIST-多選使用者列表.md` 完成了 MULTI_USERS_LIST 功能
-  - 確認所有後端實現已完整（Entity、Service、DTO、Controller 已存在）
-  - 創建 MultiUserListDialog.vue 對話框組件：支援多選模式、使用者編號/名稱/部門篩選、分頁等功能
-  - 修復 MultiSelectListService.cs 中的字段名稱（DepartmentName -> DeptName, DepartmentId -> DeptId）
-  - 創建 CreateMultiUsersListTables.sql SQL 腳本文件（說明文件）
+- ✅ **SYSID_LIST 系統ID列表功能開發**：根據開發計劃文件 `開發計劃/15-下拉列表/SYSID_LIST-系統ID列表.md` 完成了 SYSID_LIST 功能
+  - 修復 SystemList.vue，刪除多餘的使用者列表代碼
+  - 創建 CreateSystemListTables.sql SQL 腳本說明文件
+  - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
+  - 確認前端組件已完整（SystemList.vue、SystemListDialog.vue）
   - 所有實現均按照開發計劃文件要求
-  - 所有變更已提交到 git（commit: 146a84c）
+  - 所有變更已提交到 git（commit: fe605a9）
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤），需要後續修復
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（440 個錯誤），需要後續修復
+- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤），需要後續修復
 
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題（ErpCore.Infrastructure 專案的 MSB4006 錯誤）和前端編碼問題，確保專案可以正常構建
 2. **繼續開發下拉列表功能**：選擇開發計劃目錄中的其他下拉列表功能，建議優先選擇：
-   - SYSID_LIST（系統ID列表）
-   - USER_LIST（使用者列表系列）
    - ADDR_CITY_LIST（地址城市列表）
    - ADDR_ZONE_LIST（地址區域列表）
    - DATE_LIST（日期列表）
    - MENU_LIST（選單列表）
-3. **功能測試**：對已完成的 MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試，特別是對話框組件的使用和與其他組件的整合
+3. **功能測試**：對已完成的 SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質，確保符合開發規範
 
 ---
@@ -32,19 +30,19 @@
 ## 📊 最新進度摘要（2025-01-27）
 
 ### ✅ 本次完成
-- **MULTI_USERS_LIST 多選使用者列表功能開發**：
-  - 確認所有後端實現已完整（Entity、Service、DTO、Controller）
-  - 創建 MultiUserListDialog.vue 對話框組件：支援多選模式、使用者編號/名稱/部門篩選、分頁等功能
-  - 修復 MultiSelectListService.cs 中的字段名稱問題
-  - 創建 CreateMultiUsersListTables.sql SQL 腳本文件
+- **SYSID_LIST 系統ID列表功能開發**：
+  - 修復 SystemList.vue，刪除多餘的使用者列表代碼
+  - 創建 CreateSystemListTables.sql SQL 腳本說明文件
+  - 確認所有後端實現已完整（Entity、Repository、Service、DTO、Controller）
+  - 確認前端組件已完整（SystemList.vue、SystemListDialog.vue）
   - 所有實現均按照開發計劃文件要求
 
 ### ⚠️ 已知問題
 - **dotnet build**：ErpCore.Infrastructure 專案存在循環相依性錯誤（MSB4006 錯誤）
-- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（440 個錯誤）
+- **npm build**：CertificateData/index.vue、CertificateProcess/index.vue 等文件存在編碼問題（436 個錯誤）
 
 ### 🎯 下一步建議
 1. **優先修復編譯錯誤**：解決循環相依性問題和前端編碼問題
 2. **繼續開發下拉列表功能**：選擇其他下拉列表功能進行開發
-3. **功能測試**：對已完成的 MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試
+3. **功能測試**：對已完成的 SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST 和 MULTI_AREA_LIST 功能進行完整測試
 4. **代碼審查**：檢查已完成功能的代碼品質
