@@ -72,4 +72,94 @@ public interface IAnalysisReportService
     /// 列印耗材出庫明細表 (SYSA1013)
     /// </summary>
     Task<byte[]> PrintSYSA1013ReportAsync(SYSA1013QueryDto query);
+
+    /// <summary>
+    /// 查詢商品分析報表 (SYSA1014)
+    /// </summary>
+    Task<PagedResult<SYSA1014ReportDto>> GetSYSA1014ReportAsync(SYSA1014QueryDto query);
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1014)
+    /// </summary>
+    Task<byte[]> ExportSYSA1014ReportAsync(SYSA1014QueryDto query, string format);
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1014)
+    /// </summary>
+    Task<byte[]> PrintSYSA1014ReportAsync(SYSA1014QueryDto query);
+
+    /// <summary>
+    /// 查詢商品分析報表 (SYSA1015)
+    /// </summary>
+    Task<PagedResult<SYSA1015ReportDto>> GetSYSA1015ReportAsync(SYSA1015QueryDto query);
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1015)
+    /// </summary>
+    Task<byte[]> ExportSYSA1015ReportAsync(SYSA1015QueryDto query, string format);
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1015)
+    /// </summary>
+    Task<byte[]> PrintSYSA1015ReportAsync(SYSA1015QueryDto query);
+
+    /// <summary>
+    /// 查詢商品分析報表 (SYSA1016)
+    /// </summary>
+    Task<PagedResult<SYSA1016ReportDto>> GetSYSA1016ReportAsync(SYSA1016QueryDto query);
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1016)
+    /// </summary>
+    Task<byte[]> ExportSYSA1016ReportAsync(SYSA1016QueryDto query, string format);
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1016)
+    /// </summary>
+    Task<byte[]> PrintSYSA1016ReportAsync(SYSA1016QueryDto query);
+
+    /// <summary>
+    /// 查詢商品分析報表 (SYSA1017)
+    /// </summary>
+    Task<PagedResult<SYSA1017ReportDto>> GetSYSA1017ReportAsync(SYSA1017QueryDto query);
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1017)
+    /// </summary>
+    Task<byte[]> ExportSYSA1017ReportAsync(SYSA1017QueryDto query, string format);
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1017)
+    /// </summary>
+    Task<byte[]> PrintSYSA1017ReportAsync(SYSA1017QueryDto query);
+
+    /// <summary>
+    /// 查詢工務維修件數統計報表 (SYSA1018)
+    /// </summary>
+    Task<PagedResult<SYSA1018ReportDto>> GetSYSA1018ReportAsync(SYSA1018QueryDto query);
+
+    /// <summary>
+    /// 匯出工務維修件數統計報表 (SYSA1018)
+    /// </summary>
+    Task<byte[]> ExportSYSA1018ReportAsync(SYSA1018QueryDto query, string format);
+
+    /// <summary>
+    /// 列印工務維修件數統計報表 (SYSA1018)
+    /// </summary>
+    Task<byte[]> PrintSYSA1018ReportAsync(SYSA1018QueryDto query);
+
+    /// <summary>
+    /// 查詢商品分析報表 (SYSA1019)
+    /// </summary>
+    Task<PagedResult<SYSA1019ReportDto>> GetSYSA1019ReportAsync(SYSA1019QueryDto query);
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1019)
+    /// </summary>
+    Task<byte[]> ExportSYSA1019ReportAsync(SYSA1019QueryDto query, string format);
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1019)
+    /// </summary>
+    Task<byte[]> PrintSYSA1019ReportAsync(SYSA1019QueryDto query);
 }

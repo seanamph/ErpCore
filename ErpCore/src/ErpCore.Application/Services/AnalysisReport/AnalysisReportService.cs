@@ -376,4 +376,508 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
             throw;
         }
     }
+
+    public async Task<PagedResult<SYSA1014ReportDto>> GetSYSA1014ReportAsync(SYSA1014QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1014Query
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1014ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1014ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                SelectDate = item.SelectDate,
+                SelectType = item.SelectType,
+                SeqNo = item.SeqNo,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                PackUnit = item.PackUnit,
+                Unit = item.Unit,
+                PurchaseQty = item.PurchaseQty,
+                SalesQty = item.SalesQty,
+                StockQty = item.StockQty,
+                BeginDate = item.BeginDate,
+                EndDate = item.EndDate
+            }).ToList();
+
+            return new PagedResult<SYSA1014ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1014ReportAsync(SYSA1014QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1014ReportAsync(SYSA1014QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1015ReportDto>> GetSYSA1015ReportAsync(SYSA1015QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1015Query
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1015ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1015ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                SeqNo = item.SeqNo,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                PackUnit = item.PackUnit,
+                Unit = item.Unit,
+                Qty = item.Qty,
+                SafeQty = item.SafeQty,
+                SelectType = item.SelectType,
+                YearMonth = item.YearMonth
+            }).ToList();
+
+            return new PagedResult<SYSA1015ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1015ReportAsync(SYSA1015QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1015ReportAsync(SYSA1015QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1016ReportDto>> GetSYSA1016ReportAsync(SYSA1016QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1016Query
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1016ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1016ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                SeqNo = item.SeqNo,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                PackUnit = item.PackUnit,
+                Unit = item.Unit,
+                Qty = item.Qty,
+                SafeQty = item.SafeQty,
+                SelectType = item.SelectType,
+                YearMonth = item.YearMonth
+            }).ToList();
+
+            return new PagedResult<SYSA1016ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1016ReportAsync(SYSA1016QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1016ReportAsync(SYSA1016QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1017ReportDto>> GetSYSA1017ReportAsync(SYSA1017QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1017Query
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1017ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1017ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                SeqNo = item.SeqNo,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                PackUnit = item.PackUnit,
+                Unit = item.Unit,
+                Qty = item.Qty,
+                SafeQty = item.SafeQty,
+                SelectType = item.SelectType,
+                YearMonth = item.YearMonth,
+                OrgId = item.OrgId
+            }).ToList();
+
+            return new PagedResult<SYSA1017ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1017ReportAsync(SYSA1017QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1017ReportAsync(SYSA1017QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1018ReportDto>> GetSYSA1018ReportAsync(SYSA1018QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1018Query
+            {
+                OrgId = query.OrgId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1018ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1018ReportDto
+            {
+                OrgId = item.OrgId,
+                OrgName = item.OrgName,
+                ReportName = item.ReportName,
+                YearMonth = item.YearMonth,
+                MaintenanceType = item.MaintenanceType,
+                MaintenanceStatus = item.MaintenanceStatus,
+                ItemCount = item.ItemCount,
+                TotalCount = item.TotalCount
+            }).ToList();
+
+            return new PagedResult<SYSA1018ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修件數統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1018ReportAsync(SYSA1018QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修件數統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1018ReportAsync(SYSA1018QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修件數統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1019ReportDto>> GetSYSA1019ReportAsync(SYSA1019QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1019Query
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1019ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1019ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                OrgId = item.OrgId,
+                OrgName = item.OrgName,
+                ReportName = item.ReportName,
+                YearMonth = item.YearMonth,
+                FilterType = item.FilterType,
+                SeqNo = item.SeqNo,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName
+            }).ToList();
+
+            return new PagedResult<SYSA1019ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1019ReportAsync(SYSA1019QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1019ReportAsync(SYSA1019QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
 }

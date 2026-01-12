@@ -603,5 +603,36 @@ BEGIN
 END
 GO
 
+-- 19. 工務維修記錄表 (SYSA1018)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MaintenanceRecords]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[MaintenanceRecords] (
+        [RecordId] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+        [OrgId] NVARCHAR(50) NOT NULL, -- 組織單位代號
+        [MaintenanceDate] DATETIME2 NOT NULL, -- 維修日期
+        [MaintenanceType] NVARCHAR(50) NULL, -- 維修類型
+        [MaintenanceStatus] NVARCHAR(20) NOT NULL, -- 維修狀態 (待處理/處理中/已完成/已取消)
+        [ItemCount] INT NOT NULL DEFAULT 0, -- 維修件數
+        [Description] NVARCHAR(500) NULL, -- 維修說明
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        [UpdatedBy] NVARCHAR(50) NULL,
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_MaintenanceRecords_OrgId] ON [dbo].[MaintenanceRecords] ([OrgId]);
+    CREATE NONCLUSTERED INDEX [IX_MaintenanceRecords_MaintenanceDate] ON [dbo].[MaintenanceRecords] ([MaintenanceDate]);
+    CREATE NONCLUSTERED INDEX [IX_MaintenanceRecords_MaintenanceStatus] ON [dbo].[MaintenanceRecords] ([MaintenanceStatus]);
+    CREATE NONCLUSTERED INDEX [IX_MaintenanceRecords_MaintenanceType] ON [dbo].[MaintenanceRecords] ([MaintenanceType]);
+
+    PRINT '資料表 MaintenanceRecords 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 MaintenanceRecords 已存在';
+END
+GO
+
 PRINT '所有分析報表相關資料表建立完成';
 

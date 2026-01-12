@@ -458,6 +458,672 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
         }
     }
 
+    public async Task<PagedResult<SYSA1014ReportItem>> GetSYSA1014ReportAsync(SYSA1014Query query)
+    {
+        try
+        {
+            // 解析日期範圍
+            DateTime? beginDate = null;
+            DateTime? endDate = null;
+            
+            if (!string.IsNullOrEmpty(query.BeginDate))
+            {
+                beginDate = DateTime.Parse(query.BeginDate);
+            }
+            
+            if (!string.IsNullOrEmpty(query.EndDate))
+            {
+                endDate = DateTime.Parse(query.EndDate).AddDays(1).AddSeconds(-1);
+            }
+
+            var sql = @"
+                SELECT 
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(s.SiteName, '') AS SiteName,
+                    '商品分析報表' AS ReportName,
+                    CASE 
+                        WHEN @BeginDate IS NOT NULL AND @EndDate IS NOT NULL 
+                        THEN CONVERT(NVARCHAR(10), @BeginDate, 120) + ' ~ ' + CONVERT(NVARCHAR(10), @EndDate, 120)
+                        ELSE ''
+                    END AS SelectDate,
+                    '全部' AS SelectType,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    g.BId,
+                    g.MId,
+                    g.SId,
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.PackUnit,
+                    g.Unit,
+                    ISNULL(purchaseQty.PurchaseQty, 0) AS PurchaseQty,
+                    ISNULL(salesQty.SalesQty, 0) AS SalesQty,
+                    ISNULL(stockQty.StockQty, 0) AS StockQty,
+                    ISNULL(@BeginDate, GETDATE()) AS BeginDate,
+                    ISNULL(@EndDate, GETDATE()) AS EndDate
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT SiteId, SiteName FROM Sites WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                ) s ON 1=1
+                LEFT JOIN (
+                    SELECT 
+                        pod.GoodsId,
+                        SUM(CASE WHEN po.OrderType = 'PO' THEN pod.Qty ELSE -pod.Qty END) AS PurchaseQty
+                    FROM PurchaseOrderDetails pod
+                    INNER JOIN PurchaseOrders po ON pod.OrderId = po.OrderId
+                    WHERE po.Status IN ('A', 'C')
+                        AND (@BeginDate IS NULL OR po.OrderDate >= @BeginDate)
+                        AND (@EndDate IS NULL OR po.OrderDate <= @EndDate)
+                        AND (@SiteId IS NULL OR po.SiteId = @SiteId)
+                    GROUP BY pod.GoodsId
+                ) purchaseQty ON g.GoodsId = purchaseQty.GoodsId
+                LEFT JOIN (
+                    SELECT 
+                        sod.GoodsId,
+                        SUM(CASE WHEN so.OrderType = 'SO' THEN sod.Qty ELSE -sod.Qty END) AS SalesQty
+                    FROM SalesOrderDetails sod
+                    INNER JOIN SalesOrders so ON sod.OrderId = so.OrderId
+                    WHERE so.Status IN ('A', 'C', 'O')
+                        AND (@BeginDate IS NULL OR so.OrderDate >= @BeginDate)
+                        AND (@EndDate IS NULL OR so.OrderDate <= @EndDate)
+                        AND (@SiteId IS NULL OR so.SiteId = @SiteId)
+                    GROUP BY sod.GoodsId
+                ) salesQty ON g.GoodsId = salesQty.GoodsId
+                LEFT JOIN (
+                    SELECT 
+                        GoodsId,
+                        SUM(CASE WHEN StocksStatus IN ('1', '8') THEN Qty ELSE -Qty END) AS StockQty
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                    GROUP BY GoodsId
+                ) stockQty ON g.GoodsId = stockQty.GoodsId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("BeginDate", beginDate);
+            parameters.Add("EndDate", endDate);
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 單位篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql += " AND EXISTS (SELECT 1 FROM InventoryStocks WHERE GoodsId = g.GoodsId AND OrgId LIKE @OrgId)";
+                parameters.Add("OrgId", $"%{query.OrgId}%");
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND g.GoodsId LIKE @GoodsId";
+                parameters.Add("GoodsId", $"%{query.GoodsId}%");
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var rows = await connection.QueryAsync<SYSA1014ReportItem>(sql, parameters);
+
+            var items = rows.ToList();
+
+            return new PagedResult<SYSA1014ReportItem>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1015ReportItem>> GetSYSA1015ReportAsync(SYSA1015Query query)
+    {
+        try
+        {
+            // 計算庫存數量（根據 InventoryStocks 表）
+            var sql = @"
+                SELECT 
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.BId,
+                    g.MId,
+                    g.SId,
+                    g.Unit,
+                    g.PackUnit,
+                    ISNULL(g.SafeQty, 0) AS SafeQty,
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    CASE 
+                        WHEN ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0) THEN '低於安全庫存'
+                        ELSE '全部'
+                    END AS SelectType,
+                    ISNULL(s.Qty, 0) AS Qty,
+                    ISNULL(@YearMonth, FORMAT(GETDATE(), 'yyyy-MM')) AS YearMonth
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId,
+                        SUM(CASE WHEN StocksStatus IN ('1', '8') THEN Qty ELSE -Qty END) AS Qty
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@YearMonth IS NULL OR FORMAT(StocksDate, 'yyyy-MM') = @YearMonth)
+                    GROUP BY SiteId, GoodsId
+                ) s ON g.GoodsId = s.GoodsId
+                LEFT JOIN (
+                    SELECT SiteId, SiteName FROM Sites WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                ) sites ON s.SiteId = sites.SiteId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("YearMonth", query.YearMonth);
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND g.GoodsId LIKE @GoodsId";
+                parameters.Add("GoodsId", $"%{query.GoodsId}%");
+            }
+
+            // 篩選類型（低於安全庫存量）
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType == "safety")
+            {
+                sql += " AND ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0)";
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1015ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1015ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1016ReportItem>> GetSYSA1016ReportAsync(SYSA1016Query query)
+    {
+        try
+        {
+            // 計算庫存數量（根據 InventoryStocks 表）
+            var sql = @"
+                SELECT 
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.BId,
+                    g.MId,
+                    g.SId,
+                    g.Unit,
+                    g.PackUnit,
+                    ISNULL(g.SafeQty, 0) AS SafeQty,
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    CASE 
+                        WHEN ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0) THEN '低於安全庫存'
+                        ELSE '全部'
+                    END AS SelectType,
+                    ISNULL(s.Qty, 0) AS Qty,
+                    ISNULL(@YearMonth, FORMAT(GETDATE(), 'yyyy-MM')) AS YearMonth
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId,
+                        SUM(CASE WHEN StocksStatus IN ('1', '8') THEN Qty ELSE -Qty END) AS Qty
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@YearMonth IS NULL OR FORMAT(StocksDate, 'yyyy-MM') = @YearMonth)
+                    GROUP BY SiteId, GoodsId
+                ) s ON g.GoodsId = s.GoodsId
+                LEFT JOIN (
+                    SELECT SiteId, SiteName, OrgId 
+                    FROM Sites 
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@OrgId IS NULL OR OrgId = @OrgId)
+                ) sites ON s.SiteId = sites.SiteId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("OrgId", query.OrgId);
+            parameters.Add("YearMonth", query.YearMonth);
+
+            // 組織篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql += " AND sites.OrgId = @OrgId";
+            }
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND g.GoodsId LIKE @GoodsId";
+                parameters.Add("GoodsId", $"%{query.GoodsId}%");
+            }
+
+            // 篩選類型（低於安全庫存量）
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType == "1")
+            {
+                sql += " AND ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0)";
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1016ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1016ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1017ReportItem>> GetSYSA1017ReportAsync(SYSA1017Query query)
+    {
+        try
+        {
+            // 計算庫存數量（根據 InventoryStocks 表）
+            var sql = @"
+                SELECT 
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.BId,
+                    g.MId,
+                    g.SId,
+                    g.Unit,
+                    g.PackUnit,
+                    ISNULL(g.SafeQty, 0) AS SafeQty,
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    CASE 
+                        WHEN ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0) THEN '低於安全庫存量'
+                        ELSE '全部'
+                    END AS SelectType,
+                    ISNULL(s.Qty, 0) AS Qty,
+                    ISNULL(@YearMonth, FORMAT(GETDATE(), 'yyyyMM')) AS YearMonth,
+                    ISNULL(sites.OrgId, @OrgId) AS OrgId
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId,
+                        SUM(CASE WHEN StocksStatus IN ('1', '8') THEN Qty ELSE -Qty END) AS Qty
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@YearMonth IS NULL OR FORMAT(StocksDate, 'yyyyMM') = @YearMonth)
+                    GROUP BY SiteId, GoodsId
+                ) s ON g.GoodsId = s.GoodsId
+                LEFT JOIN (
+                    SELECT SiteId, SiteName, OrgId 
+                    FROM Sites 
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@OrgId IS NULL OR OrgId = @OrgId)
+                ) sites ON s.SiteId = sites.SiteId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("OrgId", query.OrgId);
+            parameters.Add("YearMonth", query.YearMonth);
+
+            // 組織篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql += " AND sites.OrgId = @OrgId";
+            }
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND g.GoodsId LIKE @GoodsId";
+                parameters.Add("GoodsId", $"%{query.GoodsId}%");
+            }
+
+            // 篩選類型（低於安全庫存量）
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType == "低於安全庫存量")
+            {
+                sql += " AND ISNULL(s.Qty, 0) < ISNULL(g.SafeQty, 0)";
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1017ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1017ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1018ReportItem>> GetSYSA1018ReportAsync(SYSA1018Query query)
+    {
+        try
+        {
+            // 查詢工務維修件數統計報表
+            var whereClause = "WHERE 1=1";
+            var parameters = new DynamicParameters();
+            parameters.Add("OrgId", query.OrgId);
+            parameters.Add("YearMonth", query.YearMonth);
+
+            // 組織篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                whereClause += " AND mr.OrgId = @OrgId";
+            }
+
+            // 年月篩選 (YYYY-MM 格式)
+            if (!string.IsNullOrEmpty(query.YearMonth))
+            {
+                whereClause += " AND FORMAT(mr.MaintenanceDate, 'yyyy-MM') = @YearMonth";
+            }
+
+            // 篩選類型（維修狀態）
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "全部")
+            {
+                var statusMap = new Dictionary<string, string>
+                {
+                    { "pending", "待處理" },
+                    { "processing", "處理中" },
+                    { "completed", "已完成" },
+                    { "cancelled", "已取消" }
+                };
+
+                if (statusMap.ContainsKey(query.FilterType))
+                {
+                    whereClause += " AND mr.MaintenanceStatus = @FilterType";
+                    parameters.Add("FilterType", statusMap[query.FilterType]);
+                }
+            }
+
+            // 查詢 SQL
+            var sql = $@"
+                SELECT 
+                    mr.OrgId,
+                    ISNULL(org.OrgName, '') AS OrgName,
+                    '工務維修件數統計表' AS ReportName,
+                    ISNULL(@YearMonth, FORMAT(mr.MaintenanceDate, 'yyyy-MM')) AS YearMonth,
+                    mr.MaintenanceType,
+                    mr.MaintenanceStatus,
+                    SUM(mr.ItemCount) AS ItemCount,
+                    0 AS TotalCount
+                FROM MaintenanceRecords mr
+                LEFT JOIN Organizations org ON mr.OrgId = org.OrgId
+                {whereClause}
+                GROUP BY mr.OrgId, org.OrgName, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus";
+
+            // 計算總數
+            var countSql = $@"
+                SELECT COUNT(*)
+                FROM (
+                    SELECT mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM') AS YearMonth, mr.MaintenanceType, mr.MaintenanceStatus
+                    FROM MaintenanceRecords mr
+                    {whereClause}
+                    GROUP BY mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus
+                ) AS t";
+            
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            // 計算總件數
+            var totalItemCountSql = $@"
+                SELECT ISNULL(SUM(mr.ItemCount), 0)
+                FROM MaintenanceRecords mr
+                {whereClause}";
+            var totalItemCount = await ExecuteScalarAsync<int>(totalItemCountSql, parameters);
+
+            // 分頁
+            sql += " ORDER BY mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1018ReportItem>(sql, parameters);
+
+            // 更新每個項目的 TotalCount
+            foreach (var item in items)
+            {
+                item.TotalCount = totalItemCount;
+            }
+
+            return new PagedResult<SYSA1018ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修件數統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1019ReportItem>> GetSYSA1019ReportAsync(SYSA1019Query query)
+    {
+        try
+        {
+            // 查詢商品分析報表 (SYSA1019)
+            // 根據計劃文件，需要查詢 Goods、InventoryStocks、Sites、Organizations 表
+            var sql = @"
+                SELECT 
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    ISNULL(sites.OrgId, @OrgId) AS OrgId,
+                    ISNULL(o.OrgName, '') AS OrgName,
+                    '商品分析報表' AS ReportName,
+                    ISNULL(@YearMonth, FORMAT(GETDATE(), 'yyyy-MM')) AS YearMonth,
+                    ISNULL(@FilterType, '全部') AS FilterType,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    g.GoodsId AS GoodsId,
+                    g.GoodsName AS GoodsName
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@YearMonth IS NULL OR FORMAT(StocksDate, 'yyyy-MM') = @YearMonth)
+                    GROUP BY SiteId, GoodsId
+                ) s ON g.GoodsId = s.GoodsId
+                LEFT JOIN (
+                    SELECT SiteId, SiteName, OrgId 
+                    FROM Sites 
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@OrgId IS NULL OR OrgId = @OrgId)
+                ) sites ON s.SiteId = sites.SiteId
+                LEFT JOIN Organizations o ON sites.OrgId = o.OrgId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("OrgId", query.OrgId);
+            parameters.Add("YearMonth", query.YearMonth);
+            parameters.Add("FilterType", query.FilterType);
+
+            // 組織篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql += " AND sites.OrgId = @OrgId";
+            }
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND s.SiteId = @SiteId";
+            }
+
+            // 年月篩選 (YYYY-MM 格式)
+            if (!string.IsNullOrEmpty(query.YearMonth))
+            {
+                sql += " AND EXISTS (SELECT 1 FROM InventoryStocks st WHERE st.GoodsId = g.GoodsId AND FORMAT(st.StocksDate, 'yyyy-MM') = @YearMonth)";
+            }
+
+            // 篩選類型
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "全部")
+            {
+                // 根據實際業務需求調整篩選邏輯
+                // 目前先不處理特定條件，因為計劃文件中沒有明確說明
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1019ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1019ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
     private async Task<PagedResult<Dictionary<string, object>>> GetSYSA1012ReportAsync(AnalysisReportQuery query)
     {
         // SYSA1012: 耗材進銷存月報表

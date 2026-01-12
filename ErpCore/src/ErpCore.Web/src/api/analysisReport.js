@@ -91,6 +91,120 @@ export const analysisReportApi = {
     return axios.post('/analysis-reports/sysa1013/print', data, {
       responseType: 'blob'
     })
+  },
+
+  // 查詢商品分析報表 (SYSA1014)
+  getSYSA1014Report: (params) => {
+    return axios.get('/analysis-reports/sysa1014', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1014)
+  exportSYSA1014Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1014/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1014)
+  printSYSA1014Report: (data) => {
+    return axios.post('/analysis-reports/sysa1014/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢商品分析報表 (SYSA1015)
+  getSYSA1015Report: (params) => {
+    return axios.get('/analysis-reports/sysa1015', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1015)
+  exportSYSA1015Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1015/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1015)
+  printSYSA1015Report: (data) => {
+    return axios.post('/analysis-reports/sysa1015/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢商品分析報表 (SYSA1016)
+  getSYSA1016Report: (params) => {
+    return axios.get('/analysis-reports/sysa1016', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1016)
+  exportSYSA1016Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1016/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1016)
+  printSYSA1016Report: (data) => {
+    return axios.post('/analysis-reports/sysa1016/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢商品分析報表 (SYSA1017)
+  getSYSA1017Report: (params) => {
+    return axios.get('/analysis-reports/sysa1017', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1017)
+  exportSYSA1017Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1017/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1017)
+  printSYSA1017Report: (data) => {
+    return axios.post('/analysis-reports/sysa1017/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢工務維修件數統計報表 (SYSA1018)
+  getSYSA1018Report: (params) => {
+    return axios.get('/analysis-reports/sysa1018', { params })
+  },
+
+  // 匯出工務維修件數統計報表 (SYSA1018)
+  exportSYSA1018Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1018/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印工務維修件數統計報表 (SYSA1018)
+  printSYSA1018Report: (data) => {
+    return axios.post('/analysis-reports/sysa1018/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢商品分析報表 (SYSA1019)
+  getSYSA1019Report: (params) => {
+    return axios.get('/analysis-reports/sysa1019', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1019)
+  exportSYSA1019Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1019/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1019)
+  printSYSA1019Report: (data) => {
+    return axios.post('/analysis-reports/sysa1019/print', data, {
+      responseType: 'blob'
+    })
   }
 }
 

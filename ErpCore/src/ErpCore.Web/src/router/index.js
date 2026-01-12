@@ -254,6 +254,42 @@ const routes = [
         name: 'SYSA1013Report',
         component: () => import('../views/AnalysisReport/SYSA1013Report.vue'),
         meta: { title: '耗材出庫明細表 (SYSA1013)' }
+      },
+      {
+        path: 'sysa1014-report',
+        name: 'SYSA1014Report',
+        component: () => import('../views/AnalysisReport/SYSA1014Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1014)' }
+      },
+      {
+        path: 'sysa1015-report',
+        name: 'SYSA1015Report',
+        component: () => import('../views/AnalysisReport/SYSA1015Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1015)' }
+      },
+      {
+        path: 'sysa1016-report',
+        name: 'SYSA1016Report',
+        component: () => import('../views/AnalysisReport/SYSA1016Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1016)' }
+      },
+      {
+        path: 'sysa1017-report',
+        name: 'SYSA1017Report',
+        component: () => import('../views/AnalysisReport/SYSA1017Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1017)' }
+      },
+      {
+        path: 'sysa1018-report',
+        name: 'SYSA1018Report',
+        component: () => import('../views/AnalysisReport/SYSA1018Report.vue'),
+        meta: { title: '工務維修件數統計表 (SYSA1018)' }
+      },
+      {
+        path: 'sysa1019-report',
+        name: 'SYSA1019Report',
+        component: () => import('../views/AnalysisReport/SYSA1019Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1019)' }
       }
     ]
   },
