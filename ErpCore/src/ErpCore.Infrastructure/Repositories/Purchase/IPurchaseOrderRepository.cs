@@ -17,6 +17,7 @@ public interface IPurchaseOrderRepository
     Task DeleteAsync(string orderId);
     Task UpdateStatusAsync(string orderId, string status, string? userId = null, System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateOrderIdAsync();
+    Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null);
 }
 
 /// <summary>

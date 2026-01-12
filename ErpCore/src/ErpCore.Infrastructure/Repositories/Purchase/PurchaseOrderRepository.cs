@@ -498,5 +498,39 @@ public class PurchaseOrderRepository : BaseRepository, IPurchaseOrderRepository
         var sequence = int.Parse(lastOrder.Substring(10)) + 1;
         return $"PO{today}{sequence:D3}";
     }
+
+    /// <summary>
+    /// 更新採購單明細已收數量
+    /// </summary>
+    public async Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null)
+    {
+        try
+        {
+            const string sql = @"
+                UPDATE PurchaseOrderDetails 
+                SET ReceivedQty = ReceivedQty + @ReceiptQty
+                WHERE DetailId = @OrderDetailId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("OrderDetailId", orderDetailId);
+            parameters.Add("ReceiptQty", receiptQty);
+
+            if (transaction != null)
+            {
+                await ExecuteAsync(sql, parameters, transaction);
+            }
+            else
+            {
+                await ExecuteAsync(sql, parameters);
+            }
+
+            _logger.LogInfo($"更新採購單明細已收數量成功: {orderDetailId}, 數量: {receiptQty}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"更新採購單明細已收數量失敗: {orderDetailId}", ex);
+            throw;
+        }
+    }
 }
 

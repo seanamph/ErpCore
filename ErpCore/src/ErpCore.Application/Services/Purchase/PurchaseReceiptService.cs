@@ -17,17 +17,20 @@ namespace ErpCore.Application.Services.Purchase;
 public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
 {
     private readonly IPurchaseReceiptRepository _repository;
+    private readonly IPurchaseOrderRepository _purchaseOrderRepository;
     private readonly IStockRepository _stockRepository;
     private readonly IDbConnectionFactory _connectionFactory;
 
     public PurchaseReceiptService(
         IPurchaseReceiptRepository repository,
+        IPurchaseOrderRepository purchaseOrderRepository,
         IStockRepository stockRepository,
         IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _purchaseOrderRepository = purchaseOrderRepository;
         _stockRepository = stockRepository;
         _connectionFactory = connectionFactory;
     }
@@ -193,10 +196,39 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
     {
         try
         {
-            // 此處需要從採購單取得資料，暫時返回空結構
-            // 實際實作時需要查詢 PurchaseOrders 和 PurchaseOrderDetails
+            // 查詢採購單主檔
+            var order = await _purchaseOrderRepository.GetByIdAsync(orderId);
+            if (order == null)
+            {
+                throw new KeyNotFoundException($"採購單不存在: {orderId}");
+            }
+
+            // 查詢採購單明細
+            var orderDetails = await _purchaseOrderRepository.GetDetailsByOrderIdAsync(orderId);
+            var orderDetailsList = orderDetails.ToList();
+
+            if (!orderDetailsList.Any())
+            {
+                throw new InvalidOperationException($"採購單無明細資料: {orderId}");
+            }
+
+            // 產生驗收單號
             var receiptId = await _repository.GenerateReceiptIdAsync();
-            
+
+            // 建立驗收單明細（從採購單明細帶入，計算可驗收數量）
+            var receiptDetails = orderDetailsList.Select((od, index) => new PurchaseReceiptDetailDto
+            {
+                OrderDetailId = od.DetailId,
+                LineNum = index + 1,
+                GoodsId = od.GoodsId,
+                BarcodeId = od.BarcodeId,
+                OrderQty = od.OrderQty,
+                ReceiptQty = 0, // 預設為0，由使用者輸入
+                UnitPrice = od.UnitPrice,
+                Amount = 0,
+                Memo = od.Memo
+            }).ToList();
+
             return new PurchaseReceiptFullDto
             {
                 Receipt = new PurchaseReceiptDto
@@ -204,8 +236,10 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                     ReceiptId = receiptId,
                     OrderId = orderId,
                     ReceiptDate = DateTime.Now,
+                    ShopId = order.ShopId,
+                    SupplierId = order.SupplierId,
                     Status = "P",
-                    Details = new List<PurchaseReceiptDetailDto>()
+                    Details = receiptDetails
                 }
             };
         }
@@ -220,6 +254,19 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
     {
         try
         {
+            // 查詢採購單主檔以取得 ShopId 和 SupplierId
+            var order = await _purchaseOrderRepository.GetByIdAsync(dto.OrderId);
+            if (order == null)
+            {
+                throw new KeyNotFoundException($"採購單不存在: {dto.OrderId}");
+            }
+
+            // 驗證採購單狀態（必須是已審核狀態才能驗收）
+            if (order.Status != "A")
+            {
+                throw new InvalidOperationException($"僅已審核的採購單可進行驗收，目前狀態: {order.Status}");
+            }
+
             var entity = new PurchaseReceipt
             {
                 OrderId = dto.OrderId,
@@ -228,30 +275,59 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 Memo = dto.Memo,
                 Status = "P",
                 IsSettled = false,
-                CreatedBy = dto.ReceiptUserId
+                ShopId = order.ShopId,
+                SupplierId = order.SupplierId,
+                CreatedBy = dto.ReceiptUserId ?? GetCurrentUserId()
             };
 
-            var details = dto.Details.Select((x, index) => new PurchaseReceiptDetail
+            // 建立驗收單明細，從採購單明細取得訂購數量
+            var details = new List<PurchaseReceiptDetail>();
+            foreach (var detailDto in dto.Details)
             {
-                OrderDetailId = x.OrderDetailId,
-                LineNum = index + 1,
-                GoodsId = x.GoodsId,
-                BarcodeId = x.BarcodeId,
-                OrderQty = 0, // 需要從採購單明細取得
-                ReceiptQty = x.ReceiptQty,
-                UnitPrice = x.UnitPrice,
-                Amount = x.UnitPrice.HasValue ? x.UnitPrice.Value * x.ReceiptQty : null,
-                Memo = x.Memo,
-                CreatedBy = dto.ReceiptUserId
-            }).ToList();
+                // 驗證驗收數量
+                if (detailDto.ReceiptQty <= 0)
+                {
+                    throw new InvalidOperationException($"驗收數量必須大於0: {detailDto.GoodsId}");
+                }
+
+                // 取得採購單明細
+                PurchaseOrderDetail? orderDetail = null;
+                if (detailDto.OrderDetailId.HasValue)
+                {
+                    orderDetail = await _purchaseOrderRepository.GetDetailByIdAsync(detailDto.OrderDetailId.Value);
+                }
+
+                if (orderDetail == null)
+                {
+                    throw new KeyNotFoundException($"採購單明細不存在: {detailDto.OrderDetailId}");
+                }
+
+                // 驗證驗收數量不超過可驗收數量
+                var availableQty = orderDetail.OrderQty - orderDetail.ReceivedQty;
+                if (detailDto.ReceiptQty > availableQty)
+                {
+                    throw new InvalidOperationException($"驗收數量 {detailDto.ReceiptQty} 超過可驗收數量 {availableQty}: {detailDto.GoodsId}");
+                }
+
+                var detail = new PurchaseReceiptDetail
+                {
+                    OrderDetailId = detailDto.OrderDetailId,
+                    LineNum = detailDto.LineNum,
+                    GoodsId = detailDto.GoodsId,
+                    BarcodeId = detailDto.BarcodeId,
+                    OrderQty = orderDetail.OrderQty,
+                    ReceiptQty = detailDto.ReceiptQty,
+                    UnitPrice = detailDto.UnitPrice ?? orderDetail.UnitPrice,
+                    Amount = (detailDto.UnitPrice ?? orderDetail.UnitPrice ?? 0) * detailDto.ReceiptQty,
+                    Memo = detailDto.Memo,
+                    CreatedBy = dto.ReceiptUserId ?? GetCurrentUserId()
+                };
+
+                details.Add(detail);
+            }
 
             entity.TotalQty = details.Sum(x => x.ReceiptQty);
             entity.TotalAmount = details.Sum(x => x.Amount ?? 0);
-
-            // 需要從採購單取得 ShopId 和 SupplierId
-            // 暫時使用預設值
-            entity.ShopId = "SHOP001";
-            entity.SupplierId = "SUP001";
 
             var receiptId = await _repository.CreateAsync(entity, details);
             _logger.LogInfo($"建立採購驗收單成功: {receiptId}");
@@ -407,8 +483,10 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
             {
                 if (detail.OrderDetailId.HasValue && detail.ReceiptQty > 0)
                 {
-                    // 此處需要實作更新採購單已收數量的邏輯
-                    // await _purchaseOrderRepository.UpdateReceiptQtyAsync(...)
+                    await _purchaseOrderRepository.UpdateReceiptQtyAsync(
+                        detail.OrderDetailId.Value,
+                        detail.ReceiptQty,
+                        transaction);
                     _logger.LogInfo($"更新採購單已收數量: OrderDetailId={detail.OrderDetailId}, ReceiptQty={detail.ReceiptQty}");
                 }
             }
@@ -477,7 +555,10 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 {
                     if (detail.OrderDetailId.HasValue && detail.ReceiptQty > 0)
                     {
-                        // 此處需要實作回退採購單已收數量的邏輯
+                        await _purchaseOrderRepository.UpdateReceiptQtyAsync(
+                            detail.OrderDetailId.Value,
+                            -detail.ReceiptQty,
+                            transaction);
                         _logger.LogInfo($"回退採購單已收數量: OrderDetailId={detail.OrderDetailId}, ReceiptQty={-detail.ReceiptQty}");
                     }
                 }
