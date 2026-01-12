@@ -205,6 +205,82 @@ export const analysisReportApi = {
     return axios.post('/analysis-reports/sysa1019/print', data, {
       responseType: 'blob'
     })
+  },
+
+  // 查詢商品分析報表 (SYSA1020)
+  getSYSA1020Report: (params) => {
+    return axios.get('/analysis-reports/sysa1020', { params })
+  },
+
+  // 匯出商品分析報表 (SYSA1020)
+  exportSYSA1020Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1020/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印商品分析報表 (SYSA1020)
+  printSYSA1020Report: (data) => {
+    return axios.post('/analysis-reports/sysa1020/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢月成本報表 (SYSA1021)
+  getSYSA1021Report: (params) => {
+    return axios.get('/analysis-reports/sysa1021', { params })
+  },
+
+  // 匯出月成本報表 (SYSA1021)
+  exportSYSA1021Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1021/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印月成本報表 (SYSA1021)
+  printSYSA1021Report: (data) => {
+    return axios.post('/analysis-reports/sysa1021/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢工務維修統計報表 (SYSA1022)
+  getSYSA1022Report: (params) => {
+    return axios.get('/analysis-reports/sysa1022', { params })
+  },
+
+  // 匯出工務維修統計報表 (SYSA1022)
+  exportSYSA1022Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1022/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印工務維修統計報表 (SYSA1022)
+  printSYSA1022Report: (data) => {
+    return axios.post('/analysis-reports/sysa1022/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢工務維修統計報表(報表類型) (SYSA1023)
+  getSYSA1023Report: (params) => {
+    return axios.get('/analysis-reports/sysa1023', { params })
+  },
+
+  // 匯出工務維修統計報表(報表類型) (SYSA1023)
+  exportSYSA1023Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1023/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印工務維修統計報表(報表類型) (SYSA1023)
+  printSYSA1023Report: (data) => {
+    return axios.post('/analysis-reports/sysa1023/print', data, {
+      responseType: 'blob'
+    })
   }
 }
 

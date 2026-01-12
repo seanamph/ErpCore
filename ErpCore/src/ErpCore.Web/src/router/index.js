@@ -290,6 +290,30 @@ const routes = [
         name: 'SYSA1019Report',
         component: () => import('../views/AnalysisReport/SYSA1019Report.vue'),
         meta: { title: '商品分析報表 (SYSA1019)' }
+      },
+      {
+        path: 'sysa1020-report',
+        name: 'SYSA1020Report',
+        component: () => import('../views/AnalysisReport/SYSA1020Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1020)' }
+      },
+      {
+        path: 'sysa1021-report',
+        name: 'SYSA1021Report',
+        component: () => import('../views/AnalysisReport/SYSA1021Report.vue'),
+        meta: { title: '月成本報表 (SYSA1021)' }
+      },
+      {
+        path: 'sysa1022-report',
+        name: 'SYSA1022Report',
+        component: () => import('../views/AnalysisReport/SYSA1022Report.vue'),
+        meta: { title: '工務維修統計報表 (SYSA1022)' }
+      },
+      {
+        path: 'sysa1023-report',
+        name: 'SYSA1023Report',
+        component: () => import('../views/AnalysisReport/SYSA1023Report.vue'),
+        meta: { title: '工務維修統計報表(報表類型) (SYSA1023)' }
       }
     ]
   },

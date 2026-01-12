@@ -880,4 +880,330 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
             throw;
         }
     }
+
+    public async Task<PagedResult<SYSA1020ReportDto>> GetSYSA1020ReportAsync(SYSA1020QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1020Query
+            {
+                SiteId = query.SiteId,
+                PlanId = query.PlanId,
+                ShowType = query.ShowType,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1020ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1020ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                PlanId = item.PlanId,
+                PlanName = item.PlanName,
+                ShowType = item.ShowType,
+                FilterType = item.FilterType,
+                SeqNo = item.SeqNo,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName
+            }).ToList();
+
+            return new PagedResult<SYSA1020ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1020ReportAsync(SYSA1020QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1020ReportAsync(SYSA1020QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1021ReportDto>> GetSYSA1021ReportAsync(SYSA1021QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1021Query
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1021ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1021ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                YearMonth = item.YearMonth,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                Qty = item.Qty,
+                CostAmount = item.CostAmount,
+                AvgCost = item.AvgCost
+            }).ToList();
+
+            return new PagedResult<SYSA1021ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢月成本報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1021ReportAsync(SYSA1021QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出月成本報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1021ReportAsync(SYSA1021QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印月成本報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1022ReportDto>> GetSYSA1022ReportAsync(SYSA1022QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1022Query
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1022ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1022ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                BelongStatus = item.BelongStatus,
+                ApplyDateB = item.ApplyDateB,
+                ApplyDateE = item.ApplyDateE,
+                BelongOrg = item.BelongOrg,
+                MaintainEmp = item.MaintainEmp,
+                ApplyType = item.ApplyType,
+                RequestCount = item.RequestCount,
+                TotalAmount = item.TotalAmount
+            }).ToList();
+
+            return new PagedResult<SYSA1022ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1022ReportAsync(SYSA1022QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1022ReportAsync(SYSA1022QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1023ReportDto>> GetSYSA1023ReportAsync(SYSA1023QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1023Query
+            {
+                ReportType = query.ReportType,
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1023ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1023ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                ReportType = item.ReportType,
+                BelongStatus = item.BelongStatus,
+                ApplyDateB = item.ApplyDateB,
+                ApplyDateE = item.ApplyDateE,
+                BelongOrg = item.BelongOrg,
+                MaintainEmp = item.MaintainEmp,
+                ApplyType = item.ApplyType,
+                RequestCount = item.RequestCount,
+                TotalAmount = item.TotalAmount
+            }).ToList();
+
+            return new PagedResult<SYSA1023ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1023ReportAsync(SYSA1023QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1023ReportAsync(SYSA1023QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
 }

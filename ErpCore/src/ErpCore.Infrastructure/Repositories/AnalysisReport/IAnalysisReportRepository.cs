@@ -59,6 +59,26 @@ public interface IAnalysisReportRepository
     Task<PagedResult<SYSA1019ReportItem>> GetSYSA1019ReportAsync(SYSA1019Query query);
 
     /// <summary>
+    /// 查詢商品分析報表 (SYSA1020)
+    /// </summary>
+    Task<PagedResult<SYSA1020ReportItem>> GetSYSA1020ReportAsync(SYSA1020Query query);
+
+    /// <summary>
+    /// 查詢月成本報表 (SYSA1021)
+    /// </summary>
+    Task<PagedResult<SYSA1021ReportItem>> GetSYSA1021ReportAsync(SYSA1021Query query);
+
+    /// <summary>
+    /// 查詢工務維修統計報表 (SYSA1022)
+    /// </summary>
+    Task<PagedResult<SYSA1022ReportItem>> GetSYSA1022ReportAsync(SYSA1022Query query);
+
+    /// <summary>
+    /// 查詢工務維修統計報表(報表類型) (SYSA1023)
+    /// </summary>
+    Task<PagedResult<SYSA1023ReportItem>> GetSYSA1023ReportAsync(SYSA1023Query query);
+
+    /// <summary>
     /// 查詢進銷存分析報表 (SYSA1000) - 通用查詢方法
     /// </summary>
     Task<PagedResult<Dictionary<string, object>>> GetAnalysisReportAsync(string reportId, AnalysisReportQuery query);
@@ -404,4 +424,130 @@ public class SYSA1019ReportItem
     public string SeqNo { get; set; } = string.Empty;
     public string GoodsId { get; set; } = string.Empty;
     public string GoodsName { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// SYSA1020 查詢條件
+/// </summary>
+public class SYSA1020Query : PagedQuery
+{
+    public string? SiteId { get; set; }
+    public string? PlanId { get; set; }
+    public string? ShowType { get; set; }
+    public string? FilterType { get; set; } // 篩選類型 (全部、特定條件等)
+}
+
+/// <summary>
+/// SYSA1020 報表項目
+/// </summary>
+public class SYSA1020ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string PlanId { get; set; } = string.Empty;
+    public string? PlanName { get; set; }
+    public string? ShowType { get; set; }
+    public string? FilterType { get; set; }
+    public string SeqNo { get; set; } = string.Empty;
+    public string GoodsId { get; set; } = string.Empty;
+    public string GoodsName { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// SYSA1021 查詢條件
+/// </summary>
+public class SYSA1021Query : PagedQuery
+{
+    public string? SiteId { get; set; }
+    public string? BId { get; set; }
+    public string? MId { get; set; }
+    public string? SId { get; set; }
+    public string? GoodsId { get; set; }
+    public string? YearMonth { get; set; } // YYYYMM
+    public string? FilterType { get; set; } // 篩選類型 (全部、有成本、無成本)
+}
+
+/// <summary>
+/// SYSA1021 報表項目
+/// </summary>
+public class SYSA1021ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string ReportName { get; set; } = "月成本報表";
+    public string YearMonth { get; set; } = string.Empty; // YYYYMM
+    public string? BId { get; set; }
+    public string? MId { get; set; }
+    public string? SId { get; set; }
+    public string GoodsId { get; set; } = string.Empty;
+    public string GoodsName { get; set; } = string.Empty;
+    public decimal Qty { get; set; }
+    public decimal CostAmount { get; set; }
+    public decimal AvgCost { get; set; }
+}
+
+/// <summary>
+/// SYSA1022 查詢條件
+/// </summary>
+public class SYSA1022Query : PagedQuery
+{
+    public string? SiteId { get; set; }
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string? ApplyDateB { get; set; } // 日統計表起 (YYYY-MM-DD)
+    public string? ApplyDateE { get; set; } // 日統計表迄 (YYYY-MM-DD)
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+}
+
+/// <summary>
+/// SYSA1022 報表項目
+/// </summary>
+public class SYSA1022ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string ReportName { get; set; } = "工務維修統計報表";
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string ApplyDateB { get; set; } = string.Empty; // 日統計表起
+    public string ApplyDateE { get; set; } = string.Empty; // 日統計表迄
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+    public int RequestCount { get; set; } // 申請件數
+    public decimal TotalAmount { get; set; } // 總金額
+}
+
+/// <summary>
+/// SYSA1023 查詢條件
+/// </summary>
+public class SYSA1023Query : PagedQuery
+{
+    public string? ReportType { get; set; } // 報表類型
+    public string? SiteId { get; set; }
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string? ApplyDateB { get; set; } // 日統計表起 (YYYY-MM-DD)
+    public string? ApplyDateE { get; set; } // 日統計表迄 (YYYY-MM-DD)
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+}
+
+/// <summary>
+/// SYSA1023 報表項目
+/// </summary>
+public class SYSA1023ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string ReportName { get; set; } = "工務維修統計報表(報表類型)";
+    public string? ReportType { get; set; } // 報表類型
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string ApplyDateB { get; set; } = string.Empty; // 日統計表起
+    public string ApplyDateE { get; set; } = string.Empty; // 日統計表迄
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+    public int RequestCount { get; set; } // 申請件數
+    public decimal TotalAmount { get; set; } // 總金額
 }

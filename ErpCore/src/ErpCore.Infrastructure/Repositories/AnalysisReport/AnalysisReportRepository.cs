@@ -1124,6 +1124,466 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
         }
     }
 
+    public async Task<PagedResult<SYSA1020ReportItem>> GetSYSA1020ReportAsync(SYSA1020Query query)
+    {
+        try
+        {
+            // 查詢商品分析報表 (SYSA1020)
+            // 根據計劃文件，需要查詢 Goods、InventoryStocks、Sites、Plans 表
+            var sql = @"
+                SELECT 
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    ISNULL(p.PlanId, @PlanId) AS PlanId,
+                    ISNULL(p.PlanName, '') AS PlanName,
+                    ISNULL(@ShowType, '') AS ShowType,
+                    ISNULL(@FilterType, '全部') AS FilterType,
+                    ROW_NUMBER() OVER (ORDER BY g.GoodsId) AS SeqNo,
+                    g.GoodsId AS GoodsId,
+                    g.GoodsName AS GoodsName
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId,
+                        PlanId
+                    FROM InventoryStocks
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@PlanId IS NULL OR PlanId = @PlanId)
+                    GROUP BY SiteId, GoodsId, PlanId
+                ) s ON g.GoodsId = s.GoodsId
+                LEFT JOIN Sites sites ON s.SiteId = sites.SiteId
+                LEFT JOIN Plans p ON s.PlanId = p.PlanId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("PlanId", query.PlanId);
+            parameters.Add("ShowType", query.ShowType);
+            parameters.Add("FilterType", query.FilterType);
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND s.SiteId = @SiteId";
+            }
+
+            // 計劃ID篩選
+            if (!string.IsNullOrEmpty(query.PlanId))
+            {
+                sql += " AND s.PlanId = @PlanId";
+            }
+
+            // 顯示類型篩選
+            if (!string.IsNullOrEmpty(query.ShowType) && query.ShowType != "全部")
+            {
+                // 根據實際業務需求調整篩選邏輯
+                // 目前先不處理特定條件，因為計劃文件中沒有明確說明
+            }
+
+            // 篩選類型
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "全部")
+            {
+                // 根據實際業務需求調整篩選邏輯
+                // 目前先不處理特定條件，因為計劃文件中沒有明確說明
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1020ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1020ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢商品分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1021ReportItem>> GetSYSA1021ReportAsync(SYSA1021Query query)
+    {
+        try
+        {
+            // 查詢月成本報表 (SYSA1021)
+            // 根據計劃文件，需要查詢 Goods、GoodsCosts、Sites 表
+            // 如果 GoodsCosts 表不存在，則從 InventoryStocks 表計算成本
+            var sql = @"
+                SELECT 
+                    ISNULL(gc.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    '月成本報表' AS ReportName,
+                    ISNULL(gc.YearMonth, @YearMonth) AS YearMonth,
+                    g.BId AS BId,
+                    g.MId AS MId,
+                    g.SId AS SId,
+                    g.GoodsId AS GoodsId,
+                    g.GoodsName AS GoodsName,
+                    ISNULL(gc.Qty, 0) AS Qty,
+                    ISNULL(gc.CostAmount, 0) AS CostAmount,
+                    CASE 
+                        WHEN ISNULL(gc.Qty, 0) > 0 THEN ISNULL(gc.CostAmount, 0) / gc.Qty
+                        ELSE 0
+                    END AS AvgCost
+                FROM Goods g
+                LEFT JOIN (
+                    SELECT 
+                        SiteId,
+                        GoodsId,
+                        YearMonth,
+                        SUM(Qty) AS Qty,
+                        SUM(CostAmount) AS CostAmount
+                    FROM GoodsCosts
+                    WHERE (@SiteId IS NULL OR SiteId = @SiteId)
+                        AND (@YearMonth IS NULL OR YearMonth = @YearMonth)
+                    GROUP BY SiteId, GoodsId, YearMonth
+                ) gc ON g.GoodsId = gc.GoodsId
+                LEFT JOIN Sites sites ON gc.SiteId = sites.SiteId
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("BId", query.BId);
+            parameters.Add("MId", query.MId);
+            parameters.Add("SId", query.SId);
+            parameters.Add("GoodsId", query.GoodsId);
+            parameters.Add("YearMonth", query.YearMonth);
+            parameters.Add("FilterType", query.FilterType);
+
+            // 大分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+            }
+
+            // 中分類篩選
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+            }
+
+            // 小分類篩選
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND g.GoodsId = @GoodsId";
+            }
+
+            // 年月篩選
+            if (!string.IsNullOrEmpty(query.YearMonth))
+            {
+                sql += " AND gc.YearMonth = @YearMonth";
+            }
+
+            // 篩選類型（全部、有成本、無成本）
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "全部")
+            {
+                if (query.FilterType == "有成本")
+                {
+                    sql += " AND ISNULL(gc.CostAmount, 0) > 0";
+                }
+                else if (query.FilterType == "無成本")
+                {
+                    sql += " AND (ISNULL(gc.CostAmount, 0) = 0 OR gc.CostAmount IS NULL)";
+                }
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId, gc.YearMonth";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1021ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1021ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢月成本報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1022ReportItem>> GetSYSA1022ReportAsync(SYSA1022Query query)
+    {
+        try
+        {
+            // 查詢工務維修統計報表 (SYSA1022)
+            // 根據計劃文件，需要查詢 WorkMaintainM 表，統計申請件數和總金額
+            var sql = @"
+                SELECT 
+                    ISNULL(wm.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    '工務維修統計報表' AS ReportName,
+                    wm.BelongStatus AS BelongStatus,
+                    CONVERT(VARCHAR(10), @ApplyDateB, 120) AS ApplyDateB,
+                    CONVERT(VARCHAR(10), @ApplyDateE, 120) AS ApplyDateE,
+                    wm.BelongOrg AS BelongOrg,
+                    wm.MaintainEmp AS MaintainEmp,
+                    wm.ApplyType AS ApplyType,
+                    COUNT(DISTINCT wm.TxnNo) AS RequestCount,
+                    ISNULL(SUM(d.Amount), 0) AS TotalAmount
+                FROM WorkMaintainM wm
+                LEFT JOIN Sites sites ON wm.SiteId = sites.SiteId
+                LEFT JOIN (
+                    SELECT 
+                        TxnNo,
+                        SUM(Amount) AS Amount
+                    FROM WorkMaintainD
+                    GROUP BY TxnNo
+                ) d ON wm.TxnNo = d.TxnNo
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            
+            // 日期範圍
+            if (!string.IsNullOrEmpty(query.ApplyDateB))
+            {
+                parameters.Add("ApplyDateB", DateTime.Parse(query.ApplyDateB));
+                sql += " AND wm.ApplyDate >= @ApplyDateB";
+            }
+            else
+            {
+                parameters.Add("ApplyDateB", DateTime.Now.AddMonths(-1));
+            }
+
+            if (!string.IsNullOrEmpty(query.ApplyDateE))
+            {
+                parameters.Add("ApplyDateE", DateTime.Parse(query.ApplyDateE));
+                sql += " AND wm.ApplyDate <= @ApplyDateE";
+            }
+            else
+            {
+                parameters.Add("ApplyDateE", DateTime.Now);
+            }
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND wm.SiteId = @SiteId";
+            }
+
+            // 費用負擔篩選
+            if (!string.IsNullOrEmpty(query.BelongStatus))
+            {
+                sql += " AND wm.BelongStatus = @BelongStatus";
+                parameters.Add("BelongStatus", query.BelongStatus);
+            }
+
+            // 費用歸屬單位篩選
+            if (!string.IsNullOrEmpty(query.BelongOrg))
+            {
+                sql += " AND wm.BelongOrg = @BelongOrg";
+                parameters.Add("BelongOrg", query.BelongOrg);
+            }
+
+            // 維保人員篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.MaintainEmp))
+            {
+                sql += " AND (wm.MaintainEmp LIKE '%' + @MaintainEmp + '%' OR wm.MaintainEmp = @MaintainEmp)";
+                parameters.Add("MaintainEmp", query.MaintainEmp);
+            }
+
+            // 請修類別篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.ApplyType))
+            {
+                sql += " AND (wm.ApplyType LIKE '%' + @ApplyType + '%' OR wm.ApplyType = @ApplyType)";
+                parameters.Add("ApplyType", query.ApplyType);
+            }
+
+            // 分組
+            sql += @"
+                GROUP BY 
+                    wm.SiteId,
+                    sites.SiteName,
+                    wm.BelongStatus,
+                    wm.BelongOrg,
+                    wm.MaintainEmp,
+                    wm.ApplyType";
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY wm.SiteId, wm.BelongStatus";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1022ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1022ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1023ReportItem>> GetSYSA1023ReportAsync(SYSA1023Query query)
+    {
+        try
+        {
+            // 查詢工務維修統計報表(報表類型) (SYSA1023)
+            // 根據計劃文件，需要查詢 WorkMaintainM 表，統計申請件數和總金額，並支援報表類型篩選
+            var sql = @"
+                SELECT 
+                    ISNULL(wm.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    '工務維修統計報表(報表類型)' AS ReportName,
+                    @ReportType AS ReportType,
+                    wm.BelongStatus AS BelongStatus,
+                    CONVERT(VARCHAR(10), @ApplyDateB, 120) AS ApplyDateB,
+                    CONVERT(VARCHAR(10), @ApplyDateE, 120) AS ApplyDateE,
+                    wm.BelongOrg AS BelongOrg,
+                    wm.MaintainEmp AS MaintainEmp,
+                    wm.ApplyType AS ApplyType,
+                    COUNT(DISTINCT wm.TxnNo) AS RequestCount,
+                    ISNULL(SUM(d.Amount), 0) AS TotalAmount
+                FROM WorkMaintainM wm
+                LEFT JOIN Sites sites ON wm.SiteId = sites.SiteId
+                LEFT JOIN (
+                    SELECT 
+                        TxnNo,
+                        SUM(Amount) AS Amount
+                    FROM WorkMaintainD
+                    GROUP BY TxnNo
+                ) d ON wm.TxnNo = d.TxnNo
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("ReportType", query.ReportType ?? string.Empty);
+            
+            // 日期範圍
+            if (!string.IsNullOrEmpty(query.ApplyDateB))
+            {
+                parameters.Add("ApplyDateB", DateTime.Parse(query.ApplyDateB));
+                sql += " AND wm.ApplyDate >= @ApplyDateB";
+            }
+            else
+            {
+                parameters.Add("ApplyDateB", DateTime.Now.AddMonths(-1));
+            }
+
+            if (!string.IsNullOrEmpty(query.ApplyDateE))
+            {
+                parameters.Add("ApplyDateE", DateTime.Parse(query.ApplyDateE));
+                sql += " AND wm.ApplyDate <= @ApplyDateE";
+            }
+            else
+            {
+                parameters.Add("ApplyDateE", DateTime.Now);
+            }
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND wm.SiteId = @SiteId";
+            }
+
+            // 報表類型篩選
+            if (!string.IsNullOrEmpty(query.ReportType))
+            {
+                sql += " AND wm.ReportType = @ReportType";
+            }
+
+            // 費用負擔篩選
+            if (!string.IsNullOrEmpty(query.BelongStatus))
+            {
+                sql += " AND wm.BelongStatus = @BelongStatus";
+                parameters.Add("BelongStatus", query.BelongStatus);
+            }
+
+            // 費用歸屬單位篩選
+            if (!string.IsNullOrEmpty(query.BelongOrg))
+            {
+                sql += " AND wm.BelongOrg = @BelongOrg";
+                parameters.Add("BelongOrg", query.BelongOrg);
+            }
+
+            // 維保人員篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.MaintainEmp))
+            {
+                sql += " AND (wm.MaintainEmp LIKE '%' + @MaintainEmp + '%' OR wm.MaintainEmp = @MaintainEmp)";
+                parameters.Add("MaintainEmp", query.MaintainEmp);
+            }
+
+            // 請修類別篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.ApplyType))
+            {
+                sql += " AND (wm.ApplyType LIKE '%' + @ApplyType + '%' OR wm.ApplyType = @ApplyType)";
+                parameters.Add("ApplyType", query.ApplyType);
+            }
+
+            // 分組
+            sql += @"
+                GROUP BY 
+                    wm.SiteId,
+                    sites.SiteName,
+                    wm.BelongStatus,
+                    wm.BelongOrg,
+                    wm.MaintainEmp,
+                    wm.ApplyType";
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY wm.SiteId, wm.BelongStatus";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1023ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1023ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
+
     private async Task<PagedResult<Dictionary<string, object>>> GetSYSA1012ReportAsync(AnalysisReportQuery query)
     {
         // SYSA1012: 耗材進銷存月報表

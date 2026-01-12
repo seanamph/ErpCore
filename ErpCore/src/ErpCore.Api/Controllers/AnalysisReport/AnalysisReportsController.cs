@@ -530,6 +530,221 @@ public class AnalysisReportsController : BaseController
     }
 
     /// <summary>
+    /// 查詢商品分析報表 (SYSA1020)
+    /// </summary>
+    [HttpGet("sysa1020")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSA1020ReportDto>>>> GetSYSA1020Report(
+        [FromQuery] SYSA1020QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1020ReportAsync(query);
+            return result;
+        }, "查詢商品分析報表失敗");
+    }
+
+    /// <summary>
+    /// 匯出商品分析報表 (SYSA1020)
+    /// </summary>
+    [HttpPost("sysa1020/export")]
+    public async Task<IActionResult> ExportSYSA1020Report(
+        [FromBody] SYSA1020QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1020ReportAsync(query, format);
+            var fileName = $"SYSA1020_商品分析報表_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出商品分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出商品分析報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印商品分析報表 (SYSA1020)
+    /// </summary>
+    [HttpPost("sysa1020/print")]
+    public async Task<IActionResult> PrintSYSA1020Report([FromBody] SYSA1020QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1020ReportAsync(query);
+            var fileName = $"SYSA1020_商品分析報表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印商品分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印商品分析報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 查詢月成本報表 (SYSA1021)
+    /// </summary>
+    [HttpGet("sysa1021")]
+    public async Task<ActionResult<PagedResult<SYSA1021ReportDto>>> GetSYSA1021Report([FromQuery] SYSA1021QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1021ReportAsync(query);
+            return result;
+        }, "查詢月成本報表失敗");
+    }
+
+    /// <summary>
+    /// 匯出月成本報表 (SYSA1021)
+    /// </summary>
+    [HttpPost("sysa1021/export")]
+    public async Task<IActionResult> ExportSYSA1021Report(
+        [FromBody] SYSA1021QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1021ReportAsync(query, format);
+            var fileName = $"SYSA1021_月成本報表_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出月成本報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出月成本報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印月成本報表 (SYSA1021)
+    /// </summary>
+    [HttpPost("sysa1021/print")]
+    public async Task<IActionResult> PrintSYSA1021Report([FromBody] SYSA1021QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1021ReportAsync(query);
+            var fileName = $"SYSA1021_月成本報表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印月成本報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印月成本報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 查詢工務維修統計報表 (SYSA1022)
+    /// </summary>
+    [HttpGet("sysa1022")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSA1022ReportDto>>>> GetSYSA1022Report(
+        [FromQuery] SYSA1022QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1022ReportAsync(query);
+            return result;
+        }, "查詢工務維修統計報表失敗");
+    }
+
+    /// <summary>
+    /// 匯出工務維修統計報表 (SYSA1022)
+    /// </summary>
+    [HttpPost("sysa1022/export")]
+    public async Task<IActionResult> ExportSYSA1022Report(
+        [FromBody] SYSA1022QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1022ReportAsync(query, format);
+            var fileName = $"SYSA1022_工務維修統計報表_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出工務維修統計報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印工務維修統計報表 (SYSA1022)
+    /// </summary>
+    [HttpPost("sysa1022/print")]
+    public async Task<IActionResult> PrintSYSA1022Report([FromBody] SYSA1022QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1022ReportAsync(query);
+            var fileName = $"SYSA1022_工務維修統計報表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印工務維修統計報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 查詢工務維修統計報表(報表類型) (SYSA1023)
+    /// </summary>
+    [HttpGet("sysa1023")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSA1023ReportDto>>>> GetSYSA1023Report(
+        [FromQuery] SYSA1023QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1023ReportAsync(query);
+            return result;
+        }, "查詢工務維修統計報表(報表類型)失敗");
+    }
+
+    /// <summary>
+    /// 匯出工務維修統計報表(報表類型) (SYSA1023)
+    /// </summary>
+    [HttpPost("sysa1023/export")]
+    public async Task<IActionResult> ExportSYSA1023Report(
+        [FromBody] SYSA1023QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1023ReportAsync(query, format);
+            var fileName = $"SYSA1023_工務維修統計報表(報表類型)_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表(報表類型)失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出工務維修統計報表(報表類型)失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印工務維修統計報表(報表類型) (SYSA1023)
+    /// </summary>
+    [HttpPost("sysa1023/print")]
+    public async Task<IActionResult> PrintSYSA1023Report([FromBody] SYSA1023QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1023ReportAsync(query);
+            var fileName = $"SYSA1023_工務維修統計報表(報表類型)_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表(報表類型)失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印工務維修統計報表(報表類型)失敗" });
+        }
+    }
+
+    /// <summary>
     /// 查詢進銷存分析報表 (SYSA1000) - 通用查詢方法
     /// </summary>
     [HttpGet("{reportId}")]

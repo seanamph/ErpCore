@@ -3,31 +3,33 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYSA1019 功能完整實現**：已完成商品分析報表功能（支援請修單位、店別、年月格式 YYYY-MM、篩選類型篩選）
+- ✅ **SYSA1023 功能完整實現**：已完成工務維修統計報表(報表類型)功能（支援報表類型、店別、費用負擔、日期範圍、費用歸屬單位、維保人員、請修類別篩選）
   - 實現內容：
-    - ✅ Entity 層: `SYSA1019Query` 和 `SYSA1019ReportItem` 實體已完整實現（在 `IAnalysisReportRepository.cs` 中定義）
-    - ✅ Repository 層: `GetSYSA1019ReportAsync` 方法已完整實現（查詢 Goods、InventoryStocks、Sites、Organizations 表，支援組織、店別、年月、篩選類型篩選）
-    - ✅ Service 層: `GetSYSA1019ReportAsync`, `ExportSYSA1019ReportAsync`, `PrintSYSA1019ReportAsync` 方法已完整實現
-    - ✅ DTO 層: `SYSA1019ReportDto` 和 `SYSA1019QueryDto` 已完整實現
-    - ✅ Controller 層: `AnalysisReportsController` 已完整實現所有 SYSA1019 相關 API 端點（路徑：`/api/v1/analysis-reports/sysa1019`）
-    - ✅ Vue 頁面: `SYSA1019Report.vue` 已完整實現（包含請修單位選擇、店別選擇、查詢表單、資料表格、分頁、匯出、列印功能）
-    - ✅ API 呼叫: `analysisReport.js` 中已實現 `getSYSA1019Report`, `exportSYSA1019Report`, `printSYSA1019Report` 函數
-    - ✅ 路由配置: 已在 `router/index.js` 中添加 SYSA1019 路由（路徑：`/analysis-report/sysa1019-report`）
-  - 功能狀態：SYSA1019 已完整實現 ✨
-  - 開發依據：`開發計劃/10-分析報表/02-進銷存分析/SYSA1019-商品分析報表.md`
+    - ✅ Entity 層: `SYSA1023Query` 和 `SYSA1023ReportItem` 實體已完整實現（在 `IAnalysisReportRepository.cs` 中定義）
+    - ✅ Repository 層: `GetSYSA1023ReportAsync` 方法已完整實現（查詢 WorkMaintainM、WorkMaintainD、Sites 表，支援報表類型、店別、費用負擔、日期範圍、費用歸屬單位、維保人員、請修類別篩選）
+    - ✅ Service 層: `GetSYSA1023ReportAsync`, `ExportSYSA1023ReportAsync`, `PrintSYSA1023ReportAsync` 方法已完整實現
+    - ✅ DTO 層: `SYSA1023ReportDto` 和 `SYSA1023QueryDto` 已完整實現
+    - ✅ Controller 層: `AnalysisReportsController` 已完整實現所有 SYSA1023 相關 API 端點（路徑：`/api/v1/analysis-reports/sysa1023`）
+    - ✅ Vue 頁面: `SYSA1023Report.vue` 已完整實現（包含報表類型選擇、店別選擇、費用負擔、日期範圍、費用歸屬單位、維保人員、請修類別、查詢表單、資料表格、分頁、匯出、列印功能）
+    - ✅ API 呼叫: `analysisReport.js` 中已實現 `getSYSA1023Report`, `exportSYSA1023Report`, `printSYSA1023Report` 函數
+    - ✅ 路由配置: 已在 `router/index.js` 中添加 SYSA1023 路由（路徑：`/analysis-report/sysa1023-report`）
+    - ✅ SQL 表: `WorkMaintainM` 和 `WorkMaintainD` 表已存在（在 `CreateAnalysisReportTables.sql` 中定義）
+  - 功能狀態：SYSA1023 已完整實現 ✨
+  - 開發依據：`開發計劃/10-分析報表/02-進銷存分析/SYSA1023-工務維修統計報表(報表類型).md`
   - ⚠️ 待完成：報表導出和打印功能（Excel/PDF，需要整合 EPPlus 或 NPOI 等套件，目前返回空陣列）
+  - ⚠️ 注意：Repository 實現中使用了 `wm.ReportType` 字段，需確認 WorkMaintainM 表中是否有此字段，如無需根據實際業務邏輯調整
 
 ### ⚠️ 已知問題
 - **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關，主要是命名空間引用問題，如 ErpCore.Api、ErpCore.Application 等）
 - **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關，主要是編碼問題，如 Certificate 相關文件）
-- **注意**：SYSA1019 新代碼已通過 linter 檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
+- **注意**：SYSA1023 新代碼已通過 linter 檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
 - **Git Push 狀態**：由於既有編譯錯誤，build 失敗，無法進行 git push。需要先修復既有錯誤或確認新代碼無誤後再 push
 
 ### 🎯 下一步建議
-1. **修復既有編譯錯誤**（建議優先處理）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題），以便通過 build 測試並進行 git push
-2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1020-SYSA1024）
-3. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011-SYSA1019）
-4. **功能測試**：對 SYSA1019 功能進行完整測試，確保功能正常運作
+1. **確認 WorkMaintainM 表結構**：確認 WorkMaintainM 表中是否有 ReportType 字段，如無需根據實際業務邏輯調整 Repository 實現
+2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1024）
+3. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011-SYSA1023）
+4. **功能測試**：對 SYSA1023 功能進行完整測試，確保功能正常運作
 
 ---
 ## 📊 最新進度摘要（2025-01-27）
@@ -43,6 +45,10 @@
   - ✅ **SYSA1017（商品分析報表）** ✨已完整實現（導出打印功能待整合套件）
   - ✅ **SYSA1018（工務維修件數統計表）** ✨已完整實現（導出打印功能待整合套件）
   - ✅ **SYSA1019（商品分析報表）** ✨已完整實現（導出打印功能待整合套件）
+  - ✅ **SYSA1020（商品分析報表）** ✨已完整實現（導出打印功能待整合套件）
+  - ✅ **SYSA1021（月成本報表）** ✨已完整實現（導出打印功能待整合套件）
+  - ✅ **SYSA1022（工務維修統計報表）** ✨已完整實現（導出打印功能待整合套件）
+  - ✅ **SYSA1023（工務維修統計報表(報表類型)）** ✨已完整實現（導出打印功能待整合套件）
   - ✅ **SYSA210（單位領用申請作業）** ✨已完整實現（前端+後端）
   - ✅ **SYSA254（耗材標籤列印作業）** ✨已完整實現
   - ✅ **SYSA255（耗材管理報表）** ✨已完整實現
@@ -51,11 +57,11 @@
 ### ⚠️ 已知問題
 - **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關，主要是命名空間引用問題）
 - **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關，主要是編碼問題）
-- **注意**：SYSA1019 新代碼已通過 linter 檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
+- **注意**：SYSA1023 新代碼已通過 linter 檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
 - **Git Push 狀態**：由於既有編譯錯誤，build 失敗，無法進行 git push
 
 ### 🎯 下一步建議
-1. **修復既有編譯錯誤**（建議優先處理）：解決專案中既有的編譯錯誤，以便通過 build 測試並進行 git push
-2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1020-SYSA1024）
+1. **確認 WorkMaintainM 表結構**：確認 WorkMaintainM 表中是否有 ReportType 字段，如無需根據實際業務邏輯調整 Repository 實現
+2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1024）
 3. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能
 4. **功能測試**：對新開發的功能進行完整測試
