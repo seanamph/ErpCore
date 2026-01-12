@@ -100,6 +100,12 @@ const routes = [
         meta: { title: '採購單驗收作業 (SYSW324)' }
       },
       {
+        path: 'receipt-v2',
+        name: 'PurchaseReceiptV2',
+        component: () => import('../views/Purchase/PurchaseReceiptV2.vue'),
+        meta: { title: '採購單驗收作業 (SYSW336)' }
+      },
+      {
         path: 'settled-adjustment',
         name: 'SettledPurchaseReceiptAdjustment',
         component: () => import('../views/Purchase/SettledPurchaseReceiptAdjustment.vue'),

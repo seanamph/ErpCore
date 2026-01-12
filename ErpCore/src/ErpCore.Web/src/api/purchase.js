@@ -52,6 +52,57 @@ export const purchaseReceiptApi = {
 }
 
 /**
+ * 採購單驗收作業 API V2 (SYSW336)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const purchaseReceiptV2Api = {
+  // 查詢待驗收採購單列表
+  getPendingOrders: (params) => {
+    return axios.get('/purchase-receipts-v2/pending-orders', { params })
+  },
+
+  // 查詢驗收單列表
+  getPurchaseReceipts: (params) => {
+    return axios.get('/purchase-receipts-v2', { params })
+  },
+
+  // 查詢單筆驗收單
+  getPurchaseReceipt: (receiptId) => {
+    return axios.get(`/purchase-receipts-v2/${receiptId}`)
+  },
+
+  // 依採購單號建立驗收單
+  createReceiptFromOrder: (orderId) => {
+    return axios.post(`/purchase-receipts-v2/from-order/${orderId}`)
+  },
+
+  // 新增驗收單
+  createPurchaseReceipt: (data) => {
+    return axios.post('/purchase-receipts-v2', data)
+  },
+
+  // 修改驗收單
+  updatePurchaseReceipt: (receiptId, data) => {
+    return axios.put(`/purchase-receipts-v2/${receiptId}`, data)
+  },
+
+  // 刪除驗收單
+  deletePurchaseReceipt: (receiptId) => {
+    return axios.delete(`/purchase-receipts-v2/${receiptId}`)
+  },
+
+  // 確認驗收
+  confirmReceipt: (receiptId) => {
+    return axios.post(`/purchase-receipts-v2/${receiptId}/confirm`)
+  },
+
+  // 取消驗收單
+  cancelPurchaseReceipt: (receiptId) => {
+    return axios.post(`/purchase-receipts-v2/${receiptId}/cancel`)
+  }
+}
+
+/**
  * 訂退貨申請作業 API (SYSW315)
  * 遵循 C# API 欄位命名 (PascalCase)
  */
