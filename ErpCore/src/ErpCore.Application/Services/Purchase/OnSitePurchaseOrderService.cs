@@ -327,7 +327,7 @@ public class OnSitePurchaseOrderService : BaseService, IOnSitePurchaseOrderServi
                     Unit
                 FROM Products 
                 WHERE BarcodeId = @BarcodeId 
-                  AND Status = 'A'";
+                  AND Status = '1'";
 
             var goods = await connection.QueryFirstOrDefaultAsync<GoodsByBarcodeDto>(sql, new { BarcodeId = barcode });
 

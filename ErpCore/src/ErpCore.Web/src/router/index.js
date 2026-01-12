@@ -110,6 +110,12 @@ const routes = [
         name: 'ClosedReturnAdjustment',
         component: () => import('../views/Purchase/ClosedReturnAdjustment.vue'),
         meta: { title: '已日結退貨單驗退調整作業 (SYSW530)' }
+      },
+      {
+        path: 'on-site-order',
+        name: 'OnSitePurchaseOrder',
+        component: () => import('../views/Purchase/OnSitePurchaseOrder.vue'),
+        meta: { title: '現場打單作業 (SYSW322)' }
       }
     ]
   },

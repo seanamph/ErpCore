@@ -261,3 +261,49 @@ export const onSitePurchaseOrderApi = {
   }
 }
 
+/**
+ * 訂退貨申請作業 API V2 (SYSW316)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const purchaseOrderV2Api = {
+  // 查詢採購單列表
+  getPurchaseOrders: (params) => {
+    return axios.get('/purchase-orders-v2', { params })
+  },
+
+  // 查詢單筆採購單
+  getPurchaseOrder: (orderId) => {
+    return axios.get(`/purchase-orders-v2/${orderId}`)
+  },
+
+  // 新增採購單
+  createPurchaseOrder: (data) => {
+    return axios.post('/purchase-orders-v2', data)
+  },
+
+  // 修改採購單
+  updatePurchaseOrder: (orderId, data) => {
+    return axios.put(`/purchase-orders-v2/${orderId}`, data)
+  },
+
+  // 刪除採購單
+  deletePurchaseOrder: (orderId) => {
+    return axios.delete(`/purchase-orders-v2/${orderId}`)
+  },
+
+  // 送出採購單
+  submitPurchaseOrder: (orderId) => {
+    return axios.post(`/purchase-orders-v2/${orderId}/submit`)
+  },
+
+  // 審核採購單
+  approvePurchaseOrder: (orderId) => {
+    return axios.post(`/purchase-orders-v2/${orderId}/approve`)
+  },
+
+  // 取消採購單
+  cancelPurchaseOrder: (orderId) => {
+    return axios.post(`/purchase-orders-v2/${orderId}/cancel`)
+  }
+}
+
