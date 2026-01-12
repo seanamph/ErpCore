@@ -95,4 +95,3 @@ public class TransferReturn
     /// </summary>
     public DateTime UpdatedAt { get; set; }
 }
-

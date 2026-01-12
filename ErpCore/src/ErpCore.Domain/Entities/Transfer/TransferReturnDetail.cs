@@ -85,4 +85,3 @@ public class TransferReturnDetail
     /// </summary>
     public DateTime CreatedAt { get; set; }
 }
-

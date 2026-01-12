@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.Transfer;
 
 /// <summary>
-/// 調撥驗退單 Repository 實作
+/// 調撥驗退單 Repository 實作 (SYSW362)
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class TransferReturnRepository : BaseRepository, ITransferReturnRepository
@@ -64,6 +64,12 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
         {
             sql += " AND TransferId LIKE @TransferId";
             parameters.Add("TransferId", $"%{query.TransferId}%");
+        }
+
+        if (!string.IsNullOrEmpty(query.ReceiptId))
+        {
+            sql += " AND ReceiptId LIKE @ReceiptId";
+            parameters.Add("ReceiptId", $"%{query.ReceiptId}%");
         }
 
         if (!string.IsNullOrEmpty(query.FromShopId))
@@ -123,6 +129,12 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
         {
             sql += " AND TransferId LIKE @TransferId";
             parameters.Add("TransferId", $"%{query.TransferId}%");
+        }
+
+        if (!string.IsNullOrEmpty(query.ReceiptId))
+        {
+            sql += " AND ReceiptId LIKE @ReceiptId";
+            parameters.Add("ReceiptId", $"%{query.ReceiptId}%");
         }
 
         if (!string.IsNullOrEmpty(query.FromShopId))
@@ -250,7 +262,10 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
             // 新增新明細
             foreach (var detail in details)
             {
-                detail.DetailId = Guid.NewGuid();
+                if (detail.DetailId.Equals(Guid.Empty))
+                {
+                    detail.DetailId = Guid.NewGuid();
+                }
                 detail.CreatedAt = DateTime.Now;
 
                 const string insertDetailSql = @"
@@ -304,10 +319,9 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
         }
     }
 
-    public async Task<IEnumerable<PendingTransferOrder>> GetPendingTransfersAsync(PendingTransferQuery query)
+    public async Task<IEnumerable<PendingTransferOrderForReturn>> GetPendingOrdersAsync(PendingTransferOrderForReturnQuery query)
     {
-        // 此處需要根據實際的調撥單表結構調整 SQL
-        // 假設有 TransferOrders 表
+        // 查詢已驗收但可驗退的調撥單
         var sql = @"
             SELECT 
                 t.TransferId,
@@ -317,12 +331,12 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
                 t.Status,
                 ISNULL(SUM(td.TransferQty), 0) AS TotalQty,
                 ISNULL(SUM(tr.ReceiptQty), 0) AS ReceiptQty,
-                ISNULL(SUM(tr2.ReturnQty), 0) AS ReturnQty,
-                ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(tr2.ReturnQty), 0) AS PendingReturnQty
+                ISNULL(SUM(trt.ReturnQty), 0) AS ReturnQty,
+                ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(trt.ReturnQty), 0) AS PendingReturnQty
             FROM TransferOrders t
             LEFT JOIN TransferOrderDetails td ON t.TransferId = td.TransferId
             LEFT JOIN TransferReceiptDetails tr ON td.DetailId = tr.TransferDetailId
-            LEFT JOIN TransferReturnDetails tr2 ON tr.DetailId = tr2.ReceiptDetailId
+            LEFT JOIN TransferReturnDetails trt ON tr.DetailId = trt.ReceiptDetailId
             WHERE 1=1";
 
         var parameters = new DynamicParameters();
@@ -359,24 +373,24 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
 
         sql += @"
             GROUP BY t.TransferId, t.TransferDate, t.FromShopId, t.ToShopId, t.Status
-            HAVING ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(tr2.ReturnQty), 0) > 0
+            HAVING ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(trt.ReturnQty), 0) > 0
             ORDER BY t.TransferDate DESC
             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
         parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
         parameters.Add("PageSize", query.PageSize);
 
-        return await QueryAsync<PendingTransferOrder>(sql, parameters);
+        return await QueryAsync<PendingTransferOrderForReturn>(sql, parameters);
     }
 
-    public async Task<int> GetPendingTransfersCountAsync(PendingTransferQuery query)
+    public async Task<int> GetPendingOrdersCountAsync(PendingTransferOrderForReturnQuery query)
     {
         var sql = @"
             SELECT COUNT(DISTINCT t.TransferId)
             FROM TransferOrders t
             LEFT JOIN TransferOrderDetails td ON t.TransferId = td.TransferId
             LEFT JOIN TransferReceiptDetails tr ON td.DetailId = tr.TransferDetailId
-            LEFT JOIN TransferReturnDetails tr2 ON tr.DetailId = tr2.ReceiptDetailId
+            LEFT JOIN TransferReturnDetails trt ON tr.DetailId = trt.ReceiptDetailId
             WHERE 1=1";
 
         var parameters = new DynamicParameters();
@@ -413,7 +427,7 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
 
         sql += @"
             GROUP BY t.TransferId
-            HAVING ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(tr2.ReturnQty), 0) > 0";
+            HAVING ISNULL(SUM(tr.ReceiptQty), 0) - ISNULL(SUM(trt.ReturnQty), 0) > 0";
 
         var result = await QueryAsync<int>(sql, parameters);
         return result.Count();
@@ -422,7 +436,7 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
     /// <summary>
     /// 更新狀態
     /// </summary>
-    public async Task UpdateStatusAsync(string returnId, string status, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string returnId, string status, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -478,7 +492,7 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
     /// <summary>
     /// 產生驗退單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateReturnIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateReturnIdAsync(global::System.Data.IDbConnection connection, global::System.Data.IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 ReturnId 
@@ -499,4 +513,3 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
         return $"TR{today}{sequence:D3}";
     }
 }
-

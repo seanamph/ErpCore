@@ -1,3 +1,4 @@
+using System.Data;
 using ErpCore.Domain.Entities.Transfer;
 
 namespace ErpCore.Infrastructure.Repositories.Transfer;
@@ -15,9 +16,9 @@ public interface ITransferReturnRepository
     Task<string> CreateAsync(TransferReturn entity, List<TransferReturnDetail> details);
     Task UpdateAsync(TransferReturn entity, List<TransferReturnDetail> details);
     Task DeleteAsync(string returnId);
-    Task<IEnumerable<PendingTransferOrder>> GetPendingTransfersAsync(PendingTransferQuery query);
-    Task<int> GetPendingTransfersCountAsync(PendingTransferQuery query);
-    Task UpdateStatusAsync(string returnId, string status, System.Data.IDbTransaction? transaction = null);
+    Task<IEnumerable<PendingTransferOrderForReturn>> GetPendingOrdersAsync(PendingTransferOrderForReturnQuery query);
+    Task<int> GetPendingOrdersCountAsync(PendingTransferOrderForReturnQuery query);
+    Task UpdateStatusAsync(string returnId, string status, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateReturnIdAsync();
 }
 
@@ -28,6 +29,7 @@ public class TransferReturnQuery
 {
     public string? ReturnId { get; set; }
     public string? TransferId { get; set; }
+    public string? ReceiptId { get; set; }
     public string? FromShopId { get; set; }
     public string? ToShopId { get; set; }
     public string? Status { get; set; }
@@ -40,7 +42,7 @@ public class TransferReturnQuery
 /// <summary>
 /// 待驗退調撥單查詢條件
 /// </summary>
-public class PendingTransferQuery
+public class PendingTransferOrderForReturnQuery
 {
     public string? TransferId { get; set; }
     public string? FromShopId { get; set; }
@@ -54,7 +56,7 @@ public class PendingTransferQuery
 /// <summary>
 /// 待驗退調撥單
 /// </summary>
-public class PendingTransferOrder
+public class PendingTransferOrderForReturn
 {
     public string TransferId { get; set; } = string.Empty;
     public DateTime TransferDate { get; set; }
@@ -66,4 +68,3 @@ public class PendingTransferOrder
     public decimal ReturnQty { get; set; }
     public decimal PendingReturnQty { get; set; }
 }
-

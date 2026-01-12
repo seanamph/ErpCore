@@ -36,6 +36,15 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_TransferReturns_Status] ON [dbo].[TransferReturns] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_TransferReturns_ReturnDate] ON [dbo].[TransferReturns] ([ReturnDate]);
 
+    -- 外鍵約束
+    ALTER TABLE [dbo].[TransferReturns]
+    ADD CONSTRAINT [FK_TransferReturns_TransferOrders] 
+    FOREIGN KEY ([TransferId]) REFERENCES [dbo].[TransferOrders] ([TransferId]);
+
+    ALTER TABLE [dbo].[TransferReturns]
+    ADD CONSTRAINT [FK_TransferReturns_TransferReceipts] 
+    FOREIGN KEY ([ReceiptId]) REFERENCES [dbo].[TransferReceipts] ([ReceiptId]);
+
     PRINT '資料表 TransferReturns 建立成功';
 END
 ELSE
@@ -72,6 +81,19 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_TransferReturnDetails_TransferDetailId] ON [dbo].[TransferReturnDetails] ([TransferDetailId]);
     CREATE NONCLUSTERED INDEX [IX_TransferReturnDetails_ReceiptDetailId] ON [dbo].[TransferReturnDetails] ([ReceiptDetailId]);
 
+    -- 外鍵約束
+    ALTER TABLE [dbo].[TransferReturnDetails]
+    ADD CONSTRAINT [FK_TransferReturnDetails_TransferReturns] 
+    FOREIGN KEY ([ReturnId]) REFERENCES [dbo].[TransferReturns] ([ReturnId]) ON DELETE CASCADE;
+
+    ALTER TABLE [dbo].[TransferReturnDetails]
+    ADD CONSTRAINT [FK_TransferReturnDetails_TransferOrderDetails] 
+    FOREIGN KEY ([TransferDetailId]) REFERENCES [dbo].[TransferOrderDetails] ([DetailId]);
+
+    ALTER TABLE [dbo].[TransferReturnDetails]
+    ADD CONSTRAINT [FK_TransferReturnDetails_TransferReceiptDetails] 
+    FOREIGN KEY ([ReceiptDetailId]) REFERENCES [dbo].[TransferReceiptDetails] ([DetailId]);
+
     PRINT '資料表 TransferReturnDetails 建立成功';
 END
 ELSE
@@ -80,38 +102,4 @@ BEGIN
 END
 GO
 
--- 3. 外鍵約束 (如果相關資料表存在)
--- 注意: 以下外鍵約束需要根據實際資料表結構調整
--- 如果 TransferOrders、TransferReceipts 等資料表尚未建立，請先建立這些資料表
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferOrders]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferReturns]
---     ADD CONSTRAINT [FK_TransferReturns_TransferOrders] 
---     FOREIGN KEY ([TransferId]) REFERENCES [dbo].[TransferOrders] ([TransferId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferReceipts]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferReturns]
---     ADD CONSTRAINT [FK_TransferReturns_TransferReceipts] 
---     FOREIGN KEY ([ReceiptId]) REFERENCES [dbo].[TransferReceipts] ([ReceiptId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferOrderDetails]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferReturnDetails]
---     ADD CONSTRAINT [FK_TransferReturnDetails_TransferOrderDetails] 
---     FOREIGN KEY ([TransferDetailId]) REFERENCES [dbo].[TransferOrderDetails] ([DetailId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferReceiptDetails]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferReturnDetails]
---     ADD CONSTRAINT [FK_TransferReturnDetails_TransferReceiptDetails] 
---     FOREIGN KEY ([ReceiptDetailId]) REFERENCES [dbo].[TransferReceiptDetails] ([DetailId]);
--- END
-
-PRINT '調撥單驗退作業資料表建立完成';
-GO
-
+PRINT '調撥單驗退作業資料表建立完成 (SYSW362)';

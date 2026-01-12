@@ -8,7 +8,7 @@ namespace ErpCore.Application.Services.Transfer;
 /// </summary>
 public interface ITransferReturnService
 {
-    Task<PagedResult<PendingTransferOrderDto>> GetPendingTransfersAsync(PendingTransferQueryDto query);
+    Task<PagedResult<PendingTransferOrderForReturnDto>> GetPendingTransfersAsync(PendingTransferOrderForReturnQueryDto query);
     Task<PagedResult<TransferReturnDto>> GetTransferReturnsAsync(TransferReturnQueryDto query);
     Task<TransferReturnDto> GetTransferReturnByIdAsync(string returnId);
     Task<TransferReturnDto> CreateReturnFromTransferAsync(string transferId);
@@ -18,4 +18,3 @@ public interface ITransferReturnService
     Task ConfirmReturnAsync(string returnId);
     Task CancelTransferReturnAsync(string returnId);
 }
-
