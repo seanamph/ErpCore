@@ -218,6 +218,12 @@ const routes = [
         name: 'ConsumableLabelPrint',
         component: () => import('../views/AnalysisReport/ConsumableLabelPrint.vue'),
         meta: { title: '耗材標籤列印作業 (SYSA254)' }
+      },
+      {
+        path: 'consumable-report',
+        name: 'ConsumableReportQuery',
+        component: () => import('../views/AnalysisReport/ConsumableReportQuery.vue'),
+        meta: { title: '耗材管理報表 (SYSA255)' }
       }
     ]
   },

@@ -178,6 +178,8 @@ try
     builder.Services.AddScoped<IOvertimePaymentReportRepository, OvertimePaymentReportRepository>();
     builder.Services.AddScoped<IAnalysisReportRepository, AnalysisReportRepository>();
     builder.Services.AddScoped<IConsumablePrintRepository, ConsumablePrintRepository>();
+    builder.Services.AddScoped<IConsumableReportRepository, ConsumableReportRepository>();
+    builder.Services.AddScoped<IConsumableTransactionRepository, ConsumableTransactionRepository>();
     builder.Services.AddScoped<ISystemExtensionRepository, SystemExtensionRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.SystemExtension.ISystemExtensionReportRepository, ErpCore.Infrastructure.Repositories.SystemExtension.SystemExtensionReportRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Kiosk.IKioskTransactionRepository, ErpCore.Infrastructure.Repositories.Kiosk.KioskTransactionRepository>();
@@ -365,6 +367,7 @@ try
     builder.Services.AddScoped<IOvertimePaymentReportService, OvertimePaymentReportService>();
     builder.Services.AddScoped<IAnalysisReportService, AnalysisReportService>();
     builder.Services.AddScoped<IConsumablePrintService, ConsumablePrintService>();
+    builder.Services.AddScoped<IConsumableReportService, ConsumableReportService>();
     builder.Services.AddScoped<ISystemExtensionService, SystemExtensionService>();
     builder.Services.AddScoped<ErpCore.Application.Services.SystemExtension.ISystemExtensionReportService, ErpCore.Application.Services.SystemExtension.SystemExtensionReportService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Kiosk.IKioskReportService, ErpCore.Application.Services.Kiosk.KioskReportService>();

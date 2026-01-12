@@ -291,5 +291,67 @@ BEGIN
 END
 GO
 
+-- 11. 耗材異動記錄 (SYSA255)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConsumableTransactions]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[ConsumableTransactions] (
+        [TransactionId] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+        [ConsumableId] NVARCHAR(50) NOT NULL, -- 耗材編號
+        [TransactionType] NVARCHAR(10) NOT NULL, -- 異動類型 (1:入庫, 2:出庫, 3:退貨, 4:報廢, 5:出售, 6:領用)
+        [TransactionDate] DATETIME2 NOT NULL, -- 異動日期
+        [Quantity] DECIMAL(18, 2) NOT NULL, -- 數量
+        [UnitPrice] DECIMAL(18, 2) NULL, -- 單價
+        [Amount] DECIMAL(18, 2) NULL, -- 金額
+        [SiteId] NVARCHAR(50) NULL, -- 店別代碼
+        [WarehouseId] NVARCHAR(50) NULL, -- 庫別代碼
+        [SourceId] NVARCHAR(50) NULL, -- 來源單號
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [FK_ConsumableTransactions_Consumables] FOREIGN KEY ([ConsumableId]) REFERENCES [dbo].[Consumables] ([ConsumableId])
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_ConsumableTransactions_ConsumableId] ON [dbo].[ConsumableTransactions] ([ConsumableId]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableTransactions_TransactionDate] ON [dbo].[ConsumableTransactions] ([TransactionDate]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableTransactions_TransactionType] ON [dbo].[ConsumableTransactions] ([TransactionType]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableTransactions_SiteId] ON [dbo].[ConsumableTransactions] ([SiteId]);
+
+    PRINT '資料表 ConsumableTransactions 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 ConsumableTransactions 已存在';
+END
+GO
+
+-- 12. 耗材使用統計視圖 (SYSA255)
+IF EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ConsumableUsage]'))
+BEGIN
+    DROP VIEW [dbo].[ConsumableUsage];
+END
+GO
+
+CREATE VIEW [dbo].[ConsumableUsage] AS
+SELECT 
+    c.[ConsumableId],
+    c.[ConsumableName],
+    c.[CategoryId],
+    c.[SiteId],
+    c.[WarehouseId],
+    SUM(CASE WHEN t.[TransactionType] = '1' THEN t.[Quantity] ELSE 0 END) AS [InQty], -- 入庫數量
+    SUM(CASE WHEN t.[TransactionType] IN ('2', '6') THEN t.[Quantity] ELSE 0 END) AS [OutQty], -- 出庫數量
+    SUM(CASE WHEN t.[TransactionType] = '1' THEN t.[Amount] ELSE 0 END) AS [InAmt], -- 入庫金額
+    SUM(CASE WHEN t.[TransactionType] IN ('2', '6') THEN t.[Amount] ELSE 0 END) AS [OutAmt], -- 出庫金額
+    c.[Quantity] AS [CurrentQty], -- 當前庫存數量
+    c.[Price] * c.[Quantity] AS [CurrentAmt] -- 當前庫存金額
+FROM [dbo].[Consumables] c
+LEFT JOIN [dbo].[ConsumableTransactions] t ON c.[ConsumableId] = t.[ConsumableId]
+GROUP BY c.[ConsumableId], c.[ConsumableName], c.[CategoryId], c.[SiteId], c.[WarehouseId], c.[Quantity], c.[Price];
+GO
+
+PRINT '視圖 ConsumableUsage 建立成功';
+GO
+
 PRINT '所有分析報表相關資料表建立完成';
 
