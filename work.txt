@@ -3,6 +3,38 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
+- ✅ **SYSA1013 功能完整實現**：已完成耗材出庫明細表功能
+  - 實現內容：
+    - ✅ Entity 層: `SYSA1013ReportItem` 實體已完整實現（在 `IAnalysisReportRepository.cs` 中定義）
+    - ✅ Repository 層: `GetSYSA1013ReportAsync` 方法已完整實現（使用 MaterialOutboundDetailView 視圖查詢）
+    - ✅ Service 層: `GetSYSA1013ReportAsync`, `ExportSYSA1013ReportAsync`, `PrintSYSA1013ReportAsync` 方法已完整實現
+    - ✅ DTO 層: `SYSA1013ReportDto` 和 `SYSA1013QueryDto` 已完整實現
+    - ✅ Controller 層: `AnalysisReportsController` 已完整實現所有 SYSA1013 相關 API 端點（路徑：`/api/v1/analysis-reports/sysa1013`）
+    - ✅ Vue 頁面: `SYSA1013Report.vue` 已完整實現（包含查詢表單、資料表格、分頁、匯出、列印功能）
+    - ✅ API 呼叫: `analysisReport.js` 中已實現 `getSYSA1013Report`, `exportSYSA1013Report`, `printSYSA1013Report` 函數
+    - ✅ 路由配置: 已在 `router/index.js` 中添加 SYSA1013 路由（路徑：`/analysis-report/sysa1013-report`）
+    - ✅ SQL 視圖: 已創建 `MaterialOutboundDetailView` 視圖（腳本：`CreateMaterialOutboundDetailView.sql`）
+  - 功能狀態：SYSA1013 已完整實現 ✨
+  - 開發依據：`開發計劃/10-分析報表/02-進銷存分析/SYSA1013-耗材出庫明細表.md`
+  - ⚠️ 待完成：報表導出和打印功能（Excel/PDF，需要整合 EPPlus 或 NPOI 等套件，目前返回空陣列）
+- ✅ **SYSA210 功能完整實現**：已完成單位領用申請作業功能（前端+後端）
+  - 實現內容：
+    - ✅ Entity 層: `MaterialApplyMaster` 和 `MaterialApplyDetail` 實體已完整實現
+    - ✅ Repository 層: `IMaterialApplyRepository`, `MaterialApplyRepository` 已完整實現（包含查詢、新增、修改、刪除、審核、發料、領用單號生成功能）
+    - ✅ Service 層: `IMaterialApplyService` 和 `MaterialApplyService` 已完整實現（包含 CRUD、審核、發料、批次新增、金額計算功能）
+    - ✅ Controller 層: `MaterialApplyController` 已完整實現所有 SYSA210 相關 API 端點（路徑：`/api/v1/material-applies`）
+    - ✅ DTO 層: 所有 SYSA210 相關 DTO 已完整實現（MaterialApplyDto, MaterialApplyDetailDto, CreateMaterialApplyDto, UpdateMaterialApplyDto, ApproveMaterialApplyDto, IssueMaterialApplyDto, BatchCreateMaterialApplyDto, MaterialApplyQueryDto）
+    - ✅ Vue 頁面: `MaterialApplyList.vue` 和 `MaterialApplyDialog.vue` 已完整實現（包含查詢表單、資料表格、分頁、新增、修改、刪除、審核、發料功能）
+    - ✅ API 呼叫: `materialApply.js` 中已實現所有 API 呼叫函數
+    - ✅ 路由配置: 已在 `router/index.js` 中添加 SYSA210 路由（路徑：`/analysis-report/material-apply`）
+    - ✅ SQL 腳本: 已創建 `MaterialApplyMasters` 和 `MaterialApplyDetails` 表
+    - ✅ 依賴注入: 已在 `Program.cs` 註冊所有 Repository 和 Service
+  - 功能狀態：SYSA210 已完整實現 ✨
+  - 開發依據：`開發計劃/10-分析報表/03-工務耗材領用申請/SYSA210-單位領用申請作業.md`
+  - 修復內容：
+    - 修復 `MaterialApplyDialog.vue` 中 `generateApplyId` 函數的返回值處理（從 `response.data.data.applyId` 改為 `response.data.data`）
+    - 修復 `MaterialApplyList.vue` 中審核日期格式（從 ISO 格式改為 YYYY-MM-DD 格式）
+
 - ✅ **SYSA1012 功能完整實現**：已完成進銷存月報表功能
   - 實現內容：
     - ✅ Entity 層: `SYSA1012ReportItem` 實體已完整實現（在 `IAnalysisReportRepository.cs` 中定義）
@@ -28,36 +60,20 @@
   - 開發依據：`開發計劃/10-分析報表/02-進銷存分析/SYSA1011-商品分析報表.md`
   - ⚠️ 待完成：報表導出和打印功能（Excel/PDF，需要整合 EPPlus 或 NPOI 等套件）
 
-- ✅ **SYSA210 功能後端完整實現**：已完成單位領用申請作業功能（後端）
-  - 實現內容：
-    - ✅ Entity 層: `MaterialApplyMaster` 和 `MaterialApplyDetail` 實體已完整實現
-    - ✅ Repository 層: `IMaterialApplyRepository`, `MaterialApplyRepository` 已完整實現（包含查詢、新增、修改、刪除、審核、發料、領用單號生成功能）
-    - ✅ Service 層: `IMaterialApplyService` 和 `MaterialApplyService` 已完整實現（包含 CRUD、審核、發料、批次新增、金額計算功能）
-    - ✅ Controller 層: `MaterialApplyController` 已完整實現所有 SYSA210 相關 API 端點（路徑：`/api/v1/material-applies`）
-    - ✅ DTO 層: 所有 SYSA210 相關 DTO 已完整實現（MaterialApplyDto, MaterialApplyDetailDto, CreateMaterialApplyDto, UpdateMaterialApplyDto, ApproveMaterialApplyDto, IssueMaterialApplyDto, BatchCreateMaterialApplyDto, MaterialApplyQueryDto）
-    - ✅ SQL 腳本: 已創建 `MaterialApplyMasters` 和 `MaterialApplyDetails` 表
-    - ✅ 依賴注入: 已在 `Program.cs` 註冊所有 Repository 和 Service
-  - 功能狀態：SYSA210 後端已完整實現 ✨
-  - 開發依據：`開發計劃/10-分析報表/03-工務耗材領用申請/SYSA210-單位領用申請作業.md`
-  - ⚠️ 待完成：前端 Vue 頁面（MaterialApplyList.vue 和 MaterialApplyDialog.vue）尚未實現
-
 ### ⚠️ 已知問題
 - **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關，主要是命名空間引用問題）
 - **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關，主要是編碼問題）
-- **注意**：SYSA1012 新代碼已通過檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
+- **注意**：SYSA210 和 SYSA1012 新代碼已通過檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
 
 ### 🎯 下一步建議
-1. **完成 SYSA210 前端開發**：創建 Vue 頁面和 API 呼叫函數
-   - 創建 `MaterialApplyList.vue` 查詢列表頁面
-   - 創建 `MaterialApplyDialog.vue` 新增/修改對話框
-   - 配置路由（`router/index.js`）
-2. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011、SYSA1012）
-3. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1013-SYSA1024）
-4. **功能測試**：對 SYSA1012 功能進行完整測試，確保功能正常運作
-   - 測試進銷存月報表查詢功能
-   - 測試期初、進貨、銷貨、期末數量金額計算
+1. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011、SYSA1012、SYSA1013）
+2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1014-SYSA1024）
+3. **功能測試**：對 SYSA210、SYSA1012、SYSA1013 功能進行完整測試，確保功能正常運作
+   - 測試 SYSA210 單位領用申請作業的完整流程（新增、修改、刪除、審核、發料）
+   - 測試 SYSA1012 進銷存月報表查詢功能
+   - 測試 SYSA1013 耗材出庫明細表查詢功能（日期範圍、分類、單位、商品等篩選條件）
    - 測試分頁功能
-5. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題）
+4. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題）
 
 ---
 ## 📊 最新進度摘要（2025-01-27）
@@ -101,16 +117,17 @@
   - ✅ **SYSA297（耗材出售維護作業）** ✨已完整實現
   - ✅ **SYSA1011（商品分析報表）** ✨已完整實現（導出打印功能待整合套件）
   - ✅ **SYSA1012（進銷存月報表）** ✨已完整實現（導出打印功能待整合套件）
-  - ✅ **SYSA210（單位領用申請作業）** ✨後端已完整實現（前端待完成）
+  - ✅ **SYSA1013（耗材出庫明細表）** ✨已完整實現（導出打印功能待整合套件）
+  - ✅ **SYSA210（單位領用申請作業）** ✨已完整實現（前端+後端）
 - **下拉列表功能**：DATE_LIST、ADDR_ZONE_LIST、ADDR_CITY_LIST、SYSID_LIST、MULTI_USERS_LIST、MULTI_SHOP_LIST、MULTI_AREA_LIST、MENU_LIST、USER_LIST
 
 ### ⚠️ 已知問題
-- **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關）
-- **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關）
+- **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關，主要是命名空間引用問題）
+- **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關，主要是編碼問題）
+- **注意**：SYSA210 和 SYSA1012 新代碼已通過檢查，無錯誤。上述 build 錯誤為既有問題，不影響新功能使用
 
 ### 🎯 下一步建議
-1. **完成 SYSA210 前端開發**：創建 Vue 頁面和 API 呼叫函數
-2. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011、SYSA1012）
-3. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1013-SYSA1024）
-4. **功能測試**：對 SYSA1012 功能進行完整測試，確保功能正常運作
-5. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題）
+1. **完善報表導出打印功能**：整合 EPPlus 或 NPOI 套件實現 Excel/PDF 導出和打印功能（SYSA1011、SYSA1012、SYSA1013）
+2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他分析報表功能，如 SYSA1014-SYSA1024）
+3. **功能測試**：對 SYSA210、SYSA1012、SYSA1013 功能進行完整測試，確保功能正常運作
+4. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題）

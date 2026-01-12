@@ -57,4 +57,19 @@ public interface IAnalysisReportService
     /// 列印進銷存月報表 (SYSA1012)
     /// </summary>
     Task<byte[]> PrintSYSA1012ReportAsync(SYSA1012QueryDto query);
+
+    /// <summary>
+    /// 查詢耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    Task<PagedResult<SYSA1013ReportDto>> GetSYSA1013ReportAsync(SYSA1013QueryDto query);
+
+    /// <summary>
+    /// 匯出耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    Task<byte[]> ExportSYSA1013ReportAsync(SYSA1013QueryDto query, string format);
+
+    /// <summary>
+    /// 列印耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    Task<byte[]> PrintSYSA1013ReportAsync(SYSA1013QueryDto query);
 }

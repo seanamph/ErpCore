@@ -248,6 +248,12 @@ const routes = [
         name: 'SYSA1012Report',
         component: () => import('../views/AnalysisReport/SYSA1012Report.vue'),
         meta: { title: '進銷存月報表 (SYSA1012)' }
+      },
+      {
+        path: 'sysa1013-report',
+        name: 'SYSA1013Report',
+        component: () => import('../views/AnalysisReport/SYSA1013Report.vue'),
+        meta: { title: '耗材出庫明細表 (SYSA1013)' }
       }
     ]
   },

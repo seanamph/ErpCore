@@ -148,6 +148,61 @@ public class AnalysisReportsController : BaseController
     }
 
     /// <summary>
+    /// 查詢耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    [HttpGet("sysa1013")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSA1013ReportDto>>>> GetSYSA1013Report(
+        [FromQuery] SYSA1013QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1013ReportAsync(query);
+            return result;
+        }, "查詢耗材出庫明細表失敗");
+    }
+
+    /// <summary>
+    /// 匯出耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    [HttpPost("sysa1013/export")]
+    public async Task<IActionResult> ExportSYSA1013Report(
+        [FromBody] SYSA1013QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1013ReportAsync(query, format);
+            var contentType = format.ToLower() == "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = $"耗材出庫明細表_{DateTime.Now:yyyyMMddHHmmss}.{(format.ToLower() == "pdf" ? "pdf" : "xlsx")}";
+            return File(fileBytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出耗材出庫明細表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出耗材出庫明細表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印耗材出庫明細表 (SYSA1013)
+    /// </summary>
+    [HttpPost("sysa1013/print")]
+    public async Task<IActionResult> PrintSYSA1013Report([FromBody] SYSA1013QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1013ReportAsync(query);
+            var fileName = $"耗材出庫明細表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印耗材出庫明細表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印耗材出庫明細表失敗" });
+        }
+    }
+
+    /// <summary>
     /// 查詢進銷存分析報表 (SYSA1000) - 通用查詢方法
     /// </summary>
     [HttpGet("{reportId}")]

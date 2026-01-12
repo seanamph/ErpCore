@@ -283,4 +283,97 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
             throw;
         }
     }
+
+    public async Task<PagedResult<SYSA1013ReportDto>> GetSYSA1013ReportAsync(SYSA1013QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1013Query
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                SupplierId = query.SupplierId,
+                Use = query.Use,
+                FilterType = query.FilterType,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1013ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1013ReportDto
+            {
+                TxnNo = item.TxnNo,
+                TxnDate = item.TxnDate,
+                BId = item.BId,
+                MId = item.MId,
+                SId = item.SId,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                PackUnit = item.PackUnit,
+                Unit = item.Unit,
+                Amt = item.Amt,
+                ApplyQty = item.ApplyQty,
+                Qty = item.Qty,
+                NAmt = item.NAmt,
+                Use = item.Use,
+                Vendor = item.Vendor,
+                StocksType = item.StocksType,
+                OrgId = item.OrgId,
+                OrgAllocation = item.OrgAllocation
+            }).ToList();
+
+            return new PagedResult<SYSA1013ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢耗材出庫明細表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1013ReportAsync(SYSA1013QueryDto query, string format)
+    {
+        try
+        {
+            // TODO: 實作 Excel/PDF 匯出功能
+            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出耗材出庫明細表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1013ReportAsync(SYSA1013QueryDto query)
+    {
+        try
+        {
+            // TODO: 實作 PDF 列印功能
+            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
+            await Task.CompletedTask;
+            return Array.Empty<byte>();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印耗材出庫明細表失敗", ex);
+            throw;
+        }
+    }
 }

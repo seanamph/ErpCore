@@ -259,7 +259,7 @@ const handleApprove = async (row) => {
     
     const response = await materialApplyApi.approveMaterialApply(row.applyId, {
       aprvEmpId: aprvEmpId,
-      aprvDate: new Date().toISOString(),
+      aprvDate: new Date().toISOString().split('T')[0],
       notes: ''
     })
     if (response.data.success) {

@@ -72,6 +72,25 @@ export const analysisReportApi = {
     return axios.post('/analysis-reports/sysa1012/print', data, {
       responseType: 'blob'
     })
+  },
+
+  // 查詢耗材出庫明細表 (SYSA1013)
+  getSYSA1013Report: (params) => {
+    return axios.get('/analysis-reports/sysa1013', { params })
+  },
+
+  // 匯出耗材出庫明細表 (SYSA1013)
+  exportSYSA1013Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1013/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印耗材出庫明細表 (SYSA1013)
+  printSYSA1013Report: (data) => {
+    return axios.post('/analysis-reports/sysa1013/print', data, {
+      responseType: 'blob'
+    })
   }
 }
 

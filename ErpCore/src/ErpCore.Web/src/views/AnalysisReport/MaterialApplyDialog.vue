@@ -257,7 +257,7 @@ const generateApplyId = async () => {
   try {
     const response = await materialApplyApi.generateApplyId()
     if (response.data.success) {
-      form.applyId = response.data.data.applyId
+      form.applyId = response.data.data
     } else {
       ElMessage.error(response.data.message || '產生領用單號失敗')
     }

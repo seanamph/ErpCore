@@ -202,6 +202,133 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
         };
     }
 
+    public async Task<PagedResult<SYSA1013ReportItem>> GetSYSA1013ReportAsync(SYSA1013Query query)
+    {
+        try
+        {
+            var sql = @"
+                SELECT 
+                    TxnNo,
+                    TxnDate,
+                    BId,
+                    MId,
+                    SId,
+                    GoodsId,
+                    GoodsName,
+                    PackUnit,
+                    Unit,
+                    Amt,
+                    ApplyQty,
+                    Qty,
+                    NAmt,
+                    Use,
+                    Vendor,
+                    StocksType,
+                    OrgId,
+                    OrgAllocation
+                FROM MaterialOutboundDetailView
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND EXISTS (SELECT 1 FROM InventoryStocks WHERE SourceId = MaterialOutboundDetailView.TxnNo AND SiteId = @SiteId)";
+                parameters.Add("SiteId", query.SiteId);
+            }
+
+            // 日期範圍篩選
+            if (!string.IsNullOrEmpty(query.BeginDate))
+            {
+                sql += " AND TxnDate >= @BeginDate";
+                parameters.Add("BeginDate", DateTime.Parse(query.BeginDate));
+            }
+
+            if (!string.IsNullOrEmpty(query.EndDate))
+            {
+                sql += " AND TxnDate <= @EndDate";
+                parameters.Add("EndDate", DateTime.Parse(query.EndDate).AddDays(1).AddSeconds(-1));
+            }
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 單位篩選
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                sql += " AND OrgId LIKE @OrgId";
+                parameters.Add("OrgId", $"%{query.OrgId}%");
+            }
+
+            // 商品代碼篩選
+            if (!string.IsNullOrEmpty(query.GoodsId))
+            {
+                sql += " AND GoodsId LIKE @GoodsId";
+                parameters.Add("GoodsId", $"%{query.GoodsId}%");
+            }
+
+            // 廠商篩選
+            if (!string.IsNullOrEmpty(query.SupplierId))
+            {
+                sql += " AND Vendor LIKE @SupplierId";
+                parameters.Add("SupplierId", $"%{query.SupplierId}%");
+            }
+
+            // 用途篩選
+            if (!string.IsNullOrEmpty(query.Use))
+            {
+                sql += " AND Use = @Use";
+                parameters.Add("Use", query.Use);
+            }
+
+            // 篩選類型
+            if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "all")
+            {
+                // 可以根據需要添加特定狀態的篩選
+            }
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY TxnDate DESC, TxnNo, GoodsId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1013ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1013ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢耗材出庫明細表失敗", ex);
+            throw;
+        }
+    }
+
     public async Task<PagedResult<SYSA1012ReportItem>> GetSYSA1012ReportAsync(SYSA1012Query query)
     {
         try
