@@ -230,6 +230,24 @@ const routes = [
         name: 'ConsumableSalesList',
         component: () => import('../views/AnalysisReport/ConsumableSalesList.vue'),
         meta: { title: '耗材出售維護作業 (SYSA297)' }
+      },
+      {
+        path: 'material-apply',
+        name: 'MaterialApplyList',
+        component: () => import('../views/AnalysisReport/MaterialApplyList.vue'),
+        meta: { title: '單位領用申請作業 (SYSA210)' }
+      },
+      {
+        path: 'sysa1011-report',
+        name: 'SYSA1011Report',
+        component: () => import('../views/AnalysisReport/SYSA1011Report.vue'),
+        meta: { title: '商品分析報表 (SYSA1011)' }
+      },
+      {
+        path: 'sysa1012-report',
+        name: 'SYSA1012Report',
+        component: () => import('../views/AnalysisReport/SYSA1012Report.vue'),
+        meta: { title: '進銷存月報表 (SYSA1012)' }
       }
     ]
   },

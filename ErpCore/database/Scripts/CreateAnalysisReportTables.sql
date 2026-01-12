@@ -453,5 +453,155 @@ BEGIN
 END
 GO
 
+-- 16. 單位領用申請單主檔 (SYSA210)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MaterialApplyMasters]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[MaterialApplyMasters] (
+        [TKey] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1), -- 主鍵
+        [ApplyId] NVARCHAR(20) NOT NULL, -- 領用單號
+        [EmpId] NVARCHAR(50) NOT NULL, -- 申請人代號
+        [OrgId] NVARCHAR(50) NOT NULL, -- 部門代號
+        [SiteId] NVARCHAR(50) NULL, -- 分店代號
+        [ApplyDate] DATETIME2 NOT NULL, -- 申請日期
+        [ApplyStatus] NVARCHAR(10) NOT NULL DEFAULT '0', -- 領用單狀態 (0:待審核, 1:已審核, 2:已發料, 3:已取消)
+        [Amount] DECIMAL(18,2) NULL DEFAULT 0, -- 領用品總價值
+        [AprvEmpId] NVARCHAR(50) NULL, -- 審核者
+        [AprvDate] DATETIME2 NULL, -- 審核日期
+        [CheckDate] DATETIME2 NULL, -- 發料日期
+        [WhId] NVARCHAR(50) NULL, -- 倉別
+        [StoreId] NVARCHAR(50) NULL, -- 儲位
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL, -- 建立者
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
+        [UpdatedBy] NVARCHAR(50) NULL, -- 更新者
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 更新時間
+        [CreatedPriority] INT NULL, -- 建立者等級
+        [CreatedGroup] NVARCHAR(50) NULL, -- 建立者群組
+        CONSTRAINT [UQ_MaterialApplyMasters_ApplyId] UNIQUE ([ApplyId])
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_ApplyId] ON [dbo].[MaterialApplyMasters] ([ApplyId]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_EmpId] ON [dbo].[MaterialApplyMasters] ([EmpId]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_OrgId] ON [dbo].[MaterialApplyMasters] ([OrgId]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_SiteId] ON [dbo].[MaterialApplyMasters] ([SiteId]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_ApplyDate] ON [dbo].[MaterialApplyMasters] ([ApplyDate]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_ApplyStatus] ON [dbo].[MaterialApplyMasters] ([ApplyStatus]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyMasters_AprvEmpId] ON [dbo].[MaterialApplyMasters] ([AprvEmpId]);
+
+    PRINT '資料表 MaterialApplyMasters 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 MaterialApplyMasters 已存在';
+END
+GO
+
+-- 17. 單位領用申請單明細檔 (SYSA210)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MaterialApplyDetails]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[MaterialApplyDetails] (
+        [TKey] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1), -- 主鍵
+        [ApplyMasterKey] BIGINT NOT NULL, -- 主檔主鍵
+        [ApplyId] NVARCHAR(20) NOT NULL, -- 領用單號
+        [GoodsTKey] BIGINT NOT NULL, -- 品項主鍵
+        [GoodsId] NVARCHAR(50) NOT NULL, -- 品項編號
+        [ApplyQty] DECIMAL(18,3) NOT NULL DEFAULT 0, -- 申請數量
+        [IssueQty] DECIMAL(18,3) NULL DEFAULT 0, -- 發料數量
+        [Unit] NVARCHAR(20) NULL, -- 單位
+        [UnitPrice] DECIMAL(18,2) NULL DEFAULT 0, -- 單價
+        [Amount] DECIMAL(18,2) NULL DEFAULT 0, -- 金額
+        [Notes] NVARCHAR(500) NULL, -- 附註
+        [SeqNo] INT NULL DEFAULT 0, -- 序號
+        [CreatedBy] NVARCHAR(50) NULL, -- 建立者
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
+        [UpdatedBy] NVARCHAR(50) NULL, -- 更新者
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 更新時間
+        CONSTRAINT [FK_MaterialApplyDetails_MaterialApplyMasters] FOREIGN KEY ([ApplyMasterKey]) REFERENCES [dbo].[MaterialApplyMasters] ([TKey]) ON DELETE CASCADE
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyDetails_ApplyMasterKey] ON [dbo].[MaterialApplyDetails] ([ApplyMasterKey]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyDetails_ApplyId] ON [dbo].[MaterialApplyDetails] ([ApplyId]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyDetails_GoodsTKey] ON [dbo].[MaterialApplyDetails] ([GoodsTKey]);
+    CREATE NONCLUSTERED INDEX [IX_MaterialApplyDetails_GoodsId] ON [dbo].[MaterialApplyDetails] ([GoodsId]);
+
+    PRINT '資料表 MaterialApplyDetails 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 MaterialApplyDetails 已存在';
+END
+GO
+
+-- 17. 商品主檔 (對應舊系統 IMS_AM.NAM_GOODS) - SYSA1011
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Goods]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[Goods] (
+        [GoodsId] NVARCHAR(50) NOT NULL PRIMARY KEY, -- 商品代碼
+        [GoodsName] NVARCHAR(200) NOT NULL, -- 商品名稱
+        [BId] NVARCHAR(50) NULL, -- 大分類代碼
+        [MId] NVARCHAR(50) NULL, -- 中分類代碼
+        [SId] NVARCHAR(50) NULL, -- 小分類代碼
+        [Unit] NVARCHAR(20) NULL, -- 單位
+        [PackUnit] NVARCHAR(20) NULL, -- 包裝單位
+        [SafeQty] DECIMAL(18, 2) NULL DEFAULT 0, -- 安全庫存量
+        [Type] NVARCHAR(10) NULL, -- 類型 (1:耗材, 2:固定資產)
+        [AssetType] NVARCHAR(10) NULL, -- 資產類型
+        [GoodsBeginDate] DATETIME2 NULL, -- 商品開始日期
+        [AssetDate] DATETIME2 NULL, -- 資產日期
+        [HoldOrgId] NVARCHAR(50) NULL, -- 持有單位
+        [HoldEmpId] NVARCHAR(50) NULL, -- 持有人員
+        [UseOrgId] NVARCHAR(50) NULL, -- 使用單位
+        [UseEmpId] NVARCHAR(50) NULL, -- 使用人員
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        [UpdatedBy] NVARCHAR(50) NULL,
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_Goods_BId] ON [dbo].[Goods] ([BId]);
+    CREATE NONCLUSTERED INDEX [IX_Goods_MId] ON [dbo].[Goods] ([MId]);
+    CREATE NONCLUSTERED INDEX [IX_Goods_SId] ON [dbo].[Goods] ([SId]);
+    CREATE NONCLUSTERED INDEX [IX_Goods_Type] ON [dbo].[Goods] ([Type]);
+
+    PRINT '資料表 Goods 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 Goods 已存在';
+END
+GO
+
+-- 18. 商品分類表 - SYSA1011
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GoodsCategories]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[GoodsCategories] (
+        [CategoryId] NVARCHAR(50) NOT NULL PRIMARY KEY,
+        [CategoryName] NVARCHAR(200) NOT NULL,
+        [CategoryType] NVARCHAR(10) NOT NULL, -- B:大分類, M:中分類, S:小分類
+        [ParentId] NVARCHAR(50) NULL, -- 父分類ID
+        [SeqNo] INT NULL DEFAULT 0,
+        [Status] NVARCHAR(10) NOT NULL DEFAULT '1',
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        [UpdatedBy] NVARCHAR(50) NULL,
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_GoodsCategories_CategoryType] ON [dbo].[GoodsCategories] ([CategoryType]);
+    CREATE NONCLUSTERED INDEX [IX_GoodsCategories_ParentId] ON [dbo].[GoodsCategories] ([ParentId]);
+
+    PRINT '資料表 GoodsCategories 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 GoodsCategories 已存在';
+END
+GO
+
 PRINT '所有分析報表相關資料表建立完成';
 
