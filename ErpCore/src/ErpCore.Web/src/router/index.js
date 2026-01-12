@@ -118,6 +118,12 @@ const routes = [
         meta: { title: '已日結退貨單驗退調整作業 (SYSW530)' }
       },
       {
+        path: 'closed-return-adjustment-v2',
+        name: 'ClosedReturnAdjustmentV2',
+        component: () => import('../views/Purchase/ClosedReturnAdjustmentV2.vue'),
+        meta: { title: '已日結退貨單驗退調整作業 (SYSW337)' }
+      },
+      {
         path: 'on-site-order',
         name: 'OnSitePurchaseOrder',
         component: () => import('../views/Purchase/OnSitePurchaseOrder.vue'),
