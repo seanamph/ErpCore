@@ -7,47 +7,47 @@ import axios from './axios'
 export const transferReceiptApi = {
   // 查詢待驗收調撥單列表
   getPendingOrders: (params) => {
-    return axios.get('/transfer-receipt/pending-orders', { params })
+    return axios.get('/transfer-receipts/pending-orders', { params })
   },
 
   // 查詢驗收單列表
   getTransferReceipts: (params) => {
-    return axios.get('/transfer-receipt', { params })
+    return axios.get('/transfer-receipts', { params })
   },
 
   // 查詢單筆驗收單
   getTransferReceipt: (receiptId) => {
-    return axios.get(`/transfer-receipt/${receiptId}`)
+    return axios.get(`/transfer-receipts/${receiptId}`)
   },
 
   // 依調撥單號建立驗收單
   createReceiptFromOrder: (transferId) => {
-    return axios.post(`/transfer-receipt/from-order/${transferId}`)
+    return axios.post(`/transfer-receipts/from-order/${transferId}`)
   },
 
   // 新增驗收單
   createTransferReceipt: (data) => {
-    return axios.post('/transfer-receipt', data)
+    return axios.post('/transfer-receipts', data)
   },
 
   // 修改驗收單
   updateTransferReceipt: (receiptId, data) => {
-    return axios.put(`/transfer-receipt/${receiptId}`, data)
+    return axios.put(`/transfer-receipts/${receiptId}`, data)
   },
 
   // 刪除驗收單
   deleteTransferReceipt: (receiptId) => {
-    return axios.delete(`/transfer-receipt/${receiptId}`)
+    return axios.delete(`/transfer-receipts/${receiptId}`)
   },
 
   // 確認驗收
   confirmReceipt: (receiptId) => {
-    return axios.post(`/transfer-receipt/${receiptId}/confirm`)
+    return axios.post(`/transfer-receipts/${receiptId}/confirm`)
   },
 
   // 取消驗收單
   cancelTransferReceipt: (receiptId) => {
-    return axios.post(`/transfer-receipt/${receiptId}/cancel`)
+    return axios.post(`/transfer-receipts/${receiptId}/cancel`)
   }
 }
 

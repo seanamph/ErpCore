@@ -10,7 +10,7 @@ namespace ErpCore.Api.Controllers.Transfer;
 /// <summary>
 /// 調撥單驗收作業控制器 (SYSW352)
 /// </summary>
-[Route("api/v1/transfer-receipt")]
+[Route("api/v1/transfer-receipts")]
 public class TransferReceiptController : BaseController
 {
     private readonly ITransferReceiptService _service;
