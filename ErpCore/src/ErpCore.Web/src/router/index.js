@@ -256,6 +256,12 @@ const routes = [
         meta: { title: '使用者權限代理 (SYS0117)' }
       },
       {
+        path: 'user-schedules',
+        name: 'SYS0116Query',
+        component: () => import('../views/System/SYS0116Query.vue'),
+        meta: { title: '排程修改使用者基本資料 (SYS0116)' }
+      },
+      {
         path: 'login-log-query',
         name: 'SYS0760Query',
         component: () => import('../views/System/SYS0760Query.vue'),

@@ -3,41 +3,38 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYS0113 功能完整實現**：已完成使用者基本資料維護(分店廠商部門)功能（後端+前端）
+- ✅ **SYS0114 功能完整實現**：已完成使用者基本資料維護(ActiveDirectory)功能（後端+前端）
   - 實現內容：
-    - ✅ Entity 層: `UserShop`、`UserVendor`、`UserDepartment` 實體已完整實現
-    - ✅ Repository 層: `UserShopRepository`、`UserVendorRepository`、`UserDepartmentRepository`、`UserButtonRepository` 和對應的介面已完整實現
-    - ✅ Service 層: `UserService` 已擴展（查詢總公司/分店列表、查詢廠商列表、查詢部門列表、新增/修改使用者含分店廠商部門設定、重設密碼含自動產生）
-    - ✅ Controller 層: `UsersController` 已擴展所有 SYS0113 相關 API 端點
-    - ✅ DTO 層: 所有 SYS0113 相關 DTO 已完整實現（UserShopVendorDeptDto 系列）
-    - ✅ API 整合: 在 `users.js` 中新增所有 SYS0113 相關的 API 方法
-    - ✅ SQL 腳本: `CreateUserShopsTables.sql` 已完整實現（UserShops、UserVendors、UserDepartments、UserButtons 資料表）
-    - ✅ **前端 Vue 頁面**: `SYS0113Query.vue` 已完整實現
+    - ✅ Entity 層: `User` 實體已包含 AD 欄位（UseActiveDirectory, AdDomain, AdUserPrincipalName），`UserOrganization` 實體已完整實現
+    - ✅ Repository 層: `UserOrganizationRepository` 和對應的介面已完整實現
+    - ✅ Service 層: `ActiveDirectoryService` 已實現（AD 使用者驗證、認證、取得使用者資訊），`UserService` 已擴展（查詢使用者詳細資料含AD和組織、查詢組織列表、新增/修改使用者含AD和組織設定、驗證AD使用者）
+    - ✅ Controller 層: `UsersController` 已擴展所有 SYS0114 相關 API 端點
+    - ✅ DTO 層: 所有 SYS0114 相關 DTO 已完整實現（UserDetailWithAdOrgsDto, CreateUserWithAdOrgsDto, UpdateUserWithAdOrgsDto, ValidateAdUserDto, ValidateAdUserResultDto, OrganizationDto, UserOrganizationDto）
+    - ✅ API 整合: 在 `users.js` 中新增所有 SYS0114 相關的 API 方法
+    - ✅ SQL 腳本: `CreateUserAdOrganizationsTables.sql` 已完整實現（修改 Users 表添加 AD 欄位，建立 UserOrganizations 資料表）
+    - ✅ **前端 Vue 頁面**: `SYS0114Query.vue` 已完整實現
       - 使用者列表查詢功能
       - 新增/修改使用者對話框（含基本資料）
-      - 總公司/分店權限設定區塊（總公司→分店→據點的階層選擇，支援快取機制）
-      - 廠商權限設定區塊
-      - 部門權限設定區塊
-      - 按鈕權限設定區塊
-      - 重設密碼對話框（支援自動產生密碼）
+      - Active Directory設定區塊（使用AD開關、AD網域、AD使用者主體名稱、AD使用者驗證功能）
+      - 業種權限設定區塊（參考 SYS0111）
+      - 組織權限設定區塊
       - 完整的表單驗證和錯誤處理
-  - 功能狀態：SYS0113 前後端已完整實現 ✨
-  - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0113-使用者基本資料維護(分店廠商部門).md`
-  - Git 提交：已提交並推送到遠端倉庫（commit: 2fe53c2）
+  - 功能狀態：SYS0114 前後端已完整實現 ✨
+  - 開發依據：`開發計劃/01-系統管理/01-使用者管理/SYS0114-使用者基本資料維護(ActiveDirectory).md`
+  - Git 提交：已提交並推送到遠端倉庫（commit: 57bfb8a）
 
 ### ⚠️ 已知問題
-- **dotnet build**：專案存在一些既有的編譯錯誤（與 SYS0113 無關，主要是命名空間引用問題）
-- **npm build**：專案存在一些既有檔案的編譯錯誤（與 SYS0113 無關，主要是編碼問題）
-- **總公司/分店/據點查詢邏輯**：目前 Service 層的 GetParentShopsAsync、GetShopsAsync、GetSitesAsync 方法需要根據實際資料表結構實現查詢邏輯
-- **廠商和部門查詢邏輯**：目前 Service 層的 GetVendorsAsync、GetDepartmentsAsync 方法需要根據實際資料表結構實現查詢邏輯
+- **dotnet build**：專案存在一些既有的編譯錯誤（與 SYS0114 無關，主要是命名空間引用問題）
+- **npm build**：專案存在一些既有檔案的編譯錯誤（與 SYS0114 無關，主要是編碼問題）
 
 ### 🎯 下一步建議
-1. **完善查詢邏輯**：在 Service 層實現實際的總公司/分店/據點、廠商、部門查詢邏輯
-   - 需要根據實際資料表結構實現 GetParentShopsAsync、GetShopsAsync、GetSitesAsync、GetVendorsAsync、GetDepartmentsAsync 方法
-2. **選擇新功能開發**：從 `開發計劃/` 目錄選擇一個新功能進行開發
-   - 建議：SYS0114（使用者基本資料維護(ActiveDirectory)）或其他功能
-3. **功能測試**：對 SYS0113 功能進行完整測試，確保功能正常運作
-4. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
+1. **選擇新功能開發**：從 `開發計劃/` 目錄選擇一個新功能進行開發
+   - 建議：SYS0116（排程修改使用者基本資料）或其他功能
+2. **功能測試**：對 SYS0114 功能進行完整測試，確保功能正常運作
+   - 測試 AD 使用者驗證功能
+   - 測試新增/修改使用者含 AD 和組織設定
+   - 測試組織權限設定功能
+3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
 
 ---
 ## 📊 最新進度摘要（2025-01-27）
@@ -46,7 +43,8 @@
 - **系統管理功能**：
   - ✅ SYS0110（使用者基本資料維護）、SYS0120（使用者資料瀏覽）、SYS0130（使用者帳戶原則管理）、SYS0140（使用者資料查詢）
   - ✅ SYS0111（使用者基本資料維護(業種儲位)）✨已完整實現
-  - ✅ **SYS0113（使用者基本資料維護(分店廠商部門)）** ✨已完整實現
+  - ✅ SYS0113（使用者基本資料維護(分店廠商部門)）✨已完整實現
+  - ✅ **SYS0114（使用者基本資料維護(ActiveDirectory)）** ✨已完整實現
   - ✅ SYS0117（使用者權限代理）✨已完整實現
   - ✅ SYS0210（角色基本資料維護）、SYS0220（使用者之角色設定維護）、SYS0230（角色之使用者設定維護）、SYS0240（角色複製）
   - ✅ SYS0310（角色系統權限設定）、SYS0320（使用者系統權限設定）、SYS0330（角色欄位權限設定）、SYS0340（使用者欄位權限設定）、SYS0360（系統對應權限設定）
@@ -61,9 +59,8 @@
 ### ⚠️ 已知問題
 - **dotnet build**：專案存在一些既有的編譯錯誤（與新功能無關）
 - **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關）
-- **查詢邏輯**：部分 Service 層的查詢方法需要根據實際資料表結構實現
 
 ### 🎯 下一步建議
-1. **完善查詢邏輯**：實現實際的資料查詢邏輯
-2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：SYS0114 或其他功能）
-3. **功能測試**：對已完成的功能進行完整測試
+1. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：SYS0116 或其他功能）
+2. **功能測試**：對已完成的功能進行完整測試
+3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤

@@ -136,6 +136,7 @@ try
     builder.Services.AddScoped<IConfigProgramRepository, ConfigProgramRepository>();
     builder.Services.AddScoped<IConfigButtonRepository, ConfigButtonRepository>();
     builder.Services.AddScoped<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IUserScheduleRepository, UserScheduleRepository>();
     builder.Services.AddScoped<IUserAgentRepository, UserAgentRepository>();
     builder.Services.AddScoped<IUserBusinessTypeRepository, UserBusinessTypeRepository>();
     builder.Services.AddScoped<IUserWarehouseAreaRepository, UserWarehouseAreaRepository>();
@@ -318,6 +319,8 @@ try
     builder.Services.AddScoped<ErpCore.Application.Services.System.IMenuService, ErpCore.Application.Services.System.MenuService>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.IMenuRepository, ErpCore.Infrastructure.Repositories.System.MenuRepository>();
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IUserScheduleService, UserScheduleService>();
+    builder.Services.AddHostedService<UserScheduleBackgroundService>();
     builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
     builder.Services.AddScoped<IUserAgentService, UserAgentService>();
     builder.Services.AddScoped<IRoleService, RoleService>();
