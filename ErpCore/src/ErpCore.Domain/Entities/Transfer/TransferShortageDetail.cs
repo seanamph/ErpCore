@@ -85,4 +85,3 @@ public class TransferShortageDetail
     /// </summary>
     public DateTime CreatedAt { get; set; }
 }
-

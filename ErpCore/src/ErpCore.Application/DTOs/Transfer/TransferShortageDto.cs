@@ -64,7 +64,6 @@ public class CreateTransferShortageDto
     public string? ProcessType { get; set; }
     public string? ShortageReason { get; set; }
     public string? Memo { get; set; }
-    public string? CreatedBy { get; set; }
     public List<CreateTransferShortageDetailDto> Details { get; set; } = new();
 }
 
@@ -95,7 +94,6 @@ public class UpdateTransferShortageDto
     public string? ProcessType { get; set; }
     public string? ShortageReason { get; set; }
     public string? Memo { get; set; }
-    public string? UpdatedBy { get; set; }
     public List<UpdateTransferShortageDetailDto> Details { get; set; } = new();
 }
 
@@ -105,6 +103,8 @@ public class UpdateTransferShortageDto
 public class UpdateTransferShortageDetailDto
 {
     public Guid? DetailId { get; set; }
+    public decimal TransferQty { get; set; }
+    public decimal ReceiptQty { get; set; }
     public decimal ShortageQty { get; set; }
     public decimal? UnitPrice { get; set; }
     public string? ShortageReason { get; set; }
@@ -148,4 +148,3 @@ public class ProcessTransferShortageDto
     public string ProcessType { get; set; } = string.Empty;
     public string? Notes { get; set; }
 }
-

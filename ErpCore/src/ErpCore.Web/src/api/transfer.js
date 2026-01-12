@@ -109,42 +109,42 @@ export const transferReturnApi = {
 export const transferShortageApi = {
   // 查詢短溢單列表
   getTransferShortages: (params) => {
-    return axios.get('/transfer-shortage', { params })
+    return axios.get('/transfer-shortages', { params })
   },
 
   // 查詢單筆短溢單
   getTransferShortage: (shortageId) => {
-    return axios.get(`/transfer-shortage/${shortageId}`)
+    return axios.get(`/transfer-shortages/${shortageId}`)
   },
 
   // 依調撥單號建立短溢單
   createShortageFromTransfer: (transferId) => {
-    return axios.post(`/transfer-shortage/from-transfer/${transferId}`)
+    return axios.post(`/transfer-shortages/from-transfer/${transferId}`)
   },
 
   // 新增短溢單
   createTransferShortage: (data) => {
-    return axios.post('/transfer-shortage', data)
+    return axios.post('/transfer-shortages', data)
   },
 
   // 修改短溢單
   updateTransferShortage: (shortageId, data) => {
-    return axios.put(`/transfer-shortage/${shortageId}`, data)
+    return axios.put(`/transfer-shortages/${shortageId}`, data)
   },
 
   // 刪除短溢單
   deleteTransferShortage: (shortageId) => {
-    return axios.delete(`/transfer-shortage/${shortageId}`)
+    return axios.delete(`/transfer-shortages/${shortageId}`)
   },
 
   // 審核短溢單
   approveShortage: (shortageId, data) => {
-    return axios.post(`/transfer-shortage/${shortageId}/approve`, data)
+    return axios.post(`/transfer-shortages/${shortageId}/approve`, data)
   },
 
   // 處理短溢單
   processShortage: (shortageId, data) => {
-    return axios.post(`/transfer-shortage/${shortageId}/process`, data)
+    return axios.post(`/transfer-shortages/${shortageId}/process`, data)
   }
 }
 

@@ -116,6 +116,18 @@ GO
 --     FOREIGN KEY ([ReceiptDetailId]) REFERENCES [dbo].[TransferReceiptDetails] ([DetailId]);
 -- END
 
-PRINT '調撥短溢維護作業資料表建立完成';
+-- 4. 外鍵約束：短溢單明細與短溢單主檔的關聯
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferShortages]') AND type in (N'U'))
+    AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferShortageDetails]') AND type in (N'U'))
+    AND NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_TransferShortageDetails_TransferShortages')
+BEGIN
+    ALTER TABLE [dbo].[TransferShortageDetails]
+    ADD CONSTRAINT [FK_TransferShortageDetails_TransferShortages] 
+    FOREIGN KEY ([ShortageId]) REFERENCES [dbo].[TransferShortages] ([ShortageId]) ON DELETE CASCADE;
+    
+    PRINT '外鍵約束 FK_TransferShortageDetails_TransferShortages 建立成功';
+END
 GO
 
+PRINT '調撥短溢維護作業資料表建立完成';
+GO

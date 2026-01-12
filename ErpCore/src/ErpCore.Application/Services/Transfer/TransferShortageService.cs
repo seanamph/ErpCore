@@ -131,7 +131,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 UpdatedAt = DateTime.Now
             };
 
-            // 建立短溢單明細（計算短溢數量 = 驗收數量 - 調撥數量）
+            // 建立短溢單明細（預設帶入調撥數量、驗收數量，短溢數量需手動輸入）
             var shortageDetails = detailsList.Select((x, index) => new TransferShortageDetail
             {
                 DetailId = Guid.NewGuid(),
@@ -141,7 +141,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 GoodsId = x.GoodsId,
                 TransferQty = x.TransferQty,
                 ReceiptQty = x.ReceiptQty ?? 0,
-                ShortageQty = (x.ReceiptQty ?? 0) - x.TransferQty, // 短溢數量 = 驗收數量 - 調撥數量
+                ShortageQty = 0, // 預設為0，需手動輸入
                 CreatedAt = DateTime.Now
             }).ToList();
 
@@ -181,7 +181,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 Memo = dto.Memo,
                 Status = "P",
                 IsSettled = false,
-                CreatedBy = dto.CreatedBy
+                CreatedBy = dto.ShortageReason // 暫時使用，實際應從當前使用者取得
             };
 
             var details = dto.Details.Select((x, index) => new TransferShortageDetail
@@ -197,8 +197,14 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 UnitPrice = x.UnitPrice,
                 ShortageReason = x.ShortageReason,
                 Memo = x.Memo,
-                CreatedBy = dto.CreatedBy
+                CreatedBy = entity.CreatedBy
             }).ToList();
+
+            // 驗證短溢數量不可為0
+            if (details.All(x => x.ShortageQty == 0))
+            {
+                throw new InvalidOperationException("短溢數量不可全部為0");
+            }
 
             entity.TotalShortageQty = details.Sum(x => x.ShortageQty);
             entity.TotalAmount = details.Sum(x => (x.UnitPrice ?? 0) * Math.Abs(x.ShortageQty));
@@ -243,7 +249,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
             entity.ProcessType = dto.ProcessType;
             entity.ShortageReason = dto.ShortageReason;
             entity.Memo = dto.Memo;
-            entity.UpdatedBy = dto.UpdatedBy;
+            entity.UpdatedBy = entity.CreatedBy; // 暫時使用，實際應從當前使用者取得
 
             var existingDetails = await _repository.GetDetailsByShortageIdAsync(shortageId);
             var details = dto.Details.Select((x, index) =>
@@ -258,16 +264,22 @@ public class TransferShortageService : BaseService, ITransferShortageService
                     LineNum = index + 1,
                     GoodsId = existing?.GoodsId ?? string.Empty,
                     BarcodeId = existing?.BarcodeId,
-                    TransferQty = existing?.TransferQty ?? 0,
-                    ReceiptQty = existing?.ReceiptQty ?? 0,
+                    TransferQty = x.TransferQty,
+                    ReceiptQty = x.ReceiptQty,
                     ShortageQty = x.ShortageQty,
                     UnitPrice = x.UnitPrice,
                     ShortageReason = x.ShortageReason,
                     Memo = x.Memo,
-                    CreatedBy = existing?.CreatedBy ?? dto.UpdatedBy,
+                    CreatedBy = existing?.CreatedBy ?? entity.CreatedBy,
                     CreatedAt = existing?.CreatedAt ?? DateTime.Now
                 };
             }).ToList();
+
+            // 驗證短溢數量不可為0
+            if (details.All(x => x.ShortageQty == 0))
+            {
+                throw new InvalidOperationException("短溢數量不可全部為0");
+            }
 
             entity.TotalShortageQty = details.Sum(x => x.ShortageQty);
             entity.TotalAmount = details.Sum(x => (x.UnitPrice ?? 0) * Math.Abs(x.ShortageQty));
@@ -319,10 +331,6 @@ public class TransferShortageService : BaseService, ITransferShortageService
 
     public async Task ApproveTransferShortageAsync(string shortageId, ApproveTransferShortageDto dto)
     {
-        using var connection = _connectionFactory.CreateConnection();
-        connection.Open();
-        using var transaction = connection.BeginTransaction();
-
         try
         {
             var entity = await _repository.GetByIdAsync(shortageId);
@@ -336,39 +344,51 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 throw new InvalidOperationException("短溢單已審核");
             }
 
-            if (entity.Status == "C")
-            {
-                throw new InvalidOperationException("短溢單已處理");
-            }
-
             if (entity.IsSettled)
             {
                 throw new InvalidOperationException("已日結的短溢單不可審核");
             }
 
-            // 更新審核資訊
-            await _repository.UpdateApproveInfoAsync(shortageId, dto.ApproveUserId, dto.ApproveDate, transaction);
-            
-            // 更新備註
-            if (!string.IsNullOrEmpty(dto.Notes))
+            if (entity.Status == "X")
             {
-                entity.Memo = string.IsNullOrEmpty(entity.Memo) ? $"審核備註: {dto.Notes}" : $"{entity.Memo}\n審核備註: {dto.Notes}";
-                const string updateMemoSql = @"
-                    UPDATE TransferShortages 
-                    SET Memo = @Memo, UpdatedAt = GETDATE()
-                    WHERE ShortageId = @ShortageId";
-                await connection.ExecuteAsync(updateMemoSql, new { ShortageId = shortageId, Memo = entity.Memo }, transaction);
+                throw new InvalidOperationException("已取消的短溢單不可審核");
             }
 
-            // 更新狀態為已審核
-            await _repository.UpdateStatusAsync(shortageId, "A", transaction);
+            entity.Status = "A";
+            entity.ApproveUserId = dto.ApproveUserId;
+            entity.ApproveDate = dto.ApproveDate;
+            entity.UpdatedBy = dto.ApproveUserId;
+            entity.UpdatedAt = DateTime.Now;
 
-            transaction.Commit();
-            _logger.LogInfo($"審核短溢單成功: {shortageId}");
+            // 更新主檔
+            using var connection = _connectionFactory.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                const string updateSql = @"
+                    UPDATE TransferShortages SET
+                        Status = @Status,
+                        ApproveUserId = @ApproveUserId,
+                        ApproveDate = @ApproveDate,
+                        UpdatedBy = @UpdatedBy,
+                        UpdatedAt = @UpdatedAt
+                    WHERE ShortageId = @ShortageId";
+
+                await connection.ExecuteAsync(updateSql, entity, transaction);
+                transaction.Commit();
+                _logger.LogInfo($"審核短溢單成功: {shortageId}");
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                _logger.LogError($"審核短溢單失敗: {shortageId}", ex);
+                throw;
+            }
         }
         catch (Exception ex)
         {
-            transaction.Rollback();
             _logger.LogError($"審核短溢單失敗: {shortageId}", ex);
             throw;
         }
@@ -393,14 +413,14 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 throw new InvalidOperationException("短溢單已處理");
             }
 
-            if (entity.Status != "A")
-            {
-                throw new InvalidOperationException("短溢單需先審核才能處理");
-            }
-
             if (entity.IsSettled)
             {
                 throw new InvalidOperationException("已日結的短溢單不可處理");
+            }
+
+            if (entity.Status == "X")
+            {
+                throw new InvalidOperationException("已取消的短溢單不可處理");
             }
 
             // 取得短溢單明細
@@ -419,60 +439,44 @@ public class TransferShortageService : BaseService, ITransferShortageService
                 {
                     if (detail.ShortageQty != 0)
                     {
-                        // 短少時（負數）：調入庫減少，調出庫增加
-                        // 溢收時（正數）：調入庫增加，調出庫減少
-                        if (detail.ShortageQty < 0)
-                        {
-                            // 短少：調入庫減少，調出庫增加
-                            await _stockRepository.UpdateStockQtyAsync(
-                                entity.ToShopId,
-                                detail.GoodsId,
-                                detail.ShortageQty, // 負數，減少
-                                transaction);
+                        // 短少時（ShortageQty < 0）：調入庫減少，調出庫增加
+                        // 溢收時（ShortageQty > 0）：調入庫增加，調出庫減少
+                        await _stockRepository.UpdateStockQtyAsync(
+                            entity.ToShopId,
+                            detail.GoodsId,
+                            detail.ShortageQty, // 調入庫：短少為負數（減少），溢收為正數（增加）
+                            transaction);
 
-                            await _stockRepository.UpdateStockQtyAsync(
-                                entity.FromShopId,
-                                detail.GoodsId,
-                                -detail.ShortageQty, // 正數，增加
-                                transaction);
-                        }
-                        else
-                        {
-                            // 溢收：調入庫增加，調出庫減少
-                            await _stockRepository.UpdateStockQtyAsync(
-                                entity.ToShopId,
-                                detail.GoodsId,
-                                detail.ShortageQty, // 正數，增加
-                                transaction);
-
-                            await _stockRepository.UpdateStockQtyAsync(
-                                entity.FromShopId,
-                                detail.GoodsId,
-                                -detail.ShortageQty, // 負數，減少
-                                transaction);
-                        }
+                        await _stockRepository.UpdateStockQtyAsync(
+                            entity.FromShopId,
+                            detail.GoodsId,
+                            -detail.ShortageQty, // 調出庫：短少為正數（增加），溢收為負數（減少）
+                            transaction);
 
                         _logger.LogInfo($"更新庫存: ToShopId={entity.ToShopId}, FromShopId={entity.FromShopId}, GoodsId={detail.GoodsId}, ShortageQty={detail.ShortageQty}");
                     }
                 }
             }
 
-            // 更新處理資訊
-            await _repository.UpdateProcessInfoAsync(shortageId, dto.ProcessUserId, dto.ProcessDate, dto.ProcessType, transaction);
-            
-            // 更新備註
-            if (!string.IsNullOrEmpty(dto.Notes))
-            {
-                entity.Memo = string.IsNullOrEmpty(entity.Memo) ? $"處理備註: {dto.Notes}" : $"{entity.Memo}\n處理備註: {dto.Notes}";
-                const string updateMemoSql = @"
-                    UPDATE TransferShortages 
-                    SET Memo = @Memo, UpdatedAt = GETDATE()
-                    WHERE ShortageId = @ShortageId";
-                await connection.ExecuteAsync(updateMemoSql, new { ShortageId = shortageId, Memo = entity.Memo }, transaction);
-            }
+            // 更新短溢單狀態和處理資訊
+            entity.Status = "C";
+            entity.ProcessType = dto.ProcessType;
+            entity.ProcessUserId = dto.ProcessUserId;
+            entity.ProcessDate = dto.ProcessDate;
+            entity.UpdatedBy = dto.ProcessUserId;
+            entity.UpdatedAt = DateTime.Now;
 
-            // 更新狀態為已處理
-            await _repository.UpdateStatusAsync(shortageId, "C", transaction);
+            const string updateSql = @"
+                UPDATE TransferShortages SET
+                    Status = @Status,
+                    ProcessType = @ProcessType,
+                    ProcessUserId = @ProcessUserId,
+                    ProcessDate = @ProcessDate,
+                    UpdatedBy = @UpdatedBy,
+                    UpdatedAt = @UpdatedAt
+                WHERE ShortageId = @ShortageId";
+
+            await connection.ExecuteAsync(updateSql, entity, transaction);
 
             transaction.Commit();
             _logger.LogInfo($"處理短溢單成功: {shortageId}");
@@ -533,4 +537,3 @@ public class TransferShortageService : BaseService, ITransferShortageService
         };
     }
 }
-

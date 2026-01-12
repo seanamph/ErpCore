@@ -115,4 +115,3 @@ public class TransferShortage
     /// </summary>
     public DateTime UpdatedAt { get; set; }
 }
-

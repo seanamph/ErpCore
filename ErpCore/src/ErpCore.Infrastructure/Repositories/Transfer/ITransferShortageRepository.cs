@@ -16,8 +16,6 @@ public interface ITransferShortageRepository
     Task UpdateAsync(TransferShortage entity, List<TransferShortageDetail> details);
     Task DeleteAsync(string shortageId);
     Task UpdateStatusAsync(string shortageId, string status, System.Data.IDbTransaction? transaction = null);
-    Task UpdateApproveInfoAsync(string shortageId, string approveUserId, DateTime approveDate, System.Data.IDbTransaction? transaction = null);
-    Task UpdateProcessInfoAsync(string shortageId, string processUserId, DateTime processDate, string processType, System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateShortageIdAsync();
 }
 
@@ -37,4 +35,3 @@ public class TransferShortageQuery
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }
-

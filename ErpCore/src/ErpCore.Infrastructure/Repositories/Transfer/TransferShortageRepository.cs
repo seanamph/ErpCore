@@ -189,7 +189,7 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
             const string insertMainSql = @"
                 INSERT INTO TransferShortages 
                 (ShortageId, TransferId, ReceiptId, ShortageDate, FromShopId, ToShopId, Status, 
-                 ProcessType, ProcessUserId, ProcessDate, ApproveUserId, ApproveDate, 
+                 ProcessType, ProcessUserId, ProcessDate, ApproveUserId, ApproveDate,
                  TotalShortageQty, TotalAmount, ShortageReason, Memo, IsSettled, SettledDate, 
                  CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
                 VALUES 
@@ -247,6 +247,8 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
                 UPDATE TransferShortages SET
                     ShortageDate = @ShortageDate,
                     ProcessType = @ProcessType,
+                    ProcessUserId = @ProcessUserId,
+                    ProcessDate = @ProcessDate,
                     TotalShortageQty = @TotalShortageQty,
                     TotalAmount = @TotalAmount,
                     ShortageReason = @ShortageReason,
@@ -351,70 +353,6 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
     }
 
     /// <summary>
-    /// 更新審核資訊
-    /// </summary>
-    public async Task UpdateApproveInfoAsync(string shortageId, string approveUserId, DateTime approveDate, System.Data.IDbTransaction? transaction = null)
-    {
-        try
-        {
-            const string sql = @"
-                UPDATE TransferShortages 
-                SET ApproveUserId = @ApproveUserId, ApproveDate = @ApproveDate, UpdatedAt = GETDATE()
-                WHERE ShortageId = @ShortageId";
-
-            var parameters = new { ShortageId = shortageId, ApproveUserId = approveUserId, ApproveDate = approveDate };
-
-            if (transaction != null)
-            {
-                await transaction.Connection!.ExecuteAsync(sql, parameters, transaction);
-            }
-            else
-            {
-                await ExecuteAsync(sql, parameters);
-            }
-
-            _logger.LogInfo($"更新短溢單審核資訊成功: ShortageId={shortageId}");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"更新短溢單審核資訊失敗: ShortageId={shortageId}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// 更新處理資訊
-    /// </summary>
-    public async Task UpdateProcessInfoAsync(string shortageId, string processUserId, DateTime processDate, string processType, System.Data.IDbTransaction? transaction = null)
-    {
-        try
-        {
-            const string sql = @"
-                UPDATE TransferShortages 
-                SET ProcessUserId = @ProcessUserId, ProcessDate = @ProcessDate, ProcessType = @ProcessType, UpdatedAt = GETDATE()
-                WHERE ShortageId = @ShortageId";
-
-            var parameters = new { ShortageId = shortageId, ProcessUserId = processUserId, ProcessDate = processDate, ProcessType = processType };
-
-            if (transaction != null)
-            {
-                await transaction.Connection!.ExecuteAsync(sql, parameters, transaction);
-            }
-            else
-            {
-                await ExecuteAsync(sql, parameters);
-            }
-
-            _logger.LogInfo($"更新短溢單處理資訊成功: ShortageId={shortageId}");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"更新短溢單處理資訊失敗: ShortageId={shortageId}", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
     /// 產生短溢單號（公開方法）
     /// </summary>
     public async Task<string> GenerateShortageIdAsync()
@@ -462,4 +400,3 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
         return $"TS{today}{sequence:D3}";
     }
 }
-

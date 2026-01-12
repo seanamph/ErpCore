@@ -17,4 +17,3 @@ public interface ITransferShortageService
     Task ApproveTransferShortageAsync(string shortageId, ApproveTransferShortageDto dto);
     Task ProcessTransferShortageAsync(string shortageId, ProcessTransferShortageDto dto);
 }
-
