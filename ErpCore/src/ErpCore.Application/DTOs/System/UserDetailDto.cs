@@ -31,6 +31,26 @@ public class UserDetailDto
     /// 7X承租分店權限列表
     /// </summary>
     public List<UserStoreDto> Stores { get; set; } = new();
+    
+    /// <summary>
+    /// 總公司/分店權限列表 (SYS0113)
+    /// </summary>
+    public List<UserShopDto> Shops { get; set; } = new();
+    
+    /// <summary>
+    /// 廠商權限列表 (SYS0113)
+    /// </summary>
+    public List<UserVendorDto> Vendors { get; set; } = new();
+    
+    /// <summary>
+    /// 部門權限列表 (SYS0113)
+    /// </summary>
+    public List<UserDepartmentDto> Departments { get; set; } = new();
+    
+    /// <summary>
+    /// 按鈕權限列表 (SYS0113)
+    /// </summary>
+    public List<UserButtonDto> Buttons { get; set; } = new();
 }
 
 /// <summary>

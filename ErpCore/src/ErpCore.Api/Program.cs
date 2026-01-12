@@ -140,6 +140,10 @@ try
     builder.Services.AddScoped<IUserBusinessTypeRepository, UserBusinessTypeRepository>();
     builder.Services.AddScoped<IUserWarehouseAreaRepository, UserWarehouseAreaRepository>();
     builder.Services.AddScoped<IUserStoreRepository, UserStoreRepository>();
+    builder.Services.AddScoped<IUserShopRepository, UserShopRepository>();
+    builder.Services.AddScoped<IUserVendorRepository, UserVendorRepository>();
+    builder.Services.AddScoped<IUserDepartmentRepository, UserDepartmentRepository>();
+    builder.Services.AddScoped<IUserButtonRepository, UserButtonRepository>();
     builder.Services.AddScoped<IRoleRepository, RoleRepository>();
     builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();
     builder.Services.AddScoped<IRolePermissionRepository, RolePermissionRepository>();

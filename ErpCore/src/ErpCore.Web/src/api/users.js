@@ -303,3 +303,88 @@ export function updateUserWithBusinessTypes(userId, data) {
   })
 }
 
+/**
+ * 查詢總公司列表 (SYS0113)
+ */
+export function getParentShops() {
+  return request({
+    url: '/api/v1/users/shops/parent',
+    method: 'get'
+  })
+}
+
+/**
+ * 查詢分店列表 (SYS0113)
+ */
+export function getShops(pShopId) {
+  return request({
+    url: '/api/v1/users/shops',
+    method: 'get',
+    params: { pShopId }
+  })
+}
+
+/**
+ * 查詢據點列表 (SYS0113)
+ */
+export function getSites(shopId) {
+  return request({
+    url: '/api/v1/users/sites',
+    method: 'get',
+    params: { shopId }
+  })
+}
+
+/**
+ * 查詢廠商列表 (SYS0113)
+ */
+export function getVendors() {
+  return request({
+    url: '/api/v1/users/vendors',
+    method: 'get'
+  })
+}
+
+/**
+ * 查詢部門列表 (SYS0113)
+ */
+export function getDepartments() {
+  return request({
+    url: '/api/v1/users/departments',
+    method: 'get'
+  })
+}
+
+/**
+ * 新增使用者（含分店廠商部門設定）(SYS0113)
+ */
+export function createUserWithShopsVendorsDepts(data) {
+  return request({
+    url: '/api/v1/users/with-shops-vendors-depts',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 修改使用者（含分店廠商部門設定）(SYS0113)
+ */
+export function updateUserWithShopsVendorsDepts(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/with-shops-vendors-depts`,
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 重設密碼（含自動產生）(SYS0113)
+ */
+export function resetPasswordWithAuto(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/reset-password-auto`,
+    method: 'post',
+    data
+  })
+}
+

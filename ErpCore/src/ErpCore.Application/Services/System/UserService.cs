@@ -21,6 +21,10 @@ public class UserService : BaseService, IUserService
     private readonly IUserBusinessTypeRepository _userBusinessTypeRepository;
     private readonly IUserWarehouseAreaRepository _userWarehouseAreaRepository;
     private readonly IUserStoreRepository _userStoreRepository;
+    private readonly IUserShopRepository _userShopRepository;
+    private readonly IUserVendorRepository _userVendorRepository;
+    private readonly IUserDepartmentRepository _userDepartmentRepository;
+    private readonly IUserButtonRepository _userButtonRepository;
 
     public UserService(
         IUserRepository repository,
@@ -30,7 +34,11 @@ public class UserService : BaseService, IUserService
         ExportHelper exportHelper,
         IUserBusinessTypeRepository userBusinessTypeRepository,
         IUserWarehouseAreaRepository userWarehouseAreaRepository,
-        IUserStoreRepository userStoreRepository) : base(logger, userContext)
+        IUserStoreRepository userStoreRepository,
+        IUserShopRepository userShopRepository,
+        IUserVendorRepository userVendorRepository,
+        IUserDepartmentRepository userDepartmentRepository,
+        IUserButtonRepository userButtonRepository) : base(logger, userContext)
     {
         _repository = repository;
         _connectionFactory = connectionFactory;
@@ -38,6 +46,10 @@ public class UserService : BaseService, IUserService
         _userBusinessTypeRepository = userBusinessTypeRepository;
         _userWarehouseAreaRepository = userWarehouseAreaRepository;
         _userStoreRepository = userStoreRepository;
+        _userShopRepository = userShopRepository;
+        _userVendorRepository = userVendorRepository;
+        _userDepartmentRepository = userDepartmentRepository;
+        _userButtonRepository = userButtonRepository;
     }
 
     public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryDto query)
@@ -637,6 +649,10 @@ public class UserService : BaseService, IUserService
             var businessTypes = await _userBusinessTypeRepository.GetByUserIdAsync(userId);
             var warehouseAreas = await _userWarehouseAreaRepository.GetByUserIdAsync(userId);
             var stores = await _userStoreRepository.GetByUserIdAsync(userId);
+            var shops = await _userShopRepository.GetByUserIdAsync(userId);
+            var vendors = await _userVendorRepository.GetByUserIdAsync(userId);
+            var departments = await _userDepartmentRepository.GetByUserIdAsync(userId);
+            var buttons = await _userButtonRepository.GetByUserIdAsync(userId);
 
             return new UserDetailDto
             {
@@ -672,6 +688,32 @@ public class UserService : BaseService, IUserService
                     Id = x.Id,
                     UserId = x.UserId,
                     StoreId = x.StoreId
+                }).ToList(),
+                Shops = shops.Select(x => new UserShopDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    PShopId = x.PShopId,
+                    ShopId = x.ShopId,
+                    SiteId = x.SiteId
+                }).ToList(),
+                Vendors = vendors.Select(x => new UserVendorDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    VendorId = x.VendorId
+                }).ToList(),
+                Departments = departments.Select(x => new UserDepartmentDto
+                {
+                    Id = x.Id,
+                    UserId = x.UserId,
+                    DeptId = x.DeptId
+                }).ToList(),
+                Buttons = buttons.Select(x => new UserButtonDto
+                {
+                    Id = x.TKey,
+                    UserId = x.UserId,
+                    ButtonId = x.ButtonId
                 }).ToList()
             };
         }
@@ -945,6 +987,327 @@ public class UserService : BaseService, IUserService
             _logger.LogError($"修改使用者（含業種儲位設定）失敗: {userId}", ex);
             throw;
         }
+    }
+
+    public async Task<List<ParentShopDto>> GetParentShopsAsync()
+    {
+        try
+        {
+            // TODO: 根據實際資料表結構實現查詢邏輯
+            // 這裡需要根據實際的總公司資料表查詢
+            const string sql = @"
+                SELECT DISTINCT PShopId AS PShopId, PShopName AS PShopName
+                FROM Shops
+                WHERE PShopId IS NOT NULL
+                ORDER BY PShopId";
+
+            var result = await QueryAsync<ParentShopDto>(sql);
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢總公司列表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<ShopDto>> GetShopsAsync(string? pShopId)
+    {
+        try
+        {
+            // TODO: 根據實際資料表結構實現查詢邏輯
+            const string sql = @"
+                SELECT ShopId, ShopName, PShopId
+                FROM Shops
+                WHERE (@PShopId IS NULL OR PShopId = @PShopId)
+                ORDER BY ShopId";
+
+            var result = await QueryAsync<ShopDto>(sql, new { PShopId = pShopId });
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢分店列表失敗: {pShopId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<SiteDto>> GetSitesAsync(string? shopId)
+    {
+        try
+        {
+            // TODO: 根據實際資料表結構實現查詢邏輯
+            const string sql = @"
+                SELECT SiteId, SiteName, ShopId
+                FROM Sites
+                WHERE (@ShopId IS NULL OR ShopId = @ShopId)
+                ORDER BY SiteId";
+
+            var result = await QueryAsync<SiteDto>(sql, new { ShopId = shopId });
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢據點列表失敗: {shopId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<VendorDto>> GetVendorsAsync()
+    {
+        try
+        {
+            // TODO: 根據實際資料表結構實現查詢邏輯
+            const string sql = @"
+                SELECT VendorId, VendorName
+                FROM Vendors
+                ORDER BY VendorId";
+
+            var result = await QueryAsync<VendorDto>(sql);
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢廠商列表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<DepartmentDto>> GetDepartmentsAsync()
+    {
+        try
+        {
+            // TODO: 根據實際資料表結構實現查詢邏輯
+            const string sql = @"
+                SELECT DeptId, DeptName
+                FROM Departments
+                ORDER BY DeptId";
+
+            var result = await QueryAsync<DepartmentDto>(sql);
+            return result.ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢部門列表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<string> CreateUserWithShopsVendorsDeptsAsync(CreateUserWithShopsVendorsDeptsDto dto)
+    {
+        try
+        {
+            // 先建立使用者基本資料
+            var userId = await CreateUserAsync(dto);
+
+            // 建立總公司/分店權限
+            if (dto.Shops != null && dto.Shops.Count > 0)
+            {
+                var shops = dto.Shops.Select(x => new UserShop
+                {
+                    UserId = userId,
+                    PShopId = x.PShopId,
+                    ShopId = x.ShopId,
+                    SiteId = x.SiteId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userShopRepository.CreateBatchAsync(shops);
+            }
+
+            // 建立廠商權限
+            if (dto.Vendors != null && dto.Vendors.Count > 0)
+            {
+                var vendors = dto.Vendors.Select(x => new UserVendor
+                {
+                    UserId = userId,
+                    VendorId = x.VendorId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userVendorRepository.CreateBatchAsync(vendors);
+            }
+
+            // 建立部門權限
+            if (dto.Departments != null && dto.Departments.Count > 0)
+            {
+                var departments = dto.Departments.Select(x => new UserDepartment
+                {
+                    UserId = userId,
+                    DeptId = x.DeptId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userDepartmentRepository.CreateBatchAsync(departments);
+            }
+
+            // 建立按鈕權限
+            if (dto.Buttons != null && dto.Buttons.Count > 0)
+            {
+                var buttons = dto.Buttons.Select(x => new UserButton
+                {
+                    UserId = userId,
+                    ButtonId = x.ButtonId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now,
+                    CreatedPriority = GetCurrentUserPriority(),
+                    CreatedGroup = GetCurrentUserGroup()
+                }).ToList();
+
+                await _userButtonRepository.CreateBatchAsync(buttons);
+            }
+
+            return userId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("新增使用者（含分店廠商部門設定）失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task UpdateUserWithShopsVendorsDeptsAsync(string userId, UpdateUserWithShopsVendorsDeptsDto dto)
+    {
+        try
+        {
+            // 先更新使用者基本資料
+            await UpdateUserAsync(userId, dto);
+
+            // 刪除舊的總公司/分店權限
+            await _userShopRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的總公司/分店權限
+            if (dto.Shops != null && dto.Shops.Count > 0)
+            {
+                var shops = dto.Shops.Select(x => new UserShop
+                {
+                    UserId = userId,
+                    PShopId = x.PShopId,
+                    ShopId = x.ShopId,
+                    SiteId = x.SiteId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userShopRepository.CreateBatchAsync(shops);
+            }
+
+            // 刪除舊的廠商權限
+            await _userVendorRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的廠商權限
+            if (dto.Vendors != null && dto.Vendors.Count > 0)
+            {
+                var vendors = dto.Vendors.Select(x => new UserVendor
+                {
+                    UserId = userId,
+                    VendorId = x.VendorId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userVendorRepository.CreateBatchAsync(vendors);
+            }
+
+            // 刪除舊的部門權限
+            await _userDepartmentRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的部門權限
+            if (dto.Departments != null && dto.Departments.Count > 0)
+            {
+                var departments = dto.Departments.Select(x => new UserDepartment
+                {
+                    UserId = userId,
+                    DeptId = x.DeptId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userDepartmentRepository.CreateBatchAsync(departments);
+            }
+
+            // 刪除舊的按鈕權限
+            await _userButtonRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的按鈕權限
+            if (dto.Buttons != null && dto.Buttons.Count > 0)
+            {
+                var buttons = dto.Buttons.Select(x => new UserButton
+                {
+                    UserId = userId,
+                    ButtonId = x.ButtonId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now,
+                    CreatedPriority = GetCurrentUserPriority(),
+                    CreatedGroup = GetCurrentUserGroup()
+                }).ToList();
+
+                await _userButtonRepository.CreateBatchAsync(buttons);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改使用者（含分店廠商部門設定）失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<ResetPasswordResultDto> ResetPasswordWithAutoAsync(string userId, ResetPasswordRequestDto dto)
+    {
+        try
+        {
+            string newPassword;
+            
+            if (dto.AutoGenerate)
+            {
+                // 自動產生密碼
+                newPassword = GenerateRandomPassword();
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(dto.NewPassword))
+                {
+                    throw new ArgumentException("新密碼不能為空");
+                }
+                newPassword = dto.NewPassword;
+            }
+
+            // 重設密碼
+            var resetPasswordDto = new ResetPasswordDto
+            {
+                NewPassword = newPassword
+            };
+            
+            await ResetPasswordAsync(userId, resetPasswordDto);
+
+            return new ResetPasswordResultDto
+            {
+                NewPassword = newPassword
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"重設密碼（含自動產生）失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    private string GenerateRandomPassword()
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+        var random = new Random();
+        var password = new string(Enumerable.Repeat(chars, 12)
+            .Select(s => s[random.Next(s.Length)]).ToArray());
+        return password;
+    }
+
+    private async Task<IEnumerable<T>> QueryAsync<T>(string sql, object? param = null)
+    {
+        using var connection = _connectionFactory.CreateConnection();
+        return await connection.QueryAsync<T>(sql, param);
     }
 }
 

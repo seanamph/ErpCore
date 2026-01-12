@@ -117,5 +117,45 @@ public interface IUserService
     /// 修改使用者（含業種儲位設定）(SYS0111)
     /// </summary>
     Task UpdateUserWithBusinessTypesAsync(string userId, UpdateUserWithBusinessTypesDto dto);
+
+    /// <summary>
+    /// 查詢總公司列表 (SYS0113)
+    /// </summary>
+    Task<List<ParentShopDto>> GetParentShopsAsync();
+
+    /// <summary>
+    /// 查詢分店列表 (SYS0113)
+    /// </summary>
+    Task<List<ShopDto>> GetShopsAsync(string? pShopId);
+
+    /// <summary>
+    /// 查詢據點列表 (SYS0113)
+    /// </summary>
+    Task<List<SiteDto>> GetSitesAsync(string? shopId);
+
+    /// <summary>
+    /// 查詢廠商列表 (SYS0113)
+    /// </summary>
+    Task<List<VendorDto>> GetVendorsAsync();
+
+    /// <summary>
+    /// 查詢部門列表 (SYS0113)
+    /// </summary>
+    Task<List<DepartmentDto>> GetDepartmentsAsync();
+
+    /// <summary>
+    /// 新增使用者（含分店廠商部門設定）(SYS0113)
+    /// </summary>
+    Task<string> CreateUserWithShopsVendorsDeptsAsync(CreateUserWithShopsVendorsDeptsDto dto);
+
+    /// <summary>
+    /// 修改使用者（含分店廠商部門設定）(SYS0113)
+    /// </summary>
+    Task UpdateUserWithShopsVendorsDeptsAsync(string userId, UpdateUserWithShopsVendorsDeptsDto dto);
+
+    /// <summary>
+    /// 重設密碼（含自動產生）(SYS0113)
+    /// </summary>
+    Task<ResetPasswordResultDto> ResetPasswordWithAutoAsync(string userId, ResetPasswordRequestDto dto);
 }
 

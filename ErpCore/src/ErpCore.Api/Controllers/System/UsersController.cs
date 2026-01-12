@@ -460,5 +460,113 @@ public class UsersController : BaseController
             await _service.UpdateUserWithBusinessTypesAsync(userId, dto);
         }, $"修改使用者（含業種儲位設定）失敗: {userId}");
     }
+
+    /// <summary>
+    /// 查詢總公司列表 (SYS0113)
+    /// </summary>
+    [HttpGet("shops/parent")]
+    public async Task<ActionResult<ApiResponse<List<ParentShopDto>>>> GetParentShops()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetParentShopsAsync();
+            return result;
+        }, "查詢總公司列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢分店列表 (SYS0113)
+    /// </summary>
+    [HttpGet("shops")]
+    public async Task<ActionResult<ApiResponse<List<ShopDto>>>> GetShops([FromQuery] string? pShopId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetShopsAsync(pShopId);
+            return result;
+        }, "查詢分店列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢據點列表 (SYS0113)
+    /// </summary>
+    [HttpGet("sites")]
+    public async Task<ActionResult<ApiResponse<List<SiteDto>>>> GetSites([FromQuery] string? shopId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSitesAsync(shopId);
+            return result;
+        }, "查詢據點列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢廠商列表 (SYS0113)
+    /// </summary>
+    [HttpGet("vendors")]
+    public async Task<ActionResult<ApiResponse<List<VendorDto>>>> GetVendors()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetVendorsAsync();
+            return result;
+        }, "查詢廠商列表失敗");
+    }
+
+    /// <summary>
+    /// 查詢部門列表 (SYS0113)
+    /// </summary>
+    [HttpGet("departments")]
+    public async Task<ActionResult<ApiResponse<List<DepartmentDto>>>> GetDepartments()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetDepartmentsAsync();
+            return result;
+        }, "查詢部門列表失敗");
+    }
+
+    /// <summary>
+    /// 新增使用者（含分店廠商部門設定）(SYS0113)
+    /// </summary>
+    [HttpPost("with-shops-vendors-depts")]
+    public async Task<ActionResult<ApiResponse<string>>> CreateUserWithShopsVendorsDepts(
+        [FromBody] CreateUserWithShopsVendorsDeptsDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.CreateUserWithShopsVendorsDeptsAsync(dto);
+            return result;
+        }, "新增使用者（含分店廠商部門設定）失敗");
+    }
+
+    /// <summary>
+    /// 修改使用者（含分店廠商部門設定）(SYS0113)
+    /// </summary>
+    [HttpPut("{userId}/with-shops-vendors-depts")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateUserWithShopsVendorsDepts(
+        string userId,
+        [FromBody] UpdateUserWithShopsVendorsDeptsDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.UpdateUserWithShopsVendorsDeptsAsync(userId, dto);
+        }, $"修改使用者（含分店廠商部門設定）失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 重設密碼（含自動產生）(SYS0113)
+    /// </summary>
+    [HttpPost("{userId}/reset-password-auto")]
+    public async Task<ActionResult<ApiResponse<ResetPasswordResultDto>>> ResetPasswordWithAuto(
+        string userId,
+        [FromBody] ResetPasswordRequestDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.ResetPasswordWithAutoAsync(userId, dto);
+            return result;
+        }, $"重設密碼失敗: {userId}");
+    }
 }
 
