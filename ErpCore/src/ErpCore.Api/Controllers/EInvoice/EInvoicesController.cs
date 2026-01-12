@@ -171,6 +171,24 @@ public class EInvoicesController : BaseController
     }
 
     /// <summary>
+    /// 下載上傳檔案 (ECA2050)
+    /// </summary>
+    [HttpGet("uploads/{uploadId}/download")]
+    public async Task<IActionResult> DownloadUpload(long uploadId)
+    {
+        try
+        {
+            var (fileBytes, fileName, contentType) = await _service.DownloadUploadFileAsync(uploadId);
+            return File(fileBytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"下載上傳檔案失敗: {uploadId}", ex);
+            return BadRequest(ApiResponse<object>.Fail($"下載上傳檔案失敗: {ex.Message}"));
+        }
+    }
+
+    /// <summary>
     /// 查詢電子發票報表 (ECA3040, ECA4010-ECA4060)
     /// </summary>
     [HttpPost("reports")]

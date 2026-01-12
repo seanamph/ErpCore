@@ -38,5 +38,10 @@ public interface IEInvoiceService
     /// 匯出電子發票報表到 PDF
     /// </summary>
     Task<byte[]> ExportEInvoiceReportsToPdfAsync(EInvoiceReportQueryDto query);
+    
+    /// <summary>
+    /// 下載上傳檔案 (ECA2050)
+    /// </summary>
+    Task<(byte[] fileBytes, string fileName, string contentType)> DownloadUploadFileAsync(long uploadId);
 }
 

@@ -178,6 +178,12 @@ const routes = [
         meta: { title: '電子發票上傳作業 (ECA3030)' }
       },
       {
+        path: 'upload-2050',
+        name: 'ECA2050Upload',
+        component: () => import('../views/EInvoice/ECA2050Upload.vue'),
+        meta: { title: '電子發票上傳作業 (ECA2050)' }
+      },
+      {
         path: 'report',
         name: 'EInvoiceReport',
         component: () => import('../views/EInvoice/EInvoiceReport.vue'),
@@ -206,6 +212,12 @@ const routes = [
         name: 'AnalysisReportQuery',
         component: () => import('../views/AnalysisReport/AnalysisReportQuery.vue'),
         meta: { title: '進銷存分析報表 (SYSA1000)' }
+      },
+      {
+        path: 'consumable-label-print',
+        name: 'ConsumableLabelPrint',
+        component: () => import('../views/AnalysisReport/ConsumableLabelPrint.vue'),
+        meta: { title: '耗材標籤列印作業 (SYSA254)' }
       }
     ]
   },

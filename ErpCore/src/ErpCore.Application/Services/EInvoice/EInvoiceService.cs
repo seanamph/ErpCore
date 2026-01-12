@@ -573,6 +573,52 @@ public class EInvoiceService : BaseService, IEInvoiceService
         }
     }
 
+    public async Task<(byte[] fileBytes, string fileName, string contentType)> DownloadUploadFileAsync(long uploadId)
+    {
+        try
+        {
+            var upload = await _repository.GetUploadByIdAsync(uploadId);
+            if (upload == null)
+            {
+                throw new InvalidOperationException($"上傳記錄不存在: {uploadId}");
+            }
+
+            var filePath = GetUploadFilePath(uploadId, upload.FileName);
+            
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"上傳的檔案不存在: {filePath}");
+            }
+
+            var fileBytes = await File.ReadAllBytesAsync(filePath);
+            var contentType = GetContentType(upload.FileName);
+
+            _logger.LogInfo($"下載上傳檔案成功: UploadId: {uploadId}, FileName: {upload.FileName}");
+
+            return (fileBytes, upload.FileName, contentType);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"下載上傳檔案失敗: {uploadId}", ex);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// 取得檔案內容類型
+    /// </summary>
+    private string GetContentType(string fileName)
+    {
+        var extension = Path.GetExtension(fileName).ToLower();
+        return extension switch
+        {
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".xls" => "application/vnd.ms-excel",
+            ".xml" => "text/xml",
+            _ => "application/octet-stream"
+        };
+    }
+
     public async Task<PagedResult<EInvoiceReportDto>> GetEInvoiceReportsAsync(EInvoiceReportQueryDto query)
     {
         try

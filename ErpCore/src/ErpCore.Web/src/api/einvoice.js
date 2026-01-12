@@ -39,6 +39,13 @@ export const einvoiceApi = {
     return axios.delete(`/einvoices/uploads/${uploadId}`)
   },
 
+  // 下載上傳檔案 (ECA2050)
+  downloadUpload: (uploadId) => {
+    return axios.get(`/einvoices/uploads/${uploadId}/download`, {
+      responseType: 'blob'
+    })
+  },
+
   // 查詢電子發票列表
   getEInvoices: (params) => {
     return axios.get('/einvoices', { params })
