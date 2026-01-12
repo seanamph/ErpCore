@@ -318,6 +318,7 @@ try
     builder.Services.AddScoped<ErpCore.Application.Services.System.IMenuService, ErpCore.Application.Services.System.MenuService>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.System.IMenuRepository, ErpCore.Infrastructure.Repositories.System.MenuRepository>();
     builder.Services.AddScoped<IUserService, UserService>();
+    builder.Services.AddScoped<IActiveDirectoryService, ActiveDirectoryService>();
     builder.Services.AddScoped<IUserAgentService, UserAgentService>();
     builder.Services.AddScoped<IRoleService, RoleService>();
     builder.Services.AddScoped<IUserRoleService, UserRoleService>();

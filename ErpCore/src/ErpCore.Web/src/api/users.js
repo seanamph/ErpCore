@@ -388,3 +388,58 @@ export function resetPasswordWithAuto(userId, data) {
   })
 }
 
+// ========== SYS0114 相關 API ==========
+
+/**
+ * 查詢使用者詳細資料（含AD和組織）(SYS0114)
+ */
+export function getUserDetailWithAdOrgs(userId) {
+  return request({
+    url: `/api/v1/users/${userId}/detail-ad-orgs`,
+    method: 'get'
+  })
+}
+
+/**
+ * 查詢組織列表 (SYS0114)
+ */
+export function getOrganizations() {
+  return request({
+    url: '/api/v1/users/organizations',
+    method: 'get'
+  })
+}
+
+/**
+ * 新增使用者（含AD和組織設定）(SYS0114)
+ */
+export function createUserWithAdOrgs(data) {
+  return request({
+    url: '/api/v1/users/with-ad-orgs',
+    method: 'post',
+    data
+  })
+}
+
+/**
+ * 修改使用者（含AD和組織設定）(SYS0114)
+ */
+export function updateUserWithAdOrgs(userId, data) {
+  return request({
+    url: `/api/v1/users/${userId}/with-ad-orgs`,
+    method: 'put',
+    data
+  })
+}
+
+/**
+ * 驗證Active Directory使用者 (SYS0114)
+ */
+export function validateAdUser(data) {
+  return request({
+    url: '/api/v1/users/validate-ad-user',
+    method: 'post',
+    data
+  })
+}
+

@@ -568,5 +568,75 @@ public class UsersController : BaseController
             return result;
         }, $"重設密碼失敗: {userId}");
     }
+
+    // ========== SYS0114 相關 API ==========
+
+    /// <summary>
+    /// 查詢使用者詳細資料（含AD和組織）(SYS0114)
+    /// </summary>
+    [HttpGet("{userId}/detail-ad-orgs")]
+    public async Task<ActionResult<ApiResponse<UserDetailWithAdOrgsDto>>> GetUserDetailWithAdOrgs(string userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserDetailWithAdOrgsAsync(userId);
+            return result;
+        }, $"查詢使用者詳細資料（含AD和組織）失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 查詢組織列表 (SYS0114)
+    /// </summary>
+    [HttpGet("organizations")]
+    public async Task<ActionResult<ApiResponse<List<OrganizationDto>>>> GetOrganizations()
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetOrganizationsAsync();
+            return result;
+        }, "查詢組織列表失敗");
+    }
+
+    /// <summary>
+    /// 新增使用者（含AD和組織設定）(SYS0114)
+    /// </summary>
+    [HttpPost("with-ad-orgs")]
+    public async Task<ActionResult<ApiResponse<string>>> CreateUserWithAdOrgs(
+        [FromBody] CreateUserWithAdOrgsDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.CreateUserWithAdOrgsAsync(dto);
+            return result;
+        }, "新增使用者（含AD和組織設定）失敗");
+    }
+
+    /// <summary>
+    /// 修改使用者（含AD和組織設定）(SYS0114)
+    /// </summary>
+    [HttpPut("{userId}/with-ad-orgs")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateUserWithAdOrgs(
+        string userId,
+        [FromBody] UpdateUserWithAdOrgsDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.UpdateUserWithAdOrgsAsync(userId, dto);
+        }, $"修改使用者（含AD和組織設定）失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 驗證Active Directory使用者 (SYS0114)
+    /// </summary>
+    [HttpPost("validate-ad-user")]
+    public async Task<ActionResult<ApiResponse<ValidateAdUserResultDto>>> ValidateAdUser(
+        [FromBody] ValidateAdUserDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.ValidateAdUserAsync(dto);
+            return result;
+        }, "驗證 Active Directory 使用者失敗");
+    }
 }
 

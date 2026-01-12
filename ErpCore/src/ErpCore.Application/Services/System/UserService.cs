@@ -25,6 +25,8 @@ public class UserService : BaseService, IUserService
     private readonly IUserVendorRepository _userVendorRepository;
     private readonly IUserDepartmentRepository _userDepartmentRepository;
     private readonly IUserButtonRepository _userButtonRepository;
+    private readonly IUserOrganizationRepository _userOrganizationRepository;
+    private readonly IActiveDirectoryService _activeDirectoryService;
 
     public UserService(
         IUserRepository repository,
@@ -38,7 +40,9 @@ public class UserService : BaseService, IUserService
         IUserShopRepository userShopRepository,
         IUserVendorRepository userVendorRepository,
         IUserDepartmentRepository userDepartmentRepository,
-        IUserButtonRepository userButtonRepository) : base(logger, userContext)
+        IUserButtonRepository userButtonRepository,
+        IUserOrganizationRepository userOrganizationRepository,
+        IActiveDirectoryService activeDirectoryService) : base(logger, userContext)
     {
         _repository = repository;
         _connectionFactory = connectionFactory;
@@ -50,6 +54,8 @@ public class UserService : BaseService, IUserService
         _userVendorRepository = userVendorRepository;
         _userDepartmentRepository = userDepartmentRepository;
         _userButtonRepository = userButtonRepository;
+        _userOrganizationRepository = userOrganizationRepository;
+        _activeDirectoryService = activeDirectoryService;
     }
 
     public async Task<PagedResult<UserDto>> GetUsersAsync(UserQueryDto query)
@@ -103,7 +109,10 @@ public class UserService : BaseService, IUserService
                 CreatedBy = x.CreatedBy,
                 CreatedAt = x.CreatedAt,
                 UpdatedBy = x.UpdatedBy,
-                UpdatedAt = x.UpdatedAt
+                UpdatedAt = x.UpdatedAt,
+                UseActiveDirectory = x.UseActiveDirectory,
+                AdDomain = x.AdDomain,
+                AdUserPrincipalName = x.AdUserPrincipalName
             }).ToList();
 
             return new PagedResult<UserDto>
@@ -155,7 +164,10 @@ public class UserService : BaseService, IUserService
                 CreatedBy = entity.CreatedBy,
                 CreatedAt = entity.CreatedAt,
                 UpdatedBy = entity.UpdatedBy,
-                UpdatedAt = entity.UpdatedAt
+                UpdatedAt = entity.UpdatedAt,
+                UseActiveDirectory = entity.UseActiveDirectory,
+                AdDomain = entity.AdDomain,
+                AdUserPrincipalName = entity.AdUserPrincipalName
             };
         }
         catch (Exception ex)
@@ -1308,6 +1320,294 @@ public class UserService : BaseService, IUserService
     {
         using var connection = _connectionFactory.CreateConnection();
         return await connection.QueryAsync<T>(sql, param);
+    }
+
+    // ========== SYS0114 相關方法 ==========
+
+    public async Task<UserDetailWithAdOrgsDto> GetUserDetailWithAdOrgsAsync(string userId)
+    {
+        try
+        {
+            var user = await _repository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 取得使用者詳細資料（含業種儲位等）
+            var userDetail = await GetUserDetailAsync(userId);
+
+            // 取得組織權限
+            var organizations = await _userOrganizationRepository.GetByUserIdAsync(userId);
+            var orgDtos = organizations.Select(x => new UserOrganizationDto
+            {
+                Id = x.Id,
+                UserId = x.UserId,
+                OrgId = x.OrgId
+            }).ToList();
+
+            // 查詢組織名稱
+            foreach (var org in orgDtos)
+            {
+                var orgInfoList = await QueryAsync<dynamic>(
+                    "SELECT OrgName FROM Organizations WHERE OrgId = @OrgId",
+                    new { OrgId = org.OrgId }
+                );
+                var orgInfo = orgInfoList.FirstOrDefault();
+                if (orgInfo != null)
+                {
+                    org.OrgName = orgInfo.OrgName;
+                }
+            }
+
+            return new UserDetailWithAdOrgsDto
+            {
+                UserId = userDetail.UserId,
+                UserName = userDetail.UserName,
+                Title = userDetail.Title,
+                OrgId = userDetail.OrgId,
+                StartDate = userDetail.StartDate,
+                EndDate = userDetail.EndDate,
+                Status = userDetail.Status,
+                UserType = userDetail.UserType,
+                Notes = userDetail.Notes,
+                UserPriority = userDetail.UserPriority,
+                ShopId = userDetail.ShopId,
+                BusinessTypes = userDetail.BusinessTypes,
+                WarehouseAreas = userDetail.WarehouseAreas,
+                Stores = userDetail.Stores,
+                Shops = userDetail.Shops,
+                Vendors = userDetail.Vendors,
+                Departments = userDetail.Departments,
+                Buttons = userDetail.Buttons,
+                UseActiveDirectory = user.UseActiveDirectory,
+                AdDomain = user.AdDomain,
+                AdUserPrincipalName = user.AdUserPrincipalName,
+                Organizations = orgDtos
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者詳細資料（含AD和組織）失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<OrganizationDto>> GetOrganizationsAsync()
+    {
+        try
+        {
+            var organizations = await QueryAsync<dynamic>(
+                "SELECT OrgId, OrgName FROM Organizations ORDER BY OrgId"
+            );
+
+            return organizations.Select(x => new OrganizationDto
+            {
+                OrgId = x.OrgId,
+                OrgName = x.OrgName
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢組織列表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<string> CreateUserWithAdOrgsAsync(CreateUserWithAdOrgsDto dto)
+    {
+        try
+        {
+            // 如果使用 AD，驗證 AD 使用者
+            if (dto.UseActiveDirectory)
+            {
+                if (string.IsNullOrWhiteSpace(dto.AdDomain) || string.IsNullOrWhiteSpace(dto.AdUserPrincipalName))
+                {
+                    throw new ArgumentException("使用 Active Directory 時，必須提供 AD 網域和使用者主體名稱");
+                }
+
+                var adUserInfo = await _activeDirectoryService.ValidateUserAsync(dto.AdDomain, dto.AdUserPrincipalName);
+                if (!adUserInfo.Exists)
+                {
+                    throw new InvalidOperationException("Active Directory 使用者不存在");
+                }
+            }
+
+            // 建立使用者基本資料
+            var createUserDto = new CreateUserDto
+            {
+                UserId = dto.UserId,
+                UserName = dto.UserName,
+                UserPassword = dto.UseActiveDirectory ? null : dto.UserPassword, // 使用 AD 時不設定密碼
+                Title = dto.Title,
+                OrgId = dto.OrgId,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status,
+                UserType = dto.UserType,
+                Notes = dto.Notes,
+                UserPriority = dto.UserPriority,
+                ShopId = dto.ShopId,
+                FloorId = dto.FloorId,
+                AreaId = dto.AreaId,
+                BtypeId = dto.BtypeId,
+                StoreId = dto.StoreId
+            };
+
+            var userId = await CreateUserAsync(createUserDto);
+
+            // 更新 AD 相關欄位
+            var user = await _repository.GetByIdAsync(userId);
+            if (user != null)
+            {
+                user.UseActiveDirectory = dto.UseActiveDirectory;
+                user.AdDomain = dto.AdDomain;
+                user.AdUserPrincipalName = dto.AdUserPrincipalName;
+                user.UpdatedBy = GetCurrentUserId();
+                user.UpdatedAt = DateTime.Now;
+                await _repository.UpdateAsync(user);
+            }
+
+            // 建立組織權限
+            if (dto.Organizations != null && dto.Organizations.Count > 0)
+            {
+                var organizations = dto.Organizations.Select(x => new UserOrganization
+                {
+                    UserId = userId,
+                    OrgId = x.OrgId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userOrganizationRepository.CreateBatchAsync(organizations);
+            }
+
+            return userId;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增使用者（含AD和組織設定）失敗: {dto.UserId}", ex);
+            throw;
+        }
+    }
+
+    public async Task UpdateUserWithAdOrgsAsync(string userId, UpdateUserWithAdOrgsDto dto)
+    {
+        try
+        {
+            // 檢查是否存在
+            var entity = await _repository.GetByIdAsync(userId);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            // 如果使用 AD，驗證 AD 使用者
+            if (dto.UseActiveDirectory)
+            {
+                if (string.IsNullOrWhiteSpace(dto.AdDomain) || string.IsNullOrWhiteSpace(dto.AdUserPrincipalName))
+                {
+                    throw new ArgumentException("使用 Active Directory 時，必須提供 AD 網域和使用者主體名稱");
+                }
+
+                var adUserInfo = await _activeDirectoryService.ValidateUserAsync(dto.AdDomain, dto.AdUserPrincipalName);
+                if (!adUserInfo.Exists)
+                {
+                    throw new InvalidOperationException("Active Directory 使用者不存在");
+                }
+            }
+
+            // 更新使用者基本資料
+            var updateUserDto = new UpdateUserDto
+            {
+                UserName = dto.UserName,
+                Title = dto.Title,
+                OrgId = dto.OrgId,
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                Status = dto.Status,
+                UserType = dto.UserType,
+                Notes = dto.Notes,
+                UserPriority = dto.UserPriority,
+                ShopId = dto.ShopId,
+                FloorId = dto.FloorId,
+                AreaId = dto.AreaId,
+                BtypeId = dto.BtypeId,
+                StoreId = dto.StoreId
+            };
+
+            await UpdateUserAsync(userId, updateUserDto);
+
+            // 更新 AD 相關欄位
+            entity.UseActiveDirectory = dto.UseActiveDirectory;
+            entity.AdDomain = dto.AdDomain;
+            entity.AdUserPrincipalName = dto.AdUserPrincipalName;
+            entity.UpdatedBy = GetCurrentUserId();
+            entity.UpdatedAt = DateTime.Now;
+            await _repository.UpdateAsync(entity);
+
+            // 刪除舊的業種權限
+            await _userBusinessTypeRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的業種權限
+            if (dto.BusinessTypes != null && dto.BusinessTypes.Count > 0)
+            {
+                var businessTypes = dto.BusinessTypes.Select(x => new UserBusinessType
+                {
+                    UserId = userId,
+                    BtypeMId = x.BtypeMId,
+                    BtypeId = x.BtypeId,
+                    PtypeId = x.PtypeId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userBusinessTypeRepository.CreateBatchAsync(businessTypes);
+            }
+
+            // 刪除舊的組織權限
+            await _userOrganizationRepository.DeleteByUserIdAsync(userId);
+
+            // 建立新的組織權限
+            if (dto.Organizations != null && dto.Organizations.Count > 0)
+            {
+                var organizations = dto.Organizations.Select(x => new UserOrganization
+                {
+                    UserId = userId,
+                    OrgId = x.OrgId,
+                    CreatedBy = GetCurrentUserId(),
+                    CreatedAt = DateTime.Now
+                }).ToList();
+
+                await _userOrganizationRepository.CreateBatchAsync(organizations);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改使用者（含AD和組織設定）失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<ValidateAdUserResultDto> ValidateAdUserAsync(ValidateAdUserDto dto)
+    {
+        try
+        {
+            var adUserInfo = await _activeDirectoryService.ValidateUserAsync(dto.AdDomain, dto.AdUserPrincipalName);
+
+            return new ValidateAdUserResultDto
+            {
+                Exists = adUserInfo.Exists,
+                UserName = adUserInfo.UserName,
+                Email = adUserInfo.Email,
+                DisplayName = adUserInfo.DisplayName
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"驗證 Active Directory 使用者失敗: {dto.AdDomain}\\{dto.AdUserPrincipalName}", ex);
+            throw;
+        }
     }
 }
 

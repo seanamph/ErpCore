@@ -134,5 +134,20 @@ public class User
     /// 建立者群組
     /// </summary>
     public string? CreatedGroup { get; set; }
+
+    /// <summary>
+    /// 是否使用Active Directory (SYS0114)
+    /// </summary>
+    public bool UseActiveDirectory { get; set; }
+
+    /// <summary>
+    /// AD網域 (SYS0114)
+    /// </summary>
+    public string? AdDomain { get; set; }
+
+    /// <summary>
+    /// AD使用者主體名稱 (SYS0114)
+    /// </summary>
+    public string? AdUserPrincipalName { get; set; }
 }
 

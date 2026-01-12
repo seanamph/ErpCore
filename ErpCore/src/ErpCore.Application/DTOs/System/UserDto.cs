@@ -28,6 +28,21 @@ public class UserDto
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; }
+    
+    /// <summary>
+    /// 是否使用Active Directory (SYS0114)
+    /// </summary>
+    public bool UseActiveDirectory { get; set; }
+    
+    /// <summary>
+    /// AD網域 (SYS0114)
+    /// </summary>
+    public string? AdDomain { get; set; }
+    
+    /// <summary>
+    /// AD使用者主體名稱 (SYS0114)
+    /// </summary>
+    public string? AdUserPrincipalName { get; set; }
 }
 
 /// <summary>
@@ -169,5 +184,88 @@ public class ResetPasswordDto
 public class UpdateStatusDto
 {
     public string Status { get; set; } = string.Empty; // A:啟用, I:停用, L:鎖定
+}
+
+/// <summary>
+/// 使用者組織權限 DTO (SYS0114)
+/// </summary>
+public class UserOrganizationDto
+{
+    public long Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
+    public string OrgId { get; set; } = string.Empty;
+    public string? OrgName { get; set; }
+}
+
+/// <summary>
+/// 新增使用者組織權限 DTO (SYS0114)
+/// </summary>
+public class CreateUserOrganizationDto
+{
+    public string OrgId { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 新增使用者（含AD和組織設定）DTO (SYS0114)
+/// </summary>
+public class CreateUserWithAdOrgsDto : CreateUserDto
+{
+    public bool UseActiveDirectory { get; set; }
+    public string? AdDomain { get; set; }
+    public string? AdUserPrincipalName { get; set; }
+    public List<CreateUserBusinessTypeDto> BusinessTypes { get; set; } = new();
+    public List<CreateUserOrganizationDto> Organizations { get; set; } = new();
+}
+
+/// <summary>
+/// 修改使用者（含AD和組織設定）DTO (SYS0114)
+/// </summary>
+public class UpdateUserWithAdOrgsDto : UpdateUserDto
+{
+    public bool UseActiveDirectory { get; set; }
+    public string? AdDomain { get; set; }
+    public string? AdUserPrincipalName { get; set; }
+    public List<CreateUserBusinessTypeDto> BusinessTypes { get; set; } = new();
+    public List<CreateUserOrganizationDto> Organizations { get; set; } = new();
+}
+
+/// <summary>
+/// 使用者詳細資料（含AD和組織）DTO (SYS0114)
+/// </summary>
+public class UserDetailWithAdOrgsDto : UserDetailDto
+{
+    public bool UseActiveDirectory { get; set; }
+    public string? AdDomain { get; set; }
+    public string? AdUserPrincipalName { get; set; }
+    public List<UserOrganizationDto> Organizations { get; set; } = new();
+}
+
+/// <summary>
+/// 驗證Active Directory使用者請求 DTO (SYS0114)
+/// </summary>
+public class ValidateAdUserDto
+{
+    public string AdDomain { get; set; } = string.Empty;
+    public string AdUserPrincipalName { get; set; } = string.Empty;
+}
+
+/// <summary>
+/// 驗證Active Directory使用者回應 DTO (SYS0114)
+/// </summary>
+public class ValidateAdUserResultDto
+{
+    public bool Exists { get; set; }
+    public string? UserName { get; set; }
+    public string? Email { get; set; }
+    public string? DisplayName { get; set; }
+}
+
+/// <summary>
+/// 組織 DTO (SYS0114)
+/// </summary>
+public class OrganizationDto
+{
+    public string OrgId { get; set; } = string.Empty;
+    public string OrgName { get; set; } = string.Empty;
 }
 

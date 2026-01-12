@@ -157,5 +157,30 @@ public interface IUserService
     /// 重設密碼（含自動產生）(SYS0113)
     /// </summary>
     Task<ResetPasswordResultDto> ResetPasswordWithAutoAsync(string userId, ResetPasswordRequestDto dto);
+
+    /// <summary>
+    /// 查詢使用者詳細資料（含AD和組織）(SYS0114)
+    /// </summary>
+    Task<UserDetailWithAdOrgsDto> GetUserDetailWithAdOrgsAsync(string userId);
+
+    /// <summary>
+    /// 查詢組織列表 (SYS0114)
+    /// </summary>
+    Task<List<OrganizationDto>> GetOrganizationsAsync();
+
+    /// <summary>
+    /// 新增使用者（含AD和組織設定）(SYS0114)
+    /// </summary>
+    Task<string> CreateUserWithAdOrgsAsync(CreateUserWithAdOrgsDto dto);
+
+    /// <summary>
+    /// 修改使用者（含AD和組織設定）(SYS0114)
+    /// </summary>
+    Task UpdateUserWithAdOrgsAsync(string userId, UpdateUserWithAdOrgsDto dto);
+
+    /// <summary>
+    /// 驗證Active Directory使用者 (SYS0114)
+    /// </summary>
+    Task<ValidateAdUserResultDto> ValidateAdUserAsync(ValidateAdUserDto dto);
 }
 
