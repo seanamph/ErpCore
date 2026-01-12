@@ -31,6 +31,8 @@
           <el-button type="primary" @click="handleSearch">查詢</el-button>
           <el-button @click="handleReset">重置</el-button>
           <el-button type="success" @click="handleCreate">新增</el-button>
+          <el-button type="info" @click="handleCreateFromPending">從待驗退調撥單建立</el-button>
+          <el-button type="info" @click="handleCreateFromTransfer">依調撥單號建立</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -205,6 +207,28 @@ export default {
     const isEdit = ref(false)
     const formRef = ref(null)
     const tableData = ref([])
+    
+    // 待驗退調撥單選擇對話框
+    const pendingTransferDialogVisible = ref(false)
+    const pendingTransferLoading = ref(false)
+    const pendingTransferTableData = ref([])
+    const selectedPendingTransfer = ref(null)
+    
+    // 待驗退調撥單查詢表單
+    const pendingTransferQueryForm = reactive({
+      TransferId: '',
+      FromShopId: '',
+      ToShopId: '',
+      PageIndex: 1,
+      PageSize: 20
+    })
+    
+    // 待驗退調撥單分頁資訊
+    const pendingTransferPagination = reactive({
+      PageIndex: 1,
+      PageSize: 20,
+      TotalCount: 0
+    })
 
     // 查詢表單
     const queryForm = reactive({
@@ -490,6 +514,12 @@ export default {
       formData,
       formRules,
       dialogTitle,
+      pendingTransferDialogVisible,
+      pendingTransferLoading,
+      pendingTransferTableData,
+      selectedPendingTransfer,
+      pendingTransferQueryForm,
+      pendingTransferPagination,
       calculateTotal,
       formatDate,
       formatCurrency,
@@ -505,7 +535,16 @@ export default {
       handleDelete,
       handleSubmit,
       handleSizeChange,
-      handlePageChange
+      handlePageChange,
+      handleCreateFromPending,
+      loadPendingTransfers,
+      handlePendingTransferSearch,
+      handlePendingTransferReset,
+      handlePendingTransferSelect,
+      handlePendingTransferConfirm,
+      handlePendingTransferSizeChange,
+      handlePendingTransferPageChange,
+      handleCreateFromTransfer
     }
   }
 }

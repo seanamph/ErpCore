@@ -10,7 +10,7 @@ namespace ErpCore.Api.Controllers.Transfer;
 /// <summary>
 /// 調撥單驗退作業控制器 (SYSW362)
 /// </summary>
-[Route("api/v1/transfer-return")]
+[Route("api/v1/transfer-returns")]
 public class TransferReturnController : BaseController
 {
     private readonly ITransferReturnService _service;

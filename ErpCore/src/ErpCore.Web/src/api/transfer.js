@@ -58,47 +58,47 @@ export const transferReceiptApi = {
 export const transferReturnApi = {
   // 查詢待驗退調撥單列表
   getPendingTransfers: (params) => {
-    return axios.get('/transfer-return/pending-transfers', { params })
+    return axios.get('/transfer-returns/pending-transfers', { params })
   },
 
   // 查詢驗退單列表
   getTransferReturns: (params) => {
-    return axios.get('/transfer-return', { params })
+    return axios.get('/transfer-returns', { params })
   },
 
   // 查詢單筆驗退單
   getTransferReturn: (returnId) => {
-    return axios.get(`/transfer-return/${returnId}`)
+    return axios.get(`/transfer-returns/${returnId}`)
   },
 
   // 依調撥單號建立驗退單
   createReturnFromTransfer: (transferId) => {
-    return axios.post(`/transfer-return/from-transfer/${transferId}`)
+    return axios.post(`/transfer-returns/from-transfer/${transferId}`)
   },
 
   // 新增驗退單
   createTransferReturn: (data) => {
-    return axios.post('/transfer-return', data)
+    return axios.post('/transfer-returns', data)
   },
 
   // 修改驗退單
   updateTransferReturn: (returnId, data) => {
-    return axios.put(`/transfer-return/${returnId}`, data)
+    return axios.put(`/transfer-returns/${returnId}`, data)
   },
 
   // 刪除驗退單
   deleteTransferReturn: (returnId) => {
-    return axios.delete(`/transfer-return/${returnId}`)
+    return axios.delete(`/transfer-returns/${returnId}`)
   },
 
   // 確認驗退
   confirmReturn: (returnId) => {
-    return axios.post(`/transfer-return/${returnId}/confirm`)
+    return axios.post(`/transfer-returns/${returnId}/confirm`)
   },
 
   // 取消驗退單
   cancelTransferReturn: (returnId) => {
-    return axios.post(`/transfer-return/${returnId}/cancel`)
+    return axios.post(`/transfer-returns/${returnId}/cancel`)
   }
 }
 
