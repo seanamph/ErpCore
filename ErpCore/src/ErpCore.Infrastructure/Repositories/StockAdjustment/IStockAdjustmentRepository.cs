@@ -1,3 +1,4 @@
+using System.Data;
 using ErpCore.Domain.Entities.StockAdjustment;
 
 namespace ErpCore.Infrastructure.Repositories.StockAdjustment;
@@ -15,7 +16,7 @@ public interface IStockAdjustmentRepository
     Task<string> CreateAsync(InventoryAdjustment entity, List<InventoryAdjustmentDetail> details);
     Task UpdateAsync(InventoryAdjustment entity, List<InventoryAdjustmentDetail> details);
     Task DeleteAsync(string adjustmentId);
-    Task UpdateStatusAsync(string adjustmentId, string status, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string adjustmentId, string status, IDbTransaction? transaction = null);
     Task<string> GenerateAdjustmentIdAsync();
     Task<IEnumerable<AdjustmentReason>> GetAdjustmentReasonsAsync();
 }

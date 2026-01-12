@@ -304,7 +304,7 @@ public class StockAdjustmentRepository : BaseRepository, IStockAdjustmentReposit
         }
     }
 
-    public async Task UpdateStatusAsync(string adjustmentId, string status, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string adjustmentId, string status, IDbTransaction? transaction = null)
     {
         try
         {
@@ -357,7 +357,7 @@ public class StockAdjustmentRepository : BaseRepository, IStockAdjustmentReposit
     /// <summary>
     /// 產生調整單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateAdjustmentIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateAdjustmentIdAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 AdjustmentId 

@@ -7,6 +7,7 @@ using ErpCore.Infrastructure.Repositories.Inventory;
 using ErpCore.Infrastructure.Repositories.StockAdjustment;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using ErpCore.Application.Common;
 
 namespace ErpCore.Application.Services.StockAdjustment;
 
@@ -23,7 +24,8 @@ public class StockAdjustmentService : BaseService, IStockAdjustmentService
         IStockAdjustmentRepository repository,
         IStockRepository stockRepository,
         IDbConnectionFactory connectionFactory,
-        ILoggerService logger) : base(logger)
+        ILoggerService logger,
+        IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
         _stockRepository = stockRepository;
