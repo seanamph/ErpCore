@@ -3,20 +3,20 @@
 ## 目前進度重點（最新更新：2025-01-27）
 
 ### 📝 本次更新（2025-01-27）
-- ✅ **SYSW362 功能完整實現**：已完成調撥單驗退作業功能（後端+前端）
+- ✅ **SYSW384 功能完整實現**：已完成調撥短溢維護作業功能（後端+前端）
   - 實現內容：
-    - ✅ Entity 層: `TransferReturn` 和 `TransferReturnDetail` 實體已完整實現
-    - ✅ Repository 層: `TransferReturnRepository` 和對應的介面已完整實現
-    - ✅ Service 層: `TransferReturnService` 已完整實現（包含庫存更新邏輯：調入庫減少、調出庫增加）
-    - ✅ Controller 層: `TransferReturnController` 已完整實現所有 SYSW362 相關 API 端點（路徑：`/api/v1/transfer-returns`）
-    - ✅ DTO 層: 所有 SYSW362 相關 DTO 已完整實現
-    - ✅ API 整合: 在 `transfer.js` 中新增 `transferReturnApi` API 方法
-    - ✅ SQL 腳本: `CreateTransferReturnTables.sql` 已完整實現
-    - ✅ **前端 Vue 頁面**: `Return.vue` 已完整實現（包含從待驗退調撥單建立和依調撥單號建立功能）
-    - ✅ 路由配置: 在 `router/index.js` 中已配置 SYSW362 路由
-  - 功能狀態：SYSW362 前後端已完整實現 ✨
-  - 開發依據：`開發計劃/05-調撥管理/SYSW362-調撥單驗退作業.md`
-  - Git 提交：已提交並推送到遠端倉庫（commit: 1006e94）
+    - ✅ Entity 層: `TransferShortage` 和 `TransferShortageDetail` 實體已完整實現
+    - ✅ Repository 層: `ITransferShortageRepository` 和 `TransferShortageRepository` 已完整實現
+    - ✅ Service 層: `ITransferShortageService` 和 `TransferShortageService` 已完整實現（包含庫存更新邏輯：短少時調入庫減少、調出庫增加；溢收時調入庫增加、調出庫減少）
+    - ✅ Controller 層: `TransferShortagesController` 已完整實現所有 SYSW384 相關 API 端點（路徑：`/api/v1/transfer-shortages`）
+    - ✅ DTO 層: 所有 SYSW384 相關 DTO 已完整實現
+    - ✅ API 整合: 在 `transfer.js` 中新增 `transferShortageApi` API 方法
+    - ✅ SQL 腳本: `CreateTransferShortageTables.sql` 已完整實現
+    - ✅ **前端 Vue 頁面**: `Shortage.vue` 已完整實現（包含查詢、新增、修改、刪除、審核、處理功能）
+    - ✅ 路由配置: 在 `router/index.js` 中已配置 SYSW384 路由
+  - 功能狀態：SYSW384 前後端已完整實現 ✨
+  - 開發依據：`開發計劃/05-調撥管理/SYSW384-調撥短溢維護作業.md`
+  - Git 提交：已提交並推送到遠端倉庫（commit: 70c66ea）
   - 注意：專案存在既有的編譯錯誤（命名空間引用、編碼問題），與新功能無關
 
 ### ⚠️ 已知問題
@@ -25,13 +25,13 @@
 
 ### 🎯 下一步建議
 1. **選擇新功能開發**：從 `開發計劃/` 目錄選擇一個新功能進行開發
-   - 建議：繼續開發其他調撥管理相關功能（SYSW384 調撥短溢維護作業）或其他系統管理功能
-2. **功能測試**：對 SYSW362 功能進行完整測試，確保功能正常運作
-   - 測試待驗退調撥單查詢功能
-   - 測試新增調撥驗退單功能
-   - 測試確認驗退流程（庫存更新：調入庫減少、調出庫增加）
-   - 測試調撥單已退數量更新邏輯
-   - 測試取消驗退回退邏輯
+   - 建議：繼續開發其他調撥管理相關功能或其他系統管理功能
+2. **功能測試**：對 SYSW384 功能進行完整測試，確保功能正常運作
+   - 測試短溢單查詢功能
+   - 測試新增短溢單功能
+   - 測試審核流程
+   - 測試處理流程（調整庫存：短少時調入庫減少、調出庫增加；溢收時調入庫增加、調出庫減少）
+   - 測試修改、刪除功能
 3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤（命名空間引用問題、編碼問題）
 
 ---
@@ -72,6 +72,6 @@
 - **npm build**：專案存在一些既有檔案的編譯錯誤（與新功能無關）
 
 ### 🎯 下一步建議
-1. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他調撥管理相關功能（SYSW384 調撥短溢維護作業）或其他系統管理功能）
-2. **功能測試**：對 SYSW362 功能進行完整測試，確保功能正常運作
+1. **選擇新功能開發**：從開發計劃目錄選擇一個新功能（建議：繼續開發其他調撥管理相關功能或其他系統管理功能）
+2. **功能測試**：對 SYSW384 功能進行完整測試，確保功能正常運作
 3. **修復既有編譯錯誤**（可選）：解決專案中既有的編譯錯誤
