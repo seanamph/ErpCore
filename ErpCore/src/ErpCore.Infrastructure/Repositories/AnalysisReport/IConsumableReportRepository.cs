@@ -16,6 +16,11 @@ public interface IConsumableReportRepository
     /// 查詢耗材管理報表統計資訊
     /// </summary>
     Task<ConsumableReportSummary> GetReportSummaryAsync(ConsumableReportQuery query);
+
+    /// <summary>
+    /// 根據耗材編號取得耗材資訊
+    /// </summary>
+    Task<Consumable?> GetConsumableByIdAsync(string consumableId);
 }
 
 /// <summary>

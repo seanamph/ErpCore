@@ -87,4 +87,42 @@ public class ConsumableTransactionRepository : BaseRepository, IConsumableTransa
             throw;
         }
     }
+
+    public async Task CreateTransactionAsync(ConsumableTransaction transaction)
+    {
+        try
+        {
+            var sql = @"
+                INSERT INTO ConsumableTransactions (
+                    ConsumableId, TransactionType, TransactionDate,
+                    Quantity, UnitPrice, Amount, SiteId, WarehouseId,
+                    SourceId, Notes, CreatedBy, CreatedAt
+                ) VALUES (
+                    @ConsumableId, @TransactionType, @TransactionDate,
+                    @Quantity, @UnitPrice, @Amount, @SiteId, @WarehouseId,
+                    @SourceId, @Notes, @CreatedBy, @CreatedAt
+                )";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("ConsumableId", transaction.ConsumableId);
+            parameters.Add("TransactionType", transaction.TransactionType);
+            parameters.Add("TransactionDate", transaction.TransactionDate);
+            parameters.Add("Quantity", transaction.Quantity);
+            parameters.Add("UnitPrice", transaction.UnitPrice);
+            parameters.Add("Amount", transaction.Amount);
+            parameters.Add("SiteId", transaction.SiteId);
+            parameters.Add("WarehouseId", transaction.WarehouseId);
+            parameters.Add("SourceId", transaction.SourceId);
+            parameters.Add("Notes", transaction.Notes);
+            parameters.Add("CreatedBy", transaction.CreatedBy);
+            parameters.Add("CreatedAt", transaction.CreatedAt);
+
+            await ExecuteAsync(sql, parameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增耗材異動記錄失敗: {transaction.ConsumableId}", ex);
+            throw;
+        }
+    }
 }

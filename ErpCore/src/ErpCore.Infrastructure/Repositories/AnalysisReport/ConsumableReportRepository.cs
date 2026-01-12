@@ -1,4 +1,5 @@
 using Dapper;
+using ErpCore.Domain.Entities.AnalysisReport;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
@@ -208,6 +209,34 @@ public class ConsumableReportRepository : BaseRepository, IConsumableReportRepos
         catch (Exception ex)
         {
             _logger.LogError("查詢耗材管理報表統計資訊失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<Consumable?> GetConsumableByIdAsync(string consumableId)
+    {
+        try
+        {
+            var sql = @"
+                SELECT 
+                    ConsumableId, ConsumableName, CategoryId, Unit, Specification,
+                    Brand, Model, BarCode, Status, AssetStatus, SiteId,
+                    Location, Quantity, MinQuantity, MaxQuantity, Price,
+                    SupplierId, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt
+                FROM Consumables
+                WHERE ConsumableId = @ConsumableId";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("ConsumableId", consumableId);
+
+            using var connection = _connectionFactory.CreateConnection();
+            var consumable = await connection.QueryFirstOrDefaultAsync<Consumable>(sql, parameters);
+
+            return consumable;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢耗材資訊失敗: {consumableId}", ex);
             throw;
         }
     }

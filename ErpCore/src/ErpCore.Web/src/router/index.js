@@ -224,6 +224,12 @@ const routes = [
         name: 'ConsumableReportQuery',
         component: () => import('../views/AnalysisReport/ConsumableReportQuery.vue'),
         meta: { title: '耗材管理報表 (SYSA255)' }
+      },
+      {
+        path: 'consumable-sales',
+        name: 'ConsumableSalesList',
+        component: () => import('../views/AnalysisReport/ConsumableSalesList.vue'),
+        meta: { title: '耗材出售維護作業 (SYSA297)' }
       }
     ]
   },

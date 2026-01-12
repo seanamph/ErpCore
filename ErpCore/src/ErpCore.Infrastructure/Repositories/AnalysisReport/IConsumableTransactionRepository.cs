@@ -12,6 +12,11 @@ public interface IConsumableTransactionRepository
     /// 查詢耗材使用明細
     /// </summary>
     Task<PagedResult<ConsumableTransaction>> GetTransactionsAsync(ConsumableTransactionQuery query);
+
+    /// <summary>
+    /// 新增耗材異動記錄
+    /// </summary>
+    Task CreateTransactionAsync(ConsumableTransaction transaction);
 }
 
 /// <summary>

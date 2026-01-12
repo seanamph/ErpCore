@@ -353,5 +353,105 @@ GO
 PRINT '視圖 ConsumableUsage 建立成功';
 GO
 
+-- 13. 耗材出售單主檔 (SYSA297)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConsumableSales]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[ConsumableSales] (
+        [TxnNo] NVARCHAR(50) NOT NULL PRIMARY KEY, -- 交易單號
+        [Rrn] UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID(), -- 唯一識別碼
+        [SiteId] NVARCHAR(50) NOT NULL, -- 店別代碼
+        [PurchaseDate] DATETIME2 NOT NULL, -- 出售日期
+        [Status] NVARCHAR(10) NOT NULL DEFAULT '1', -- 狀態 (1:待審核, 2:已審核, 3:已取消)
+        [TotalAmount] DECIMAL(18, 2) NULL DEFAULT 0, -- 總金額
+        [TaxAmount] DECIMAL(18, 2) NULL DEFAULT 0, -- 稅額
+        [NetAmount] DECIMAL(18, 2) NULL DEFAULT 0, -- 未稅金額
+        [ApplyCount] INT NULL DEFAULT 0, -- 申請數量
+        [DetailCount] INT NULL DEFAULT 0, -- 明細數量
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL, -- 建立者
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
+        [UpdatedBy] NVARCHAR(50) NULL, -- 更新者
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 更新時間
+        [ApprovedBy] NVARCHAR(50) NULL, -- 審核者
+        [ApprovedAt] DATETIME2 NULL -- 審核時間
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSales_SiteId] ON [dbo].[ConsumableSales] ([SiteId]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSales_PurchaseDate] ON [dbo].[ConsumableSales] ([PurchaseDate]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSales_Status] ON [dbo].[ConsumableSales] ([Status]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSales_Rrn] ON [dbo].[ConsumableSales] ([Rrn]);
+
+    PRINT '資料表 ConsumableSales 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 ConsumableSales 已存在';
+END
+GO
+
+-- 14. 耗材出售單明細檔 (SYSA297)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConsumableSalesDetails]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[ConsumableSalesDetails] (
+        [DetailId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+        [TxnNo] NVARCHAR(50) NOT NULL, -- 交易單號
+        [SeqNo] INT NOT NULL, -- 序號
+        [ConsumableId] NVARCHAR(50) NOT NULL, -- 耗材編號
+        [ConsumableName] NVARCHAR(200) NULL, -- 耗材名稱
+        [Quantity] DECIMAL(18, 2) NOT NULL DEFAULT 0, -- 數量
+        [Unit] NVARCHAR(20) NULL, -- 單位
+        [UnitPrice] DECIMAL(18, 2) NULL DEFAULT 0, -- 單價
+        [Amount] DECIMAL(18, 2) NULL DEFAULT 0, -- 金額
+        [Tax] NVARCHAR(10) NULL DEFAULT '1', -- 稅別 (1:應稅, 0:免稅)
+        [TaxAmount] DECIMAL(18, 2) NULL DEFAULT 0, -- 稅額
+        [NetAmount] DECIMAL(18, 2) NULL DEFAULT 0, -- 未稅金額
+        [PurchaseStatus] NVARCHAR(10) NULL DEFAULT '1', -- 採購驗收狀態 (1:已驗收)
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [FK_ConsumableSalesDetails_ConsumableSales] FOREIGN KEY ([TxnNo]) REFERENCES [dbo].[ConsumableSales] ([TxnNo]) ON DELETE CASCADE,
+        CONSTRAINT [FK_ConsumableSalesDetails_Consumables] FOREIGN KEY ([ConsumableId]) REFERENCES [dbo].[Consumables] ([ConsumableId])
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSalesDetails_TxnNo] ON [dbo].[ConsumableSalesDetails] ([TxnNo]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableSalesDetails_ConsumableId] ON [dbo].[ConsumableSalesDetails] ([ConsumableId]);
+
+    PRINT '資料表 ConsumableSalesDetails 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 ConsumableSalesDetails 已存在';
+END
+GO
+
+-- 15. 耗材庫存表 (SYSA297)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConsumableInventory]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[ConsumableInventory] (
+        [InventoryId] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
+        [ConsumableId] NVARCHAR(50) NOT NULL,
+        [SiteId] NVARCHAR(50) NOT NULL,
+        [Quantity] DECIMAL(18, 2) NOT NULL DEFAULT 0, -- 庫存數量
+        [ReservedQuantity] DECIMAL(18, 2) NULL DEFAULT 0, -- 預留數量
+        [AvailableQuantity] AS ([Quantity] - [ReservedQuantity]), -- 可用數量
+        [LastUpdated] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [FK_ConsumableInventory_Consumables] FOREIGN KEY ([ConsumableId]) REFERENCES [dbo].[Consumables] ([ConsumableId]),
+        CONSTRAINT [UQ_ConsumableInventory_Consumable_Site] UNIQUE ([ConsumableId], [SiteId])
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_ConsumableInventory_ConsumableId] ON [dbo].[ConsumableInventory] ([ConsumableId]);
+    CREATE NONCLUSTERED INDEX [IX_ConsumableInventory_SiteId] ON [dbo].[ConsumableInventory] ([SiteId]);
+
+    PRINT '資料表 ConsumableInventory 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 ConsumableInventory 已存在';
+END
+GO
+
 PRINT '所有分析報表相關資料表建立完成';
 
