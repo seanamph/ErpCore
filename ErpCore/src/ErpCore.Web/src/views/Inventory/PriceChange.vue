@@ -40,6 +40,7 @@
             start-placeholder="開始日期"
             end-placeholder="結束日期"
             value-format="YYYY-MM-DD"
+            clearable
           />
         </el-form-item>
         <el-form-item>
@@ -59,11 +60,11 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="PriceChangeId" label="變價單號" width="150" />
+        <el-table-column prop="PriceChangeId" label="變價單號" width="150" fixed="left" />
         <el-table-column prop="PriceChangeTypeName" label="變價類型" width="100" />
-        <el-table-column prop="SupplierName" label="廠商" width="150" />
-        <el-table-column prop="LogoName" label="品牌" width="150" />
-        <el-table-column prop="ApplyEmpName" label="申請人" width="100" />
+        <el-table-column prop="SupplierId" label="廠商編號" width="120" />
+        <el-table-column prop="LogoId" label="品牌編號" width="120" />
+        <el-table-column prop="ApplyEmpId" label="申請人" width="100" />
         <el-table-column prop="ApplyDate" label="申請日期" width="120">
           <template #default="{ row }">
             {{ formatDate(row.ApplyDate) }}
@@ -89,46 +90,11 @@
         <el-table-column label="操作" width="350" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleView(row)">查看</el-button>
-            <el-button
-              v-if="row.Status === '1'"
-              type="warning"
-              size="small"
-              @click="handleEdit(row)"
-            >
-              修改
-            </el-button>
-            <el-button
-              v-if="row.Status === '1'"
-              type="danger"
-              size="small"
-              @click="handleDelete(row)"
-            >
-              刪除
-            </el-button>
-            <el-button
-              v-if="row.Status === '1'"
-              type="success"
-              size="small"
-              @click="handleApprove(row)"
-            >
-              審核
-            </el-button>
-            <el-button
-              v-if="row.Status === '2'"
-              type="success"
-              size="small"
-              @click="handleConfirm(row)"
-            >
-              確認
-            </el-button>
-            <el-button
-              v-if="row.Status !== '9'"
-              type="info"
-              size="small"
-              @click="handleCancel(row)"
-            >
-              作廢
-            </el-button>
+            <el-button v-if="row.Status === '1'" type="warning" size="small" @click="handleEdit(row)">修改</el-button>
+            <el-button v-if="row.Status === '1'" type="danger" size="small" @click="handleDelete(row)">刪除</el-button>
+            <el-button v-if="row.Status === '1'" type="success" size="small" @click="handleApprove(row)">審核</el-button>
+            <el-button v-if="row.Status === '2'" type="success" size="small" @click="handleConfirm(row)">確認</el-button>
+            <el-button v-if="row.Status !== '9' && row.Status !== '10'" type="info" size="small" @click="handleCancel(row)">作廢</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -150,27 +116,19 @@
     <el-dialog
       :title="dialogTitle"
       v-model="dialogVisible"
-      width="1400px"
+      width="1200px"
       @close="handleDialogClose"
     >
       <el-form :model="form" :rules="rules" ref="formRef" label-width="120px">
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="變價單號" prop="PriceChangeId">
-              <el-input
-                v-model="form.PriceChangeId"
-                :disabled="true"
-                placeholder="自動編號"
-              />
+              <el-input v-model="form.PriceChangeId" placeholder="自動編號" disabled />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="變價類型" prop="PriceChangeType">
-              <el-select
-                v-model="form.PriceChangeType"
-                :disabled="isEdit"
-                placeholder="請選擇變價類型"
-              >
+              <el-select v-model="form.PriceChangeType" placeholder="請選擇變價類型" :disabled="isEdit" style="width: 100%">
                 <el-option label="進價" value="1" />
                 <el-option label="售價" value="2" />
               </el-select>
@@ -180,20 +138,12 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="品牌編號" prop="LogoId">
-              <el-input
-                v-model="form.LogoId"
-                placeholder="請輸入品牌編號"
-                clearable
-              />
+              <el-input v-model="form.LogoId" placeholder="請輸入品牌編號" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="廠商編號" prop="SupplierId">
-              <el-input
-                v-model="form.SupplierId"
-                placeholder="請輸入廠商編號"
-                clearable
-              />
+              <el-input v-model="form.SupplierId" placeholder="請輸入廠商編號" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -222,134 +172,54 @@
           </el-col>
         </el-row>
         <el-form-item label="備註" prop="Notes">
-          <el-input
-            v-model="form.Notes"
-            type="textarea"
-            :rows="3"
-            placeholder="請輸入備註"
-          />
+          <el-input v-model="form.Notes" type="textarea" :rows="3" placeholder="請輸入備註" />
         </el-form-item>
-
+        
         <!-- 明細表格 -->
         <el-divider>變價明細</el-divider>
         <el-table :data="form.Details" border style="width: 100%">
           <el-table-column type="index" label="序號" width="80" />
-          <el-table-column prop="GoodsId" label="商品編號" width="150">
+          <el-table-column label="商品編號" width="150">
             <template #default="{ row, $index }">
-              <el-input
-                v-model="row.GoodsId"
-                placeholder="請輸入商品編號"
-                @blur="handleGoodsBlur($index, row.GoodsId)"
-              />
+              <el-input v-model="row.GoodsId" placeholder="請輸入商品編號" @blur="handleGoodsChange($index, row.GoodsId)" />
             </template>
           </el-table-column>
-          <el-table-column prop="GoodsName" label="商品名稱" width="200" />
-          <el-table-column prop="BeforePrice" label="調整前單價" width="120" align="right">
+          <el-table-column label="商品名稱" width="200">
             <template #default="{ row }">
-              <el-input-number
-                v-model="row.BeforePrice"
-                :precision="4"
-                :min="0"
-                :disabled="true"
-                style="width: 100%"
-              />
+              {{ row.GoodsName || '-' }}
             </template>
           </el-table-column>
-          <el-table-column prop="AfterPrice" label="調整後單價" width="120" align="right">
+          <el-table-column label="調整前單價" width="120" align="right">
             <template #default="{ row }">
-              <el-input-number
-                v-model="row.AfterPrice"
-                :precision="4"
-                :min="0"
-                style="width: 100%"
-                @change="calculateTotalAmount"
-              />
+              <el-input-number v-model="row.BeforePrice" :precision="4" :min="0" :disabled="true" style="width: 100%" />
             </template>
           </el-table-column>
-          <el-table-column prop="ChangeQty" label="變價數量" width="120" align="right">
+          <el-table-column label="調整後單價" width="120" align="right">
             <template #default="{ row }">
-              <el-input-number
-                v-model="row.ChangeQty"
-                :precision="4"
-                :min="0"
-                style="width: 100%"
-                @change="calculateTotalAmount"
-              />
+              <el-input-number v-model="row.AfterPrice" :precision="4" :min="0" style="width: 100%" />
             </template>
           </el-table-column>
-          <el-table-column prop="Notes" label="備註" width="200">
+          <el-table-column label="變價數量" width="120" align="right">
+            <template #default="{ row }">
+              <el-input-number v-model="row.ChangeQty" :precision="4" :min="0" style="width: 100%" />
+            </template>
+          </el-table-column>
+          <el-table-column label="備註" width="200">
             <template #default="{ row }">
               <el-input v-model="row.Notes" placeholder="請輸入備註" />
             </template>
           </el-table-column>
           <el-table-column label="操作" width="100" fixed="right">
             <template #default="{ $index }">
-              <el-button
-                type="danger"
-                size="small"
-                @click="handleDeleteDetail($index)"
-              >
-                刪除
-              </el-button>
+              <el-button type="danger" size="small" @click="handleDeleteDetail($index)">刪除</el-button>
             </template>
           </el-table-column>
         </el-table>
-        <el-button type="primary" @click="handleAddDetail" style="margin-top: 10px">
-          新增明細
-        </el-button>
+        <el-button type="primary" @click="handleAddDetail" style="margin-top: 10px;">新增明細</el-button>
       </el-form>
       <template #footer>
         <el-button @click="handleDialogClose">取消</el-button>
         <el-button type="primary" @click="handleSubmit">確定</el-button>
-      </template>
-    </el-dialog>
-
-    <!-- 查看對話框 -->
-    <el-dialog
-      title="查看變價單"
-      v-model="viewDialogVisible"
-      width="1400px"
-    >
-      <el-descriptions :column="2" border>
-        <el-descriptions-item label="變價單號">{{ viewData.PriceChangeId }}</el-descriptions-item>
-        <el-descriptions-item label="變價類型">{{ viewData.PriceChangeTypeName }}</el-descriptions-item>
-        <el-descriptions-item label="品牌">{{ viewData.LogoName }}</el-descriptions-item>
-        <el-descriptions-item label="廠商">{{ viewData.SupplierName }}</el-descriptions-item>
-        <el-descriptions-item label="申請人">{{ viewData.ApplyEmpName }}</el-descriptions-item>
-        <el-descriptions-item label="申請日期">{{ formatDate(viewData.ApplyDate) }}</el-descriptions-item>
-        <el-descriptions-item label="啟用日期">{{ formatDate(viewData.StartDate) }}</el-descriptions-item>
-        <el-descriptions-item label="狀態">
-          <el-tag :type="getStatusType(viewData.Status)">
-            {{ viewData.StatusName }}
-          </el-tag>
-        </el-descriptions-item>
-        <el-descriptions-item label="總金額">{{ formatCurrency(viewData.TotalAmount) }}</el-descriptions-item>
-        <el-descriptions-item label="備註" :span="2">{{ viewData.Notes }}</el-descriptions-item>
-      </el-descriptions>
-      <el-divider>變價明細</el-divider>
-      <el-table :data="viewData.Details" border style="width: 100%">
-        <el-table-column prop="LineNum" label="序號" width="80" />
-        <el-table-column prop="GoodsId" label="商品編號" width="150" />
-        <el-table-column prop="GoodsName" label="商品名稱" width="200" />
-        <el-table-column prop="BeforePrice" label="調整前單價" width="120" align="right">
-          <template #default="{ row }">
-            {{ formatCurrency(row.BeforePrice) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="AfterPrice" label="調整後單價" width="120" align="right">
-          <template #default="{ row }">
-            {{ formatCurrency(row.AfterPrice) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="ChangeQty" label="變價數量" width="120" align="right">
-          <template #default="{ row }">
-            {{ formatCurrency(row.ChangeQty) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="Notes" label="備註" />
-      </el-table>
-      <template #footer>
-        <el-button @click="viewDialogVisible = false">關閉</el-button>
       </template>
     </el-dialog>
   </div>
@@ -358,8 +228,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { priceChangeApi } from '@/api/priceChange'
-import * as productApi from '@/api/modules/product'
+import { priceChangeApi } from '@/api/inventory'
+import { productGoodsIdApi } from '@/api/inventory'
 
 // 查詢表單
 const queryForm = reactive({
@@ -384,7 +254,6 @@ const pagination = reactive({
 
 // 對話框
 const dialogVisible = ref(false)
-const viewDialogVisible = ref(false)
 const dialogTitle = ref('新增變價單')
 const isEdit = ref(false)
 const formRef = ref(null)
@@ -392,33 +261,11 @@ const formRef = ref(null)
 // 表單資料
 const form = reactive({
   PriceChangeId: '',
-  PriceChangeType: '',
+  PriceChangeType: '1',
   SupplierId: '',
   LogoId: '',
-  ApplyEmpId: '',
-  ApplyOrgId: '',
-  ApplyDate: null,
-  StartDate: null,
-  Notes: '',
-  Details: []
-})
-
-// 查看資料
-const viewData = reactive({
-  PriceChangeId: '',
-  PriceChangeType: '',
-  PriceChangeTypeName: '',
-  SupplierId: '',
-  SupplierName: '',
-  LogoId: '',
-  LogoName: '',
-  ApplyEmpId: '',
-  ApplyEmpName: '',
-  ApplyDate: null,
-  StartDate: null,
-  Status: '',
-  StatusName: '',
-  TotalAmount: 0,
+  ApplyDate: '',
+  StartDate: '',
   Notes: '',
   Details: []
 })
@@ -426,8 +273,7 @@ const viewData = reactive({
 // 表單驗證規則
 const rules = {
   PriceChangeType: [{ required: true, message: '請選擇變價類型', trigger: 'change' }],
-  ApplyDate: [{ required: true, message: '請選擇申請日期', trigger: 'change' }],
-  StartDate: [{ required: true, message: '請選擇啟用日期', trigger: 'change' }]
+  ApplyDate: [{ required: true, message: '請選擇申請日期', trigger: 'change' }]
 }
 
 // 查詢
@@ -442,15 +288,16 @@ const handleSearch = async () => {
       SupplierId: queryForm.SupplierId || undefined,
       LogoId: queryForm.LogoId || undefined,
       Status: queryForm.Status || undefined,
-      ApplyDateFrom: queryForm.ApplyDateRange ? queryForm.ApplyDateRange[0] : undefined,
-      ApplyDateTo: queryForm.ApplyDateRange ? queryForm.ApplyDateRange[1] : undefined
+      ApplyDateFrom: queryForm.ApplyDateRange?.[0] || undefined,
+      ApplyDateTo: queryForm.ApplyDateRange?.[1] || undefined
     }
     const response = await priceChangeApi.getPriceChanges(params)
-    if (response.data.Success) {
-      tableData.value = response.data.Data.Items || []
-      pagination.TotalCount = response.data.Data.TotalCount || 0
+    if (response.data && response.data.Success !== false) {
+      const data = response.data.Data || response.data
+      tableData.value = data.Items || data.items || []
+      pagination.TotalCount = data.TotalCount || data.totalCount || 0
     } else {
-      ElMessage.error(response.data.Message || '查詢失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '查詢失敗')
     }
   } catch (error) {
     ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
@@ -479,69 +326,71 @@ const handleCreate = () => {
   dialogVisible.value = true
 }
 
+// 查看
+const handleView = async (row) => {
+  await loadPriceChangeData(row.PriceChangeId, row.PriceChangeType, false)
+}
+
 // 修改
 const handleEdit = async (row) => {
+  if (row.Status !== '1') {
+    ElMessage.warning('只有狀態為「已申請」的變價單可以修改')
+    return
+  }
   isEdit.value = true
   dialogTitle.value = '修改變價單'
+  await loadPriceChangeData(row.PriceChangeId, row.PriceChangeType, true)
+}
+
+// 載入變價單資料
+const loadPriceChangeData = async (priceChangeId, priceChangeType, isEditMode) => {
   try {
-    const response = await priceChangeApi.getPriceChangeById(row.PriceChangeId, row.PriceChangeType)
-    if (response.data.Success) {
-      const data = response.data.Data
-      form.PriceChangeId = data.PriceChangeId
-      form.PriceChangeType = data.PriceChangeType
+    const response = await priceChangeApi.getPriceChangeById(priceChangeId, priceChangeType)
+    if (response.data && response.data.Success !== false) {
+      const data = response.data.Data || response.data
+      form.PriceChangeId = data.PriceChangeId || ''
+      form.PriceChangeType = data.PriceChangeType || '1'
       form.SupplierId = data.SupplierId || ''
       form.LogoId = data.LogoId || ''
-      form.ApplyEmpId = data.ApplyEmpId || ''
-      form.ApplyOrgId = data.ApplyOrgId || ''
-      form.ApplyDate = data.ApplyDate ? formatDateForInput(data.ApplyDate) : null
-      form.StartDate = data.StartDate ? formatDateForInput(data.StartDate) : null
+      form.ApplyDate = data.ApplyDate ? formatDateForInput(data.ApplyDate) : ''
+      form.StartDate = data.StartDate ? formatDateForInput(data.StartDate) : ''
       form.Notes = data.Notes || ''
-      form.Details = (data.Details || []).map((detail, index) => ({
-        LineNum: detail.LineNum || index + 1,
-        GoodsId: detail.GoodsId || '',
-        GoodsName: detail.GoodsName || '',
-        BeforePrice: detail.BeforePrice || 0,
-        AfterPrice: detail.AfterPrice || 0,
-        ChangeQty: detail.ChangeQty || 0,
-        Notes: detail.Notes || ''
+      form.Details = (data.Details || []).map((d, index) => ({
+        LineNum: d.LineNum || index + 1,
+        GoodsId: d.GoodsId || '',
+        GoodsName: d.GoodsName || '',
+        BeforePrice: d.BeforePrice || 0,
+        AfterPrice: d.AfterPrice || 0,
+        ChangeQty: d.ChangeQty || 0,
+        Notes: d.Notes || ''
       }))
-      calculateTotalAmount()
     } else {
-      ElMessage.error(response.data.Message || '查詢失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '查詢失敗')
     }
   } catch (error) {
     ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
   }
-  dialogVisible.value = true
-}
-
-// 查看
-const handleView = async (row) => {
-  try {
-    const response = await priceChangeApi.getPriceChangeById(row.PriceChangeId, row.PriceChangeType)
-    if (response.data.Success) {
-      Object.assign(viewData, response.data.Data)
-      viewDialogVisible.value = true
-    } else {
-      ElMessage.error(response.data.Message || '查詢失敗')
-    }
-  } catch (error) {
-    ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
+  if (isEditMode) {
+    dialogVisible.value = true
   }
 }
 
 // 刪除
 const handleDelete = async (row) => {
+  if (row.Status !== '1') {
+    ElMessage.warning('只有狀態為「已申請」的變價單可以刪除')
+    return
+  }
   try {
     await ElMessageBox.confirm('確定要刪除此變價單嗎？', '提示', {
       type: 'warning'
     })
     const response = await priceChangeApi.deletePriceChange(row.PriceChangeId, row.PriceChangeType)
-    if (response.data.Success) {
+    if (response.data && response.data.Success !== false) {
       ElMessage.success('刪除成功')
       handleSearch()
     } else {
-      ElMessage.error(response.data.Message || '刪除失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '刪除失敗')
     }
   } catch (error) {
     if (error !== 'cancel') {
@@ -559,11 +408,11 @@ const handleApprove = async (row) => {
     const response = await priceChangeApi.approvePriceChange(row.PriceChangeId, row.PriceChangeType, {
       ApproveDate: new Date().toISOString().split('T')[0]
     })
-    if (response.data.Success) {
+    if (response.data && response.data.Success !== false) {
       ElMessage.success('審核成功')
       handleSearch()
     } else {
-      ElMessage.error(response.data.Message || '審核失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '審核失敗')
     }
   } catch (error) {
     if (error !== 'cancel') {
@@ -581,11 +430,11 @@ const handleConfirm = async (row) => {
     const response = await priceChangeApi.confirmPriceChange(row.PriceChangeId, row.PriceChangeType, {
       ConfirmDate: new Date().toISOString().split('T')[0]
     })
-    if (response.data.Success) {
+    if (response.data && response.data.Success !== false) {
       ElMessage.success('確認成功')
       handleSearch()
     } else {
-      ElMessage.error(response.data.Message || '確認失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '確認失敗')
     }
   } catch (error) {
     if (error !== 'cancel') {
@@ -601,11 +450,11 @@ const handleCancel = async (row) => {
       type: 'warning'
     })
     const response = await priceChangeApi.cancelPriceChange(row.PriceChangeId, row.PriceChangeType)
-    if (response.data.Success) {
+    if (response.data && response.data.Success !== false) {
       ElMessage.success('作廢成功')
       handleSearch()
     } else {
-      ElMessage.error(response.data.Message || '作廢失敗')
+      ElMessage.error(response.data?.Message || response.data?.message || '作廢失敗')
     }
   } catch (error) {
     if (error !== 'cancel') {
@@ -619,58 +468,54 @@ const handleSubmit = async () => {
   if (!formRef.value) return
   await formRef.value.validate(async (valid) => {
     if (valid) {
-      // 驗證明細
       if (!form.Details || form.Details.length === 0) {
-        ElMessage.warning('請至少新增一筆明細')
+        ElMessage.warning('請至少新增一筆變價明細')
         return
       }
-      for (let i = 0; i < form.Details.length; i++) {
-        const detail = form.Details[i]
-        if (!detail.GoodsId) {
-          ElMessage.warning(`第 ${i + 1} 筆明細的商品編號不能為空`)
-          return
-        }
-        if (!detail.AfterPrice || detail.AfterPrice <= 0) {
-          ElMessage.warning(`第 ${i + 1} 筆明細的調整後單價必須大於0`)
-          return
-        }
-      }
-
       try {
         let response
-        const submitData = {
-          PriceChangeType: form.PriceChangeType,
-          SupplierId: form.SupplierId || undefined,
-          LogoId: form.LogoId || undefined,
-          ApplyEmpId: form.ApplyEmpId || undefined,
-          ApplyOrgId: form.ApplyOrgId || undefined,
-          ApplyDate: form.ApplyDate || undefined,
-          StartDate: form.StartDate || undefined,
-          Notes: form.Notes || undefined,
-          Details: form.Details.map((detail, index) => ({
-            LineNum: detail.LineNum || index + 1,
-            GoodsId: detail.GoodsId,
-            BeforePrice: detail.BeforePrice || 0,
-            AfterPrice: detail.AfterPrice,
-            ChangeQty: detail.ChangeQty || 0,
-            Notes: detail.Notes || undefined
-          }))
-        }
         if (isEdit.value) {
-          response = await priceChangeApi.updatePriceChange(
-            form.PriceChangeId,
-            form.PriceChangeType,
-            submitData
-          )
+          const updateData = {
+            SupplierId: form.SupplierId,
+            LogoId: form.LogoId,
+            ApplyDate: form.ApplyDate,
+            StartDate: form.StartDate,
+            Notes: form.Notes,
+            Details: form.Details.map((d, index) => ({
+              LineNum: index + 1,
+              GoodsId: d.GoodsId,
+              BeforePrice: d.BeforePrice,
+              AfterPrice: d.AfterPrice,
+              ChangeQty: d.ChangeQty,
+              Notes: d.Notes
+            }))
+          }
+          response = await priceChangeApi.updatePriceChange(form.PriceChangeId, form.PriceChangeType, updateData)
         } else {
-          response = await priceChangeApi.createPriceChange(submitData)
+          const createData = {
+            PriceChangeType: form.PriceChangeType,
+            SupplierId: form.SupplierId,
+            LogoId: form.LogoId,
+            ApplyDate: form.ApplyDate,
+            StartDate: form.StartDate,
+            Notes: form.Notes,
+            Details: form.Details.map((d, index) => ({
+              LineNum: index + 1,
+              GoodsId: d.GoodsId,
+              BeforePrice: d.BeforePrice,
+              AfterPrice: d.AfterPrice,
+              ChangeQty: d.ChangeQty,
+              Notes: d.Notes
+            }))
+          }
+          response = await priceChangeApi.createPriceChange(createData)
         }
-        if (response.data.Success) {
+        if (response.data && response.data.Success !== false) {
           ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
           dialogVisible.value = false
           handleSearch()
         } else {
-          ElMessage.error(response.data.Message || (isEdit.value ? '修改失敗' : '新增失敗'))
+          ElMessage.error(response.data?.Message || response.data?.message || (isEdit.value ? '修改失敗' : '新增失敗'))
         }
       } catch (error) {
         ElMessage.error((isEdit.value ? '修改失敗' : '新增失敗') + '：' + (error.message || '未知錯誤'))
@@ -679,18 +524,23 @@ const handleSubmit = async () => {
   })
 }
 
+// 關閉對話框
+const handleDialogClose = () => {
+  dialogVisible.value = false
+  resetForm()
+}
+
 // 重置表單
 const resetForm = () => {
   form.PriceChangeId = ''
-  form.PriceChangeType = ''
+  form.PriceChangeType = '1'
   form.SupplierId = ''
   form.LogoId = ''
-  form.ApplyEmpId = ''
-  form.ApplyOrgId = ''
-  form.ApplyDate = null
-  form.StartDate = null
+  form.ApplyDate = ''
+  form.StartDate = ''
   form.Notes = ''
   form.Details = []
+  formRef.value?.resetFields()
 }
 
 // 新增明細
@@ -710,96 +560,78 @@ const handleAddDetail = () => {
 const handleDeleteDetail = (index) => {
   form.Details.splice(index, 1)
   // 重新編號
-  form.Details.forEach((detail, i) => {
-    detail.LineNum = i + 1
+  form.Details.forEach((d, i) => {
+    d.LineNum = i + 1
   })
-  calculateTotalAmount()
 }
 
-// 商品編號失焦處理（查詢商品資訊）
-const handleGoodsBlur = async (index, goodsId) => {
+// 商品變更
+const handleGoodsChange = async (index, goodsId) => {
   if (!goodsId) return
   try {
-    const { data } = await productApi.getProductById(goodsId)
-    const detail = form.Details[index]
-    if (detail && data) {
-      detail.GoodsName = data.GoodsName || goodsId
-      // 根據變價類型設定調整前單價
+    const response = await productGoodsIdApi.getProductGoodsIdById(goodsId)
+    if (response.data && response.data.Success !== false) {
+      const data = response.data.Data || response.data
+      const detail = form.Details[index]
+      detail.GoodsName = data.GoodsName || ''
       if (form.PriceChangeType === '1') {
-        // 進價變價，使用進價
         detail.BeforePrice = data.Lprc || 0
-      } else if (form.PriceChangeType === '2') {
-        // 售價變價，使用中價（售價）
+      } else {
         detail.BeforePrice = data.Mprc || 0
       }
     }
   } catch (error) {
-    console.error('查詢商品資訊失敗:', error)
-    const detail = form.Details[index]
-    if (detail) {
-      detail.GoodsName = goodsId
-      detail.BeforePrice = 0
-    }
+    // 商品不存在時不顯示錯誤，只清空商品名稱
+    form.Details[index].GoodsName = ''
   }
 }
 
-// 計算總金額
-const calculateTotalAmount = () => {
-  // 總金額計算邏輯（根據業務需求調整）
-  // 這裡暫時不計算，由後端處理
-}
-
-// 對話框關閉
-const handleDialogClose = () => {
-  formRef.value?.resetFields()
-  resetForm()
-}
-
 // 分頁大小變更
-const handleSizeChange = (val) => {
-  pagination.PageSize = val
+const handleSizeChange = (size) => {
+  pagination.PageSize = size
   pagination.PageIndex = 1
   handleSearch()
 }
 
 // 分頁變更
-const handlePageChange = (val) => {
-  pagination.PageIndex = val
+const handlePageChange = (page) => {
+  pagination.PageIndex = page
   handleSearch()
 }
 
-// 格式化日期
-const formatDate = (date) => {
-  if (!date) return ''
-  const d = new Date(date)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-// 格式化日期（用於輸入框）
-const formatDateForInput = (date) => {
-  if (!date) return null
-  const d = new Date(date)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-}
-
-// 格式化金額
+// 格式化貨幣
 const formatCurrency = (value) => {
-  if (value === null || value === undefined) return '0.00'
-  return Number(value).toLocaleString('zh-TW', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  })
+  if (value == null) return '0.00'
+  return Number(value).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+// 格式化日期
+const formatDate = (value) => {
+  if (!value) return '-'
+  if (typeof value === 'string') {
+    return value.split('T')[0]
+  }
+  return value
+}
+
+// 格式化日期為輸入格式
+const formatDateForInput = (value) => {
+  if (!value) return ''
+  if (typeof value === 'string') {
+    return value.split('T')[0]
+  }
+  return value
 }
 
 // 取得狀態類型
 const getStatusType = (status) => {
-  const statusMap = {
-    '1': 'warning', // 已申請
-    '2': 'info', // 已審核
-    '10': 'success', // 已確認
-    '9': 'danger' // 已作廢
+  switch (status) {
+    case '1': return 'warning' // 已申請
+    case '2': return 'info' // 已審核
+    case '10': return 'success' // 已確認
+    case '9': return 'danger' // 已作廢
+    default: return ''
   }
-  return statusMap[status] || ''
 }
 
 // 初始化
@@ -818,10 +650,10 @@ onMounted(() => {
     margin-bottom: 20px;
     
     h1 {
-      margin: 0;
       font-size: 24px;
-      font-weight: 500;
+      font-weight: bold;
       color: $primary-color;
+      margin: 0;
     }
   }
 
@@ -842,4 +674,3 @@ onMounted(() => {
   }
 }
 </style>
-

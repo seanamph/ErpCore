@@ -11,7 +11,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Application.Services.Transfer;
 
 /// <summary>
-/// 調撥驗退單服務實作 (SYSW362)
+/// 調撥驗退單服務實作
 /// </summary>
 public class TransferReturnService : BaseService, ITransferReturnService
 {
@@ -36,7 +36,7 @@ public class TransferReturnService : BaseService, ITransferReturnService
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<PagedResult<PendingTransferOrderForReturnDto>> GetPendingTransfersAsync(PendingTransferOrderForReturnQueryDto query)
+    public async Task<PagedResult<PendingTransferOrderDto>> GetPendingOrdersAsync(PendingTransferOrderQueryDto query)
     {
         try
         {
@@ -54,7 +54,7 @@ public class TransferReturnService : BaseService, ITransferReturnService
             var items = await _repository.GetPendingOrdersAsync(repositoryQuery);
             var totalCount = await _repository.GetPendingOrdersCountAsync(repositoryQuery);
 
-            var dtos = items.Select(x => new PendingTransferOrderForReturnDto
+            var dtos = items.Select(x => new PendingTransferOrderDto
             {
                 TransferId = x.TransferId,
                 TransferDate = x.TransferDate,
@@ -67,7 +67,7 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 PendingReturnQty = x.PendingReturnQty
             }).ToList();
 
-            return new PagedResult<PendingTransferOrderForReturnDto>
+            return new PagedResult<PendingTransferOrderDto>
             {
                 Items = dtos,
                 TotalCount = totalCount,
@@ -164,13 +164,20 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 throw new InvalidOperationException($"調撥單無明細資料: {transferId}");
             }
 
-            // 取得驗收單明細（用於計算可驗退數量）
+            // 取得驗收單明細（如果有）
             var receiptDetails = new List<TransferReceiptDetail>();
-            foreach (var transferDetail in detailsList)
+            var receipts = await _transferReceiptRepository.QueryAsync(new TransferReceiptQuery
             {
-                var receipts = await _transferReceiptRepository.GetDetailsByReceiptIdAsync(transferId);
-                // 這裡需要根據實際情況調整，可能需要從 TransferReceiptDetails 中查找對應的驗收明細
-                // 暫時假設可以從驗收單明細中取得
+                TransferId = transferId,
+                Status = "C", // 已確認的驗收單
+                PageIndex = 1,
+                PageSize = 1000
+            });
+            
+            foreach (var receipt in receipts)
+            {
+                var details = await _transferReceiptRepository.GetDetailsByReceiptIdAsync(receipt.ReceiptId);
+                receiptDetails.AddRange(details);
             }
 
             // 建立驗退單主檔
@@ -188,24 +195,52 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 UpdatedAt = DateTime.Now
             };
 
-            // 建立驗退單明細（預設帶入可驗退數量）
-            var returnDetails = detailsList.Select((x, index) => new TransferReturnDetail
+            // 建立驗退單明細（預設帶入可驗退數量 = 已驗收數量 - 已驗退數量）
+            var returnDetails = new List<TransferReturnDetail>();
+            foreach (var receiptDetail in receiptDetails)
             {
-                DetailId = Guid.NewGuid(),
-                ReturnId = returnId,
-                TransferDetailId = x.DetailId,
-                LineNum = index + 1,
-                GoodsId = x.GoodsId,
-                TransferQty = x.TransferQty,
-                ReceiptQty = x.ReceiptQty ?? 0, // 已驗收數量
-                ReturnQty = 0, // 預設為0，由使用者輸入
-                CreatedAt = DateTime.Now
-            }).ToList();
+                // 計算已驗退數量
+                var existingReturns = await _repository.QueryAsync(new TransferReturnQuery
+                {
+                    ReceiptId = receiptDetail.ReceiptId,
+                    Status = "C", // 已確認的驗退單
+                    PageIndex = 1,
+                    PageSize = 1000
+                });
+                
+                var existingReturnDetails = new List<TransferReturnDetail>();
+                foreach (var existingReturn in existingReturns)
+                {
+                    var details = await _repository.GetDetailsByReturnIdAsync(existingReturn.ReturnId);
+                    existingReturnDetails.AddRange(details.Where(d => d.ReceiptDetailId == receiptDetail.DetailId));
+                }
+                
+                var returnedQty = existingReturnDetails.Sum(d => d.ReturnQty);
+                var pendingReturnQty = receiptDetail.ReceiptQty - returnedQty;
+
+                if (pendingReturnQty > 0)
+                {
+                    returnDetails.Add(new TransferReturnDetail
+                    {
+                        DetailId = Guid.NewGuid(),
+                        ReturnId = returnId,
+                        TransferDetailId = receiptDetail.TransferDetailId,
+                        ReceiptDetailId = receiptDetail.DetailId,
+                        LineNum = returnDetails.Count + 1,
+                        GoodsId = receiptDetail.GoodsId,
+                        BarcodeId = receiptDetail.BarcodeId,
+                        TransferQty = receiptDetail.TransferQty,
+                        ReceiptQty = receiptDetail.ReceiptQty,
+                        ReturnQty = pendingReturnQty,
+                        UnitPrice = receiptDetail.UnitPrice,
+                        CreatedAt = DateTime.Now
+                    });
+                }
+            }
 
             entity.TotalQty = returnDetails.Sum(x => x.ReturnQty);
 
             // 先建立驗退單（不保存，僅返回 DTO）
-            // 實際保存需要呼叫 CreateTransferReturnAsync
             return MapToDto(entity, returnDetails);
         }
         catch (Exception ex)
@@ -219,20 +254,11 @@ public class TransferReturnService : BaseService, ITransferReturnService
     {
         try
         {
-            // 取得調撥單資料
-            var transferOrder = await _transferOrderRepository.GetTransferOrderAsync(dto.TransferId);
-            if (transferOrder == null)
-            {
-                throw new KeyNotFoundException($"調撥單不存在: {dto.TransferId}");
-            }
-
             var entity = new TransferReturn
             {
                 TransferId = dto.TransferId,
                 ReceiptId = dto.ReceiptId,
                 ReturnDate = dto.ReturnDate,
-                FromShopId = transferOrder.FromShopId,
-                ToShopId = transferOrder.ToShopId,
                 ReturnUserId = dto.ReturnUserId,
                 ReturnReason = dto.ReturnReason,
                 Memo = dto.Memo,
@@ -240,6 +266,14 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 IsSettled = false,
                 CreatedBy = dto.ReturnUserId
             };
+
+            // 取得調撥單資料以取得分店資訊
+            var transferOrder = await _transferOrderRepository.GetTransferOrderAsync(dto.TransferId);
+            if (transferOrder != null)
+            {
+                entity.FromShopId = transferOrder.FromShopId;
+                entity.ToShopId = transferOrder.ToShopId;
+            }
 
             var details = dto.Details.Select((x, index) => new TransferReturnDetail
             {
@@ -255,32 +289,8 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 CreatedBy = dto.ReturnUserId
             }).ToList();
 
-            // 計算總數量和總金額
             entity.TotalQty = details.Sum(x => x.ReturnQty);
             entity.TotalAmount = details.Sum(x => (x.UnitPrice ?? 0) * x.ReturnQty);
-
-            // 驗證驗退數量不超過可驗退數量
-            foreach (var detail in details)
-            {
-                if (detail.ReceiptDetailId.HasValue)
-                {
-                    var receiptDetail = await _transferReceiptRepository.GetDetailByIdAsync(detail.ReceiptDetailId.Value);
-                    if (receiptDetail != null)
-                    {
-                        // 計算已驗退數量
-                        var existingReturns = await _repository.GetDetailsByReturnIdAsync(entity.ReturnId);
-                        var returnedQty = existingReturns
-                            .Where(r => r.ReceiptDetailId == detail.ReceiptDetailId)
-                            .Sum(r => r.ReturnQty);
-
-                        var availableQty = receiptDetail.ReceiptQty - returnedQty;
-                        if (detail.ReturnQty > availableQty)
-                        {
-                            throw new InvalidOperationException($"驗退數量超過可驗退數量: GoodsId={detail.GoodsId}, 可驗退數量={availableQty}, 驗退數量={detail.ReturnQty}");
-                        }
-                    }
-                }
-            }
 
             var returnId = await _repository.CreateAsync(entity, details);
             _logger.LogInfo($"建立調撥驗退單成功: {returnId}");
@@ -311,11 +321,6 @@ public class TransferReturnService : BaseService, ITransferReturnService
             if (entity.Status == "X")
             {
                 throw new InvalidOperationException("已取消的驗退單不可修改");
-            }
-
-            if (entity.Status == "C")
-            {
-                throw new InvalidOperationException("已確認的驗退單不可修改");
             }
 
             entity.ReturnDate = dto.ReturnDate;
@@ -381,11 +386,6 @@ public class TransferReturnService : BaseService, ITransferReturnService
                 throw new InvalidOperationException("已取消的驗退單不可刪除");
             }
 
-            if (entity.Status == "C")
-            {
-                throw new InvalidOperationException("已確認的驗退單不可刪除");
-            }
-
             await _repository.DeleteAsync(returnId);
             _logger.LogInfo($"刪除調撥驗退單成功: {returnId}");
         }
@@ -434,7 +434,7 @@ public class TransferReturnService : BaseService, ITransferReturnService
             {
                 if (detail.ReturnQty > 0)
                 {
-                    // 調入庫減少（退回商品）
+                    // 調入庫減少（商品退回）
                     await _stockRepository.UpdateStockQtyAsync(
                         entity.ToShopId, 
                         detail.GoodsId, 

@@ -56,7 +56,7 @@ public class RoleUserService : BaseService, IRoleUserService
                 throw new KeyNotFoundException($"角色 {request.RoleId} 不存在");
             }
 
-            // 查詢使用者列表
+            // 查詢使用者列表（使用視圖 V_RoleUsers）
             var sql = @"
                 SELECT 
                     ROLE_ID,
@@ -68,7 +68,7 @@ public class RoleUserService : BaseService, IRoleUserService
                     TITLE,
                     ORG_ID,
                     ORG_NAME
-                FROM [dbo].[V_RoleUsers]
+                FROM V_RoleUsers
                 WHERE ROLE_ID = @RoleId
                 ORDER BY USER_TYPE, USER_ID";
 
@@ -88,15 +88,15 @@ public class RoleUserService : BaseService, IRoleUserService
             {
                 var user = new RoleUserDto
                 {
-                    UserId = item.USER_ID,
-                    UserName = item.USER_NAME,
-                    UserType = item.USER_TYPE,
-                    UserTypeName = GetUserTypeName(item.USER_TYPE),
-                    Status = item.STATUS,
-                    StatusName = GetStatusName(item.STATUS),
-                    Title = item.TITLE,
-                    OrgId = item.ORG_ID,
-                    OrgName = item.ORG_NAME
+                    UserId = (string)item.USER_ID,
+                    UserName = (string)item.USER_NAME,
+                    UserType = (string?)item.USER_TYPE,
+                    UserTypeName = GetUserTypeName((string?)item.USER_TYPE),
+                    Status = (string)item.STATUS,
+                    StatusName = GetStatusName((string)item.STATUS),
+                    Title = (string?)item.TITLE,
+                    OrgId = (string?)item.ORG_ID,
+                    OrgName = (string?)item.ORG_NAME
                 };
                 response.Users.Add(user);
             }
@@ -132,13 +132,18 @@ public class RoleUserService : BaseService, IRoleUserService
 
             using var connection = _connectionFactory.CreateConnection();
 
-            const string sql = @"
-                DELETE FROM [dbo].[UserRoles]
+            var sql = @"
+                DELETE FROM UserRoles
                 WHERE RoleId = @RoleId AND UserId = @UserId";
 
-            await connection.ExecuteAsync(
+            var affectedRows = await connection.ExecuteAsync(
                 sql,
                 new { RoleId = roleId, UserId = userId });
+
+            if (affectedRows == 0)
+            {
+                throw new KeyNotFoundException($"使用者 {userId} 與角色 {roleId} 的對應關係不存在");
+            }
         }
         catch (Exception ex)
         {
@@ -169,8 +174,8 @@ public class RoleUserService : BaseService, IRoleUserService
 
             using var connection = _connectionFactory.CreateConnection();
 
-            const string sql = @"
-                DELETE FROM [dbo].[UserRoles]
+            var sql = @"
+                DELETE FROM UserRoles
                 WHERE RoleId = @RoleId AND UserId = @UserId";
 
             var parameters = userIds.Select(userId => new { RoleId = roleId, UserId = userId });
@@ -195,13 +200,37 @@ public class RoleUserService : BaseService, IRoleUserService
         {
             var data = await GetRoleUserListAsync(request, cancellationToken);
 
+            // 扁平化結構為列表
+            var exportData = new List<RoleUserExportItem>();
+            foreach (var user in data.Users)
+            {
+                exportData.Add(new RoleUserExportItem
+                {
+                    RoleId = data.RoleId,
+                    RoleName = data.RoleName,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    UserType = user.UserType ?? string.Empty,
+                    UserTypeName = user.UserTypeName ?? string.Empty,
+                    Status = user.Status,
+                    StatusName = user.StatusName ?? string.Empty,
+                    Title = user.Title ?? string.Empty,
+                    OrgId = user.OrgId ?? string.Empty,
+                    OrgName = user.OrgName ?? string.Empty
+                });
+            }
+
             // 定義匯出欄位
             var columns = new List<ExportColumn>
             {
+                new ExportColumn { PropertyName = "RoleId", DisplayName = "角色代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RoleName", DisplayName = "角色名稱", DataType = ExportDataType.String },
                 new ExportColumn { PropertyName = "UserId", DisplayName = "使用者代碼", DataType = ExportDataType.String },
                 new ExportColumn { PropertyName = "UserName", DisplayName = "使用者名稱", DataType = ExportDataType.String },
-                new ExportColumn { PropertyName = "UserTypeName", DisplayName = "使用者型態", DataType = ExportDataType.String },
-                new ExportColumn { PropertyName = "StatusName", DisplayName = "帳號狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "UserType", DisplayName = "使用者型態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "UserTypeName", DisplayName = "使用者型態名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Status", DisplayName = "帳號狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StatusName", DisplayName = "帳號狀態名稱", DataType = ExportDataType.String },
                 new ExportColumn { PropertyName = "Title", DisplayName = "職稱", DataType = ExportDataType.String },
                 new ExportColumn { PropertyName = "OrgId", DisplayName = "組織代碼", DataType = ExportDataType.String },
                 new ExportColumn { PropertyName = "OrgName", DisplayName = "組織名稱", DataType = ExportDataType.String }
@@ -211,11 +240,11 @@ public class RoleUserService : BaseService, IRoleUserService
 
             if (exportFormat == "Excel")
             {
-                return _exportHelper.ExportToExcel(data.Users, columns, "角色之使用者列表", title);
+                return _exportHelper.ExportToExcel(exportData, columns, "角色之使用者列表", title);
             }
             else if (exportFormat == "PDF")
             {
-                return _exportHelper.ExportToPdf(data.Users, columns, title);
+                return _exportHelper.ExportToPdf(exportData, columns, title);
             }
             else
             {
@@ -255,5 +284,23 @@ public class RoleUserService : BaseService, IRoleUserService
             "L" => "鎖定",
             _ => ""
         };
+    }
+
+    /// <summary>
+    /// 角色之使用者匯出項目（扁平化結構）
+    /// </summary>
+    private class RoleUserExportItem
+    {
+        public string RoleId { get; set; } = string.Empty;
+        public string RoleName { get; set; } = string.Empty;
+        public string UserId { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string UserType { get; set; } = string.Empty;
+        public string UserTypeName { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
+        public string StatusName { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string OrgId { get; set; } = string.Empty;
+        public string OrgName { get; set; } = string.Empty;
     }
 }

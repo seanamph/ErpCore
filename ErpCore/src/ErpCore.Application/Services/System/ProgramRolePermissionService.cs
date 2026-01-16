@@ -45,7 +45,7 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
             var programSql = @"
                 SELECT ProgramId, ProgramName
                 FROM ConfigPrograms
-                WHERE ProgramId = @ProgramId AND Status = 'A'";
+                WHERE ProgramId = @ProgramId AND Status = '1'";
             
             var program = await connection.QueryFirstOrDefaultAsync<dynamic>(
                 programSql, 
@@ -68,10 +68,10 @@ public class ProgramRolePermissionService : BaseService, IProgramRolePermissionS
                 INNER JOIN RoleButtons RB ON CB.ButtonId = RB.ButtonId
                 INNER JOIN Roles R ON RB.RoleId = R.RoleId
                 WHERE CB.ProgramId = @ProgramId
-                    AND CB.Status = '1'
-                    AND R.Status = '1'
                     AND RB.RoleId IS NOT NULL
                     AND RB.UserId IS NULL
+                    AND CB.Status = '1'
+                    AND R.Status = '1'
                 ORDER BY R.RoleId, CB.PageId, CB.ButtonId";
 
             var results = await connection.QueryAsync<dynamic>(

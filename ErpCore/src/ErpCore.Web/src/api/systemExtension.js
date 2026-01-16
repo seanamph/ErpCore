@@ -44,6 +44,13 @@ export const systemExtensionApi = {
     return axios.get('/system-extensions/statistics', { params })
   },
 
+  // 匯出系統擴展資料到 Excel
+  exportToExcel: (data) => {
+    return axios.post('/system-extensions/export', data, {
+      responseType: 'blob'
+    })
+  },
+
   // ========== SYSX140 - 系統擴展報表 ==========
 
   // 查詢報表資料

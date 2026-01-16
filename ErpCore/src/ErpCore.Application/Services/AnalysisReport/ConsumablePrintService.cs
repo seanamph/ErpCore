@@ -1,6 +1,8 @@
+using Dapper;
 using ErpCore.Application.DTOs.AnalysisReport;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.AnalysisReport;
+using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.AnalysisReport;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -13,13 +15,16 @@ namespace ErpCore.Application.Services.AnalysisReport;
 public class ConsumablePrintService : BaseService, IConsumablePrintService
 {
     private readonly IConsumablePrintRepository _repository;
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public ConsumablePrintService(
         IConsumablePrintRepository repository,
+        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _connectionFactory = connectionFactory;
     }
 
     public async Task<ConsumablePrintListDto> GetPrintListAsync(ConsumablePrintQueryDto query)
@@ -37,12 +42,45 @@ public class ConsumablePrintService : BaseService, IConsumablePrintService
 
             var consumables = await _repository.GetConsumablesForPrintAsync(repositoryQuery);
 
+            // 批量查詢分類名稱
+            var categoryIds = consumables.Where(x => !string.IsNullOrEmpty(x.CategoryId))
+                .Select(x => x.CategoryId!)
+                .Distinct()
+                .ToList();
+            var categoryNameMap = new Dictionary<string, string>();
+            if (categoryIds.Any())
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                var sql = "SELECT CategoryId, CategoryName FROM ConsumableCategories WHERE CategoryId IN @CategoryIds";
+                var categories = await connection.QueryAsync<(string CategoryId, string CategoryName)>(sql, new { CategoryIds = categoryIds });
+                categoryNameMap = categories.ToDictionary(x => x.CategoryId, x => x.CategoryName);
+            }
+
+            // 批量查詢店別名稱
+            var siteIds = consumables.Where(x => !string.IsNullOrEmpty(x.SiteId))
+                .Select(x => x.SiteId!)
+                .Distinct()
+                .ToList();
+            var siteNameMap = new Dictionary<string, string>();
+            if (siteIds.Any())
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                // 嘗試從 Sites 表查詢，如果不存在則從 Shops 表查詢
+                var sql = @"
+                    SELECT SiteId, SiteName FROM Sites WHERE SiteId IN @SiteIds
+                    UNION
+                    SELECT ShopId AS SiteId, ShopName AS SiteName FROM Shops WHERE ShopId IN @SiteIds";
+                var sites = await connection.QueryAsync<(string SiteId, string SiteName)>(sql, new { SiteIds = siteIds });
+                siteNameMap = sites.ToDictionary(x => x.SiteId, x => x.SiteName);
+            }
+
             var items = consumables.Select(x => new ConsumablePrintItemDto
             {
                 ConsumableId = x.ConsumableId,
                 ConsumableName = x.ConsumableName,
                 BarCode = x.BarCode,
-                CategoryName = null, // 需要從關聯表取得
+                CategoryName = !string.IsNullOrEmpty(x.CategoryId) && categoryNameMap.ContainsKey(x.CategoryId) 
+                    ? categoryNameMap[x.CategoryId] : null,
                 Unit = x.Unit,
                 Specification = x.Specification,
                 Brand = x.Brand,
@@ -51,7 +89,8 @@ public class ConsumablePrintService : BaseService, IConsumablePrintService
                 StatusName = x.Status == "1" ? "正常" : "停用",
                 AssetStatus = x.AssetStatus,
                 SiteId = x.SiteId,
-                SiteName = null, // 需要從關聯表取得
+                SiteName = !string.IsNullOrEmpty(x.SiteId) && siteNameMap.ContainsKey(x.SiteId) 
+                    ? siteNameMap[x.SiteId] : null,
                 Location = x.Location,
                 Quantity = x.Quantity,
                 Price = x.Price

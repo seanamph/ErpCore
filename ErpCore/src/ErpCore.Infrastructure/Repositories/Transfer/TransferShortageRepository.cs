@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.Transfer;
 
 /// <summary>
-/// 調撥短溢單 Repository 實作
+/// 調撥短溢單 Repository 實作 (SYSW384)
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class TransferShortageRepository : BaseRepository, ITransferShortageRepository
@@ -64,6 +64,12 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
         {
             sql += " AND TransferId LIKE @TransferId";
             parameters.Add("TransferId", $"%{query.TransferId}%");
+        }
+
+        if (!string.IsNullOrEmpty(query.ReceiptId))
+        {
+            sql += " AND ReceiptId LIKE @ReceiptId";
+            parameters.Add("ReceiptId", $"%{query.ReceiptId}%");
         }
 
         if (!string.IsNullOrEmpty(query.FromShopId))
@@ -129,6 +135,12 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
         {
             sql += " AND TransferId LIKE @TransferId";
             parameters.Add("TransferId", $"%{query.TransferId}%");
+        }
+
+        if (!string.IsNullOrEmpty(query.ReceiptId))
+        {
+            sql += " AND ReceiptId LIKE @ReceiptId";
+            parameters.Add("ReceiptId", $"%{query.ReceiptId}%");
         }
 
         if (!string.IsNullOrEmpty(query.FromShopId))
@@ -249,6 +261,8 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
                     ProcessType = @ProcessType,
                     ProcessUserId = @ProcessUserId,
                     ProcessDate = @ProcessDate,
+                    ApproveUserId = @ApproveUserId,
+                    ApproveDate = @ApproveDate,
                     TotalShortageQty = @TotalShortageQty,
                     TotalAmount = @TotalAmount,
                     ShortageReason = @ShortageReason,
@@ -266,7 +280,10 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
             // 新增新明細
             foreach (var detail in details)
             {
-                detail.DetailId = Guid.NewGuid();
+                if (detail.DetailId.Equals(Guid.Empty))
+                {
+                    detail.DetailId = Guid.NewGuid();
+                }
                 detail.CreatedAt = DateTime.Now;
 
                 const string insertDetailSql = @"
@@ -323,7 +340,7 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
     /// <summary>
     /// 更新狀態
     /// </summary>
-    public async Task UpdateStatusAsync(string shortageId, string status, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string shortageId, string status, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -379,7 +396,7 @@ public class TransferShortageRepository : BaseRepository, ITransferShortageRepos
     /// <summary>
     /// 產生短溢單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateShortageIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateShortageIdAsync(global::System.Data.IDbConnection connection, global::System.Data.IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 ShortageId 

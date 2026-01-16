@@ -45,7 +45,7 @@ public interface IConfigProgramRepository
 }
 
 /// <summary>
-/// 系統作業查詢條件
+/// 作業查詢條件
 /// </summary>
 public class ConfigProgramQuery
 {
@@ -59,4 +59,3 @@ public class ConfigProgramQuery
     public string? SubSystemId { get; set; }
     public string? Status { get; set; }
 }
-

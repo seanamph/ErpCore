@@ -181,7 +181,7 @@ public class B2BSalesOrderRepository : BaseRepository, IB2BSalesOrderRepository
 
             return new PagedResult<B2BSalesOrder>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

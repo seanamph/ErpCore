@@ -47,7 +47,7 @@ public class VendorRepository : BaseRepository, IVendorRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError($"查詢廠商失敗(統一編號): {guiId}", ex);
+            _logger.LogError($"查詢廠商失敗: {guiId}", ex);
             throw;
         }
     }
@@ -297,10 +297,10 @@ public class VendorRepository : BaseRepository, IVendorRepository
             const string sql = @"
                 SELECT ISNULL(MAX(CAST(SUBSTRING(VendorId, LEN(@GuiId) + 2, LEN(VendorId)) AS INT)), 0) + 1
                 FROM Vendors
-                WHERE VendorId LIKE @GuiIdPattern";
+                WHERE GuiId = @GuiId AND VendorId LIKE @Pattern";
 
-            var guiIdPattern = $"{guiId}-%";
-            var sequence = await QuerySingleAsync<int>(sql, new { GuiId = guiId, GuiIdPattern = guiIdPattern });
+            var pattern = $"{guiId}-%";
+            var sequence = await QuerySingleAsync<int>(sql, new { GuiId = guiId, Pattern = pattern });
             return sequence;
         }
         catch (Exception ex)
@@ -310,4 +310,3 @@ public class VendorRepository : BaseRepository, IVendorRepository
         }
     }
 }
-

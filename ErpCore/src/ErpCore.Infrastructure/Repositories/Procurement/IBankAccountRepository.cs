@@ -3,7 +3,7 @@ using ErpCore.Domain.Entities.Procurement;
 namespace ErpCore.Infrastructure.Repositories.Procurement;
 
 /// <summary>
-/// 銀行帳戶 Repository 介面
+/// 銀行帳戶 Repository 介面 (銀行帳戶維護)
 /// </summary>
 public interface IBankAccountRepository
 {
@@ -15,11 +15,7 @@ public interface IBankAccountRepository
     Task<BankAccount> CreateAsync(BankAccount bankAccount);
     Task<BankAccount> UpdateAsync(BankAccount bankAccount);
     Task DeleteAsync(string bankAccountId);
-    
-    /// <summary>
-    /// 計算銀行帳戶餘額（從付款單等相關表計算）
-    /// </summary>
-    Task<decimal> CalculateBalanceAsync(string bankAccountId);
+    Task<decimal?> GetBalanceAsync(string bankAccountId);
 }
 
 /// <summary>
@@ -36,5 +32,6 @@ public class BankAccountQuery
     public string? AccountType { get; set; }
     public string? CurrencyId { get; set; }
     public string? Status { get; set; }
+    public string? SortField { get; set; }
+    public string? SortOrder { get; set; }
 }
-

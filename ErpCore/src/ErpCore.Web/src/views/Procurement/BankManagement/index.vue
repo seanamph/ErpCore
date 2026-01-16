@@ -1,44 +1,44 @@
 <template>
   <div class="procurement-bank-management">
     <div class="page-header">
-      <h1>?ÄË°åÁÆ°??/h1>
+      <h1>??????/h1>
     </div>
 
-    <!-- ?•Ë©¢Ë°®ÂñÆ -->
+    <!-- ????? -->
     <el-card class="search-card" shadow="never">
       <el-form :inline="true" :model="queryForm" class="search-form">
-        <el-form-item label="?ÄË°åÂ∏≥?∂‰ª£??>
-          <el-input v-model="queryForm.BankAccountId" placeholder="Ë´ãËº∏?•È?Ë°åÂ∏≥?∂‰ª£?? clearable />
+        <el-form-item label="?????????>
+          <el-input v-model="queryForm.BankAccountId" placeholder="????????????? clearable />
         </el-form-item>
-        <el-form-item label="?ÄË°å‰ª£??>
-          <el-input v-model="queryForm.BankId" placeholder="Ë´ãËº∏?•È?Ë°å‰ª£?? clearable />
+        <el-form-item label="??????>
+          <el-input v-model="queryForm.BankId" placeholder="?????????? clearable />
         </el-form-item>
-        <el-form-item label="Â∏≥Êà∂?çÁ®±">
-          <el-input v-model="queryForm.AccountName" placeholder="Ë´ãËº∏?•Â∏≥?∂Â?Á®? clearable />
+        <el-form-item label="?????">
+          <el-input v-model="queryForm.AccountName" placeholder="??????????? clearable />
         </el-form-item>
-        <el-form-item label="Â∏≥Êà∂È°ûÂ?">
-          <el-select v-model="queryForm.AccountType" placeholder="Ë´ãÈÅ∏?áÂ∏≥?∂È??? clearable>
-            <el-option label="Ê¥ªÊ?Â≠òÊ¨æ" value="CHECKING" />
-            <el-option label="ÂÆöÊ?Â≠òÊ¨æ" value="SAVINGS" />
-            <el-option label="Â§ñÂπ£Â∏≥Êà∂" value="FOREIGN" />
-            <el-option label="?∂‰?" value="OTHER" />
+        <el-form-item label="?????">
+          <el-select v-model="queryForm.AccountType" placeholder="??????????? clearable>
+            <el-option label="?????" value="CHECKING" />
+            <el-option label="?????" value="SAVINGS" />
+            <el-option label="????" value="FOREIGN" />
+            <el-option label="????" value="OTHER" />
           </el-select>
         </el-form-item>
-        <el-form-item label="?Ä??>
-          <el-select v-model="queryForm.Status" placeholder="Ë´ãÈÅ∏?áÁ??? clearable>
-            <el-option label="?üÁî®" value="A" />
-            <el-option label="?úÁî®" value="I" />
+        <el-form-item label="????>
+          <el-select v-model="queryForm.Status" placeholder="???????? clearable>
+            <el-option label="???" value="A" />
+            <el-option label="???" value="I" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleSearch">?•Ë©¢</el-button>
-          <el-button @click="handleReset">?çÁΩÆ</el-button>
-          <el-button type="success" @click="handleCreate">?∞Â?</el-button>
+          <el-button type="primary" @click="handleSearch">???</el-button>
+          <el-button @click="handleReset">???</el-button>
+          <el-button type="success" @click="handleCreate">????</el-button>
         </el-form-item>
       </el-form>
     </el-card>
 
-    <!-- Ë≥áÊ?Ë°®Ê†º -->
+    <!-- ????? -->
     <el-card class="table-card" shadow="never">
       <el-table
         :data="tableData"
@@ -47,35 +47,35 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="BankAccountId" label="?ÄË°åÂ∏≥?∂‰ª£?? width="150" />
-        <el-table-column prop="BankId" label="?ÄË°å‰ª£?? width="120" />
-        <el-table-column prop="BankName" label="?ÄË°åÂ?Á®? width="200" />
-        <el-table-column prop="AccountName" label="Â∏≥Êà∂?çÁ®±" width="200" />
-        <el-table-column prop="AccountNumber" label="Â∏≥Êà∂?üÁ¢º" width="200" />
-        <el-table-column prop="AccountType" label="Â∏≥Êà∂È°ûÂ?" width="120">
+        <el-table-column prop="BankAccountId" label="????????? width="150" />
+        <el-table-column prop="BankId" label="?????? width="120" />
+        <el-table-column prop="BankName" label="??????? width="200" />
+        <el-table-column prop="AccountName" label="?????" width="200" />
+        <el-table-column prop="AccountNumber" label="?????" width="200" />
+        <el-table-column prop="AccountType" label="?????" width="120">
           <template #default="{ row }">
             {{ getAccountTypeName(row.AccountType) }}
           </template>
         </el-table-column>
-        <el-table-column prop="CurrencyId" label="Âπ?à•" width="80" />
-        <el-table-column prop="Status" label="?Ä?? width="100">
+        <el-table-column prop="CurrencyId" label="????" width="80" />
+        <el-table-column prop="Status" label="???? width="100">
           <template #default="{ row }">
             <el-tag :type="row.Status === 'A' ? 'success' : 'danger'">
-              {{ row.Status === 'A' ? '?üÁî®' : '?úÁî®' }}
+              {{ row.Status === 'A' ? '???' : '???' }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="?ç‰?" width="250" fixed="right">
+        <el-table-column label="????" width="250" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" size="small" @click="handleView(row)">?•Á?</el-button>
-            <el-button type="warning" size="small" @click="handleEdit(row)">‰øÆÊîπ</el-button>
-            <el-button type="info" size="small" @click="handleViewBalance(row)">È§òÈ?</el-button>
-            <el-button type="danger" size="small" @click="handleDelete(row)">?™Èô§</el-button>
+            <el-button type="primary" size="small" @click="handleView(row)">????</el-button>
+            <el-button type="warning" size="small" @click="handleEdit(row)">??</el-button>
+            <el-button type="info" size="small" @click="handleViewBalance(row)">???</el-button>
+            <el-button type="danger" size="small" @click="handleDelete(row)">???</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <!-- ?ÜÈ? -->
+      <!-- ???? -->
       <el-pagination
         v-model:current-page="pagination.PageIndex"
         v-model:page-size="pagination.PageSize"
@@ -88,7 +88,7 @@
       />
     </el-card>
 
-    <!-- ?∞Â?/‰øÆÊîπÂ∞çË©±Ê°?-->
+    <!-- ????/??????-->
     <el-dialog
       v-model="dialogVisible"
       :title="dialogTitle"
@@ -103,89 +103,89 @@
       >
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="?ÄË°åÂ∏≥?∂‰ª£?? prop="BankAccountId">
-              <el-input v-model="formData.BankAccountId" :disabled="isEdit" placeholder="Ë´ãËº∏?•È?Ë°åÂ∏≥?∂‰ª£?? />
+            <el-form-item label="????????? prop="BankAccountId">
+              <el-input v-model="formData.BankAccountId" :disabled="isEdit" placeholder="????????????? />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="?ÄË°å‰ª£?? prop="BankId">
-              <el-input v-model="formData.BankId" placeholder="Ë´ãËº∏?•È?Ë°å‰ª£?? />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="Â∏≥Êà∂?çÁ®±" prop="AccountName">
-              <el-input v-model="formData.AccountName" placeholder="Ë´ãËº∏?•Â∏≥?∂Â?Á®? />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="Â∏≥Êà∂?üÁ¢º" prop="AccountNumber">
-              <el-input v-model="formData.AccountNumber" placeholder="Ë´ãËº∏?•Â∏≥?∂Ë?Á¢? />
+            <el-form-item label="?????? prop="BankId">
+              <el-input v-model="formData.BankId" placeholder="?????????? />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="Â∏≥Êà∂È°ûÂ?" prop="AccountType">
-              <el-select v-model="formData.AccountType" placeholder="Ë´ãÈÅ∏?áÂ∏≥?∂È??? style="width: 100%">
-                <el-option label="Ê¥ªÊ?Â≠òÊ¨æ" value="CHECKING" />
-                <el-option label="ÂÆöÊ?Â≠òÊ¨æ" value="SAVINGS" />
-                <el-option label="Â§ñÂπ£Â∏≥Êà∂" value="FOREIGN" />
-                <el-option label="?∂‰?" value="OTHER" />
+            <el-form-item label="?????" prop="AccountName">
+              <el-input v-model="formData.AccountName" placeholder="??????????? />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="?????" prop="AccountNumber">
+              <el-input v-model="formData.AccountNumber" placeholder="??????????? />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="?????" prop="AccountType">
+              <el-select v-model="formData.AccountType" placeholder="??????????? style="width: 100%">
+                <el-option label="?????" value="CHECKING" />
+                <el-option label="?????" value="SAVINGS" />
+                <el-option label="????" value="FOREIGN" />
+                <el-option label="????" value="OTHER" />
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="Âπ?à•" prop="CurrencyId">
-              <el-input v-model="formData.CurrencyId" placeholder="Ë´ãËº∏?•Âπ£?? />
+            <el-form-item label="????" prop="CurrencyId">
+              <el-input v-model="formData.CurrencyId" placeholder="??????? />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="?Ä?? prop="Status">
-              <el-select v-model="formData.Status" placeholder="Ë´ãÈÅ∏?áÁ??? style="width: 100%">
-                <el-option label="?üÁî®" value="A" />
-                <el-option label="?úÁî®" value="I" />
+            <el-form-item label="???? prop="Status">
+              <el-select v-model="formData.Status" placeholder="???????? style="width: 100%">
+                <el-option label="???" value="A" />
+                <el-option label="???" value="I" />
               </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="?ôË®ª" prop="Memo">
-              <el-input v-model="formData.Memo" type="textarea" :rows="3" placeholder="Ë´ãËº∏?•Â?Ë®? />
+            <el-form-item label="???" prop="Memo">
+              <el-input v-model="formData.Memo" type="textarea" :rows="3" placeholder="???????? />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
 
       <template #footer>
-        <el-button @click="dialogVisible = false">?ñÊ?</el-button>
-        <el-button type="primary" @click="handleSubmit">Á¢∫Â?</el-button>
+        <el-button @click="dialogVisible = false">????</el-button>
+        <el-button type="primary" @click="handleSubmit">???</el-button>
       </template>
     </el-dialog>
 
-    <!-- È§òÈ??•Ë©¢Â∞çË©±Ê°?-->
+    <!-- ??????????-->
     <el-dialog
       v-model="balanceDialogVisible"
-      title="?ÄË°åÂ∏≥?∂È?È°?
+      title="??????????
       width="500px"
     >
       <el-descriptions :column="1" border>
-        <el-descriptions-item label="?ÄË°åÂ∏≥?∂‰ª£??>{{ balanceData.BankAccountId }}</el-descriptions-item>
-        <el-descriptions-item label="Â∏≥Êà∂?çÁ®±">{{ balanceData.AccountName }}</el-descriptions-item>
-        <el-descriptions-item label="Âπ?à•">{{ balanceData.CurrencyId }}</el-descriptions-item>
-        <el-descriptions-item label="È§òÈ?">
+        <el-descriptions-item label="?????????>{{ balanceData.BankAccountId }}</el-descriptions-item>
+        <el-descriptions-item label="?????">{{ balanceData.AccountName }}</el-descriptions-item>
+        <el-descriptions-item label="????">{{ balanceData.CurrencyId }}</el-descriptions-item>
+        <el-descriptions-item label="???">
           <span style="font-size: 18px; font-weight: bold; color: $primary-color;">
             {{ formatCurrency(balanceData.Balance) }}
           </span>
         </el-descriptions-item>
-        <el-descriptions-item label="?•Ë©¢?ÇÈ?">{{ formatDateTime(balanceData.QueryTime) }}</el-descriptions-item>
+        <el-descriptions-item label="???????">{{ formatDateTime(balanceData.QueryTime) }}</el-descriptions-item>
       </el-descriptions>
       <template #footer>
-        <el-button @click="balanceDialogVisible = false">?úÈ?</el-button>
+        <el-button @click="balanceDialogVisible = false">????</el-button>
       </template>
     </el-dialog>
   </div>
@@ -207,7 +207,7 @@ export default {
     const tableData = ref([])
     const balanceData = ref({})
 
-    // ?•Ë©¢Ë°®ÂñÆ
+    // ?????
     const queryForm = reactive({
       BankAccountId: '',
       BankId: '',
@@ -218,14 +218,14 @@ export default {
       PageSize: 20
     })
 
-    // ?ÜÈ?Ë≥áË?
+    // ???????
     const pagination = reactive({
       PageIndex: 1,
       PageSize: 20,
       TotalCount: 0
     })
 
-    // Ë°®ÂñÆË≥áÊ?
+    // ?????
     const formData = reactive({
       BankAccountId: '',
       BankId: '',
@@ -237,45 +237,45 @@ export default {
       Memo: ''
     })
 
-    // Ë°®ÂñÆÈ©óË?Ë¶èÂ?
+    // ????????
     const formRules = {
-      BankAccountId: [{ required: true, message: 'Ë´ãËº∏?•È?Ë°åÂ∏≥?∂‰ª£??, trigger: 'blur' }],
-      BankId: [{ required: true, message: 'Ë´ãËº∏?•È?Ë°å‰ª£??, trigger: 'blur' }],
-      AccountName: [{ required: true, message: 'Ë´ãËº∏?•Â∏≥?∂Â?Á®?, trigger: 'blur' }],
-      AccountNumber: [{ required: true, message: 'Ë´ãËº∏?•Â∏≥?∂Ë?Á¢?, trigger: 'blur' }],
-      Status: [{ required: true, message: 'Ë´ãÈÅ∏?áÁ???, trigger: 'change' }]
+      BankAccountId: [{ required: true, message: '?????????????, trigger: 'blur' }],
+      BankId: [{ required: true, message: '??????????, trigger: 'blur' }],
+      AccountName: [{ required: true, message: '???????????, trigger: 'blur' }],
+      AccountNumber: [{ required: true, message: '???????????, trigger: 'blur' }],
+      Status: [{ required: true, message: '????????, trigger: 'change' }]
     }
 
-    // Â∞çË©±Ê°ÜÊ?È°?
+    // ???????
     const dialogTitle = computed(() => {
-      return isEdit.value ? '‰øÆÊîπ?ÄË°åÂ∏≥?? : '?∞Â??ÄË°åÂ∏≥??
+      return isEdit.value ? '???????? : '??????????
     })
 
-    // ?ñÂ?Â∏≥Êà∂È°ûÂ??çÁ®±
+    // ????????????
     const getAccountTypeName = (type) => {
       const types = {
-        'CHECKING': 'Ê¥ªÊ?Â≠òÊ¨æ',
-        'SAVINGS': 'ÂÆöÊ?Â≠òÊ¨æ',
-        'FOREIGN': 'Â§ñÂπ£Â∏≥Êà∂',
-        'OTHER': '?∂‰?'
+        'CHECKING': '?????',
+        'SAVINGS': '?????',
+        'FOREIGN': '????',
+        'OTHER': '????'
       }
       return types[type] || type
     }
 
-    // ?ºÂ??ñË≤®Âπ?
+    // ?????????
     const formatCurrency = (amount) => {
       if (!amount) return '0.00'
       return Number(amount).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     }
 
-    // ?ºÂ??ñÊó•?üÊ???
+    // ?????????????
     const formatDateTime = (date) => {
       if (!date) return ''
       const d = new Date(date)
       return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:${String(d.getSeconds()).padStart(2, '0')}`
     }
 
-    // ?•Ë©¢Ë≥áÊ?
+    // ??????
     const loadData = async () => {
       loading.value = true
       try {
@@ -284,7 +284,7 @@ export default {
           PageIndex: pagination.PageIndex,
           PageSize: pagination.PageSize
         }
-        // ÁßªÈô§Á©∫ÂÄ?
+        // ?????
         Object.keys(params).forEach(key => {
           if (params[key] === '' || params[key] === null) {
             delete params[key]
@@ -296,19 +296,19 @@ export default {
           pagination.TotalCount = response.Data.TotalCount || 0
         }
       } catch (error) {
-        ElMessage.error('?•Ë©¢Â§±Ê?: ' + (error.message || '?™Áü•?ØË™§'))
+        ElMessage.error('??????: ' + (error.message || '??????'))
       } finally {
         loading.value = false
       }
     }
 
-    // ?•Ë©¢
+    // ???
     const handleSearch = () => {
       pagination.PageIndex = 1
       loadData()
     }
 
-    // ?çÁΩÆ
+    // ???
     const handleReset = () => {
       Object.assign(queryForm, {
         BankAccountId: '',
@@ -320,7 +320,7 @@ export default {
       handleSearch()
     }
 
-    // ?∞Â?
+    // ????
     const handleCreate = () => {
       isEdit.value = false
       dialogVisible.value = true
@@ -330,13 +330,22 @@ export default {
         AccountName: '',
         AccountNumber: '',
         AccountType: '',
-        CurrencyId: '',
-        Status: 'A',
-        Memo: ''
+        CurrencyId: 'TWD',
+        Status: '1',
+        Balance: null,
+        OpeningDate: null,
+        ClosingDate: null,
+        ContactPerson: '',
+        ContactPhone: '',
+        ContactEmail: '',
+        BranchName: '',
+        BranchCode: '',
+        SwiftCode: '',
+        Notes: ''
       })
     }
 
-    // ?•Á?
+    // ????
     const handleView = async (row) => {
       try {
         const response = await procurementApi.getBank(row.BankAccountId)
@@ -346,16 +355,16 @@ export default {
           dialogVisible.value = true
         }
       } catch (error) {
-        ElMessage.error('?•Ë©¢Â§±Ê?: ' + (error.message || '?™Áü•?ØË™§'))
+        ElMessage.error('??????: ' + (error.message || '??????'))
       }
     }
 
-    // ‰øÆÊîπ
+    // ??
     const handleEdit = async (row) => {
       await handleView(row)
     }
 
-    // ?•Á?È§òÈ?
+    // ???????
     const handleViewBalance = async (row) => {
       try {
         const response = await procurementApi.getBankBalance(row.BankAccountId)
@@ -370,33 +379,33 @@ export default {
           balanceDialogVisible.value = true
         }
       } catch (error) {
-        ElMessage.error('?•Ë©¢È§òÈ?Â§±Ê?: ' + (error.message || '?™Áü•?ØË™§'))
+        ElMessage.error('?????????: ' + (error.message || '??????'))
       }
     }
 
-    // ?™Èô§
+    // ???
     const handleDelete = async (row) => {
       try {
         await ElMessageBox.confirm(
-          `Á¢∫Â?Ë¶ÅÂà™?§È?Ë°åÂ∏≥?∂„Ä?{row.AccountName}?çÂ?Ôºü`,
-          'Á¢∫Ë??™Èô§',
+          `???????????????{row.AccountName}?????`,
+          '??????',
           {
-            confirmButtonText: 'Á¢∫Â?',
-            cancelButtonText: '?ñÊ?',
+            confirmButtonText: '???',
+            cancelButtonText: '????',
             type: 'warning'
           }
         )
         await procurementApi.deleteBank(row.BankAccountId)
-        ElMessage.success('?™Èô§?êÂ?')
+        ElMessage.success('???????')
         loadData()
       } catch (error) {
         if (error !== 'cancel') {
-          ElMessage.error('?™Èô§Â§±Ê?: ' + (error.message || '?™Áü•?ØË™§'))
+          ElMessage.error('??????: ' + (error.message || '??????'))
         }
       }
     }
 
-    // ?ê‰∫§
+    // ???
     const handleSubmit = async () => {
       if (!formRef.value) return
       try {
@@ -404,34 +413,34 @@ export default {
         if (isEdit.value) {
           const { BankAccountId, ...updateData } = formData
           await procurementApi.updateBank(BankAccountId, updateData)
-          ElMessage.success('‰øÆÊîπ?êÂ?')
+          ElMessage.success('??????')
         } else {
           await procurementApi.createBank(formData)
-          ElMessage.success('?∞Â??êÂ?')
+          ElMessage.success('????????')
         }
         dialogVisible.value = false
         loadData()
       } catch (error) {
         if (error !== false) {
-          ElMessage.error((isEdit.value ? '‰øÆÊîπ' : '?∞Â?') + 'Â§±Ê?: ' + (error.message || '?™Áü•?ØË™§'))
+          ElMessage.error((isEdit.value ? '??' : '????') + '???: ' + (error.message || '??????'))
         }
       }
     }
 
-    // ?ÜÈ?Â§ßÂ?ËÆäÊõ¥
+    // ?????????
     const handleSizeChange = (size) => {
       pagination.PageSize = size
       pagination.PageIndex = 1
       loadData()
     }
 
-    // ?ÜÈ?ËÆäÊõ¥
+    // ??????
     const handlePageChange = (page) => {
       pagination.PageIndex = page
       loadData()
     }
 
-    // ?ùÂ???
+    // ??????
     onMounted(() => {
       loadData()
     })
@@ -450,6 +459,7 @@ export default {
       formRules,
       dialogTitle,
       getAccountTypeName,
+      getStatusName,
       formatCurrency,
       formatDateTime,
       handleSearch,

@@ -745,6 +745,60 @@ public class AnalysisReportsController : BaseController
     }
 
     /// <summary>
+    /// 查詢工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    [HttpGet("sysa1024")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSA1024ReportDto>>>> GetSYSA1024Report(
+        [FromQuery] SYSA1024QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSA1024ReportAsync(query);
+            return result;
+        }, "查詢工務維修統計報表(其他)失敗");
+    }
+
+    /// <summary>
+    /// 匯出工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    [HttpPost("sysa1024/export")]
+    public async Task<IActionResult> ExportSYSA1024Report(
+        [FromBody] SYSA1024QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSA1024ReportAsync(query, format);
+            var fileName = $"SYSA1024_工務維修統計報表(其他)_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表(其他)失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出工務維修統計報表(其他)失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    [HttpPost("sysa1024/print")]
+    public async Task<IActionResult> PrintSYSA1024Report([FromBody] SYSA1024QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSA1024ReportAsync(query);
+            var fileName = $"SYSA1024_工務維修統計報表(其他)_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表(其他)失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印工務維修統計報表(其他)失敗" });
+        }
+    }
+
+    /// <summary>
     /// 查詢進銷存分析報表 (SYSA1000) - 通用查詢方法
     /// </summary>
     [HttpGet("{reportId}")]
@@ -801,6 +855,115 @@ public class AnalysisReportsController : BaseController
         {
             _logger.LogError($"列印進銷存分析報表失敗: {reportId}", ex);
             return BadRequest(new ApiResponse { Success = false, Message = $"列印進銷存分析報表失敗: {reportId}" });
+        }
+    }
+
+    /// <summary>
+    /// 查詢庫存分析報表 (SYSWC10)
+    /// </summary>
+    [HttpGet("syswc10")]
+    public async Task<ActionResult<ApiResponse<PagedResult<SYSWC10ReportDto>>>> GetSYSWC10Report(
+        [FromQuery] SYSWC10QueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSYSWC10ReportAsync(query);
+            return result;
+        }, "查詢庫存分析報表失敗");
+    }
+
+    /// <summary>
+    /// 匯出庫存分析報表 (SYSWC10)
+    /// </summary>
+    [HttpPost("syswc10/export")]
+    public async Task<IActionResult> ExportSYSWC10Report(
+        [FromBody] SYSWC10QueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSYSWC10ReportAsync(query, format);
+            var fileName = $"SYSWC10_庫存分析報表_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            var contentType = format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf";
+            return File(fileBytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出庫存分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出庫存分析報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印庫存分析報表 (SYSWC10)
+    /// </summary>
+    [HttpPost("syswc10/print")]
+    public async Task<IActionResult> PrintSYSWC10Report([FromBody] SYSWC10QueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSYSWC10ReportAsync(query);
+            var fileName = $"SYSWC10_庫存分析報表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印庫存分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印庫存分析報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 查詢銷售分析報表
+    /// </summary>
+    [HttpGet("sales")]
+    public async Task<ActionResult<ApiResponse<SalesAnalysisReportResult>>> GetSalesAnalysisReport(
+        [FromQuery] SalesAnalysisQueryDto query)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetSalesAnalysisReportAsync(query);
+            return result;
+        }, "查詢銷售分析報表失敗");
+    }
+
+    /// <summary>
+    /// 匯出銷售分析報表
+    /// </summary>
+    [HttpPost("sales/export")]
+    public async Task<IActionResult> ExportSalesAnalysisReport(
+        [FromBody] SalesAnalysisQueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportSalesAnalysisReportAsync(query, format);
+            var fileName = $"銷售分析報表_{DateTime.Now:yyyyMMddHHmmss}.{(format == "excel" ? "xlsx" : "pdf")}";
+            return File(fileBytes, format == "excel" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出銷售分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "匯出銷售分析報表失敗" });
+        }
+    }
+
+    /// <summary>
+    /// 列印銷售分析報表
+    /// </summary>
+    [HttpPost("sales/print")]
+    public async Task<IActionResult> PrintSalesAnalysisReport([FromBody] SalesAnalysisQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintSalesAnalysisReportAsync(query);
+            var fileName = $"銷售分析報表_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印銷售分析報表失敗", ex);
+            return BadRequest(new ApiResponse { Success = false, Message = "列印銷售分析報表失敗" });
         }
     }
 }

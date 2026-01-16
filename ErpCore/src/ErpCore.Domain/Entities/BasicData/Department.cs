@@ -65,4 +65,3 @@ public class Department
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

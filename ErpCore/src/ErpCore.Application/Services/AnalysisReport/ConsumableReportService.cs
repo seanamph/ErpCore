@@ -1,5 +1,7 @@
+using Dapper;
 using ErpCore.Application.DTOs.AnalysisReport;
 using ErpCore.Application.Services.Base;
+using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.AnalysisReport;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -13,15 +15,21 @@ public class ConsumableReportService : BaseService, IConsumableReportService
 {
     private readonly IConsumableReportRepository _reportRepository;
     private readonly IConsumableTransactionRepository _transactionRepository;
+    private readonly ExportHelper _exportHelper;
+    private readonly IDbConnectionFactory _connectionFactory;
 
     public ConsumableReportService(
         IConsumableReportRepository reportRepository,
         IConsumableTransactionRepository transactionRepository,
+        ExportHelper exportHelper,
+        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _reportRepository = reportRepository;
         _transactionRepository = transactionRepository;
+        _exportHelper = exportHelper;
+        _connectionFactory = connectionFactory;
     }
 
     public async Task<ConsumableReportResponseDto> GetReportAsync(ConsumableReportQueryDto query)
@@ -122,18 +130,40 @@ public class ConsumableReportService : BaseService, IConsumableReportService
 
             var reportData = await GetReportAsync(query);
 
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ConsumableId", DisplayName = "耗材編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ConsumableName", DisplayName = "耗材名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CategoryName", DisplayName = "分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "WarehouseName", DisplayName = "庫別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Specification", DisplayName = "規格", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Brand", DisplayName = "品牌", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Model", DisplayName = "型號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BarCode", DisplayName = "條碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StatusName", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "AssetStatusName", DisplayName = "資產狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Location", DisplayName = "位置", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CurrentQty", DisplayName = "當前庫存數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CurrentAmt", DisplayName = "當前庫存金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InQty", DisplayName = "入庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutQty", DisplayName = "出庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InAmt", DisplayName = "入庫金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutAmt", DisplayName = "出庫金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "MinQuantity", DisplayName = "最小庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "MaxQuantity", DisplayName = "最大庫存量", DataType = ExportDataType.Decimal }
+            };
+
             // 根據匯出類型生成檔案
             if (exportDto.ExportType == "Excel")
             {
-                // TODO: 實作 Excel 匯出邏輯
-                // 可以使用 EPPlus 或 ClosedXML 等套件
-                throw new NotImplementedException("Excel 匯出功能尚未實作");
+                return _exportHelper.ExportToExcel(reportData.Items, columns, "耗材管理報表", "耗材管理報表 (SYSA255)");
             }
             else if (exportDto.ExportType == "PDF")
             {
-                // TODO: 實作 PDF 匯出邏輯
-                // 可以使用 iTextSharp 或 QuestPDF 等套件
-                throw new NotImplementedException("PDF 匯出功能尚未實作");
+                return _exportHelper.ExportToPdf(reportData.Items, columns, "耗材管理報表 (SYSA255)");
             }
             else
             {
@@ -165,6 +195,40 @@ public class ConsumableReportService : BaseService, IConsumableReportService
 
             var result = await _transactionRepository.GetTransactionsAsync(repositoryQuery);
 
+            // 批量查詢 SiteName
+            var siteIds = result.Items.Where(x => !string.IsNullOrEmpty(x.SiteId))
+                .Select(x => x.SiteId!)
+                .Distinct()
+                .ToList();
+            var siteNameMap = new Dictionary<string, string>();
+            if (siteIds.Any())
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                var sql = @"
+                    SELECT ShopId, ShopName FROM Shops WHERE ShopId IN @SiteIds
+                    UNION
+                    SELECT SiteId, SiteName FROM Sites WHERE SiteId IN @SiteIds";
+                var sites = await connection.QueryAsync<(string SiteId, string SiteName)>(sql, new { SiteIds = siteIds });
+                siteNameMap = sites.ToDictionary(x => x.SiteId, x => x.SiteName);
+            }
+
+            // 批量查詢 WarehouseName
+            var warehouseKeys = result.Items
+                .Where(x => !string.IsNullOrEmpty(x.SiteId) && !string.IsNullOrEmpty(x.WarehouseId))
+                .Select(x => (x.SiteId!, x.WarehouseId!))
+                .Distinct()
+                .ToList();
+            var warehouseNameMap = new Dictionary<(string SiteId, string WarehouseId), string>();
+            if (warehouseKeys.Any())
+            {
+                using var connection = _connectionFactory.CreateConnection();
+                var sql = "SELECT SiteId, WarehouseId, WarehouseName FROM Warehouses WHERE (SiteId, WarehouseId) IN @WarehouseKeys";
+                var warehouses = await connection.QueryAsync<(string SiteId, string WarehouseId, string WarehouseName)>(
+                    sql, 
+                    new { WarehouseKeys = warehouseKeys.Select(k => new { k.Item1, k.Item2 }).ToList() });
+                warehouseNameMap = warehouses.ToDictionary(x => (x.SiteId, x.WarehouseId), x => x.WarehouseName);
+            }
+
             var dtos = result.Items.Select(x => new ConsumableTransactionDto
             {
                 TransactionId = x.TransactionId,
@@ -176,9 +240,11 @@ public class ConsumableReportService : BaseService, IConsumableReportService
                 UnitPrice = x.UnitPrice,
                 Amount = x.Amount,
                 SiteId = x.SiteId,
-                SiteName = null, // 需要從關聯表取得
+                SiteName = !string.IsNullOrEmpty(x.SiteId) && siteNameMap.TryGetValue(x.SiteId, out var siteName) ? siteName : null,
                 WarehouseId = x.WarehouseId,
-                WarehouseName = null, // 需要從關聯表取得
+                WarehouseName = !string.IsNullOrEmpty(x.SiteId) && !string.IsNullOrEmpty(x.WarehouseId) 
+                    && warehouseNameMap.TryGetValue((x.SiteId, x.WarehouseId), out var warehouseName) 
+                    ? warehouseName : null,
                 SourceId = x.SourceId,
                 Notes = x.Notes,
                 CreatedBy = x.CreatedBy,

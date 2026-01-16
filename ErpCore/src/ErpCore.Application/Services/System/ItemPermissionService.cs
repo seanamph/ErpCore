@@ -36,7 +36,7 @@ public class ItemPermissionService : BaseService, IItemPermissionService
                 throw new InvalidOperationException($"項目不存在: {itemId}");
             }
 
-            var repositoryQuery = new ItemPermissionQuery
+            var repositoryQuery = new ItemPermissionQueryModel
             {
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,

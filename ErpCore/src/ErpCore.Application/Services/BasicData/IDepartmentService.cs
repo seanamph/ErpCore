@@ -16,7 +16,7 @@ public interface IDepartmentService
     /// <summary>
     /// 查詢單筆部別
     /// </summary>
-    Task<DepartmentDto> GetDepartmentByIdAsync(string deptId);
+    Task<DepartmentDto> GetDepartmentAsync(string deptId);
 
     /// <summary>
     /// 新增部別
@@ -41,6 +41,5 @@ public interface IDepartmentService
     /// <summary>
     /// 更新部別狀態
     /// </summary>
-    Task UpdateStatusAsync(string deptId, UpdateDepartmentStatusDto dto);
+    Task UpdateStatusAsync(string deptId, string status);
 }
-

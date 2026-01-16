@@ -13,6 +13,26 @@
         <el-form-item label="組別名稱">
           <el-input v-model="queryForm.GroupName" placeholder="請輸入組別名稱" clearable />
         </el-form-item>
+        <el-form-item label="部別">
+          <el-select v-model="queryForm.DeptId" placeholder="請選擇部別" clearable filterable style="width: 200px">
+            <el-option
+              v-for="dept in deptList"
+              :key="dept.DeptId"
+              :label="dept.DeptName"
+              :value="dept.DeptId"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="組織">
+          <el-select v-model="queryForm.OrgId" placeholder="請選擇組織" clearable filterable style="width: 200px">
+            <el-option
+              v-for="org in orgList"
+              :key="org.OrgId"
+              :label="org.OrgName"
+              :value="org.OrgId"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="狀態">
           <el-select v-model="queryForm.Status" placeholder="請選擇狀態" clearable>
             <el-option label="全部" value="" />
@@ -39,10 +59,8 @@
       >
         <el-table-column prop="GroupId" label="組別代碼" width="120" />
         <el-table-column prop="GroupName" label="組別名稱" width="200" />
-        <el-table-column prop="DeptId" label="部別代碼" width="120" />
-        <el-table-column prop="DeptName" label="部別名稱" width="150" />
-        <el-table-column prop="OrgId" label="組織代碼" width="120" />
-        <el-table-column prop="OrgName" label="組織名稱" width="150" />
+        <el-table-column prop="DeptName" label="部別" width="150" />
+        <el-table-column prop="OrgName" label="組織" width="150" />
         <el-table-column prop="SeqNo" label="排序序號" width="100" align="right" />
         <el-table-column prop="Status" label="狀態" width="80">
           <template #default="{ row }">
@@ -87,11 +105,25 @@
         <el-form-item label="組別名稱" prop="GroupName">
           <el-input v-model="form.GroupName" placeholder="請輸入組別名稱" />
         </el-form-item>
-        <el-form-item label="部別代碼" prop="DeptId">
-          <el-input v-model="form.DeptId" placeholder="請輸入部別代碼" />
+        <el-form-item label="部別" prop="DeptId">
+          <el-select v-model="form.DeptId" placeholder="請選擇部別" clearable filterable style="width: 100%">
+            <el-option
+              v-for="dept in deptList"
+              :key="dept.DeptId"
+              :label="dept.DeptName"
+              :value="dept.DeptId"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="組織代碼" prop="OrgId">
-          <el-input v-model="form.OrgId" placeholder="請輸入組織代碼" />
+        <el-form-item label="組織" prop="OrgId">
+          <el-select v-model="form.OrgId" placeholder="請選擇組織" clearable filterable style="width: 100%">
+            <el-option
+              v-for="org in orgList"
+              :key="org.OrgId"
+              :label="org.OrgName"
+              :value="org.OrgId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="排序序號" prop="SeqNo">
           <el-input-number v-model="form.SeqNo" :min="0" :step="1" style="width: 100%" />
@@ -118,11 +150,14 @@
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { groupsApi } from '@/api/groups'
+import { departmentsApi } from '@/api/departments'
 
 // 查詢表單
 const queryForm = reactive({
   GroupId: '',
   GroupName: '',
+  DeptId: '',
+  OrgId: '',
   Status: ''
 })
 
@@ -161,6 +196,24 @@ const rules = {
   Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
 }
 
+// 部別列表
+const deptList = ref([])
+
+// 組織列表（暫時為空，如果有組織 API 可以載入）
+const orgList = ref([])
+
+// 載入部別列表
+const loadDeptList = async () => {
+  try {
+    const response = await departmentsApi.getDepartments({ PageIndex: 1, PageSize: 1000, Status: 'A' })
+    if (response.data.success) {
+      deptList.value = response.data.data.items || []
+    }
+  } catch (error) {
+    console.error('載入部別列表失敗:', error)
+  }
+}
+
 // 查詢
 const handleSearch = async () => {
   loading.value = true
@@ -170,6 +223,8 @@ const handleSearch = async () => {
       PageSize: pagination.PageSize,
       GroupId: queryForm.GroupId || undefined,
       GroupName: queryForm.GroupName || undefined,
+      DeptId: queryForm.DeptId || undefined,
+      OrgId: queryForm.OrgId || undefined,
       Status: queryForm.Status || undefined
     }
     const response = await groupsApi.getGroups(params)
@@ -190,6 +245,8 @@ const handleSearch = async () => {
 const handleReset = () => {
   queryForm.GroupId = ''
   queryForm.GroupName = ''
+  queryForm.DeptId = ''
+  queryForm.OrgId = ''
   queryForm.Status = ''
   pagination.PageIndex = 1
   handleSearch()
@@ -248,7 +305,15 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          response = await groupsApi.updateGroup(form.GroupId, form)
+          const updateData = {
+            GroupName: form.GroupName,
+            DeptId: form.DeptId || null,
+            OrgId: form.OrgId || null,
+            SeqNo: form.SeqNo,
+            Status: form.Status,
+            Notes: form.Notes
+          }
+          response = await groupsApi.updateGroup(form.GroupId, updateData)
         } else {
           response = await groupsApi.createGroup(form)
         }
@@ -299,6 +364,7 @@ const handlePageChange = (page) => {
 
 // 初始化
 onMounted(() => {
+  loadDeptList()
   handleSearch()
 })
 </script>
@@ -337,4 +403,3 @@ onMounted(() => {
   }
 }
 </style>
-

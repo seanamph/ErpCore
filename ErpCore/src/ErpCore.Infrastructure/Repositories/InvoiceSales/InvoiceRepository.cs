@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using Dapper;
 using ErpCore.Domain.Entities.InvoiceSales;
 using ErpCore.Infrastructure.Data;
@@ -159,7 +160,7 @@ public class InvoiceRepository : BaseRepository, IInvoiceRepository
 
             return new PagedResult<Invoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

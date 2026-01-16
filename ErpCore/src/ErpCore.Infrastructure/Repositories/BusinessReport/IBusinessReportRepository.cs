@@ -1,5 +1,6 @@
 using ErpCore.Domain.Entities.BusinessReport;
 using ErpCore.Shared.Common;
+using BusinessReportEntity = ErpCore.Domain.Entities.BusinessReport.BusinessReport;
 
 namespace ErpCore.Infrastructure.Repositories.BusinessReport;
 
@@ -11,7 +12,7 @@ public interface IBusinessReportRepository
     /// <summary>
     /// 查詢業務報表列表
     /// </summary>
-    Task<PagedResult<BusinessReport>> QueryAsync(BusinessReportQuery query);
+    Task<PagedResult<BusinessReportEntity>> QueryAsync(BusinessReportQuery query);
 }
 
 /// <summary>

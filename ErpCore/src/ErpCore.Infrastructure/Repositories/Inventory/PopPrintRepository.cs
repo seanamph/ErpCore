@@ -25,7 +25,8 @@ public class PopPrintRepository : BaseRepository, IPopPrintRepository
         {
             var sql = @"
                 SELECT 
-                    GoodsId, GoodsName, BarCode, VendorGoodsId, LogoId, Price, Mprc, Unit, UnitName
+                    GoodsId, GoodsName, BarcodeId AS BarCode, NULL AS VendorGoodsId, NULL AS LogoId, 
+                    Mprc AS Price, Mprc, Unit, CapacityUnit AS UnitName
                 FROM Products
                 WHERE 1=1";
 
@@ -45,39 +46,12 @@ public class PopPrintRepository : BaseRepository, IPopPrintRepository
 
             if (!string.IsNullOrEmpty(query.BarCode))
             {
-                sql += " AND BarCode LIKE @BarCode";
+                sql += " AND BarcodeId LIKE @BarCode";
                 parameters.Add("BarCode", $"%{query.BarCode}%");
             }
 
-            if (!string.IsNullOrEmpty(query.VendorGoodsId))
-            {
-                sql += " AND VendorGoodsId LIKE @VendorGoodsId";
-                parameters.Add("VendorGoodsId", $"%{query.VendorGoodsId}%");
-            }
-
-            if (!string.IsNullOrEmpty(query.LogoId))
-            {
-                sql += " AND LogoId = @LogoId";
-                parameters.Add("LogoId", query.LogoId);
-            }
-
-            if (!string.IsNullOrEmpty(query.BClassId))
-            {
-                sql += " AND BClassId = @BClassId";
-                parameters.Add("BClassId", query.BClassId);
-            }
-
-            if (!string.IsNullOrEmpty(query.MClassId))
-            {
-                sql += " AND MClassId = @MClassId";
-                parameters.Add("MClassId", query.MClassId);
-            }
-
-            if (!string.IsNullOrEmpty(query.SClassId))
-            {
-                sql += " AND SClassId = @SClassId";
-                parameters.Add("SClassId", query.SClassId);
-            }
+            // VendorGoodsId, LogoId, BClassId, MClassId, SClassId 字段在 Products 表中不存在，暂时跳过这些筛选条件
+            // 如果需要这些筛选，需要从其他表关联查询
 
             // 排序
             sql += " ORDER BY GoodsId";
@@ -108,34 +82,10 @@ public class PopPrintRepository : BaseRepository, IPopPrintRepository
             }
             if (!string.IsNullOrEmpty(query.BarCode))
             {
-                countSql += " AND BarCode LIKE @BarCode";
+                countSql += " AND BarcodeId LIKE @BarCode";
                 countParameters.Add("BarCode", $"%{query.BarCode}%");
             }
-            if (!string.IsNullOrEmpty(query.VendorGoodsId))
-            {
-                countSql += " AND VendorGoodsId LIKE @VendorGoodsId";
-                countParameters.Add("VendorGoodsId", $"%{query.VendorGoodsId}%");
-            }
-            if (!string.IsNullOrEmpty(query.LogoId))
-            {
-                countSql += " AND LogoId = @LogoId";
-                countParameters.Add("LogoId", query.LogoId);
-            }
-            if (!string.IsNullOrEmpty(query.BClassId))
-            {
-                countSql += " AND BClassId = @BClassId";
-                countParameters.Add("BClassId", query.BClassId);
-            }
-            if (!string.IsNullOrEmpty(query.MClassId))
-            {
-                countSql += " AND MClassId = @MClassId";
-                countParameters.Add("MClassId", query.MClassId);
-            }
-            if (!string.IsNullOrEmpty(query.SClassId))
-            {
-                countSql += " AND SClassId = @SClassId";
-                countParameters.Add("SClassId", query.SClassId);
-            }
+            // VendorGoodsId, LogoId, BClassId, MClassId, SClassId 字段在 Products 表中不存在，暂时跳过这些筛选条件
 
             var totalCount = await ExecuteScalarAsync<int>(countSql, countParameters);
 
@@ -160,7 +110,8 @@ public class PopPrintRepository : BaseRepository, IPopPrintRepository
         {
             const string sql = @"
                 SELECT 
-                    GoodsId, GoodsName, BarCode, VendorGoodsId, LogoId, Price, Mprc, Unit, UnitName
+                    GoodsId, GoodsName, BarcodeId AS BarCode, NULL AS VendorGoodsId, NULL AS LogoId, 
+                    Mprc AS Price, Mprc, Unit, CapacityUnit AS UnitName
                 FROM Products
                 WHERE GoodsId = @GoodsId";
 

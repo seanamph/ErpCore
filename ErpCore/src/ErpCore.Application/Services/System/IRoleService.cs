@@ -4,7 +4,7 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Application.Services.System;
 
 /// <summary>
-/// 角色服務介面
+/// 角色服務介面 (SYS0210)
 /// </summary>
 public interface IRoleService
 {
@@ -34,23 +34,17 @@ public interface IRoleService
     Task DeleteRoleAsync(string roleId);
 
     /// <summary>
-    /// 批次刪除角色
-    /// </summary>
-    Task DeleteRolesBatchAsync(BatchDeleteRoleDto dto);
-
-    /// <summary>
-    /// 複製角色
+    /// 複製角色 (SYS0210 - 創建新角色)
     /// </summary>
     Task<string> CopyRoleAsync(string roleId, CopyRoleDto dto);
 
     /// <summary>
     /// 複製角色到目標角色 (SYS0240)
     /// </summary>
-    Task<CopyRoleResultDto> CopyRoleToTargetAsync(CopyRoleRequestDto dto);
+    Task<CopyRoleResultDto> CopyRoleToTargetAsync(CopyRoleToTargetDto dto);
 
     /// <summary>
     /// 驗證角色複製 (SYS0240)
     /// </summary>
-    Task<ValidateCopyResultDto> ValidateCopyRoleAsync(ValidateCopyRequestDto dto);
+    Task<ValidateCopyRoleResultDto> ValidateCopyRoleAsync(ValidateCopyRoleDto dto);
 }
-

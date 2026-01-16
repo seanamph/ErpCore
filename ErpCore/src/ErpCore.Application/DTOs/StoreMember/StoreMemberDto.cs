@@ -272,7 +272,7 @@ public class UploadPhotoResultDto
 /// <summary>
 /// 商店查詢結果 DTO (SYS3210-SYS3299)
 /// </summary>
-public class ShopQueryDto
+public class ShopQueryResultDto
 {
     public string ShopId { get; set; } = string.Empty;
     public string ShopName { get; set; } = string.Empty;

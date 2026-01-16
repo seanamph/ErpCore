@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using ErpCore.Api.Controllers.Base;
 using ErpCore.Application.DTOs.Purchase;
 using ErpCore.Application.Services.Purchase;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
 namespace ErpCore.Api.Controllers.Purchase;
@@ -91,7 +92,7 @@ public class OnSitePurchaseOrderController : BaseController
     /// <summary>
     /// 送出現場打單申請單
     /// </summary>
-    [HttpPost("{orderId}/submit")]
+    [HttpPut("{orderId}/submit")]
     public async Task<ActionResult<ApiResponse<object>>> SubmitOnSitePurchaseOrder(string orderId)
     {
         return await ExecuteAsync(async () =>
@@ -101,7 +102,31 @@ public class OnSitePurchaseOrderController : BaseController
     }
 
     /// <summary>
-    /// 根據條碼查詢商品資訊
+    /// 審核現場打單申請單
+    /// </summary>
+    [HttpPut("{orderId}/approve")]
+    public async Task<ActionResult<ApiResponse<object>>> ApproveOnSitePurchaseOrder(string orderId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.ApproveOnSitePurchaseOrderAsync(orderId);
+        }, $"審核現場打單申請單失敗: {orderId}");
+    }
+
+    /// <summary>
+    /// 取消現場打單申請單
+    /// </summary>
+    [HttpPut("{orderId}/cancel")]
+    public async Task<ActionResult<ApiResponse<object>>> CancelOnSitePurchaseOrder(string orderId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.CancelOnSitePurchaseOrderAsync(orderId);
+        }, $"取消現場打單申請單失敗: {orderId}");
+    }
+
+    /// <summary>
+    /// 根據條碼查詢商品資訊（現場打單專用）
     /// </summary>
     [HttpGet("goods-by-barcode")]
     public async Task<ActionResult<ApiResponse<GoodsByBarcodeDto>>> GetGoodsByBarcode([FromQuery] string barcode)
@@ -113,4 +138,3 @@ public class OnSitePurchaseOrderController : BaseController
         }, $"根據條碼查詢商品失敗: {barcode}");
     }
 }
-

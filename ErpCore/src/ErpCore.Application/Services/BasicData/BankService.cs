@@ -1,7 +1,6 @@
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -14,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class BankService : BaseService, IBankService
 {
     private readonly IBankRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public BankService(
         IBankRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<BankDto>> GetBanksAsync(BankQueryDto query)
@@ -75,7 +71,7 @@ public class BankService : BaseService, IBankService
         }
     }
 
-    public async Task<BankDto> GetBankByIdAsync(string bankId)
+    public async Task<BankDto> GetBankAsync(string bankId)
     {
         try
         {
@@ -130,12 +126,14 @@ public class BankService : BaseService, IBankService
                 AcctLenMax = dto.AcctLenMax,
                 Status = dto.Status,
                 BankKind = dto.BankKind,
-                SeqNo = dto.SeqNo ?? 0,
+                SeqNo = dto.SeqNo,
                 Notes = dto.Notes,
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -160,12 +158,15 @@ public class BankService : BaseService, IBankService
                 throw new InvalidOperationException($"銀行不存在: {bankId}");
             }
 
+            // 驗證資料
+            ValidateUpdateDto(dto);
+
             entity.BankName = dto.BankName;
             entity.AcctLen = dto.AcctLen;
             entity.AcctLenMax = dto.AcctLenMax;
             entity.Status = dto.Status;
             entity.BankKind = dto.BankKind;
-            entity.SeqNo = dto.SeqNo ?? entity.SeqNo;
+            entity.SeqNo = dto.SeqNo;
             entity.Notes = dto.Notes;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
@@ -189,6 +190,8 @@ public class BankService : BaseService, IBankService
             {
                 throw new InvalidOperationException($"銀行不存在: {bankId}");
             }
+
+            // TODO: 檢查是否有相關資料引用（如銀行帳號等）
 
             await _repository.DeleteAsync(bankId);
         }
@@ -227,15 +230,32 @@ public class BankService : BaseService, IBankService
             throw new ArgumentException("銀行名稱不能為空");
         }
 
-        if (dto.Status != "0" && dto.Status != "1")
+        if (dto.AcctLen.HasValue && dto.AcctLenMax.HasValue && dto.AcctLen > dto.AcctLenMax)
         {
-            throw new ArgumentException("狀態必須為 0(停用) 或 1(啟用)");
+            throw new ArgumentException("帳號最小長度不能大於最大長度");
+        }
+
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "0" && dto.Status != "1")
+        {
+            throw new ArgumentException("狀態值必須為 0 或 1");
+        }
+    }
+
+    private void ValidateUpdateDto(UpdateBankDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.BankName))
+        {
+            throw new ArgumentException("銀行名稱不能為空");
         }
 
         if (dto.AcctLen.HasValue && dto.AcctLenMax.HasValue && dto.AcctLen > dto.AcctLenMax)
         {
             throw new ArgumentException("帳號最小長度不能大於最大長度");
         }
+
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "0" && dto.Status != "1")
+        {
+            throw new ArgumentException("狀態值必須為 0 或 1");
+        }
     }
 }
-

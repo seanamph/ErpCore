@@ -2,6 +2,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using ErpCore.Application.DTOs.Tools;
 using ErpCore.Application.Services.Base;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using ZXing;
 using ZXing.Common;

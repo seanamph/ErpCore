@@ -79,6 +79,26 @@ public interface IAnalysisReportRepository
     Task<PagedResult<SYSA1023ReportItem>> GetSYSA1023ReportAsync(SYSA1023Query query);
 
     /// <summary>
+    /// 查詢工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    Task<PagedResult<SYSA1024ReportItem>> GetSYSA1024ReportAsync(SYSA1024Query query);
+
+    /// <summary>
+    /// 查詢庫存分析報表 (SYSWC10)
+    /// </summary>
+    Task<PagedResult<SYSWC10ReportItem>> GetSYSWC10ReportAsync(SYSWC10Query query);
+
+    /// <summary>
+    /// 查詢銷售分析報表
+    /// </summary>
+    Task<PagedResult<SalesAnalysisReportItem>> GetSalesAnalysisReportAsync(SalesAnalysisQuery query);
+
+    /// <summary>
+    /// 查詢銷售分析報表彙總
+    /// </summary>
+    Task<SalesAnalysisSummaryItem> GetSalesAnalysisSummaryAsync(SalesAnalysisQuery query);
+
+    /// <summary>
     /// 查詢進銷存分析報表 (SYSA1000) - 通用查詢方法
     /// </summary>
     Task<PagedResult<Dictionary<string, object>>> GetAnalysisReportAsync(string reportId, AnalysisReportQuery query);
@@ -371,6 +391,8 @@ public class AnalysisReportQuery : PagedQuery
     public string? MaintainEmp { get; set; }
     public string? BelongOrg { get; set; }
     public string? ApplyType { get; set; }
+    public string? OtherCondition1 { get; set; } // 其他查詢條件1 (用於 SYSA1024)
+    public string? OtherCondition2 { get; set; } // 其他查詢條件2 (用於 SYSA1024)
 }
 
 /// <summary>
@@ -550,4 +572,149 @@ public class SYSA1023ReportItem
     public string? ApplyType { get; set; } // 請修類別
     public int RequestCount { get; set; } // 申請件數
     public decimal TotalAmount { get; set; } // 總金額
+}
+
+/// <summary>
+/// SYSA1024 查詢條件
+/// </summary>
+public class SYSA1024Query : PagedQuery
+{
+    public string? SiteId { get; set; }
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string? ApplyDateB { get; set; } // 日統計表起 (YYYY-MM-DD)
+    public string? ApplyDateE { get; set; } // 日統計表迄 (YYYY-MM-DD)
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+    public string? OtherCondition1 { get; set; } // 其他查詢條件1
+    public string? OtherCondition2 { get; set; } // 其他查詢條件2
+}
+
+/// <summary>
+/// SYSA1024 報表項目
+/// </summary>
+public class SYSA1024ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string ReportName { get; set; } = "工務維修統計報表(其他)";
+    public string? BelongStatus { get; set; } // 費用負擔
+    public string ApplyDateB { get; set; } = string.Empty; // 日統計表起
+    public string ApplyDateE { get; set; } = string.Empty; // 日統計表迄
+    public string? BelongOrg { get; set; } // 費用歸屬單位
+    public string? MaintainEmp { get; set; } // 維保人員
+    public string? ApplyType { get; set; } // 請修類別
+    public string? OtherCondition1 { get; set; } // 其他查詢條件1
+    public string? OtherCondition2 { get; set; } // 其他查詢條件2
+    public int RequestCount { get; set; } // 申請件數
+    public decimal TotalAmount { get; set; } // 總金額
+}
+
+/// <summary>
+/// SYSWC10 查詢條件
+/// </summary>
+public class SYSWC10Query : PagedQuery
+{
+    public string? GoodsIdFrom { get; set; } // 商品代碼起
+    public string? GoodsIdTo { get; set; } // 商品代碼迄
+    public string? GoodsName { get; set; } // 商品名稱
+    public List<string>? SiteIds { get; set; } // 店別列表
+    public List<string>? WarehouseIds { get; set; } // 庫別列表
+    public List<string>? CategoryIds { get; set; } // 分類列表
+    public string? DateFrom { get; set; } // 日期起
+    public string? DateTo { get; set; } // 日期迄
+    public decimal? MinQty { get; set; } // 最小數量
+    public decimal? MaxQty { get; set; } // 最大數量
+    public string? Status { get; set; } // 狀態
+    public string? BId { get; set; } // 大分類
+    public string? MId { get; set; } // 中分類
+    public string? SId { get; set; } // 小分類
+}
+
+/// <summary>
+/// SYSWC10 報表項目
+/// </summary>
+public class SYSWC10ReportItem
+{
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string GoodsId { get; set; } = string.Empty;
+    public string GoodsName { get; set; } = string.Empty;
+    public string? BigCategoryId { get; set; }
+    public string? BigCategoryName { get; set; }
+    public string? MidCategoryId { get; set; }
+    public string? MidCategoryName { get; set; }
+    public string? SmallCategoryId { get; set; }
+    public string? SmallCategoryName { get; set; }
+    public string? WarehouseId { get; set; }
+    public string? WarehouseName { get; set; }
+    public decimal InQty { get; set; } // 入庫數量
+    public decimal OutQty { get; set; } // 出庫數量
+    public decimal CurrentQty { get; set; } // 當前庫存數量
+    public decimal CurrentAmt { get; set; } // 當前庫存金額
+    public DateTime? LastStockDate { get; set; } // 最後庫存異動日期
+    public decimal SafeQty { get; set; } // 安全庫存量
+    public bool IsLowStock { get; set; } // 是否低庫存
+    public bool IsOverStock { get; set; } // 是否過量庫存
+}
+
+/// <summary>
+/// 銷售分析報表查詢條件
+/// </summary>
+public class SalesAnalysisQuery : PagedQuery
+{
+    public string? SiteId { get; set; } // 店別代碼
+    public string? DateFrom { get; set; } // 日期起
+    public string? DateTo { get; set; } // 日期迄
+    public string? BigClassId { get; set; } // 大分類代碼
+    public string? MidClassId { get; set; } // 中分類代碼
+    public string? SmallClassId { get; set; } // 小分類代碼
+    public string? ProductId { get; set; } // 商品代碼
+    public string? VendorId { get; set; } // 廠商代碼
+    public string? SalesPersonId { get; set; } // 銷售人員代碼
+    public string? CustomerId { get; set; } // 客戶代碼
+    public string? ReportType { get; set; } // 報表類型 (daily, monthly, yearly, custom)
+    public string? GroupBy { get; set; } // 群組方式 (product, category, site, vendor, salesperson)
+}
+
+/// <summary>
+/// 銷售分析報表項目
+/// </summary>
+public class SalesAnalysisReportItem
+{
+    public string ProductId { get; set; } = string.Empty;
+    public string ProductName { get; set; } = string.Empty;
+    public string? BigClassId { get; set; }
+    public string? BigClassName { get; set; }
+    public string? MidClassId { get; set; }
+    public string? MidClassName { get; set; }
+    public string? SmallClassId { get; set; }
+    public string? SmallClassName { get; set; }
+    public string? VendorId { get; set; }
+    public string? VendorName { get; set; }
+    public string SiteId { get; set; } = string.Empty;
+    public string? SiteName { get; set; }
+    public string? SalesPersonId { get; set; }
+    public string? SalesPersonName { get; set; }
+    public decimal TotalQuantity { get; set; } // 總數量
+    public decimal TotalAmount { get; set; } // 總金額
+    public decimal TotalCost { get; set; } // 總成本
+    public decimal TotalProfit { get; set; } // 總毛利
+    public decimal ProfitRate { get; set; } // 毛利率
+    public int OrderCount { get; set; } // 訂單筆數
+    public decimal AvgUnitPrice { get; set; } // 平均單價
+    public decimal AvgQuantity { get; set; } // 平均數量
+}
+
+/// <summary>
+/// 銷售分析報表彙總項目
+/// </summary>
+public class SalesAnalysisSummaryItem
+{
+    public decimal TotalQuantity { get; set; } // 總數量
+    public decimal TotalAmount { get; set; } // 總金額
+    public decimal TotalCost { get; set; } // 總成本
+    public decimal TotalProfit { get; set; } // 總毛利
+    public decimal AvgProfitRate { get; set; } // 平均毛利率
+    public int TotalOrderCount { get; set; } // 總訂單筆數
 }

@@ -40,28 +40,50 @@ public class SystemExtensionReportController : BaseController
     /// 產生 PDF 報表
     /// </summary>
     [HttpPost("pdf")]
-    public async Task<ActionResult<ApiResponse<SystemExtensionReportDto>>> GeneratePdfReport(
+    public async Task<IActionResult> GeneratePdfReport(
         [FromBody] GenerateSystemExtensionReportDto request)
     {
-        return await ExecuteAsync(async () =>
+        try
         {
-            var result = await _service.GeneratePdfReportAsync(request);
-            return result;
-        }, "產生 PDF 報表失敗");
+            // 先產生報表並保存記錄
+            var reportDto = await _service.GeneratePdfReportAsync(request);
+            
+            // 下載檔案
+            var fileBytes = await _service.DownloadReportAsync(reportDto.ReportId);
+            var fileName = $"{reportDto.ReportName}_{reportDto.GeneratedDate:yyyyMMddHHmmss}.pdf";
+            
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"產生 PDF 報表失敗: {request.ReportName}", ex);
+            return BadRequest(ApiResponse<object>.Fail($"產生 PDF 報表失敗: {ex.Message}"));
+        }
     }
 
     /// <summary>
     /// 產生 Excel 報表
     /// </summary>
     [HttpPost("excel")]
-    public async Task<ActionResult<ApiResponse<SystemExtensionReportDto>>> GenerateExcelReport(
+    public async Task<IActionResult> GenerateExcelReport(
         [FromBody] GenerateSystemExtensionReportDto request)
     {
-        return await ExecuteAsync(async () =>
+        try
         {
-            var result = await _service.GenerateExcelReportAsync(request);
-            return result;
-        }, "產生 Excel 報表失敗");
+            // 先產生報表並保存記錄
+            var reportDto = await _service.GenerateExcelReportAsync(request);
+            
+            // 下載檔案
+            var fileBytes = await _service.DownloadReportAsync(reportDto.ReportId);
+            var fileName = $"{reportDto.ReportName}_{reportDto.GeneratedDate:yyyyMMddHHmmss}.xlsx";
+            
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"產生 Excel 報表失敗: {request.ReportName}", ex);
+            return BadRequest(ApiResponse<object>.Fail($"產生 Excel 報表失敗: {ex.Message}"));
+        }
     }
 
     /// <summary>

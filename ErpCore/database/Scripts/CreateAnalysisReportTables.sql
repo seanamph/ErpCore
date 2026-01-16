@@ -181,6 +181,7 @@ BEGIN
         [MaintainEmp] NVARCHAR(500) NULL, -- 維保人員 (多選，以分號分隔)
         [BelongStatus] NVARCHAR(10) NULL, -- 歸屬狀態 (1:員工負擔, 2:店別負擔)
         [BelongOrg] NVARCHAR(50) NULL, -- 費用歸屬單位
+        [ReportType] NVARCHAR(50) NULL, -- 報表類型 (SYSA1023 使用)
         [CreatedBy] NVARCHAR(50) NULL,
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
     );
@@ -188,12 +189,47 @@ BEGIN
     -- 索引
     CREATE NONCLUSTERED INDEX [IX_WorkMaintainM_SiteId] ON [dbo].[WorkMaintainM] ([SiteId]);
     CREATE NONCLUSTERED INDEX [IX_WorkMaintainM_ApplyDate] ON [dbo].[WorkMaintainM] ([ApplyDate]);
+    CREATE NONCLUSTERED INDEX [IX_WorkMaintainM_ReportType] ON [dbo].[WorkMaintainM] ([ReportType]);
 
     PRINT '資料表 WorkMaintainM 建立成功';
 END
 ELSE
 BEGIN
     PRINT '資料表 WorkMaintainM 已存在';
+    -- 如果表已存在，檢查並添加 ReportType 欄位
+    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[WorkMaintainM]') AND name = 'ReportType')
+    BEGIN
+        ALTER TABLE [dbo].[WorkMaintainM] ADD [ReportType] NVARCHAR(50) NULL;
+        CREATE NONCLUSTERED INDEX [IX_WorkMaintainM_ReportType] ON [dbo].[WorkMaintainM] ([ReportType]);
+        PRINT '已為 WorkMaintainM 表添加 ReportType 欄位';
+    END
+END
+GO
+
+-- 7.1. 工務維修明細 (對應舊系統 IMS_AM.NAM_WORK_MAINTAIND)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[WorkMaintainD]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[WorkMaintainD] (
+        [TxnNo] NVARCHAR(50) NOT NULL,
+        [GoodsId] NVARCHAR(50) NULL, -- 商品代碼
+        [Qty] DECIMAL(18, 2) NULL DEFAULT 0, -- 數量
+        [Amount] DECIMAL(18, 2) NOT NULL DEFAULT 0, -- 金額
+        [Notes] NVARCHAR(500) NULL, -- 備註
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [PK_WorkMaintainD] PRIMARY KEY CLUSTERED ([TxnNo], [GoodsId]),
+        CONSTRAINT [FK_WorkMaintainD_WorkMaintainM] FOREIGN KEY ([TxnNo]) REFERENCES [dbo].[WorkMaintainM] ([TxnNo]) ON DELETE CASCADE
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_WorkMaintainD_TxnNo] ON [dbo].[WorkMaintainD] ([TxnNo]);
+    CREATE NONCLUSTERED INDEX [IX_WorkMaintainD_GoodsId] ON [dbo].[WorkMaintainD] ([GoodsId]);
+
+    PRINT '資料表 WorkMaintainD 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 WorkMaintainD 已存在';
 END
 GO
 
@@ -631,6 +667,74 @@ END
 ELSE
 BEGIN
     PRINT '資料表 MaintenanceRecords 已存在';
+END
+GO
+
+-- 20. 計劃主檔 (SYSA1020)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Plans]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[Plans] (
+        [PlanId] NVARCHAR(50) NOT NULL PRIMARY KEY,
+        [PlanName] NVARCHAR(200) NULL,
+        [PlanType] NVARCHAR(50) NULL,
+        [Status] NVARCHAR(10) NOT NULL DEFAULT '1',
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        [UpdatedBy] NVARCHAR(50) NULL,
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_Plans_PlanType] ON [dbo].[Plans] ([PlanType]);
+    CREATE NONCLUSTERED INDEX [IX_Plans_Status] ON [dbo].[Plans] ([Status]);
+
+    PRINT '資料表 Plans 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 Plans 已存在';
+END
+GO
+
+-- 21. 為 InventoryStocks 表添加 PlanId 欄位 (SYSA1020)
+IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[InventoryStocks]') AND name = 'PlanId')
+BEGIN
+    ALTER TABLE [dbo].[InventoryStocks] ADD [PlanId] NVARCHAR(50) NULL;
+    CREATE NONCLUSTERED INDEX [IX_InventoryStocks_PlanId] ON [dbo].[InventoryStocks] ([PlanId]);
+    PRINT '已為 InventoryStocks 表添加 PlanId 欄位';
+END
+GO
+
+-- 22. 商品成本表 (SYSA1021)
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GoodsCosts]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[GoodsCosts] (
+        [CostId] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+        [GoodsId] NVARCHAR(50) NOT NULL,
+        [YearMonth] NVARCHAR(6) NOT NULL, -- YYYYMM
+        [SiteId] NVARCHAR(50) NULL,
+        [Qty] DECIMAL(18, 2) NOT NULL DEFAULT 0,
+        [CostAmount] DECIMAL(18, 2) NOT NULL DEFAULT 0,
+        [AvgCost] DECIMAL(18, 2) NOT NULL DEFAULT 0,
+        [Status] NVARCHAR(10) NOT NULL DEFAULT 'A',
+        [CreatedBy] NVARCHAR(50) NULL,
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        [UpdatedBy] NVARCHAR(50) NULL,
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [FK_GoodsCosts_Goods] FOREIGN KEY ([GoodsId]) REFERENCES [dbo].[Goods] ([GoodsId])
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_GoodsCosts_GoodsId] ON [dbo].[GoodsCosts] ([GoodsId]);
+    CREATE NONCLUSTERED INDEX [IX_GoodsCosts_YearMonth] ON [dbo].[GoodsCosts] ([YearMonth]);
+    CREATE NONCLUSTERED INDEX [IX_GoodsCosts_SiteId] ON [dbo].[GoodsCosts] ([SiteId]);
+    CREATE NONCLUSTERED INDEX [IX_GoodsCosts_GoodsId_YearMonth] ON [dbo].[GoodsCosts] ([GoodsId], [YearMonth]);
+
+    PRINT '資料表 GoodsCosts 建立成功';
+END
+ELSE
+BEGIN
+    PRINT '資料表 GoodsCosts 已存在';
 END
 GO
 

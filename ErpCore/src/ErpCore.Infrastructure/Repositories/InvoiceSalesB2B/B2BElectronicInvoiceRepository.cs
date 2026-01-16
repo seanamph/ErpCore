@@ -181,7 +181,7 @@ public class B2BElectronicInvoiceRepository : BaseRepository, IB2BElectronicInvo
 
             return new PagedResult<B2BElectronicInvoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
@@ -370,7 +370,7 @@ public class B2BElectronicInvoiceRepository : BaseRepository, IB2BElectronicInvo
 
             return new PagedResult<B2BElectronicInvoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

@@ -41,8 +41,8 @@ public class SupplierGoodsController : BaseController
     /// </summary>
     [HttpGet("{supplierId}/{barcodeId}/{shopId}")]
     public async Task<ActionResult<ApiResponse<SupplierGoodsDto>>> GetSupplierGoods(
-        string supplierId,
-        string barcodeId,
+        string supplierId, 
+        string barcodeId, 
         string shopId)
     {
         return await ExecuteAsync(async () =>
@@ -86,8 +86,8 @@ public class SupplierGoodsController : BaseController
     /// </summary>
     [HttpDelete("{supplierId}/{barcodeId}/{shopId}")]
     public async Task<ActionResult<ApiResponse<object>>> DeleteSupplierGoods(
-        string supplierId,
-        string barcodeId,
+        string supplierId, 
+        string barcodeId, 
         string shopId)
     {
         return await ExecuteAsync(async () =>
@@ -100,17 +100,17 @@ public class SupplierGoodsController : BaseController
     /// 批次刪除供應商商品
     /// </summary>
     [HttpDelete("batch")]
-    public async Task<ActionResult<ApiResponse<object>>> BatchDeleteSupplierGoods(
+    public async Task<ActionResult<ApiResponse<object>>> DeleteSupplierGoodsBatch(
         [FromBody] BatchDeleteSupplierGoodsDto dto)
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.BatchDeleteSupplierGoodsAsync(dto);
+            await _service.DeleteSupplierGoodsBatchAsync(dto);
         }, "批次刪除供應商商品失敗");
     }
 
     /// <summary>
-    /// 更新供應商商品狀態
+    /// 更新狀態
     /// </summary>
     [HttpPut("{supplierId}/{barcodeId}/{shopId}/status")]
     public async Task<ActionResult<ApiResponse<object>>> UpdateStatus(
@@ -121,8 +121,7 @@ public class SupplierGoodsController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.UpdateStatusAsync(supplierId, barcodeId, shopId, dto);
+            await _service.UpdateStatusAsync(supplierId, barcodeId, shopId, dto.Status);
         }, $"更新供應商商品狀態失敗: {supplierId}/{barcodeId}/{shopId}");
     }
 }
-

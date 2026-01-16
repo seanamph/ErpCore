@@ -2,6 +2,7 @@ using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.DropdownList;
 using ErpCore.Infrastructure.Repositories.DropdownList;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
@@ -63,7 +64,19 @@ public class ZoneService : BaseService, IZoneService
         try
         {
             _logger.LogInfo("查詢區域列表");
-            var result = await _repository.QueryAsync(query);
+            // 將 Application DTO 轉換為 Infrastructure Query
+            var repositoryQuery = new ZoneQuery
+            {
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                ZoneName = query.ZoneName,
+                CityId = query.CityId,
+                ZipCode = query.ZipCode,
+                Status = query.Status
+            };
+            var result = await _repository.QueryAsync(repositoryQuery);
 
             // 批量查詢城市名稱
             var cityIds = result.Items.Where(z => !string.IsNullOrEmpty(z.CityId))
@@ -113,7 +126,14 @@ public class ZoneService : BaseService, IZoneService
         try
         {
             _logger.LogInfo("查詢區域選項");
-            return await _repository.GetOptionsAsync(cityId, status);
+            var options = await _repository.GetOptionsAsync(cityId, status);
+            // 將 Infrastructure Option 轉換為 Application DTO
+            return options.Select(o => new ZoneOptionDto
+            {
+                Value = o.Value,
+                Label = o.Label,
+                ZipCode = o.ZipCode
+            });
         }
         catch (Exception ex)
         {

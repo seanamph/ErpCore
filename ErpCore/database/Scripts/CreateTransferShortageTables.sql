@@ -40,6 +40,15 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_TransferShortages_Status] ON [dbo].[TransferShortages] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_TransferShortages_ShortageDate] ON [dbo].[TransferShortages] ([ShortageDate]);
 
+    -- 外鍵約束
+    ALTER TABLE [dbo].[TransferShortages]
+    ADD CONSTRAINT [FK_TransferShortages_TransferOrders] 
+    FOREIGN KEY ([TransferId]) REFERENCES [dbo].[TransferOrders] ([TransferId]);
+
+    ALTER TABLE [dbo].[TransferShortages]
+    ADD CONSTRAINT [FK_TransferShortages_TransferReceipts] 
+    FOREIGN KEY ([ReceiptId]) REFERENCES [dbo].[TransferReceipts] ([ReceiptId]);
+
     PRINT '資料表 TransferShortages 建立成功';
 END
 ELSE
@@ -76,6 +85,19 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_TransferShortageDetails_TransferDetailId] ON [dbo].[TransferShortageDetails] ([TransferDetailId]);
     CREATE NONCLUSTERED INDEX [IX_TransferShortageDetails_ReceiptDetailId] ON [dbo].[TransferShortageDetails] ([ReceiptDetailId]);
 
+    -- 外鍵約束
+    ALTER TABLE [dbo].[TransferShortageDetails]
+    ADD CONSTRAINT [FK_TransferShortageDetails_TransferShortages] 
+    FOREIGN KEY ([ShortageId]) REFERENCES [dbo].[TransferShortages] ([ShortageId]) ON DELETE CASCADE;
+
+    ALTER TABLE [dbo].[TransferShortageDetails]
+    ADD CONSTRAINT [FK_TransferShortageDetails_TransferOrderDetails] 
+    FOREIGN KEY ([TransferDetailId]) REFERENCES [dbo].[TransferOrderDetails] ([DetailId]);
+
+    ALTER TABLE [dbo].[TransferShortageDetails]
+    ADD CONSTRAINT [FK_TransferShortageDetails_TransferReceiptDetails] 
+    FOREIGN KEY ([ReceiptDetailId]) REFERENCES [dbo].[TransferReceiptDetails] ([DetailId]);
+
     PRINT '資料表 TransferShortageDetails 建立成功';
 END
 ELSE
@@ -84,50 +106,4 @@ BEGIN
 END
 GO
 
--- 3. 外鍵約束 (如果相關資料表存在)
--- 注意: 以下外鍵約束需要根據實際資料表結構調整
--- 如果 TransferOrders、TransferReceipts 等資料表尚未建立，請先建立這些資料表
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferOrders]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferShortages]
---     ADD CONSTRAINT [FK_TransferShortages_TransferOrders] 
---     FOREIGN KEY ([TransferId]) REFERENCES [dbo].[TransferOrders] ([TransferId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferReceipts]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferShortages]
---     ADD CONSTRAINT [FK_TransferShortages_TransferReceipts] 
---     FOREIGN KEY ([ReceiptId]) REFERENCES [dbo].[TransferReceipts] ([ReceiptId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferOrderDetails]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferShortageDetails]
---     ADD CONSTRAINT [FK_TransferShortageDetails_TransferOrderDetails] 
---     FOREIGN KEY ([TransferDetailId]) REFERENCES [dbo].[TransferOrderDetails] ([DetailId]);
--- END
-
--- IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferReceiptDetails]') AND type in (N'U'))
--- BEGIN
---     ALTER TABLE [dbo].[TransferShortageDetails]
---     ADD CONSTRAINT [FK_TransferShortageDetails_TransferReceiptDetails] 
---     FOREIGN KEY ([ReceiptDetailId]) REFERENCES [dbo].[TransferReceiptDetails] ([DetailId]);
--- END
-
--- 4. 外鍵約束：短溢單明細與短溢單主檔的關聯
-IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferShortages]') AND type in (N'U'))
-    AND EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[TransferShortageDetails]') AND type in (N'U'))
-    AND NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_TransferShortageDetails_TransferShortages')
-BEGIN
-    ALTER TABLE [dbo].[TransferShortageDetails]
-    ADD CONSTRAINT [FK_TransferShortageDetails_TransferShortages] 
-    FOREIGN KEY ([ShortageId]) REFERENCES [dbo].[TransferShortages] ([ShortageId]) ON DELETE CASCADE;
-    
-    PRINT '外鍵約束 FK_TransferShortageDetails_TransferShortages 建立成功';
-END
-GO
-
-PRINT '調撥短溢維護作業資料表建立完成';
-GO
+PRINT '調撥短溢維護作業資料表建立完成 (SYSW384)';

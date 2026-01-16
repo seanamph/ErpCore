@@ -143,13 +143,13 @@ public class ConfigProgramRepository : BaseRepository, IConfigProgramRepository
         {
             const string sql = @"
                 INSERT INTO ConfigPrograms (
-                    ProgramId, SystemId, SubSystemId, ProgramName, SeqNo, Status,
-                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt
+                    ProgramId, ProgramName, SeqNo, SystemId, SubSystemId, Status,
+                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup
                 )
                 OUTPUT INSERTED.*
                 VALUES (
-                    @ProgramId, @SystemId, @SubSystemId, @ProgramName, @SeqNo, @Status,
-                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt
+                    @ProgramId, @ProgramName, @SeqNo, @SystemId, @SubSystemId, @Status,
+                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 )";
 
             var result = await QueryFirstOrDefaultAsync<ConfigProgram>(sql, configProgram);
@@ -173,10 +173,10 @@ public class ConfigProgramRepository : BaseRepository, IConfigProgramRepository
         {
             const string sql = @"
                 UPDATE ConfigPrograms SET
-                    SystemId = @SystemId,
-                    SubSystemId = @SubSystemId,
                     ProgramName = @ProgramName,
                     SeqNo = @SeqNo,
+                    SystemId = @SystemId,
+                    SubSystemId = @SubSystemId,
                     Status = @Status,
                     UpdatedBy = @UpdatedBy,
                     UpdatedAt = @UpdatedAt
@@ -251,4 +251,3 @@ public class ConfigProgramRepository : BaseRepository, IConfigProgramRepository
         }
     }
 }
-

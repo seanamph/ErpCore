@@ -50,4 +50,3 @@ public class Role
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

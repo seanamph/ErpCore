@@ -44,7 +44,7 @@ public class RegionsController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            var result = await _service.GetRegionByIdAsync(regionId);
+            var result = await _service.GetRegionAsync(regionId);
             return result;
         }, $"查詢地區失敗: {regionId}");
     }
@@ -102,4 +102,3 @@ public class RegionsController : BaseController
         }, "批次刪除地區失敗");
     }
 }
-

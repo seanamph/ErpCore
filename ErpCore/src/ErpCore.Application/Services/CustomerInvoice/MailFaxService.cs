@@ -4,6 +4,7 @@ using ErpCore.Domain.Entities.CustomerInvoice;
 using ErpCore.Infrastructure.Repositories.CustomerInvoice;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
 using System.Text.Json;

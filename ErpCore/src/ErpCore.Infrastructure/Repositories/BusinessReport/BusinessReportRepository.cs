@@ -4,6 +4,7 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using BusinessReportEntity = ErpCore.Domain.Entities.BusinessReport.BusinessReport;
 
 namespace ErpCore.Infrastructure.Repositories.BusinessReport;
 
@@ -18,7 +19,7 @@ public class BusinessReportRepository : BaseRepository, IBusinessReportRepositor
     {
     }
 
-    public async Task<PagedResult<BusinessReport>> QueryAsync(BusinessReportQuery query)
+    public async Task<PagedResult<BusinessReportEntity>> QueryAsync(BusinessReportQuery query)
     {
         try
         {
@@ -135,9 +136,9 @@ public class BusinessReportRepository : BaseRepository, IBusinessReportRepositor
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<BusinessReport>(sql, parameters);
+            var items = await QueryAsync<BusinessReportEntity>(sql, parameters);
 
-            return new PagedResult<BusinessReport>
+            return new PagedResult<BusinessReportEntity>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,

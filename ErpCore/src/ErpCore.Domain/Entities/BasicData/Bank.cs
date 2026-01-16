@@ -75,4 +75,3 @@ public class Bank
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

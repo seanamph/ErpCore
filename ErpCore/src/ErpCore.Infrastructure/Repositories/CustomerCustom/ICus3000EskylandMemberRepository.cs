@@ -1,12 +1,12 @@
 using ErpCore.Domain.Entities.CustomerCustom;
-using ErpCore.Infrastructure.Repositories;
+using ErpCore.Domain.Interfaces;
 
 namespace ErpCore.Infrastructure.Repositories.CustomerCustom;
 
 /// <summary>
 /// CUS3000.ESKYLAND 會員 Repository 介面
 /// </summary>
-public interface ICus3000EskylandMemberRepository : IRepository<Cus3000EskylandMember>
+public interface ICus3000EskylandMemberRepository : IRepository<Cus3000EskylandMember, long>
 {
     /// <summary>
     /// 依會員編號查詢

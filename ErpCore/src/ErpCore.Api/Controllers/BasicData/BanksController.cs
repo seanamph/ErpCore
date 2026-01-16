@@ -44,7 +44,7 @@ public class BanksController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            var result = await _service.GetBankByIdAsync(bankId);
+            var result = await _service.GetBankAsync(bankId);
             return result;
         }, $"查詢銀行失敗: {bankId}");
     }
@@ -102,4 +102,3 @@ public class BanksController : BaseController
         }, "批次刪除銀行失敗");
     }
 }
-

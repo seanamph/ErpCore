@@ -1,8 +1,6 @@
-using Dapper;
 using ErpCore.Application.DTOs.Inventory;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.Inventory;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.Inventory;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -15,16 +13,13 @@ namespace ErpCore.Application.Services.Inventory;
 public class SupplierGoodsService : BaseService, ISupplierGoodsService
 {
     private readonly ISupplierGoodsRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public SupplierGoodsService(
         ISupplierGoodsRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<SupplierGoodsDto>> GetSupplierGoodsAsync(SupplierGoodsQueryDto query)
@@ -156,29 +151,31 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
                 SupplierId = dto.SupplierId,
                 BarcodeId = dto.BarcodeId,
                 ShopId = dto.ShopId,
-                Lprc = dto.Lprc,
-                Mprc = dto.Mprc,
-                Tax = dto.Tax,
-                MinQty = dto.MinQty,
-                MaxQty = dto.MaxQty,
+                Lprc = dto.Lprc ?? 0,
+                Mprc = dto.Mprc ?? 0,
+                Tax = dto.Tax ?? "1",
+                MinQty = dto.MinQty ?? 0,
+                MaxQty = dto.MaxQty ?? 0,
                 Unit = dto.Unit,
-                Rate = dto.Rate,
-                Status = dto.Status,
+                Rate = dto.Rate ?? 1,
+                Status = dto.Status ?? "0",
                 StartDate = dto.StartDate,
                 EndDate = dto.EndDate,
-                Slprc = dto.Slprc,
-                ArrivalDays = dto.ArrivalDays,
-                OrdDay1 = dto.OrdDay1,
-                OrdDay2 = dto.OrdDay2,
-                OrdDay3 = dto.OrdDay3,
-                OrdDay4 = dto.OrdDay4,
-                OrdDay5 = dto.OrdDay5,
-                OrdDay6 = dto.OrdDay6,
-                OrdDay7 = dto.OrdDay7,
+                Slprc = dto.Slprc ?? 0,
+                ArrivalDays = dto.ArrivalDays ?? 0,
+                OrdDay1 = dto.OrdDay1 ?? "Y",
+                OrdDay2 = dto.OrdDay2 ?? "Y",
+                OrdDay3 = dto.OrdDay3 ?? "Y",
+                OrdDay4 = dto.OrdDay4 ?? "Y",
+                OrdDay5 = dto.OrdDay5 ?? "Y",
+                OrdDay6 = dto.OrdDay6 ?? "Y",
+                OrdDay7 = dto.OrdDay7 ?? "Y",
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -194,9 +191,6 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
     {
         try
         {
-            // 驗證資料
-            ValidateUpdateDto(dto);
-
             // 檢查是否存在
             var entity = await _repository.GetByIdAsync(supplierId, barcodeId, shopId);
             if (entity == null)
@@ -204,26 +198,28 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
                 throw new InvalidOperationException($"供應商商品不存在: {supplierId}/{barcodeId}/{shopId}");
             }
 
-            // 更新欄位
-            entity.Lprc = dto.Lprc;
-            entity.Mprc = dto.Mprc;
-            entity.Tax = dto.Tax;
-            entity.MinQty = dto.MinQty;
-            entity.MaxQty = dto.MaxQty;
+            // 驗證資料
+            ValidateUpdateDto(dto);
+
+            entity.Lprc = dto.Lprc ?? 0;
+            entity.Mprc = dto.Mprc ?? 0;
+            entity.Tax = dto.Tax ?? "1";
+            entity.MinQty = dto.MinQty ?? 0;
+            entity.MaxQty = dto.MaxQty ?? 0;
             entity.Unit = dto.Unit;
-            entity.Rate = dto.Rate;
-            entity.Status = dto.Status;
+            entity.Rate = dto.Rate ?? 1;
+            entity.Status = dto.Status ?? "0";
             entity.StartDate = dto.StartDate;
             entity.EndDate = dto.EndDate;
-            entity.Slprc = dto.Slprc;
-            entity.ArrivalDays = dto.ArrivalDays;
-            entity.OrdDay1 = dto.OrdDay1;
-            entity.OrdDay2 = dto.OrdDay2;
-            entity.OrdDay3 = dto.OrdDay3;
-            entity.OrdDay4 = dto.OrdDay4;
-            entity.OrdDay5 = dto.OrdDay5;
-            entity.OrdDay6 = dto.OrdDay6;
-            entity.OrdDay7 = dto.OrdDay7;
+            entity.Slprc = dto.Slprc ?? 0;
+            entity.ArrivalDays = dto.ArrivalDays ?? 0;
+            entity.OrdDay1 = dto.OrdDay1 ?? "Y";
+            entity.OrdDay2 = dto.OrdDay2 ?? "Y";
+            entity.OrdDay3 = dto.OrdDay3 ?? "Y";
+            entity.OrdDay4 = dto.OrdDay4 ?? "Y";
+            entity.OrdDay5 = dto.OrdDay5 ?? "Y";
+            entity.OrdDay6 = dto.OrdDay6 ?? "Y";
+            entity.OrdDay7 = dto.OrdDay7 ?? "Y";
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
 
@@ -241,14 +237,11 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
         try
         {
             // 檢查是否存在
-            var exists = await _repository.ExistsAsync(supplierId, barcodeId, shopId);
-            if (!exists)
+            var entity = await _repository.GetByIdAsync(supplierId, barcodeId, shopId);
+            if (entity == null)
             {
                 throw new InvalidOperationException($"供應商商品不存在: {supplierId}/{barcodeId}/{shopId}");
             }
-
-            // 檢查是否有相關業務資料（採購單明細等）
-            await CheckBusinessDataUsageAsync(supplierId, barcodeId, shopId);
 
             await _repository.DeleteAsync(supplierId, barcodeId, shopId);
         }
@@ -259,29 +252,14 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
         }
     }
 
-    public async Task BatchDeleteSupplierGoodsAsync(BatchDeleteSupplierGoodsDto dto)
+    public async Task DeleteSupplierGoodsBatchAsync(BatchDeleteSupplierGoodsDto dto)
     {
         try
         {
-            if (dto.Items == null || dto.Items.Count == 0)
+            foreach (var item in dto.Items)
             {
-                throw new ArgumentException("刪除項目不能為空");
+                await DeleteSupplierGoodsAsync(item.SupplierId, item.BarcodeId, item.ShopId);
             }
-
-            var keys = dto.Items.Select(x => new SupplierGoodsKey
-            {
-                SupplierId = x.SupplierId,
-                BarcodeId = x.BarcodeId,
-                ShopId = x.ShopId
-            }).ToList();
-
-            // 檢查是否有相關業務資料
-            foreach (var key in keys)
-            {
-                await CheckBusinessDataUsageAsync(key.SupplierId, key.BarcodeId, key.ShopId);
-            }
-
-            await _repository.BatchDeleteAsync(keys);
         }
         catch (Exception ex)
         {
@@ -290,7 +268,7 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
         }
     }
 
-    public async Task UpdateStatusAsync(string supplierId, string barcodeId, string shopId, UpdateSupplierGoodsStatusDto dto)
+    public async Task UpdateStatusAsync(string supplierId, string barcodeId, string shopId, string status)
     {
         try
         {
@@ -300,7 +278,12 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
                 throw new InvalidOperationException($"供應商商品不存在: {supplierId}/{barcodeId}/{shopId}");
             }
 
-            entity.Status = dto.Status;
+            if (status != "0" && status != "1")
+            {
+                throw new ArgumentException("狀態值必須為 0 (正常) 或 1 (停用)");
+            }
+
+            entity.Status = status;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
 
@@ -313,181 +296,64 @@ public class SupplierGoodsService : BaseService, ISupplierGoodsService
         }
     }
 
-    /// <summary>
-    /// 驗證新增 DTO
-    /// </summary>
     private void ValidateCreateDto(CreateSupplierGoodsDto dto)
     {
-        if (string.IsNullOrEmpty(dto.SupplierId))
+        if (string.IsNullOrWhiteSpace(dto.SupplierId))
         {
             throw new ArgumentException("供應商編號不能為空");
         }
-        if (string.IsNullOrEmpty(dto.BarcodeId))
+
+        if (string.IsNullOrWhiteSpace(dto.BarcodeId))
         {
             throw new ArgumentException("商品條碼不能為空");
         }
-        if (string.IsNullOrEmpty(dto.ShopId))
+
+        if (string.IsNullOrWhiteSpace(dto.ShopId))
         {
             throw new ArgumentException("店別代碼不能為空");
         }
-        if (dto.Lprc < 0)
-        {
-            throw new ArgumentException("進價不能小於0");
-        }
-        if (dto.Mprc < 0)
-        {
-            throw new ArgumentException("中價不能小於0");
-        }
-        if (dto.MinQty < 0)
-        {
-            throw new ArgumentException("最小訂購量不能小於0");
-        }
-        if (dto.MaxQty < 0)
-        {
-            throw new ArgumentException("最大訂購量不能小於0");
-        }
-        if (dto.MinQty > dto.MaxQty)
+
+        if (dto.MinQty.HasValue && dto.MaxQty.HasValue && dto.MinQty > dto.MaxQty)
         {
             throw new ArgumentException("最小訂購量不能大於最大訂購量");
         }
+
         if (dto.StartDate.HasValue && dto.EndDate.HasValue && dto.StartDate > dto.EndDate)
         {
             throw new ArgumentException("有效起始日不能大於有效終止日");
         }
-        if (dto.Tax != "0" && dto.Tax != "1")
+
+        if (!string.IsNullOrEmpty(dto.Tax) && dto.Tax != "0" && dto.Tax != "1")
         {
-            throw new ArgumentException("稅別必須為0或1");
+            throw new ArgumentException("稅別值必須為 0 (免稅) 或 1 (應稅)");
         }
-        if (dto.Status != "0" && dto.Status != "1")
+
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "0" && dto.Status != "1")
         {
-            throw new ArgumentException("狀態必須為0或1");
+            throw new ArgumentException("狀態值必須為 0 (正常) 或 1 (停用)");
         }
     }
 
-    /// <summary>
-    /// 驗證修改 DTO
-    /// </summary>
     private void ValidateUpdateDto(UpdateSupplierGoodsDto dto)
     {
-        if (dto.Lprc < 0)
-        {
-            throw new ArgumentException("進價不能小於0");
-        }
-        if (dto.Mprc < 0)
-        {
-            throw new ArgumentException("中價不能小於0");
-        }
-        if (dto.MinQty < 0)
-        {
-            throw new ArgumentException("最小訂購量不能小於0");
-        }
-        if (dto.MaxQty < 0)
-        {
-            throw new ArgumentException("最大訂購量不能小於0");
-        }
-        if (dto.MinQty > dto.MaxQty)
+        if (dto.MinQty.HasValue && dto.MaxQty.HasValue && dto.MinQty > dto.MaxQty)
         {
             throw new ArgumentException("最小訂購量不能大於最大訂購量");
         }
+
         if (dto.StartDate.HasValue && dto.EndDate.HasValue && dto.StartDate > dto.EndDate)
         {
             throw new ArgumentException("有效起始日不能大於有效終止日");
         }
-        if (dto.Tax != "0" && dto.Tax != "1")
+
+        if (!string.IsNullOrEmpty(dto.Tax) && dto.Tax != "0" && dto.Tax != "1")
         {
-            throw new ArgumentException("稅別必須為0或1");
+            throw new ArgumentException("稅別值必須為 0 (免稅) 或 1 (應稅)");
         }
-        if (dto.Status != "0" && dto.Status != "1")
+
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "0" && dto.Status != "1")
         {
-            throw new ArgumentException("狀態必須為0或1");
-        }
-    }
-
-    /// <summary>
-    /// 檢查供應商商品是否有相關業務資料使用
-    /// </summary>
-    private async Task CheckBusinessDataUsageAsync(string supplierId, string barcodeId, string shopId)
-    {
-        try
-        {
-            using var connection = _connectionFactory.CreateConnection();
-            
-            // 檢查採購單明細中是否使用此供應商商品
-            const string purchaseOrderSql = @"
-                SELECT COUNT(*) 
-                FROM PurchaseOrderDetails POD
-                INNER JOIN PurchaseOrders PO ON POD.OrderId = PO.OrderId
-                WHERE PO.SupplierId = @SupplierId 
-                  AND POD.BarcodeId = @BarcodeId
-                  AND PO.ShopId = @ShopId
-                  AND PO.Status != 'X'";
-            
-            var purchaseOrderCount = await connection.ExecuteScalarAsync<int>(purchaseOrderSql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
-            });
-
-            if (purchaseOrderCount > 0)
-            {
-                throw new InvalidOperationException(
-                    $"此供應商商品已被 {purchaseOrderCount} 筆採購單使用，無法刪除。請先處理相關採購單。");
-            }
-
-            // 檢查採購驗收單明細中是否使用此供應商商品
-            const string purchaseReceiptSql = @"
-                SELECT COUNT(*) 
-                FROM PurchaseReceiptDetails PRD
-                INNER JOIN PurchaseReceipts PR ON PRD.ReceiptId = PR.ReceiptId
-                WHERE PR.SupplierId = @SupplierId 
-                  AND PRD.BarcodeId = @BarcodeId
-                  AND PR.ShopId = @ShopId
-                  AND PR.Status != 'X'";
-            
-            var purchaseReceiptCount = await connection.ExecuteScalarAsync<int>(purchaseReceiptSql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
-            });
-
-            if (purchaseReceiptCount > 0)
-            {
-                throw new InvalidOperationException(
-                    $"此供應商商品已被 {purchaseReceiptCount} 筆採購驗收單使用，無法刪除。請先處理相關驗收單。");
-            }
-
-            // 檢查庫存資料中是否使用此供應商商品
-            const string inventorySql = @"
-                SELECT COUNT(*) 
-                FROM Inventories 
-                WHERE SupplierId = @SupplierId 
-                  AND BarcodeId = @BarcodeId
-                  AND ShopId = @ShopId";
-            
-            var inventoryCount = await connection.ExecuteScalarAsync<int>(inventorySql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
-            });
-
-            if (inventoryCount > 0)
-            {
-                throw new InvalidOperationException(
-                    $"此供應商商品存在庫存資料（{inventoryCount} 筆），無法刪除。請先處理相關庫存。");
-            }
-        }
-        catch (InvalidOperationException)
-        {
-            throw; // 重新拋出業務異常
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"檢查供應商商品業務資料使用失敗: {supplierId}/{barcodeId}/{shopId}", ex);
-            throw;
+            throw new ArgumentException("狀態值必須為 0 (正常) 或 1 (停用)");
         }
     }
 }
-

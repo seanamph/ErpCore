@@ -3,6 +3,7 @@ using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.Accounting;
 using ErpCore.Domain.Entities.TaxAccounting;
 using ErpCore.Infrastructure.Repositories.Accounting;
+using ErpCore.Infrastructure.Repositories.Certificate;
 using ErpCore.Infrastructure.Repositories.TaxAccounting;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -27,12 +28,12 @@ public class VoucherAuditService : BaseService, IVoucherAuditService
         _voucherRepository = voucherRepository;
     }
 
-    public async Task<List<SystemVoucherCountDto>> GetSystemListAsync()
+    public async Task<List<ErpCore.Application.DTOs.TaxAccounting.SystemVoucherCountDto>> GetSystemListAsync()
     {
         try
         {
             var results = await _repository.GetSystemVoucherCountsAsync();
-            return results.Select(x => new SystemVoucherCountDto
+            return results.Select(x => new ErpCore.Application.DTOs.TaxAccounting.SystemVoucherCountDto
             {
                 SysId = x.SysId,
                 SysName = x.SysName,

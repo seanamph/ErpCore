@@ -1,7 +1,7 @@
 namespace ErpCore.Application.DTOs.System;
 
 /// <summary>
-/// 角色資料傳輸物件
+/// 角色資料傳輸物件 (SYS0210)
 /// </summary>
 public class RoleDto
 {
@@ -47,7 +47,7 @@ public class UpdateRoleDto
 }
 
 /// <summary>
-/// 複製角色 DTO
+/// 複製角色 DTO (SYS0210 - 創建新角色)
 /// </summary>
 public class CopyRoleDto
 {
@@ -56,80 +56,9 @@ public class CopyRoleDto
 }
 
 /// <summary>
-/// 批次刪除角色 DTO
+/// 複製角色到目標角色 DTO (SYS0240)
 /// </summary>
-public class BatchDeleteRoleDto
-{
-    public List<string> RoleIds { get; set; } = new();
-}
-
-/// <summary>
-/// 使用者角色 DTO (SYS0220)
-/// </summary>
-public class UserRoleDto
-{
-    public string UserId { get; set; } = string.Empty;
-    public string RoleId { get; set; } = string.Empty;
-    public string? RoleName { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime CreatedAt { get; set; }
-}
-
-/// <summary>
-/// 分配角色 DTO (SYS0220)
-/// </summary>
-public class AssignRolesDto
-{
-    public List<string> RoleIds { get; set; } = new();
-}
-
-/// <summary>
-/// 移除角色 DTO (SYS0220)
-/// </summary>
-public class RemoveRolesDto
-{
-    public List<string> RoleIds { get; set; } = new();
-}
-
-/// <summary>
-/// 批量更新角色 DTO (SYS0220)
-/// </summary>
-public class BatchUpdateRolesDto
-{
-    public List<string> RoleIds { get; set; } = new();
-}
-
-/// <summary>
-/// 分配角色結果 DTO (SYS0220)
-/// </summary>
-public class AssignRoleResultDto
-{
-    public int AssignedCount { get; set; }
-}
-
-/// <summary>
-/// 移除角色結果 DTO (SYS0220)
-/// </summary>
-public class RemoveRoleResultDto
-{
-    public int RemovedCount { get; set; }
-}
-
-/// <summary>
-/// 批量更新角色結果 DTO (SYS0220)
-/// </summary>
-public class BatchUpdateRoleResultDto
-{
-    public int AddedCount { get; set; }
-    public int RemovedCount { get; set; }
-}
-
-// ========== SYS0240 - 角色複製 ==========
-
-/// <summary>
-/// 複製角色請求 DTO (SYS0240)
-/// </summary>
-public class CopyRoleRequestDto
+public class CopyRoleToTargetDto
 {
     public string SourceRoleId { get; set; } = string.Empty;
     public string TargetRoleId { get; set; } = string.Empty;
@@ -137,16 +66,16 @@ public class CopyRoleRequestDto
 }
 
 /// <summary>
-/// 驗證角色複製請求 DTO (SYS0240)
+/// 驗證角色複製 DTO (SYS0240)
 /// </summary>
-public class ValidateCopyRequestDto
+public class ValidateCopyRoleDto
 {
     public string SourceRoleId { get; set; } = string.Empty;
     public string TargetRoleId { get; set; } = string.Empty;
 }
 
 /// <summary>
-/// 複製角色結果 DTO (SYS0240)
+/// 角色複製結果 DTO (SYS0240)
 /// </summary>
 public class CopyRoleResultDto
 {
@@ -159,11 +88,10 @@ public class CopyRoleResultDto
 /// <summary>
 /// 驗證角色複製結果 DTO (SYS0240)
 /// </summary>
-public class ValidateCopyResultDto
+public class ValidateCopyRoleResultDto
 {
     public bool SourceRoleExists { get; set; }
     public bool TargetRoleExists { get; set; }
     public bool SourceHasPermissions { get; set; }
     public bool IsSameRole { get; set; }
 }
-

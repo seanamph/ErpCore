@@ -171,20 +171,38 @@ public class EInvoicesController : BaseController
     }
 
     /// <summary>
-    /// 下載上傳檔案 (ECA2050)
+    /// 下載上傳檔案或處理結果 (ECA2050, ECA3010)
     /// </summary>
     [HttpGet("uploads/{uploadId}/download")]
-    public async Task<IActionResult> DownloadUpload(long uploadId)
+    public async Task<IActionResult> DownloadUpload(long uploadId, [FromQuery] string? type = null)
     {
         try
         {
-            var (fileBytes, fileName, contentType) = await _service.DownloadUploadFileAsync(uploadId);
-            return File(fileBytes, contentType, fileName);
+            // 如果有 type 參數，則下載處理結果（成功/失敗清單）
+            if (!string.IsNullOrEmpty(type))
+            {
+                var fileBytes = await _service.DownloadResultAsync(uploadId, type);
+                var typeName = type.ToLower() switch
+                {
+                    "success" => "成功清單",
+                    "failed" => "失敗清單",
+                    "all" => "全部清單",
+                    _ => "處理結果"
+                };
+                var fileName = $"電子發票處理結果_{typeName}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+                return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+            }
+            else
+            {
+                // 否則下載上傳的原始檔案
+                var (fileBytes, fileName, contentType) = await _service.DownloadUploadFileAsync(uploadId);
+                return File(fileBytes, contentType, fileName);
+            }
         }
         catch (Exception ex)
         {
-            _logger.LogError($"下載上傳檔案失敗: {uploadId}", ex);
-            return BadRequest(ApiResponse<object>.Fail($"下載上傳檔案失敗: {ex.Message}"));
+            _logger.LogError($"下載失敗: {uploadId}, Type: {type}", ex);
+            return BadRequest(ApiResponse<object>.Fail($"下載失敗: {ex.Message}"));
         }
     }
 
@@ -245,12 +263,35 @@ public class EInvoicesController : BaseController
     }
 
     /// <summary>
+    /// 列印電子發票報表 (ECA3040)
+    /// </summary>
+    [HttpPost("reports/print")]
+    public async Task<IActionResult> PrintEInvoiceReports(
+        [FromBody] EInvoiceReportQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.ExportEInvoiceReportsToPdfAsync(query);
+            var reportTypeName = GetReportTypeName(query.ReportType);
+            var fileName = $"電子發票報表_{reportTypeName}_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            // 打印功能返回PDF，前端会在新窗口打开
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印電子發票報表失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail("列印電子發票報表失敗"));
+        }
+    }
+
+    /// <summary>
     /// 取得報表類型名稱
     /// </summary>
     private string GetReportTypeName(string? reportType)
     {
         return reportType switch
         {
+            "ECA3040" => "電子發票報表查詢",
             "ECA4010" => "訂單明細",
             "ECA4020" => "商品銷售統計",
             "ECA4030" => "零售商銷售統計",

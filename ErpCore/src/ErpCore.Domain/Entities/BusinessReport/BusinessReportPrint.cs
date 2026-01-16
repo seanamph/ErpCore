@@ -21,19 +21,9 @@ public class BusinessReportPrint
     public string SiteId { get; set; } = string.Empty;
 
     /// <summary>
-    /// 店別名稱
-    /// </summary>
-    public string? SiteName { get; set; }
-
-    /// <summary>
     /// 組織代碼
     /// </summary>
     public string? OrgId { get; set; }
-
-    /// <summary>
-    /// 組織名稱
-    /// </summary>
-    public string? OrgName { get; set; }
 
     /// <summary>
     /// 員工編號
@@ -59,11 +49,6 @@ public class BusinessReportPrint
     /// 審核者
     /// </summary>
     public string? Verifier { get; set; }
-
-    /// <summary>
-    /// 審核者名稱
-    /// </summary>
-    public string? VerifierName { get; set; }
 
     /// <summary>
     /// 審核日期
@@ -105,4 +90,3 @@ public class BusinessReportPrint
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

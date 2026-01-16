@@ -12,7 +12,7 @@ export const departmentsApi = {
 
   // 查詢單筆部別
   getDepartment: (deptId) => {
-    return axios.get(`/departments/${deptId}`)
+    return axios.get(`/departments/${encodeURIComponent(deptId)}`)
   },
 
   // 新增部別
@@ -22,12 +22,12 @@ export const departmentsApi = {
 
   // 修改部別
   updateDepartment: (deptId, data) => {
-    return axios.put(`/departments/${deptId}`, data)
+    return axios.put(`/departments/${encodeURIComponent(deptId)}`, data)
   },
 
   // 刪除部別
   deleteDepartment: (deptId) => {
-    return axios.delete(`/departments/${deptId}`)
+    return axios.delete(`/departments/${encodeURIComponent(deptId)}`)
   },
 
   // 批次刪除部別
@@ -36,8 +36,7 @@ export const departmentsApi = {
   },
 
   // 更新部別狀態
-  updateDepartmentStatus: (deptId, data) => {
-    return axios.put(`/departments/${deptId}/status`, data)
+  updateDepartmentStatus: (deptId, status) => {
+    return axios.put(`/departments/${encodeURIComponent(deptId)}/status`, { Status: status })
   }
 }
-

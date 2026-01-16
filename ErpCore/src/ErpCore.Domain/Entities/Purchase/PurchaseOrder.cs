@@ -31,7 +31,7 @@ public class PurchaseOrder
     public string SupplierId { get; set; } = string.Empty;
 
     /// <summary>
-    /// 狀態 (D:草稿, S:已送出, A:已審核, X:已取消)
+    /// 狀態 (D:草稿, S:已送出, A:已審核, X:已取消, C:已結案)
     /// </summary>
     public string Status { get; set; } = "D";
 
@@ -81,7 +81,22 @@ public class PurchaseOrder
     public string? SiteId { get; set; }
 
     /// <summary>
-    /// 來源程式 (SYSW315/SYSW316)
+    /// 組織代碼
+    /// </summary>
+    public string? OrgId { get; set; }
+
+    /// <summary>
+    /// 幣別
+    /// </summary>
+    public string? CurrencyId { get; set; } = "TWD";
+
+    /// <summary>
+    /// 匯率
+    /// </summary>
+    public decimal? ExchangeRate { get; set; } = 1;
+
+    /// <summary>
+    /// 來源程式 (SYSW315/SYSW316/SYSP110-SYSP190)
     /// </summary>
     public string? SourceProgram { get; set; }
 

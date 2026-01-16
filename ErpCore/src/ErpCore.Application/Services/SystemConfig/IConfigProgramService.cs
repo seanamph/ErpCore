@@ -38,4 +38,3 @@ public interface IConfigProgramService
     /// </summary>
     Task DeleteConfigProgramsBatchAsync(BatchDeleteConfigProgramDto dto);
 }
-

@@ -12,5 +12,15 @@ public interface IBusinessReportService
     /// 查詢業務報表列表
     /// </summary>
     Task<PagedResult<BusinessReportDto>> GetBusinessReportsAsync(BusinessReportQueryDto query);
+
+    /// <summary>
+    /// 匯出業務報表
+    /// </summary>
+    Task<byte[]> ExportBusinessReportsAsync(BusinessReportQueryDto query, string format);
+
+    /// <summary>
+    /// 列印業務報表
+    /// </summary>
+    Task<byte[]> PrintBusinessReportsAsync(BusinessReportQueryDto query);
 }
 

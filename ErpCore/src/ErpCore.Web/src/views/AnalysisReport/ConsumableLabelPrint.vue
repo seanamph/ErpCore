@@ -94,11 +94,11 @@ const handleSearch = async () => {
   try {
     loading.value = true
     const response = await consumablePrintApi.getPrintList(queryForm)
-    if (response.data.success) {
-      tableData.value = response.data.data.items || []
+    if (response.success) {
+      tableData.value = response.data?.items || []
       ElMessage.success('查詢成功')
     } else {
-      ElMessage.error(response.data.message || '查詢失敗')
+      ElMessage.error(response.message || '查詢失敗')
     }
   } catch (error) {
     ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
@@ -146,11 +146,11 @@ const handlePrint = async () => {
     }
 
     const response = await consumablePrintApi.batchPrint(printData)
-    if (response.data.success) {
-      ElMessage.success(`列印成功，共列印 ${response.data.data.printCount} 筆`)
+    if (response.success) {
+      ElMessage.success(`列印成功，共列印 ${response.data?.printCount || selectedItems.value.length} 筆`)
       await handleSearch()
     } else {
-      ElMessage.error(response.data.message || '列印失敗')
+      ElMessage.error(response.message || '列印失敗')
     }
   } catch (error) {
     if (error !== 'cancel') {

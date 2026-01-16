@@ -161,6 +161,42 @@ public class ChangeLogDto
     /// 異動後的值顯示文字
     /// </summary>
     public string NewValueDisplay { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 異動前的值顯示物件（用於使用者角色對應設定異動記錄）
+    /// </summary>
+    public UserRoleValueDisplayDto? OldValueDisplayObj { get; set; }
+
+    /// <summary>
+    /// 異動後的值顯示物件（用於使用者角色對應設定異動記錄）
+    /// </summary>
+    public UserRoleValueDisplayDto? NewValueDisplayObj { get; set; }
+}
+
+/// <summary>
+/// 使用者角色值顯示 DTO (SYS0630)
+/// </summary>
+public class UserRoleValueDisplayDto
+{
+    /// <summary>
+    /// 使用者代碼
+    /// </summary>
+    public string? UserId { get; set; }
+
+    /// <summary>
+    /// 使用者名稱
+    /// </summary>
+    public string? UserName { get; set; }
+
+    /// <summary>
+    /// 角色代碼
+    /// </summary>
+    public string? RoleId { get; set; }
+
+    /// <summary>
+    /// 角色名稱
+    /// </summary>
+    public string? RoleName { get; set; }
 }
 
 /// <summary>

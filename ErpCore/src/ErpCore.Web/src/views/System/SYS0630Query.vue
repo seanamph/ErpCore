@@ -47,12 +47,6 @@
           >
             選擇
           </el-button>
-          <el-input 
-            v-model="searchUserName" 
-            readonly 
-            style="width: 200px; margin-left: 10px"
-            placeholder="被異動使用者名稱"
-          />
         </el-form-item>
         
         <!-- 被異動角色代碼 -->
@@ -72,10 +66,10 @@
             選擇
           </el-button>
           <el-input 
-            v-model="searchRoleName" 
+            v-model="roleName" 
             readonly 
             style="width: 200px; margin-left: 10px"
-            placeholder="被異動角色名稱"
+            placeholder="角色名稱"
           />
         </el-form-item>
         
@@ -113,11 +107,10 @@
             </span>
             <span v-if="queryForm.SearchUserId">
               被異動使用者代碼: <strong>{{ queryForm.SearchUserId }}</strong>
-              <span v-if="searchUserName">，被異動使用者名稱: <strong>{{ searchUserName }}</strong></span>
             </span>
             <span v-if="queryForm.SearchRoleId">
               被異動角色代碼: <strong>{{ queryForm.SearchRoleId }}</strong>
-              <span v-if="searchRoleName">，被異動角色名稱: <strong>{{ searchRoleName }}</strong></span>
+              <span v-if="roleName">，角色名稱: <strong>{{ roleName }}</strong></span>
             </span>
             <span v-if="dateRange && dateRange.length === 2">
               日期範圍: <strong>{{ dateRange[0] }} ~ {{ dateRange[1] }}</strong>
@@ -157,8 +150,42 @@
             <div class="change-detail">
               <el-table :data="detailTableData(item)" border style="width: 100%">
                 <el-table-column prop="field" label="異動欄位" width="200" />
-                <el-table-column prop="oldValue" label="異動前的值" />
-                <el-table-column prop="newValue" label="異動後的值" />
+                <el-table-column label="異動前的值" min-width="300">
+                  <template #default="{ row }">
+                    <div v-if="row.oldValueDisplayObj">
+                      <div v-if="row.oldValueDisplayObj.UserId" class="value-display">
+                        <strong>使用者:</strong> {{ row.oldValueDisplayObj.UserId }}
+                        <span v-if="row.oldValueDisplayObj.UserName"> - {{ row.oldValueDisplayObj.UserName }}</span>
+                      </div>
+                      <div v-if="row.oldValueDisplayObj.RoleId" class="value-display">
+                        <strong>角色:</strong> {{ row.oldValueDisplayObj.RoleId }}
+                        <span v-if="row.oldValueDisplayObj.RoleName"> - {{ row.oldValueDisplayObj.RoleName }}</span>
+                      </div>
+                      <div v-if="!row.oldValueDisplayObj.UserId && !row.oldValueDisplayObj.RoleId">
+                        {{ row.oldValue || '(無)' }}
+                      </div>
+                    </div>
+                    <span v-else>{{ row.oldValue || '(無)' }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="異動後的值" min-width="300">
+                  <template #default="{ row }">
+                    <div v-if="row.newValueDisplayObj">
+                      <div v-if="row.newValueDisplayObj.UserId" class="value-display">
+                        <strong>使用者:</strong> {{ row.newValueDisplayObj.UserId }}
+                        <span v-if="row.newValueDisplayObj.UserName"> - {{ row.newValueDisplayObj.UserName }}</span>
+                      </div>
+                      <div v-if="row.newValueDisplayObj.RoleId" class="value-display">
+                        <strong>角色:</strong> {{ row.newValueDisplayObj.RoleId }}
+                        <span v-if="row.newValueDisplayObj.RoleName"> - {{ row.newValueDisplayObj.RoleName }}</span>
+                      </div>
+                      <div v-if="!row.newValueDisplayObj.UserId && !row.newValueDisplayObj.RoleId">
+                        {{ row.newValue || '(無)' }}
+                      </div>
+                    </div>
+                    <span v-else>{{ row.newValue || '(無)' }}</span>
+                  </template>
+                </el-table-column>
               </el-table>
             </div>
           </el-collapse-item>
@@ -219,7 +246,7 @@ const dateRange = ref([])
 // 使用者名稱和角色名稱
 const changeUserName = ref('')
 const searchUserName = ref('')
-const searchRoleName = ref('')
+const roleName = ref('')
 
 // 查詢結果
 const changeLogList = ref([])
@@ -261,7 +288,9 @@ const detailTableData = (item) => {
   return fields.map((field, index) => ({
     field: field,
     oldValue: oldValues[index] || '--',
-    newValue: newValues[index] || '--'
+    newValue: newValues[index] || '--',
+    oldValueDisplayObj: item.OldValueDisplayObj,
+    newValueDisplayObj: item.NewValueDisplayObj
   }))
 }
 
@@ -296,7 +325,7 @@ const handleRoleSelected = async (roles) => {
   if (roles && roles.length > 0) {
     const role = roles[0]
     queryForm.SearchRoleId = role.RoleId
-    searchRoleName.value = role.RoleName || ''
+    roleName.value = role.RoleName || ''
   }
   roleListDialogVisible.value = false
 }
@@ -362,7 +391,7 @@ const handleReset = () => {
   dateRange.value = []
   changeUserName.value = ''
   searchUserName.value = ''
-  searchRoleName.value = ''
+  roleName.value = ''
   changeLogList.value = []
   activeNames.value = []
   hasSearched.value = false
@@ -465,6 +494,10 @@ onMounted(() => {
   
   .change-detail {
     margin-top: 10px;
+    
+    .value-display {
+      margin-bottom: 5px;
+    }
   }
 }
 

@@ -40,4 +40,3 @@ export const areasApi = {
     return axios.put(`/areas/${areaId}/status`, data)
   }
 }
-

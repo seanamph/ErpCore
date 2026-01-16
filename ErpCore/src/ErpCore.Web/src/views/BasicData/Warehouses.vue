@@ -176,14 +176,14 @@ const rules = {
   Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
 }
 
-// 取得庫別類型文字
+// 庫別類型文字
 const getWarehouseTypeText = (type) => {
   const typeMap = {
     'MAIN': '主倉庫',
     'BRANCH': '分倉庫',
     'TEMPORARY': '臨時倉庫'
   }
-  return typeMap[type] || type || ''
+  return typeMap[type] || type || '-'
 }
 
 // 查詢
@@ -275,7 +275,15 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          response = await warehousesApi.updateWarehouse(form.WarehouseId, form)
+          const updateData = {
+            WarehouseName: form.WarehouseName,
+            WarehouseType: form.WarehouseType,
+            Location: form.Location,
+            SeqNo: form.SeqNo,
+            Status: form.Status,
+            Notes: form.Notes
+          }
+          response = await warehousesApi.updateWarehouse(form.WarehouseId, updateData)
         } else {
           response = await warehousesApi.createWarehouse(form)
         }
@@ -364,4 +372,3 @@ onMounted(() => {
   }
 }
 </style>
-

@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace ErpCore.Infrastructure.Repositories.Inventory;
 
 /// <summary>
@@ -13,7 +15,7 @@ public interface IStockRepository
     /// <param name="goodsId">商品編號</param>
     /// <param name="qty">數量變更（正數為增加，負數為減少）</param>
     /// <param name="transaction">交易物件</param>
-    Task UpdateStockQtyAsync(string shopId, string goodsId, decimal qty, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStockQtyAsync(string shopId, string goodsId, decimal qty, IDbTransaction? transaction = null);
 
     /// <summary>
     /// 取得庫存數量

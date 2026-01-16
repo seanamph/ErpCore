@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Api.Controllers.Inventory;
 
 /// <summary>
-/// 商品永久變價作業控制器 (SYSW150)
+/// 商品永久變價控制器 (SYSW150)
 /// </summary>
 [Route("api/v1/price-changes")]
 public class PriceChangeController : BaseController
@@ -41,8 +41,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpGet("{priceChangeId}/{priceChangeType}")]
     public async Task<ActionResult<ApiResponse<PriceChangeDetailDto>>> GetPriceChange(
-        string priceChangeId, 
-        string priceChangeType)
+        string priceChangeId, string priceChangeType)
     {
         return await ExecuteAsync(async () =>
         {
@@ -70,8 +69,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpPut("{priceChangeId}/{priceChangeType}")]
     public async Task<ActionResult<ApiResponse<object>>> UpdatePriceChange(
-        string priceChangeId,
-        string priceChangeType,
+        string priceChangeId, string priceChangeType,
         [FromBody] UpdatePriceChangeDto dto)
     {
         return await ExecuteAsync(async () =>
@@ -85,8 +83,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpDelete("{priceChangeId}/{priceChangeType}")]
     public async Task<ActionResult<ApiResponse<object>>> DeletePriceChange(
-        string priceChangeId,
-        string priceChangeType)
+        string priceChangeId, string priceChangeType)
     {
         return await ExecuteAsync(async () =>
         {
@@ -99,8 +96,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpPut("{priceChangeId}/{priceChangeType}/approve")]
     public async Task<ActionResult<ApiResponse<object>>> ApprovePriceChange(
-        string priceChangeId,
-        string priceChangeType,
+        string priceChangeId, string priceChangeType,
         [FromBody] ApprovePriceChangeDto dto)
     {
         return await ExecuteAsync(async () =>
@@ -114,8 +110,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpPut("{priceChangeId}/{priceChangeType}/confirm")]
     public async Task<ActionResult<ApiResponse<object>>> ConfirmPriceChange(
-        string priceChangeId,
-        string priceChangeType,
+        string priceChangeId, string priceChangeType,
         [FromBody] ConfirmPriceChangeDto dto)
     {
         return await ExecuteAsync(async () =>
@@ -129,8 +124,7 @@ public class PriceChangeController : BaseController
     /// </summary>
     [HttpPut("{priceChangeId}/{priceChangeType}/cancel")]
     public async Task<ActionResult<ApiResponse<object>>> CancelPriceChange(
-        string priceChangeId,
-        string priceChangeType)
+        string priceChangeId, string priceChangeType)
     {
         return await ExecuteAsync(async () =>
         {
@@ -138,4 +132,3 @@ public class PriceChangeController : BaseController
         }, $"作廢變價單失敗: {priceChangeId}/{priceChangeType}");
     }
 }
-

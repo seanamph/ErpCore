@@ -79,11 +79,15 @@ BEGIN
     -- 索引
     CREATE NONCLUSTERED INDEX [IX_EInvoices_UploadId] ON [dbo].[EInvoices] ([UploadId]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_OrderNo] ON [dbo].[EInvoices] ([OrderNo]);
+    CREATE NONCLUSTERED INDEX [IX_EInvoices_RetailerOrderNo] ON [dbo].[EInvoices] ([RetailerOrderNo]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_OrderDate] ON [dbo].[EInvoices] ([OrderDate]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_StoreId] ON [dbo].[EInvoices] ([StoreId]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_ProcessStatus] ON [dbo].[EInvoices] ([ProcessStatus]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_ProviderId] ON [dbo].[EInvoices] ([ProviderId]);
     CREATE NONCLUSTERED INDEX [IX_EInvoices_GoodsId] ON [dbo].[EInvoices] ([GoodsId]);
+    CREATE NONCLUSTERED INDEX [IX_EInvoices_OrderStatus] ON [dbo].[EInvoices] ([OrderStatus]);
+    -- 複合索引：優化日期範圍 + 狀態查詢 (ECA3020)
+    CREATE NONCLUSTERED INDEX [IX_EInvoices_OrderDate_ProcessStatus] ON [dbo].[EInvoices] ([OrderDate], [ProcessStatus]);
 END
 GO
 

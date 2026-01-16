@@ -1,8 +1,8 @@
 using Dapper;
-using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Domain.Entities.DropdownList;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
@@ -36,7 +36,7 @@ public class ZoneRepository : BaseRepository, IZoneRepository
         }
     }
 
-    public async Task<PagedResult<Zone>> QueryAsync(ZoneQueryDto query)
+    public async Task<PagedResult<Zone>> QueryAsync(ZoneQuery query)
     {
         try
         {
@@ -94,8 +94,7 @@ public class ZoneRepository : BaseRepository, IZoneRepository
                 Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
-                PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+                PageSize = query.PageSize
             };
         }
         catch (Exception ex)
@@ -105,7 +104,7 @@ public class ZoneRepository : BaseRepository, IZoneRepository
         }
     }
 
-    public async Task<IEnumerable<ZoneOptionDto>> GetOptionsAsync(string? cityId = null, string? status = "1")
+    public async Task<IEnumerable<ZoneOption>> GetOptionsAsync(string? cityId = null, string? status = "1")
     {
         try
         {
@@ -130,7 +129,7 @@ public class ZoneRepository : BaseRepository, IZoneRepository
 
             sql += " ORDER BY SeqNo, ZoneName";
 
-            return await QueryAsync<ZoneOptionDto>(sql, parameters);
+            return await QueryAsync<ZoneOption>(sql, parameters);
         }
         catch (Exception ex)
         {

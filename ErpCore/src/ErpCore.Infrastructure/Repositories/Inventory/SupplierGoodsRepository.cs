@@ -1,4 +1,3 @@
-using System.Data;
 using Dapper;
 using ErpCore.Domain.Entities.Inventory;
 using ErpCore.Infrastructure.Data;
@@ -29,11 +28,11 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
                   AND BarcodeId = @BarcodeId 
                   AND ShopId = @ShopId";
 
-            return await QueryFirstOrDefaultAsync<SupplierGoods>(sql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
+            return await QueryFirstOrDefaultAsync<SupplierGoods>(sql, new 
+            { 
+                SupplierId = supplierId, 
+                BarcodeId = barcodeId, 
+                ShopId = shopId 
             });
         }
         catch (Exception ex)
@@ -48,7 +47,7 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
         try
         {
             var sql = @"
-                SELECT * FROM SupplierGoods 
+                SELECT * FROM SupplierGoods
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
@@ -92,7 +91,7 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
 
             // 查詢總數
             var countSql = @"
-                SELECT COUNT(*) FROM SupplierGoods 
+                SELECT COUNT(*) FROM SupplierGoods
                 WHERE 1=1";
 
             var countParameters = new DynamicParameters();
@@ -117,7 +116,7 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
                 countParameters.Add("Status", query.Status);
             }
 
-            var totalCount = await ExecuteScalarAsync<int>(countSql, countParameters);
+            var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
             return new PagedResult<SupplierGoods>
             {
@@ -134,52 +133,32 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
         }
     }
 
-    public async Task<bool> ExistsAsync(string supplierId, string barcodeId, string shopId)
-    {
-        try
-        {
-            const string sql = @"
-                SELECT COUNT(*) FROM SupplierGoods 
-                WHERE SupplierId = @SupplierId 
-                  AND BarcodeId = @BarcodeId 
-                  AND ShopId = @ShopId";
-
-            var count = await ExecuteScalarAsync<int>(sql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
-            });
-
-            return count > 0;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"檢查供應商商品是否存在失敗: {supplierId}/{barcodeId}/{shopId}", ex);
-            throw;
-        }
-    }
-
     public async Task<SupplierGoods> CreateAsync(SupplierGoods supplierGoods)
     {
         try
         {
             const string sql = @"
                 INSERT INTO SupplierGoods (
-                    SupplierId, BarcodeId, ShopId, Lprc, Mprc, Tax, MinQty, MaxQty, 
+                    SupplierId, BarcodeId, ShopId, Lprc, Mprc, Tax, MinQty, MaxQty,
                     Unit, Rate, Status, StartDate, EndDate, Slprc, ArrivalDays,
                     OrdDay1, OrdDay2, OrdDay3, OrdDay4, OrdDay5, OrdDay6, OrdDay7,
                     CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup
-                ) VALUES (
+                )
+                OUTPUT INSERTED.*
+                VALUES (
                     @SupplierId, @BarcodeId, @ShopId, @Lprc, @Mprc, @Tax, @MinQty, @MaxQty,
                     @Unit, @Rate, @Status, @StartDate, @EndDate, @Slprc, @ArrivalDays,
                     @OrdDay1, @OrdDay2, @OrdDay3, @OrdDay4, @OrdDay5, @OrdDay6, @OrdDay7,
                     @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 )";
 
-            await ExecuteAsync(sql, supplierGoods);
+            var result = await QueryFirstOrDefaultAsync<SupplierGoods>(sql, supplierGoods);
+            if (result == null)
+            {
+                throw new InvalidOperationException("新增供應商商品失敗");
+            }
 
-            return supplierGoods;
+            return result;
         }
         catch (Exception ex)
         {
@@ -215,13 +194,18 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
                     OrdDay7 = @OrdDay7,
                     UpdatedBy = @UpdatedBy,
                     UpdatedAt = @UpdatedAt
+                OUTPUT INSERTED.*
                 WHERE SupplierId = @SupplierId 
                   AND BarcodeId = @BarcodeId 
                   AND ShopId = @ShopId";
 
-            await ExecuteAsync(sql, supplierGoods);
+            var result = await QueryFirstOrDefaultAsync<SupplierGoods>(sql, supplierGoods);
+            if (result == null)
+            {
+                throw new InvalidOperationException($"供應商商品不存在: {supplierGoods.SupplierId}/{supplierGoods.BarcodeId}/{supplierGoods.ShopId}");
+            }
 
-            return supplierGoods;
+            return result;
         }
         catch (Exception ex)
         {
@@ -240,11 +224,11 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
                   AND BarcodeId = @BarcodeId 
                   AND ShopId = @ShopId";
 
-            await ExecuteAsync(sql, new
-            {
-                SupplierId = supplierId,
-                BarcodeId = barcodeId,
-                ShopId = shopId
+            await ExecuteAsync(sql, new 
+            { 
+                SupplierId = supplierId, 
+                BarcodeId = barcodeId, 
+                ShopId = shopId 
             });
         }
         catch (Exception ex)
@@ -254,44 +238,28 @@ public class SupplierGoodsRepository : BaseRepository, ISupplierGoodsRepository
         }
     }
 
-    public async Task BatchDeleteAsync(List<SupplierGoodsKey> keys)
+    public async Task<bool> ExistsAsync(string supplierId, string barcodeId, string shopId)
     {
         try
         {
-            if (keys == null || keys.Count == 0)
-            {
-                return;
-            }
+            const string sql = @"
+                SELECT COUNT(*) FROM SupplierGoods 
+                WHERE SupplierId = @SupplierId 
+                  AND BarcodeId = @BarcodeId 
+                  AND ShopId = @ShopId";
 
-            using var connection = _connectionFactory.CreateConnection();
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                const string sql = @"
-                    DELETE FROM SupplierGoods 
-                    WHERE SupplierId = @SupplierId 
-                      AND BarcodeId = @BarcodeId 
-                      AND ShopId = @ShopId";
-
-                foreach (var key in keys)
-                {
-                    await connection.ExecuteAsync(sql, key, transaction);
-                }
-
-                transaction.Commit();
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
+            var count = await QuerySingleAsync<int>(sql, new 
+            { 
+                SupplierId = supplierId, 
+                BarcodeId = barcodeId, 
+                ShopId = shopId 
+            });
+            return count > 0;
         }
         catch (Exception ex)
         {
-            _logger.LogError("批次刪除供應商商品失敗", ex);
+            _logger.LogError($"檢查供應商商品是否存在失敗: {supplierId}/{barcodeId}/{shopId}", ex);
             throw;
         }
     }
 }
-

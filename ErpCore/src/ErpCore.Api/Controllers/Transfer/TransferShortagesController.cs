@@ -40,7 +40,7 @@ public class TransferShortagesController : BaseController
     /// 查詢單筆短溢單
     /// </summary>
     [HttpGet("{shortageId}")]
-    public async Task<ActionResult<ApiResponse<TransferShortageDto>>> GetTransferShortage(string shortageId)
+    public async Task<ActionResult<ApiResponse<TransferShortageDetailFullDto>>> GetTransferShortage(string shortageId)
     {
         return await ExecuteAsync(async () =>
         {
@@ -53,7 +53,7 @@ public class TransferShortagesController : BaseController
     /// 依調撥單號建立短溢單
     /// </summary>
     [HttpPost("from-transfer/{transferId}")]
-    public async Task<ActionResult<ApiResponse<TransferShortageDto>>> CreateShortageFromTransfer(string transferId)
+    public async Task<ActionResult<ApiResponse<TransferShortageDetailFullDto>>> CreateShortageFromTransfer(string transferId)
     {
         return await ExecuteAsync(async () =>
         {

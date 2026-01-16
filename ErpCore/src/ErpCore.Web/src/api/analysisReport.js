@@ -281,6 +281,79 @@ export const analysisReportApi = {
     return axios.post('/analysis-reports/sysa1023/print', data, {
       responseType: 'blob'
     })
+  },
+
+  // 查詢工務維修統計報表(其他) (SYSA1024)
+  getSYSA1024Report: (params) => {
+    return axios.get('/analysis-reports/sysa1024', { params })
+  },
+
+  // 匯出工務維修統計報表(其他) (SYSA1024)
+  exportSYSA1024Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sysa1024/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印工務維修統計報表(其他) (SYSA1024)
+  printSYSA1024Report: (data) => {
+    return axios.post('/analysis-reports/sysa1024/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢庫存分析報表 (SYSWC10)
+  getSYSWC10Report: (params) => {
+    return axios.get('/analysis-reports/syswc10', { params })
+  },
+
+  // 匯出庫存分析報表 (SYSWC10)
+  exportSYSWC10Report: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/syswc10/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印庫存分析報表 (SYSWC10)
+  printSYSWC10Report: (data) => {
+    return axios.post('/analysis-reports/syswc10/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 查詢銷售分析報表
+  getSalesAnalysisReport: (params) => {
+    return axios.get('/analysis-reports/sales', { params })
+  },
+
+  // 匯出銷售分析報表
+  exportSalesAnalysisReport: (data, format = 'excel') => {
+    return axios.post(`/analysis-reports/sales/export?format=${format}`, data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印銷售分析報表
+  printSalesAnalysisReport: (data) => {
+    return axios.post('/analysis-reports/sales/print', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 耗材標籤列印作業 (SYSA254)
+  // 查詢耗材列表（用於列印）
+  getConsumablePrintList: (params) => {
+    return axios.get('/consumables/print/list', { params })
+  },
+
+  // 批次列印耗材標籤
+  batchPrintConsumables: (data) => {
+    return axios.post('/consumables/print/batch', data)
+  },
+
+  // 查詢列印記錄列表
+  getConsumablePrintLogs: (params) => {
+    return axios.get('/consumables/print/logs', { params })
   }
 }
 

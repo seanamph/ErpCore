@@ -70,4 +70,3 @@ public class Group
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

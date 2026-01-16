@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Dapper;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Infrastructure.Data;
@@ -222,7 +223,14 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -359,7 +367,14 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -442,7 +457,14 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -525,7 +547,14 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -610,6 +639,183 @@ public class UserPermissionRepository : BaseRepository, IUserPermissionRepositor
         catch (Exception ex)
         {
             _logger.LogError($"刪除使用者所有直接權限失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<UserSystemListDto>> GetUserSystemsAsync(string userId)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT 
+                    CS.SystemId,
+                    CS.SystemName,
+                    COUNT(DISTINCT CB.ButtonId) AS TotalButtons,
+                    COUNT(DISTINCT CASE WHEN UB.ButtonId IS NOT NULL THEN CB.ButtonId END) AS AuthorizedButtons
+                FROM ConfigSystems CS
+                INNER JOIN ConfigPrograms CP ON CS.SystemId = CP.SystemId
+                INNER JOIN ConfigButtons CB ON CP.ProgramId = CB.ProgramId
+                LEFT JOIN UserButtons UB ON CB.ButtonId = UB.ButtonId AND UB.UserId = @UserId
+                WHERE CS.Status = 'A' AND CP.Status = 'A' AND CB.Status = 'A'
+                GROUP BY CS.SystemId, CS.SystemName
+                ORDER BY CS.SystemId";
+
+            var results = await QueryAsync<dynamic>(sql, new { UserId = userId });
+            
+            return results.Select(x => new UserSystemListDto
+            {
+                SystemId = x.SystemId,
+                SystemName = x.SystemName ?? string.Empty,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.TotalButtons > 0 && x.AuthorizedButtons == x.TotalButtons,
+                AuthorizedRate = x.TotalButtons > 0 ? (double)x.AuthorizedButtons / x.TotalButtons : 0
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者系統列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<UserMenuListDto>> GetUserMenusAsync(string userId, string? systemId = null)
+    {
+        try
+        {
+            var sql = @"
+                SELECT 
+                    CSS.SubSystemId AS MenuId,
+                    CSS.SubSystemName AS MenuName,
+                    CS.SystemId,
+                    COUNT(DISTINCT CB.ButtonId) AS TotalButtons,
+                    COUNT(DISTINCT CASE WHEN UB.ButtonId IS NOT NULL THEN CB.ButtonId END) AS AuthorizedButtons
+                FROM ConfigSubSystems CSS
+                INNER JOIN ConfigPrograms CP ON CSS.SubSystemId = CP.SubSystemId
+                INNER JOIN ConfigButtons CB ON CP.ProgramId = CB.ProgramId
+                INNER JOIN ConfigSystems CS ON CP.SystemId = CS.SystemId
+                LEFT JOIN UserButtons UB ON CB.ButtonId = UB.ButtonId AND UB.UserId = @UserId
+                WHERE CSS.Status = 'A' AND CP.Status = 'A' AND CB.Status = 'A' AND CS.Status = 'A'";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", userId);
+
+            if (!string.IsNullOrEmpty(systemId))
+            {
+                sql += " AND CS.SystemId = @SystemId";
+                parameters.Add("SystemId", systemId);
+            }
+
+            sql += " GROUP BY CSS.SubSystemId, CSS.SubSystemName, CS.SystemId ORDER BY CSS.SubSystemId";
+
+            var results = await QueryAsync<dynamic>(sql, parameters);
+            
+            return results.Select(x => new UserMenuListDto
+            {
+                MenuId = x.MenuId,
+                MenuName = x.MenuName ?? string.Empty,
+                SystemId = x.SystemId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.TotalButtons > 0 && x.AuthorizedButtons == x.TotalButtons
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者選單列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<UserProgramListDto>> GetUserProgramsAsync(string userId, string? menuId = null)
+    {
+        try
+        {
+            var sql = @"
+                SELECT 
+                    CP.ProgramId,
+                    CP.ProgramName,
+                    CP.SubSystemId AS MenuId,
+                    COUNT(DISTINCT CB.ButtonId) AS TotalButtons,
+                    COUNT(DISTINCT CASE WHEN UB.ButtonId IS NOT NULL THEN CB.ButtonId END) AS AuthorizedButtons
+                FROM ConfigPrograms CP
+                INNER JOIN ConfigButtons CB ON CP.ProgramId = CB.ProgramId
+                LEFT JOIN UserButtons UB ON CB.ButtonId = UB.ButtonId AND UB.UserId = @UserId
+                WHERE CP.Status = 'A' AND CB.Status = 'A'";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", userId);
+
+            if (!string.IsNullOrEmpty(menuId))
+            {
+                sql += " AND CP.SubSystemId = @MenuId";
+                parameters.Add("MenuId", menuId);
+            }
+
+            sql += " GROUP BY CP.ProgramId, CP.ProgramName, CP.SubSystemId ORDER BY CP.ProgramId";
+
+            var results = await QueryAsync<dynamic>(sql, parameters);
+            
+            return results.Select(x => new UserProgramListDto
+            {
+                ProgramId = x.ProgramId,
+                ProgramName = x.ProgramName ?? string.Empty,
+                MenuId = x.MenuId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.TotalButtons > 0 && x.AuthorizedButtons == x.TotalButtons
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者作業列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<UserButtonListDto>> GetUserButtonsAsync(string userId, string? programId = null)
+    {
+        try
+        {
+            var sql = @"
+                SELECT 
+                    CB.ButtonId,
+                    CB.ButtonName,
+                    CB.ProgramId,
+                    CB.Funs,
+                    CB.PageId,
+                    CASE WHEN UB.ButtonId IS NOT NULL THEN 1 ELSE 0 END AS IsAuthorized
+                FROM ConfigButtons CB
+                LEFT JOIN UserButtons UB ON CB.ButtonId = UB.ButtonId AND UB.UserId = @UserId
+                WHERE CB.Status = 'A'";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("UserId", userId);
+
+            if (!string.IsNullOrEmpty(programId))
+            {
+                sql += " AND CB.ProgramId = @ProgramId";
+                parameters.Add("ProgramId", programId);
+            }
+
+            sql += " ORDER BY CB.ProgramId, CB.ButtonId";
+
+            var results = await QueryAsync<dynamic>(sql, parameters);
+            
+            return results.Select(x => new UserButtonListDto
+            {
+                ButtonId = x.ButtonId,
+                ButtonName = x.ButtonName ?? string.Empty,
+                ProgramId = x.ProgramId,
+                Funs = x.Funs,
+                PageId = x.PageId,
+                IsAuthorized = x.IsAuthorized == 1
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者按鈕列表失敗: {userId}", ex);
             throw;
         }
     }

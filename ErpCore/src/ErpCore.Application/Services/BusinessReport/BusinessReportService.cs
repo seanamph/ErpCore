@@ -13,13 +13,16 @@ namespace ErpCore.Application.Services.BusinessReport;
 public class BusinessReportService : BaseService, IBusinessReportService
 {
     private readonly IBusinessReportRepository _repository;
+    private readonly ExportHelper _exportHelper;
 
     public BusinessReportService(
         IBusinessReportRepository repository,
+        ExportHelper exportHelper,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = exportHelper;
     }
 
     public async Task<PagedResult<BusinessReportDto>> GetBusinessReportsAsync(BusinessReportQueryDto query)
@@ -98,7 +101,7 @@ public class BusinessReportService : BaseService, IBusinessReportService
     /// <summary>
     /// 將 Entity 轉換為 DTO
     /// </summary>
-    private BusinessReportDto MapToDto(BusinessReport entity)
+    private BusinessReportDto MapToDto(ErpCore.Domain.Entities.BusinessReport.BusinessReport entity)
     {
         return new BusinessReportDto
         {
@@ -124,6 +127,82 @@ public class BusinessReportService : BaseService, IBusinessReportService
             UpdatedBy = entity.UpdatedBy,
             UpdatedAt = entity.UpdatedAt
         };
+    }
+
+    public async Task<byte[]> ExportBusinessReportsAsync(BusinessReportQueryDto query, string format)
+    {
+        try
+        {
+            // 查詢所有資料（不分頁）
+            var allDataQuery = new BusinessReportQuery
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                SiteId = query.SiteId,
+                CardType = query.CardType,
+                VendorId = query.VendorId,
+                StoreId = query.StoreId,
+                OrgId = query.OrgId,
+                StartDate = query.StartDate,
+                EndDate = query.EndDate
+            };
+
+            var result = await _repository.QueryAsync(allDataQuery);
+            var dtos = result.Items.Select(x => MapToDto(x)).ToList();
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CardType", DisplayName = "卡片類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CardTypeName", DisplayName = "卡片類型名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "VendorId", DisplayName = "廠商代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "VendorName", DisplayName = "廠商名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreId", DisplayName = "專櫃代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreName", DisplayName = "專櫃名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "AgreementId", DisplayName = "合約代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "組織代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgName", DisplayName = "組織名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ActionType", DisplayName = "動作類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ActionTypeName", DisplayName = "動作類型名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReportDate", DisplayName = "報表日期", DataType = ExportDataType.DateTime }
+            };
+
+            if (format.ToLower() == "excel")
+            {
+                return _exportHelper.ExportToExcel(dtos, columns, "業務報表查詢", "業務報表查詢作業 (SYSL135)");
+            }
+            else if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(dtos, columns, "業務報表查詢作業 (SYSL135)");
+            }
+            else
+            {
+                throw new ArgumentException($"不支援的匯出格式: {format}");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出業務報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintBusinessReportsAsync(BusinessReportQueryDto query)
+    {
+        try
+        {
+            // 列印功能使用 PDF 格式
+            return await ExportBusinessReportsAsync(query, "pdf");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印業務報表失敗", ex);
+            throw;
+        }
     }
 }
 

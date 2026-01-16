@@ -78,4 +78,3 @@ public class UpdateGroupStatusDto
 {
     public string Status { get; set; } = "A";
 }
-

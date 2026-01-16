@@ -6,19 +6,14 @@ namespace ErpCore.Domain.Entities.SystemConfig;
 public class ConfigProgram
 {
     /// <summary>
+    /// 主鍵
+    /// </summary>
+    public long TKey { get; set; }
+
+    /// <summary>
     /// 作業代碼
     /// </summary>
     public string ProgramId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 主系統代碼
-    /// </summary>
-    public string SystemId { get; set; } = string.Empty;
-
-    /// <summary>
-    /// 子系統代碼
-    /// </summary>
-    public string? SubSystemId { get; set; }
 
     /// <summary>
     /// 作業名稱
@@ -29,6 +24,16 @@ public class ConfigProgram
     /// 排序序號
     /// </summary>
     public int? SeqNo { get; set; }
+
+    /// <summary>
+    /// 主系統代碼
+    /// </summary>
+    public string SystemId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 子系統代碼
+    /// </summary>
+    public string? SubSystemId { get; set; }
 
     /// <summary>
     /// 狀態 (A:啟用, I:停用)
@@ -54,5 +59,14 @@ public class ConfigProgram
     /// 更新時間
     /// </summary>
     public DateTime UpdatedAt { get; set; }
-}
 
+    /// <summary>
+    /// 建立者等級
+    /// </summary>
+    public int? CreatedPriority { get; set; }
+
+    /// <summary>
+    /// 建立者群組
+    /// </summary>
+    public string? CreatedGroup { get; set; }
+}

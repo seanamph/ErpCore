@@ -51,6 +51,26 @@ public class PurchaseOrderDetail
     public decimal ReceivedQty { get; set; }
 
     /// <summary>
+    /// 已退數量
+    /// </summary>
+    public decimal ReturnQty { get; set; }
+
+    /// <summary>
+    /// 單位
+    /// </summary>
+    public string? UnitId { get; set; }
+
+    /// <summary>
+    /// 稅率
+    /// </summary>
+    public decimal? TaxRate { get; set; } = 0;
+
+    /// <summary>
+    /// 稅額
+    /// </summary>
+    public decimal? TaxAmount { get; set; } = 0;
+
+    /// <summary>
     /// 備註
     /// </summary>
     public string? Memo { get; set; }
@@ -64,5 +84,15 @@ public class PurchaseOrderDetail
     /// 建立時間
     /// </summary>
     public DateTime CreatedAt { get; set; }
+
+    /// <summary>
+    /// 更新人員
+    /// </summary>
+    public string? UpdatedBy { get; set; }
+
+    /// <summary>
+    /// 更新時間
+    /// </summary>
+    public DateTime? UpdatedAt { get; set; }
 }
 

@@ -1,6 +1,7 @@
 using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Application.Services.Base;
 using ErpCore.Infrastructure.Repositories.DropdownList;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
@@ -50,7 +51,18 @@ public class CityService : BaseService, ICityService
         try
         {
             _logger.LogInfo("查詢城市列表");
-            var result = await _repository.QueryAsync(query);
+            // 將 Application DTO 轉換為 Infrastructure Query
+            var repositoryQuery = new CityQuery
+            {
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                CityName = query.CityName,
+                CountryCode = query.CountryCode,
+                Status = query.Status
+            };
+            var result = await _repository.QueryAsync(repositoryQuery);
 
             return new PagedResult<CityDto>
             {
@@ -80,7 +92,13 @@ public class CityService : BaseService, ICityService
         try
         {
             _logger.LogInfo("查詢城市選項");
-            return await _repository.GetOptionsAsync(countryCode, status);
+            var options = await _repository.GetOptionsAsync(countryCode, status);
+            // 將 Infrastructure Option 轉換為 Application DTO
+            return options.Select(o => new CityOptionDto
+            {
+                Value = o.Value,
+                Label = o.Label
+            });
         }
         catch (Exception ex)
         {

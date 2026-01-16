@@ -52,4 +52,3 @@ public class AreaQuery
     public string? AreaName { get; set; }
     public string? Status { get; set; }
 }
-

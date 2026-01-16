@@ -12,6 +12,7 @@
             v-model="queryForm.OrgId"
             placeholder="請選擇組織單位"
             clearable
+            filterable
             style="width: 200px"
           >
             <el-option
@@ -24,7 +25,7 @@
         </el-form-item>
         <el-form-item label="年月">
           <el-date-picker
-            v-model="yearMonth"
+            v-model="queryForm.YearMonth"
             type="month"
             placeholder="請選擇年月"
             format="YYYY-MM"
@@ -66,22 +67,22 @@
       >
         <el-table-column prop="OrgName" label="組織單位" width="150" />
         <el-table-column prop="YearMonth" label="年月" width="100" />
-        <el-table-column prop="MaintenanceType" label="維修類型" width="120" />
-        <el-table-column prop="MaintenanceStatus" label="維修狀態" width="100">
-          <template #default="{ row }">
-            <el-tag :type="getStatusType(row.MaintenanceStatus)">
-              {{ row.MaintenanceStatus }}
+        <el-table-column prop="MaintenanceType" label="維修類型" width="150" />
+        <el-table-column prop="MaintenanceStatus" label="維修狀態" width="120">
+          <template #default="scope">
+            <el-tag :type="getStatusType(scope.row.MaintenanceStatus)">
+              {{ scope.row.MaintenanceStatus }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="ItemCount" label="維修件數" width="100" align="right">
-          <template #default="{ row }">
-            {{ formatNumber(row.ItemCount) }}
+        <el-table-column prop="ItemCount" label="維修件數" width="120" align="right">
+          <template #default="scope">
+            {{ formatNumber(scope.row.ItemCount) }}
           </template>
         </el-table-column>
-        <el-table-column prop="TotalCount" label="總件數" width="100" align="right">
-          <template #default="{ row }">
-            {{ formatNumber(row.TotalCount) }}
+        <el-table-column prop="TotalCount" label="總件數" width="120" align="right">
+          <template #default="scope">
+            {{ formatNumber(scope.row.TotalCount) }}
           </template>
         </el-table-column>
       </el-table>
@@ -116,7 +117,6 @@ export default {
         PageIndex: 1,
         PageSize: 20
       },
-      yearMonth: '',
       tableData: [],
       pagination: {
         PageIndex: 1,
@@ -127,31 +127,26 @@ export default {
       orgList: []
     }
   },
-  watch: {
-    yearMonth(newVal) {
-      this.queryForm.YearMonth = newVal || ''
-    }
-  },
   mounted() {
     this.loadOrgList()
-    // 預設為本月
-    const now = new Date()
-    this.yearMonth = this.formatMonthForInput(now)
-    this.queryForm.YearMonth = this.yearMonth
+    // 設置預設年月（當前年月）
+    const today = new Date()
+    this.queryForm.YearMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
   },
   methods: {
     async loadOrgList() {
       try {
-        const response = await dropdownListApi.getOrgOptions({})
-        if (response.data && response.data.success && response.data.data) {
-          this.orgList = response.data.data.map(item => ({
-            OrgId: item.value || item.OrgId || item.orgId,
-            OrgName: item.label || item.OrgName || item.orgName
-          }))
-        }
+        // TODO: 實現載入組織單位列表的 API
+        // const response = await dropdownListApi.getOrgOptions({})
+        // if (response.data && response.data.success && response.data.data) {
+        //   this.orgList = response.data.data.map(item => ({
+        //     OrgId: item.value || item.OrgId || item.orgId,
+        //     OrgName: item.label || item.OrgName || item.orgName
+        //   }))
+        // }
+        this.orgList = []
       } catch (error) {
-        console.error('載入組織列表失敗:', error)
-        ElMessage.warning('載入組織列表失敗')
+        console.error('載入組織單位列表失敗:', error)
       }
     },
     async handleSearch() {
@@ -177,16 +172,14 @@ export default {
       }
     },
     handleReset() {
+      const today = new Date()
       this.queryForm = {
         OrgId: '',
-        YearMonth: '',
+        YearMonth: `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`,
         FilterType: '',
         PageIndex: 1,
         PageSize: 20
       }
-      const now = new Date()
-      this.yearMonth = this.formatMonthForInput(now)
-      this.queryForm.YearMonth = this.yearMonth
       this.tableData = []
       this.pagination = {
         PageIndex: 1,
@@ -204,7 +197,7 @@ export default {
         const url = window.URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = `SYSA1018_工務維修件數統計表_${this.queryForm.YearMonth || '全部'}_${new Date().toISOString().slice(0, 10)}.xlsx`
+        link.download = `SYSA1018_工務維修件數統計表_${new Date().toISOString().slice(0, 10)}.xlsx`
         link.click()
         window.URL.revokeObjectURL(url)
         ElMessage.success('匯出成功')
@@ -234,15 +227,6 @@ export default {
       this.queryForm.PageIndex = val
       this.handleSearch()
     },
-    formatNumber(value) {
-      if (value == null) return '0'
-      return Number(value).toLocaleString('zh-TW')
-    },
-    formatMonthForInput(date) {
-      if (!date) return ''
-      const d = new Date(date)
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
-    },
     getStatusType(status) {
       const statusMap = {
         '待處理': 'warning',
@@ -251,6 +235,10 @@ export default {
         '已取消': 'danger'
       }
       return statusMap[status] || ''
+    },
+    formatNumber(value) {
+      if (value === null || value === undefined) return '0'
+      return Number(value).toLocaleString('zh-TW')
     }
   }
 }

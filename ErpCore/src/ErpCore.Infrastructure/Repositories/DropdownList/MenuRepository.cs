@@ -1,8 +1,8 @@
 using Dapper;
-using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Domain.Entities.DropdownList;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
@@ -36,7 +36,7 @@ public class MenuRepository : BaseRepository, IMenuRepository
         }
     }
 
-    public async Task<PagedResult<Menu>> QueryAsync(MenuQueryDto query)
+    public async Task<PagedResult<Menu>> QueryAsync(MenuQuery query)
     {
         try
         {
@@ -88,8 +88,7 @@ public class MenuRepository : BaseRepository, IMenuRepository
                 Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
-                PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+                PageSize = query.PageSize
             };
         }
         catch (Exception ex)
@@ -99,7 +98,7 @@ public class MenuRepository : BaseRepository, IMenuRepository
         }
     }
 
-    public async Task<IEnumerable<MenuOptionDto>> GetOptionsAsync(string? systemId = null, string? status = "1")
+    public async Task<IEnumerable<MenuOption>> GetOptionsAsync(string? systemId = null, string? status = "1")
     {
         try
         {
@@ -124,7 +123,7 @@ public class MenuRepository : BaseRepository, IMenuRepository
 
             sql += " ORDER BY SeqNo, MenuName";
 
-            return await QueryAsync<MenuOptionDto>(sql, parameters);
+            return await QueryAsync<MenuOption>(sql, parameters);
         }
         catch (Exception ex)
         {

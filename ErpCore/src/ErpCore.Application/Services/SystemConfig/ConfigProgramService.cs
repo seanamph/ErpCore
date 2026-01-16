@@ -82,15 +82,16 @@ public class ConfigProgramService : BaseService, IConfigProgramService
 
             var dtos = result.Items.Select(x => new ConfigProgramDto
             {
+                TKey = x.TKey,
                 ProgramId = x.ProgramId,
+                ProgramName = x.ProgramName,
+                SeqNo = x.SeqNo,
                 SystemId = x.SystemId,
                 SystemName = systems.GetValueOrDefault(x.SystemId),
                 SubSystemId = x.SubSystemId,
                 SubSystemName = !string.IsNullOrEmpty(x.SubSystemId)
                     ? subSystems.GetValueOrDefault(x.SubSystemId)
                     : null,
-                ProgramName = x.ProgramName,
-                SeqNo = x.SeqNo,
                 Status = x.Status,
                 CreatedBy = x.CreatedBy,
                 CreatedAt = x.CreatedAt,
@@ -141,13 +142,14 @@ public class ConfigProgramService : BaseService, IConfigProgramService
 
             return new ConfigProgramDto
             {
+                TKey = entity.TKey,
                 ProgramId = entity.ProgramId,
+                ProgramName = entity.ProgramName,
+                SeqNo = entity.SeqNo,
                 SystemId = entity.SystemId,
                 SystemName = systemName,
                 SubSystemId = entity.SubSystemId,
                 SubSystemName = subSystemName,
-                ProgramName = entity.ProgramName,
-                SeqNo = entity.SeqNo,
                 Status = entity.Status,
                 CreatedBy = entity.CreatedBy,
                 CreatedAt = entity.CreatedAt,
@@ -183,7 +185,7 @@ public class ConfigProgramService : BaseService, IConfigProgramService
                 throw new InvalidOperationException($"主系統不存在: {dto.SystemId}");
             }
 
-            // 檢查子系統是否存在（若有提供）
+            // 檢查子系統是否存在（若提供）
             if (!string.IsNullOrEmpty(dto.SubSystemId))
             {
                 var subSystemExists = await _subSystemRepository.ExistsAsync(dto.SubSystemId);
@@ -196,10 +198,10 @@ public class ConfigProgramService : BaseService, IConfigProgramService
             var entity = new ConfigProgram
             {
                 ProgramId = dto.ProgramId,
-                SystemId = dto.SystemId,
-                SubSystemId = dto.SubSystemId,
                 ProgramName = dto.ProgramName,
                 SeqNo = dto.SeqNo,
+                SystemId = dto.SystemId,
+                SubSystemId = string.IsNullOrEmpty(dto.SubSystemId) ? null : dto.SubSystemId,
                 Status = dto.Status,
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
@@ -236,7 +238,7 @@ public class ConfigProgramService : BaseService, IConfigProgramService
                 throw new InvalidOperationException($"主系統不存在: {dto.SystemId}");
             }
 
-            // 檢查子系統是否存在（若有提供）
+            // 檢查子系統是否存在（若提供）
             if (!string.IsNullOrEmpty(dto.SubSystemId))
             {
                 var subSystemExists = await _subSystemRepository.ExistsAsync(dto.SubSystemId);
@@ -246,10 +248,10 @@ public class ConfigProgramService : BaseService, IConfigProgramService
                 }
             }
 
-            entity.SystemId = dto.SystemId;
-            entity.SubSystemId = dto.SubSystemId;
             entity.ProgramName = dto.ProgramName;
             entity.SeqNo = dto.SeqNo;
+            entity.SystemId = dto.SystemId;
+            entity.SubSystemId = string.IsNullOrEmpty(dto.SubSystemId) ? null : dto.SubSystemId;
             entity.Status = dto.Status;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
@@ -329,4 +331,3 @@ public class ConfigProgramService : BaseService, IConfigProgramService
         }
     }
 }
-

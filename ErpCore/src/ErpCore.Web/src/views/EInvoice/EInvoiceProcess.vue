@@ -96,11 +96,23 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="250" fixed="right">
+        <el-table-column label="操作" width="350" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleView(row)">查看</el-button>
             <el-button type="success" size="small" @click="handleProcess(row)" :disabled="row.Status !== 'PENDING'">處理</el-button>
             <el-button type="info" size="small" @click="handleViewStatus(row)">狀態</el-button>
+            <el-dropdown v-if="row.Status === 'COMPLETED'" @command="(cmd) => handleDownloadResult(row, cmd)">
+              <el-button type="warning" size="small">
+                下載結果<el-icon class="el-icon--right"><arrow-down /></el-icon>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item command="success">成功清單</el-dropdown-item>
+                  <el-dropdown-item command="failed">失敗清單</el-dropdown-item>
+                  <el-dropdown-item command="all">全部清單</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
             <el-button type="danger" size="small" @click="handleDelete(row)" :disabled="row.Status === 'PROCESSING'">刪除</el-button>
           </template>
         </el-table-column>
@@ -149,10 +161,14 @@
 <script>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { ArrowDown } from '@element-plus/icons-vue'
 import { einvoiceApi } from '@/api/einvoice'
 
 export default {
   name: 'EInvoiceProcess',
+  components: {
+    ArrowDown
+  },
   setup() {
     const loading = ref(false)
     const statusDialogVisible = ref(false)
@@ -356,6 +372,26 @@ export default {
       }
     }
 
+    // 下載處理結果
+    const handleDownloadResult = async (row, type) => {
+      try {
+        const response = await einvoiceApi.downloadResult(row.UploadId, type)
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+        const url = window.URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        const typeName = type === 'success' ? '成功清單' : type === 'failed' ? '失敗清單' : '全部清單'
+        link.download = `電子發票處理結果_${typeName}_${row.FileName}_${new Date().toISOString().slice(0, 10)}.xlsx`
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        ElMessage.success('下載成功')
+      } catch (error) {
+        ElMessage.error('下載失敗: ' + (error.message || '未知錯誤'))
+      }
+    }
+
     // 分頁大小變更
     const handleSizeChange = (size) => {
       pagination.PageSize = size
@@ -398,6 +434,7 @@ export default {
       handleProcess,
       handleViewStatus,
       handleDelete,
+      handleDownloadResult,
       handleSizeChange,
       handlePageChange
     }

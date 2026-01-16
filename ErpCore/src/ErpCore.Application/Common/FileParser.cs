@@ -1,6 +1,6 @@
 using System.Text;
 using OfficeOpenXml;
-using ErpCore.Application.DTOs.InventoryCheck;
+using ErpCore.Application.Services.InventoryCheck;
 
 namespace ErpCore.Application.Common;
 

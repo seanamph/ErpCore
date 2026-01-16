@@ -1,5 +1,3 @@
-using ErpCore.Shared.Common;
-
 namespace ErpCore.Application.DTOs.Inventory;
 
 /// <summary>
@@ -9,7 +7,7 @@ public class PriceChangeDto
 {
     public string PriceChangeId { get; set; } = string.Empty;
     public string PriceChangeType { get; set; } = string.Empty;
-    public string PriceChangeTypeName { get; set; } = string.Empty;
+    public string? PriceChangeTypeName { get; set; }
     public string? SupplierId { get; set; }
     public string? SupplierName { get; set; }
     public string? LogoId { get; set; }
@@ -25,8 +23,8 @@ public class PriceChangeDto
     public string? ConfirmEmpId { get; set; }
     public string? ConfirmEmpName { get; set; }
     public DateTime? ConfirmDate { get; set; }
-    public string Status { get; set; } = string.Empty;
-    public string StatusName { get; set; } = string.Empty;
+    public string Status { get; set; } = "1";
+    public string? StatusName { get; set; }
     public decimal TotalAmount { get; set; }
     public string? Notes { get; set; }
     public string? CreatedBy { get; set; }
@@ -59,7 +57,7 @@ public class PriceChangeDetailItemDto
 }
 
 /// <summary>
-/// 變價單查詢 DTO
+/// 查詢變價單 DTO
 /// </summary>
 public class PriceChangeQueryDto
 {
@@ -79,7 +77,7 @@ public class PriceChangeQueryDto
 }
 
 /// <summary>
-/// 新增變價單 DTO
+/// 建立變價單 DTO
 /// </summary>
 public class CreatePriceChangeDto
 {
@@ -95,7 +93,7 @@ public class CreatePriceChangeDto
 }
 
 /// <summary>
-/// 新增變價單明細項目 DTO
+/// 建立變價單明細項目 DTO
 /// </summary>
 public class CreatePriceChangeDetailItemDto
 {
@@ -114,6 +112,7 @@ public class UpdatePriceChangeDto
 {
     public string? SupplierId { get; set; }
     public string? LogoId { get; set; }
+    public string? ApplyEmpId { get; set; }
     public string? ApplyOrgId { get; set; }
     public DateTime? ApplyDate { get; set; }
     public DateTime? StartDate { get; set; }
@@ -126,7 +125,7 @@ public class UpdatePriceChangeDto
 /// </summary>
 public class ApprovePriceChangeDto
 {
-    public DateTime ApproveDate { get; set; }
+    public DateTime? ApproveDate { get; set; }
 }
 
 /// <summary>
@@ -134,6 +133,5 @@ public class ApprovePriceChangeDto
 /// </summary>
 public class ConfirmPriceChangeDto
 {
-    public DateTime ConfirmDate { get; set; }
+    public DateTime? ConfirmDate { get; set; }
 }
-

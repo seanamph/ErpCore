@@ -74,6 +74,11 @@ public interface ICustomerService
     Task DeleteQueryHistoryAsync(Guid historyId);
 
     /// <summary>
+    /// 匯出客戶查詢結果到 Excel (CUS5120)
+    /// </summary>
+    Task<byte[]> ExportToExcelAsync(CustomerAdvancedQueryDto query);
+
+    /// <summary>
     /// 查詢客戶報表 (CUS5130)
     /// </summary>
     Task<PagedResult<CustomerReportDto>> GetReportAsync(CustomerReportQueryDto query);

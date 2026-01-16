@@ -202,6 +202,25 @@ public class CustomersController : BaseController
     }
 
     /// <summary>
+    /// 匯出客戶查詢結果到 Excel (CUS5120)
+    /// </summary>
+    [HttpPost("export")]
+    public async Task<IActionResult> ExportToExcel([FromBody] CustomerAdvancedQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.ExportToExcelAsync(query);
+            var fileName = $"客戶查詢結果_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出客戶查詢結果到 Excel 失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail("匯出客戶查詢結果到 Excel 失敗"));
+        }
+    }
+
+    /// <summary>
     /// 查詢客戶報表 (CUS5130)
     /// </summary>
     [HttpPost("reports/cus5130")]

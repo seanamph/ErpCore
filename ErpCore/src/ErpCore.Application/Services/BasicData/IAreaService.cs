@@ -41,6 +41,5 @@ public interface IAreaService
     /// <summary>
     /// 更新區域狀態
     /// </summary>
-    Task UpdateStatusAsync(string areaId, string status);
+    Task UpdateStatusAsync(string areaId, UpdateAreaStatusDto dto);
 }
-

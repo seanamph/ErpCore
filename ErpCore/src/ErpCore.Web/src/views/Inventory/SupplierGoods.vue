@@ -41,9 +41,7 @@
         style="width: 100%"
       >
         <el-table-column prop="SupplierId" label="供應商編號" width="120" />
-        <el-table-column prop="SupplierName" label="供應商名稱" width="150" />
         <el-table-column prop="BarcodeId" label="商品條碼" width="120" />
-        <el-table-column prop="BarcodeName" label="商品名稱" width="150" />
         <el-table-column prop="ShopId" label="店別" width="100" />
         <el-table-column prop="Lprc" label="進價" width="100" align="right">
           <template #default="{ row }">
@@ -116,7 +114,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="狀態" prop="Status">
-              <el-select v-model="form.Status" placeholder="請選擇狀態">
+              <el-select v-model="form.Status" placeholder="請選擇狀態" style="width: 100%">
                 <el-option label="正常" value="0" />
                 <el-option label="停用" value="1" />
               </el-select>
@@ -138,7 +136,7 @@
         <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="稅別" prop="Tax">
-              <el-select v-model="form.Tax" placeholder="請選擇稅別">
+              <el-select v-model="form.Tax" placeholder="請選擇稅別" style="width: 100%">
                 <el-option label="應稅" value="1" />
                 <el-option label="免稅" value="0" />
               </el-select>
@@ -195,39 +193,43 @@
         </el-row>
         <el-divider>訂購日期設定</el-divider>
         <el-row :gutter="20">
-          <el-col :span="6">
+          <el-col :span="12">
             <el-form-item label="週一">
               <el-switch v-model="form.OrdDay1" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="12">
             <el-form-item label="週二">
               <el-switch v-model="form.OrdDay2" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
             <el-form-item label="週三">
               <el-switch v-model="form.OrdDay3" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="12">
             <el-form-item label="週四">
               <el-switch v-model="form.OrdDay4" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
-          <el-col :span="6">
+          <el-col :span="12">
             <el-form-item label="週五">
               <el-switch v-model="form.OrdDay5" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="12">
             <el-form-item label="週六">
               <el-switch v-model="form.OrdDay6" active-value="Y" inactive-value="N" />
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
             <el-form-item label="週日">
               <el-switch v-model="form.OrdDay7" active-value="Y" inactive-value="N" />
             </el-form-item>
@@ -245,7 +247,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { supplierGoodsApi } from '@/api/inventory'
+import { supplierGoodsApi } from '@/api/supplierGoods'
 
 // 查詢表單
 const queryForm = reactive({
@@ -302,7 +304,14 @@ const form = reactive({
 const rules = {
   SupplierId: [{ required: true, message: '請輸入供應商編號', trigger: 'blur' }],
   BarcodeId: [{ required: true, message: '請輸入商品條碼', trigger: 'blur' }],
-  ShopId: [{ required: true, message: '請輸入店別', trigger: 'blur' }]
+  ShopId: [{ required: true, message: '請輸入店別', trigger: 'blur' }],
+  Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
+}
+
+// 格式化貨幣
+const formatCurrency = (value) => {
+  if (value == null) return '0.00'
+  return Number(value).toFixed(2)
 }
 
 // 查詢
@@ -354,7 +363,7 @@ const handleEdit = async (row) => {
   isEdit.value = true
   dialogTitle.value = '修改供應商商品'
   try {
-    const response = await supplierGoodsApi.getSupplierGoodsById(row.SupplierId, row.BarcodeId, row.ShopId)
+    const response = await supplierGoodsApi.getSupplierGood(row.SupplierId, row.BarcodeId, row.ShopId)
     if (response.data.success) {
       Object.assign(form, response.data.data)
     } else {
@@ -372,7 +381,7 @@ const handleDelete = async (row) => {
     await ElMessageBox.confirm('確定要刪除此供應商商品嗎？', '提示', {
       type: 'warning'
     })
-    const response = await supplierGoodsApi.deleteSupplierGoods(row.SupplierId, row.BarcodeId, row.ShopId)
+    const response = await supplierGoodsApi.deleteSupplierGood(row.SupplierId, row.BarcodeId, row.ShopId)
     if (response.data.success) {
       ElMessage.success('刪除成功')
       handleSearch()
@@ -394,14 +403,30 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          response = await supplierGoodsApi.updateSupplierGoods(
-            form.SupplierId,
-            form.BarcodeId,
-            form.ShopId,
-            form
-          )
+          const updateData = {
+            Lprc: form.Lprc,
+            Mprc: form.Mprc,
+            Tax: form.Tax,
+            MinQty: form.MinQty,
+            MaxQty: form.MaxQty,
+            Unit: form.Unit,
+            Rate: form.Rate,
+            Status: form.Status,
+            StartDate: form.StartDate,
+            EndDate: form.EndDate,
+            Slprc: form.Slprc,
+            ArrivalDays: form.ArrivalDays,
+            OrdDay1: form.OrdDay1,
+            OrdDay2: form.OrdDay2,
+            OrdDay3: form.OrdDay3,
+            OrdDay4: form.OrdDay4,
+            OrdDay5: form.OrdDay5,
+            OrdDay6: form.OrdDay6,
+            OrdDay7: form.OrdDay7
+          }
+          response = await supplierGoodsApi.updateSupplierGood(form.SupplierId, form.BarcodeId, form.ShopId, updateData)
         } else {
-          response = await supplierGoodsApi.createSupplierGoods(form)
+          response = await supplierGoodsApi.createSupplierGood(form)
         }
         if (response.data.success) {
           ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
@@ -463,12 +488,6 @@ const handlePageChange = (page) => {
   handleSearch()
 }
 
-// 格式化貨幣
-const formatCurrency = (value) => {
-  if (value == null) return '0.00'
-  return Number(value).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-}
-
 // 初始化
 onMounted(() => {
   handleSearch()
@@ -509,4 +528,3 @@ onMounted(() => {
   }
 }
 </style>
-

@@ -70,3 +70,39 @@ BEGIN
 END
 GO
 
+-- SYSL150 - 業務報表列印作業資料表
+-- 建立業務報表列印主檔
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[BusinessReportPrint]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [dbo].[BusinessReportPrint] (
+        [TKey] BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1), -- 主鍵 (T_KEY)
+        [GiveYear] INT NOT NULL, -- 發放年度 (GIVE_YEAR)
+        [SiteId] NVARCHAR(50) NOT NULL, -- 店別代碼 (SITE_ID)
+        [OrgId] NVARCHAR(50) NULL, -- 組織代碼 (ORG_ID)
+        [EmpId] NVARCHAR(50) NOT NULL, -- 員工編號 (EMP_ID)
+        [EmpName] NVARCHAR(100) NULL, -- 員工姓名 (EMP_NAME)
+        [Qty] DECIMAL(18,2) NULL DEFAULT 0, -- 數量 (QTY)
+        [Status] NVARCHAR(10) NOT NULL DEFAULT 'P', -- 狀態 (STATUS) P:待審核, A:已審核, R:已拒絕
+        [Verifier] NVARCHAR(50) NULL, -- 審核者 (VERIFIER)
+        [VerifyDate] DATETIME2 NULL, -- 審核日期 (VERIFY_DATE)
+        [Notes] NVARCHAR(500) NULL, -- 備註 (NOTES)
+        [CreatedBy] NVARCHAR(50) NULL, -- 建立者 (CREATED_BY)
+        [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間 (CREATED_AT)
+        [UpdatedBy] NVARCHAR(50) NULL, -- 更新者 (UPDATED_BY)
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 更新時間 (UPDATED_AT)
+        [CreatedPriority] INT NULL, -- 建立者等級 (CREATED_PRIORITY)
+        [CreatedGroup] NVARCHAR(50) NULL, -- 建立者群組 (CREATED_GROUP)
+        CONSTRAINT [PK_BusinessReportPrint] PRIMARY KEY CLUSTERED ([TKey] ASC)
+    );
+
+    -- 索引
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_GiveYear] ON [dbo].[BusinessReportPrint] ([GiveYear]);
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_SiteId] ON [dbo].[BusinessReportPrint] ([SiteId]);
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_OrgId] ON [dbo].[BusinessReportPrint] ([OrgId]);
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_EmpId] ON [dbo].[BusinessReportPrint] ([EmpId]);
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_Status] ON [dbo].[BusinessReportPrint] ([Status]);
+    CREATE NONCLUSTERED INDEX [IX_BusinessReportPrint_Verifier] ON [dbo].[BusinessReportPrint] ([Verifier]);
+END
+GO
+

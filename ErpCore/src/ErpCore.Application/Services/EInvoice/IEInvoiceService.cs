@@ -43,5 +43,10 @@ public interface IEInvoiceService
     /// 下載上傳檔案 (ECA2050)
     /// </summary>
     Task<(byte[] fileBytes, string fileName, string contentType)> DownloadUploadFileAsync(long uploadId);
+    
+    /// <summary>
+    /// 下載處理結果 (成功/失敗清單) (ECA3010)
+    /// </summary>
+    Task<byte[]> DownloadResultAsync(long uploadId, string type);
 }
 

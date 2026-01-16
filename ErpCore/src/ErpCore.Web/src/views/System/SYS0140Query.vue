@@ -32,9 +32,6 @@
         <el-form-item label="職稱">
           <el-input v-model="queryForm.Title" placeholder="請輸入職稱" clearable />
         </el-form-item>
-        <el-form-item label="店別">
-          <el-input v-model="queryForm.ShopId" placeholder="請輸入店別代碼" clearable />
-        </el-form-item>
         <el-form-item label="有效起始日（起）">
           <el-date-picker
             v-model="queryForm.StartDateFrom"
@@ -125,7 +122,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="UserType" label="使用者型態" width="120" sortable="custom" />
+        <el-table-column prop="UserType" label="使用者型態" width="100" sortable="custom" />
         <el-table-column prop="StartDate" label="有效起始日" width="120" sortable="custom">
           <template #default="{ row }">
             {{ row.StartDate ? formatDate(row.StartDate) : '-' }}
@@ -216,7 +213,6 @@ const queryForm = reactive({
   Status: '',
   UserType: '',
   Title: '',
-  ShopId: '',
   StartDateFrom: '',
   StartDateTo: '',
   EndDateFrom: '',
@@ -237,7 +233,7 @@ const pagination = reactive({
 })
 
 // 排序
-const sortField = ref('')
+const sortField = ref('UserId')
 const sortOrder = ref('ASC')
 
 // 詳細資料對話框
@@ -304,15 +300,14 @@ const loadData = async () => {
     const params = {
       PageIndex: pagination.PageIndex,
       PageSize: pagination.PageSize,
-      SortField: sortField.value || undefined,
-      SortOrder: sortOrder.value || 'ASC',
+      SortField: sortField.value,
+      SortOrder: sortOrder.value,
       UserId: queryForm.UserId || undefined,
       UserName: queryForm.UserName || undefined,
       OrgId: queryForm.OrgId || undefined,
       Status: queryForm.Status || undefined,
       UserType: queryForm.UserType || undefined,
       Title: queryForm.Title || undefined,
-      ShopId: queryForm.ShopId || undefined,
       StartDateFrom: queryForm.StartDateFrom || undefined,
       StartDateTo: queryForm.StartDateTo || undefined,
       EndDateFrom: queryForm.EndDateFrom || undefined,
@@ -347,7 +342,6 @@ const handleReset = () => {
     Status: '',
     UserType: '',
     Title: '',
-    ShopId: '',
     StartDateFrom: '',
     StartDateTo: '',
     EndDateFrom: '',
@@ -355,7 +349,7 @@ const handleReset = () => {
     LastLoginDateFrom: '',
     LastLoginDateTo: ''
   })
-  sortField.value = ''
+  sortField.value = 'UserId'
   sortOrder.value = 'ASC'
   handleSearch()
 }
@@ -364,7 +358,7 @@ const handleReset = () => {
 const handleSortChange = ({ prop, order }) => {
   if (prop) {
     sortField.value = prop
-    sortOrder.value = order === 'ascending' ? 'ASC' : order === 'descending' ? 'DESC' : 'ASC'
+    sortOrder.value = order === 'ascending' ? 'ASC' : 'DESC'
     loadData()
   }
 }
@@ -391,35 +385,21 @@ const handleDetailDialogClose = () => {
   detailData.value = null
 }
 
-// 分頁大小變更
-const handleSizeChange = (size) => {
-  pagination.PageSize = size
-  pagination.PageIndex = 1
-  loadData()
-}
-
-// 分頁變更
-const handlePageChange = (page) => {
-  pagination.PageIndex = page
-  loadData()
-}
-
 // 匯出
 const handleExport = async () => {
   try {
     loading.value = true
-    const params = {
+    const data = {
       PageIndex: 1,
-      PageSize: 10000, // 匯出時使用較大的頁面大小
-      SortField: sortField.value || undefined,
-      SortOrder: sortOrder.value || 'ASC',
+      PageSize: 999999,
+      SortField: sortField.value,
+      SortOrder: sortOrder.value,
       UserId: queryForm.UserId || undefined,
       UserName: queryForm.UserName || undefined,
       OrgId: queryForm.OrgId || undefined,
       Status: queryForm.Status || undefined,
       UserType: queryForm.UserType || undefined,
       Title: queryForm.Title || undefined,
-      ShopId: queryForm.ShopId || undefined,
       StartDateFrom: queryForm.StartDateFrom || undefined,
       StartDateTo: queryForm.StartDateTo || undefined,
       EndDateFrom: queryForm.EndDateFrom || undefined,
@@ -427,7 +407,7 @@ const handleExport = async () => {
       LastLoginDateFrom: queryForm.LastLoginDateFrom || undefined,
       LastLoginDateTo: queryForm.LastLoginDateTo || undefined
     }
-    const response = await exportUsers(params)
+    const response = await exportUsers(data)
     
     // 創建下載連結
     const blob = new Blob([response], {
@@ -436,7 +416,7 @@ const handleExport = async () => {
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `使用者查詢結果_${new Date().toISOString().slice(0, 10)}.xlsx`
+    link.download = `使用者查詢結果_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.xlsx`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -448,6 +428,19 @@ const handleExport = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// 分頁大小變更
+const handleSizeChange = (size) => {
+  pagination.PageSize = size
+  pagination.PageIndex = 1
+  loadData()
+}
+
+// 分頁變更
+const handlePageChange = (page) => {
+  pagination.PageIndex = page
+  loadData()
 }
 
 // 初始化

@@ -4,6 +4,7 @@ using ErpCore.Domain.Entities.Contract;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Logging;
+using ContractEntity = ErpCore.Domain.Entities.Contract.Contract;
 
 namespace ErpCore.Infrastructure.Repositories.Contract;
 
@@ -18,7 +19,7 @@ public class ContractRepository : BaseRepository, IContractRepository
     {
     }
 
-    public async Task<Contract?> GetByIdAsync(string contractId, int version)
+    public async Task<ContractEntity?> GetByIdAsync(string contractId, int version)
     {
         try
         {
@@ -26,7 +27,7 @@ public class ContractRepository : BaseRepository, IContractRepository
                 SELECT * FROM Contracts 
                 WHERE ContractId = @ContractId AND Version = @Version";
 
-            return await QueryFirstOrDefaultAsync<Contract>(sql, new { ContractId = contractId, Version = version });
+            return await QueryFirstOrDefaultAsync<ContractEntity>(sql, new { ContractId = contractId, Version = version });
         }
         catch (Exception ex)
         {
@@ -35,7 +36,7 @@ public class ContractRepository : BaseRepository, IContractRepository
         }
     }
 
-    public async Task<IEnumerable<Contract>> QueryAsync(ContractQuery query)
+    public async Task<IEnumerable<ContractEntity>> QueryAsync(ContractQuery query)
     {
         try
         {
@@ -87,7 +88,7 @@ public class ContractRepository : BaseRepository, IContractRepository
             parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
             parameters.Add("PageSize", query.PageSize);
 
-            return await QueryAsync<Contract>(sql, parameters);
+            return await QueryAsync<ContractEntity>(sql, parameters);
         }
         catch (Exception ex)
         {
@@ -169,7 +170,7 @@ public class ContractRepository : BaseRepository, IContractRepository
         }
     }
 
-    public async Task<Contract> CreateAsync(Contract contract)
+    public async Task<ContractEntity> CreateAsync(ContractEntity contract)
     {
         try
         {
@@ -224,7 +225,7 @@ public class ContractRepository : BaseRepository, IContractRepository
         }
     }
 
-    public async Task<Contract> UpdateAsync(Contract contract)
+    public async Task<ContractEntity> UpdateAsync(ContractEntity contract)
     {
         try
         {

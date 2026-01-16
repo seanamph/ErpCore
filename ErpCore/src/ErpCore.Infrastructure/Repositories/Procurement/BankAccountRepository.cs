@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.Procurement;
 
 /// <summary>
-/// 銀行帳戶 Repository 實作
+/// 銀行帳戶 Repository 實作 (銀行帳戶維護)
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class BankAccountRepository : BaseRepository, IBankAccountRepository
@@ -40,56 +40,61 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
         try
         {
             var sql = @"
-                SELECT * FROM BankAccounts 
+                SELECT ba.*
+                FROM BankAccounts ba
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrEmpty(query.BankAccountId))
             {
-                sql += " AND BankAccountId LIKE @BankAccountId";
+                sql += " AND ba.BankAccountId LIKE @BankAccountId";
                 parameters.Add("BankAccountId", $"%{query.BankAccountId}%");
             }
 
             if (!string.IsNullOrEmpty(query.BankId))
             {
-                sql += " AND BankId = @BankId";
+                sql += " AND ba.BankId = @BankId";
                 parameters.Add("BankId", query.BankId);
             }
 
             if (!string.IsNullOrEmpty(query.AccountName))
             {
-                sql += " AND AccountName LIKE @AccountName";
+                sql += " AND ba.AccountName LIKE @AccountName";
                 parameters.Add("AccountName", $"%{query.AccountName}%");
             }
 
             if (!string.IsNullOrEmpty(query.AccountNumber))
             {
-                sql += " AND AccountNumber LIKE @AccountNumber";
+                sql += " AND ba.AccountNumber LIKE @AccountNumber";
                 parameters.Add("AccountNumber", $"%{query.AccountNumber}%");
             }
 
             if (!string.IsNullOrEmpty(query.AccountType))
             {
-                sql += " AND AccountType = @AccountType";
+                sql += " AND ba.AccountType = @AccountType";
                 parameters.Add("AccountType", query.AccountType);
             }
 
             if (!string.IsNullOrEmpty(query.CurrencyId))
             {
-                sql += " AND CurrencyId = @CurrencyId";
+                sql += " AND ba.CurrencyId = @CurrencyId";
                 parameters.Add("CurrencyId", query.CurrencyId);
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
-                sql += " AND Status = @Status";
+                sql += " AND ba.Status = @Status";
                 parameters.Add("Status", query.Status);
             }
 
-            sql += " ORDER BY BankAccountId";
-            sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            // 排序
+            var sortField = !string.IsNullOrEmpty(query.SortField) ? query.SortField : "BankAccountId";
+            var sortOrder = !string.IsNullOrEmpty(query.SortOrder) ? query.SortOrder : "ASC";
+            sql += $" ORDER BY ba.{sortField} {sortOrder}";
 
+            // 分頁
+            sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
             parameters.Add("PageSize", query.PageSize);
 
@@ -107,50 +112,50 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
         try
         {
             var sql = @"
-                SELECT COUNT(*) FROM BankAccounts 
+                SELECT COUNT(*) FROM BankAccounts ba
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrEmpty(query.BankAccountId))
             {
-                sql += " AND BankAccountId LIKE @BankAccountId";
+                sql += " AND ba.BankAccountId LIKE @BankAccountId";
                 parameters.Add("BankAccountId", $"%{query.BankAccountId}%");
             }
 
             if (!string.IsNullOrEmpty(query.BankId))
             {
-                sql += " AND BankId = @BankId";
+                sql += " AND ba.BankId = @BankId";
                 parameters.Add("BankId", query.BankId);
             }
 
             if (!string.IsNullOrEmpty(query.AccountName))
             {
-                sql += " AND AccountName LIKE @AccountName";
+                sql += " AND ba.AccountName LIKE @AccountName";
                 parameters.Add("AccountName", $"%{query.AccountName}%");
             }
 
             if (!string.IsNullOrEmpty(query.AccountNumber))
             {
-                sql += " AND AccountNumber LIKE @AccountNumber";
+                sql += " AND ba.AccountNumber LIKE @AccountNumber";
                 parameters.Add("AccountNumber", $"%{query.AccountNumber}%");
             }
 
             if (!string.IsNullOrEmpty(query.AccountType))
             {
-                sql += " AND AccountType = @AccountType";
+                sql += " AND ba.AccountType = @AccountType";
                 parameters.Add("AccountType", query.AccountType);
             }
 
             if (!string.IsNullOrEmpty(query.CurrencyId))
             {
-                sql += " AND CurrencyId = @CurrencyId";
+                sql += " AND ba.CurrencyId = @CurrencyId";
                 parameters.Add("CurrencyId", query.CurrencyId);
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
-                sql += " AND Status = @Status";
+                sql += " AND ba.Status = @Status";
                 parameters.Add("Status", query.Status);
             }
 
@@ -205,13 +210,15 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
         {
             const string sql = @"
                 INSERT INTO BankAccounts (
-                    BankAccountId, BankId, AccountName, AccountNumber, AccountType,
-                    CurrencyId, Status, Memo,
-                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt
+                    BankAccountId, BankId, AccountName, AccountNumber, AccountType, CurrencyId, Status,
+                    Balance, OpeningDate, ClosingDate, ContactPerson, ContactPhone, ContactEmail,
+                    BranchName, BranchCode, SwiftCode, Notes,
+                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup
                 ) VALUES (
-                    @BankAccountId, @BankId, @AccountName, @AccountNumber, @AccountType,
-                    @CurrencyId, @Status, @Memo,
-                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt
+                    @BankAccountId, @BankId, @AccountName, @AccountNumber, @AccountType, @CurrencyId, @Status,
+                    @Balance, @OpeningDate, @ClosingDate, @ContactPerson, @ContactPhone, @ContactEmail,
+                    @BranchName, @BranchCode, @SwiftCode, @Notes,
+                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 );
                 SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
@@ -224,11 +231,22 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
                 bankAccount.AccountType,
                 bankAccount.CurrencyId,
                 bankAccount.Status,
-                bankAccount.Memo,
+                bankAccount.Balance,
+                bankAccount.OpeningDate,
+                bankAccount.ClosingDate,
+                bankAccount.ContactPerson,
+                bankAccount.ContactPhone,
+                bankAccount.ContactEmail,
+                bankAccount.BranchName,
+                bankAccount.BranchCode,
+                bankAccount.SwiftCode,
+                bankAccount.Notes,
                 bankAccount.CreatedBy,
                 bankAccount.CreatedAt,
                 bankAccount.UpdatedBy,
-                bankAccount.UpdatedAt
+                bankAccount.UpdatedAt,
+                bankAccount.CreatedPriority,
+                bankAccount.CreatedGroup
             });
 
             bankAccount.TKey = tKey;
@@ -253,7 +271,16 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
                     AccountType = @AccountType,
                     CurrencyId = @CurrencyId,
                     Status = @Status,
-                    Memo = @Memo,
+                    Balance = @Balance,
+                    OpeningDate = @OpeningDate,
+                    ClosingDate = @ClosingDate,
+                    ContactPerson = @ContactPerson,
+                    ContactPhone = @ContactPhone,
+                    ContactEmail = @ContactEmail,
+                    BranchName = @BranchName,
+                    BranchCode = @BranchCode,
+                    SwiftCode = @SwiftCode,
+                    Notes = @Notes,
                     UpdatedBy = @UpdatedBy,
                     UpdatedAt = @UpdatedAt
                 WHERE BankAccountId = @BankAccountId";
@@ -267,7 +294,16 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
                 bankAccount.AccountType,
                 bankAccount.CurrencyId,
                 bankAccount.Status,
-                bankAccount.Memo,
+                bankAccount.Balance,
+                bankAccount.OpeningDate,
+                bankAccount.ClosingDate,
+                bankAccount.ContactPerson,
+                bankAccount.ContactPhone,
+                bankAccount.ContactEmail,
+                bankAccount.BranchName,
+                bankAccount.BranchCode,
+                bankAccount.SwiftCode,
+                bankAccount.Notes,
                 bankAccount.UpdatedBy,
                 bankAccount.UpdatedAt
             });
@@ -298,34 +334,20 @@ public class BankAccountRepository : BaseRepository, IBankAccountRepository
         }
     }
 
-    public async Task<decimal> CalculateBalanceAsync(string bankAccountId)
+    public async Task<decimal?> GetBalanceAsync(string bankAccountId)
     {
         try
         {
-            // 從付款單計算餘額：已確認的付款單金額（支出為負，收入為正）
-            // 假設初始餘額為0，實際應從 BankAccounts 表的初始餘額欄位取得
             const string sql = @"
-                SELECT ISNULL(SUM(
-                    CASE 
-                        WHEN Status = 'A' THEN Amount  -- 已確認的付款單
-                        ELSE 0
-                    END
-                ), 0) AS Balance
-                FROM Payments
+                SELECT Balance FROM BankAccounts 
                 WHERE BankAccountId = @BankAccountId";
 
-            var balance = await QuerySingleAsync<decimal>(sql, new { BankAccountId = bankAccountId });
-            
-            // TODO: 如果有其他影響餘額的交易（如收款、轉帳等），需要在此處加入計算
-            // 目前僅計算付款單的影響
-            
-            return balance;
+            return await QueryFirstOrDefaultAsync<decimal?>(sql, new { BankAccountId = bankAccountId });
         }
         catch (Exception ex)
         {
-            _logger.LogError($"計算銀行帳戶餘額失敗: {bankAccountId}", ex);
+            _logger.LogError($"查詢銀行帳戶餘額失敗: {bankAccountId}", ex);
             throw;
         }
     }
 }
-

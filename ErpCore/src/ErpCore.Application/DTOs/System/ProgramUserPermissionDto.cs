@@ -32,13 +32,13 @@ public class ProgramUserPermissionListResponseDto
     /// <summary>
     /// 使用者列表
     /// </summary>
-    public List<UserPermissionDto> Users { get; set; } = new();
+    public List<ProgramUserPermissionItemDto> Users { get; set; } = new();
 }
 
 /// <summary>
 /// 使用者權限 DTO (SYS0720)
 /// </summary>
-public class UserPermissionDto
+public class ProgramUserPermissionItemDto
 {
     /// <summary>
     /// 使用者代碼

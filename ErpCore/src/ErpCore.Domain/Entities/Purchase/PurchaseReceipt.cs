@@ -86,6 +86,11 @@ public class PurchaseReceipt
     public string? AdjustmentReason { get; set; }
 
     /// <summary>
+    /// 來源程式 (SYSW324/SYSW336)
+    /// </summary>
+    public string? SourceProgram { get; set; }
+
+    /// <summary>
     /// 建立人員
     /// </summary>
     public string? CreatedBy { get; set; }

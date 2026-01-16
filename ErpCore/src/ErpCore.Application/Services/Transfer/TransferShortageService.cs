@@ -77,7 +77,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
         }
     }
 
-    public async Task<TransferShortageDto> GetTransferShortageByIdAsync(string shortageId)
+    public async Task<TransferShortageDetailFullDto> GetTransferShortageByIdAsync(string shortageId)
     {
         try
         {
@@ -88,7 +88,33 @@ public class TransferShortageService : BaseService, ITransferShortageService
             }
 
             var details = await _repository.GetDetailsByShortageIdAsync(shortageId);
-            return MapToDto(entity, details);
+            var dto = MapToDto(entity, details);
+            return new TransferShortageDetailFullDto
+            {
+                ShortageId = dto.ShortageId,
+                TransferId = dto.TransferId,
+                ReceiptId = dto.ReceiptId,
+                ShortageDate = dto.ShortageDate,
+                FromShopId = dto.FromShopId,
+                ToShopId = dto.ToShopId,
+                Status = dto.Status,
+                ProcessType = dto.ProcessType,
+                ProcessUserId = dto.ProcessUserId,
+                ProcessDate = dto.ProcessDate,
+                ApproveUserId = dto.ApproveUserId,
+                ApproveDate = dto.ApproveDate,
+                TotalShortageQty = dto.TotalShortageQty,
+                TotalAmount = dto.TotalAmount,
+                ShortageReason = dto.ShortageReason,
+                Memo = dto.Memo,
+                IsSettled = dto.IsSettled,
+                SettledDate = dto.SettledDate,
+                CreatedBy = dto.CreatedBy,
+                CreatedAt = dto.CreatedAt,
+                UpdatedBy = dto.UpdatedBy,
+                UpdatedAt = dto.UpdatedAt,
+                Details = dto.Details
+            };
         }
         catch (Exception ex)
         {
@@ -97,7 +123,7 @@ public class TransferShortageService : BaseService, ITransferShortageService
         }
     }
 
-    public async Task<TransferShortageDto> CreateShortageFromTransferAsync(string transferId)
+    public async Task<TransferShortageDetailFullDto> CreateShortageFromTransferAsync(string transferId)
     {
         try
         {
@@ -149,7 +175,33 @@ public class TransferShortageService : BaseService, ITransferShortageService
 
             // 先建立短溢單（不保存，僅返回 DTO）
             // 實際保存需要呼叫 CreateTransferShortageAsync
-            return MapToDto(entity, shortageDetails);
+            var dto = MapToDto(entity, shortageDetails);
+            return new TransferShortageDetailFullDto
+            {
+                ShortageId = dto.ShortageId,
+                TransferId = dto.TransferId,
+                ReceiptId = dto.ReceiptId,
+                ShortageDate = dto.ShortageDate,
+                FromShopId = dto.FromShopId,
+                ToShopId = dto.ToShopId,
+                Status = dto.Status,
+                ProcessType = dto.ProcessType,
+                ProcessUserId = dto.ProcessUserId,
+                ProcessDate = dto.ProcessDate,
+                ApproveUserId = dto.ApproveUserId,
+                ApproveDate = dto.ApproveDate,
+                TotalShortageQty = dto.TotalShortageQty,
+                TotalAmount = dto.TotalAmount,
+                ShortageReason = dto.ShortageReason,
+                Memo = dto.Memo,
+                IsSettled = dto.IsSettled,
+                SettledDate = dto.SettledDate,
+                CreatedBy = dto.CreatedBy,
+                CreatedAt = dto.CreatedAt,
+                UpdatedBy = dto.UpdatedBy,
+                UpdatedAt = dto.UpdatedAt,
+                Details = dto.Details
+            };
         }
         catch (Exception ex)
         {

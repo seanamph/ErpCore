@@ -8,26 +8,6 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.BasicData;
 
 /// <summary>
-/// 部別查詢結果（包含組織名稱）
-/// </summary>
-internal class DepartmentWithOrgName
-{
-    public string DeptId { get; set; } = string.Empty;
-    public string DeptName { get; set; } = string.Empty;
-    public string? OrgId { get; set; }
-    public string? OrgName { get; set; }
-    public int? SeqNo { get; set; }
-    public string Status { get; set; } = "A";
-    public string? Notes { get; set; }
-    public string? CreatedBy { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public string? UpdatedBy { get; set; }
-    public DateTime UpdatedAt { get; set; }
-    public int? CreatedPriority { get; set; }
-    public string? CreatedGroup { get; set; }
-}
-
-/// <summary>
 /// 部別 Repository 實作
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
@@ -46,7 +26,8 @@ public class DepartmentRepository : BaseRepository, IDepartmentRepository
                 SELECT * FROM Departments 
                 WHERE DeptId = @DeptId";
 
-            return await QueryFirstOrDefaultAsync<Department>(sql, new { DeptId = deptId });
+            var result = await QueryFirstOrDefaultAsync<Department>(sql, new { DeptId = deptId });
+            return result;
         }
         catch (Exception ex)
         {
@@ -60,39 +41,37 @@ public class DepartmentRepository : BaseRepository, IDepartmentRepository
         try
         {
             var sql = @"
-                SELECT d.*, o.OrgName 
-                FROM Departments d
-                LEFT JOIN Organizations o ON d.OrgId = o.OrgId
+                SELECT * FROM Departments d
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrEmpty(query.DeptId))
             {
-                sql += " AND d.DeptId LIKE @DeptId";
+                sql += " AND DeptId LIKE @DeptId";
                 parameters.Add("DeptId", $"%{query.DeptId}%");
             }
 
             if (!string.IsNullOrEmpty(query.DeptName))
             {
-                sql += " AND d.DeptName LIKE @DeptName";
+                sql += " AND DeptName LIKE @DeptName";
                 parameters.Add("DeptName", $"%{query.DeptName}%");
             }
 
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                sql += " AND d.OrgId = @OrgId";
+                sql += " AND OrgId = @OrgId";
                 parameters.Add("OrgId", query.OrgId);
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
-                sql += " AND d.Status = @Status";
+                sql += " AND Status = @Status";
                 parameters.Add("Status", query.Status);
             }
 
             // 排序
-            var sortField = string.IsNullOrEmpty(query.SortField) ? "d.DeptId" : $"d.{query.SortField}";
+            var sortField = string.IsNullOrEmpty(query.SortField) ? "d.DeptId" : query.SortField;
             var sortOrder = string.IsNullOrEmpty(query.SortOrder) || query.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC";
             sql += $" ORDER BY {sortField} {sortOrder}";
 
@@ -102,60 +81,40 @@ public class DepartmentRepository : BaseRepository, IDepartmentRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<DepartmentWithOrgName>(sql, parameters);
-            
-            // 轉換為 Department 實體
-            var departments = items.Select(x => new Department
-            {
-                DeptId = x.DeptId,
-                DeptName = x.DeptName,
-                OrgId = x.OrgId,
-                SeqNo = x.SeqNo,
-                Status = x.Status,
-                Notes = x.Notes,
-                CreatedBy = x.CreatedBy,
-                CreatedAt = x.CreatedAt,
-                UpdatedBy = x.UpdatedBy,
-                UpdatedAt = x.UpdatedAt,
-                CreatedPriority = x.CreatedPriority,
-                CreatedGroup = x.CreatedGroup
-            });
+            var items = await QueryAsync<Department>(sql, parameters);
 
             // 查詢總數
             var countSql = @"
-                SELECT COUNT(*) FROM Departments d
+                SELECT COUNT(*) FROM Departments
                 WHERE 1=1";
 
             var countParameters = new DynamicParameters();
             if (!string.IsNullOrEmpty(query.DeptId))
             {
-                countSql += " AND d.DeptId LIKE @DeptId";
+                countSql += " AND DeptId LIKE @DeptId";
                 countParameters.Add("DeptId", $"%{query.DeptId}%");
             }
             if (!string.IsNullOrEmpty(query.DeptName))
             {
-                countSql += " AND d.DeptName LIKE @DeptName";
+                countSql += " AND DeptName LIKE @DeptName";
                 countParameters.Add("DeptName", $"%{query.DeptName}%");
             }
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                countSql += " AND d.OrgId = @OrgId";
+                countSql += " AND OrgId = @OrgId";
                 countParameters.Add("OrgId", query.OrgId);
             }
             if (!string.IsNullOrEmpty(query.Status))
             {
-                countSql += " AND d.Status = @Status";
+                countSql += " AND Status = @Status";
                 countParameters.Add("Status", query.Status);
             }
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            // 需要保存 OrgName 以便 Service 層使用
-            // 由於 Department 實體不包含 OrgName，我們需要通過其他方式傳遞
-            // 這裡先返回 Department，OrgName 將在 Service 層另外查詢
             return new PagedResult<Department>
             {
-                Items = departments.ToList(),
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
@@ -264,4 +223,3 @@ public class DepartmentRepository : BaseRepository, IDepartmentRepository
         }
     }
 }
-

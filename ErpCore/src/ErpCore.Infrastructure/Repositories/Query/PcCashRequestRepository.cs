@@ -1,11 +1,11 @@
 using System.Data;
+using System.Text.Json;
 using Dapper;
 using ErpCore.Domain.Entities.Query;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
-using ErpCore.Application.DTOs.Query;
 
 namespace ErpCore.Infrastructure.Repositories.Query;
 
@@ -54,7 +54,7 @@ public class PcCashRequestRepository : BaseRepository, IPcCashRequestRepository
         }
     }
 
-    public async Task<PagedResult<PcCashRequestDto>> QueryAsync(PcCashRequestQueryDto query)
+    public async Task<PagedResult<PcCashRequest>> QueryAsync(PcCashRequestQueryParams query)
     {
         try
         {
@@ -101,7 +101,7 @@ public class PcCashRequestRepository : BaseRepository, IPcCashRequestRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<PcCashRequestDto>(sql, parameters);
+            var items = await QueryAsync<PcCashRequest>(sql, parameters);
 
             // 處理 CashIds JSON 轉換為 List
             foreach (var item in items)
@@ -110,7 +110,7 @@ public class PcCashRequestRepository : BaseRepository, IPcCashRequestRepository
                 {
                     try
                     {
-                        item.CashIdList = System.Text.Json.JsonSerializer.Deserialize<List<string>>(item.CashIds);
+                        item.CashIdList = JsonSerializer.Deserialize<List<string>>(item.CashIds);
                     }
                     catch
                     {
@@ -149,7 +149,7 @@ public class PcCashRequestRepository : BaseRepository, IPcCashRequestRepository
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<PcCashRequestDto>
+            return new PagedResult<PcCashRequest>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,

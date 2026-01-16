@@ -33,7 +33,7 @@ public class PurchaseReceiptController : BaseController
         {
             var result = await _service.GetPendingOrdersAsync(query);
             return result;
-        }, "查詢待驗收採購單失敗");
+        }, "查詢待驗收採購單失敗 (SYSW324)");
     }
 
     /// <summary>
@@ -45,9 +45,11 @@ public class PurchaseReceiptController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
+            // 自動過濾 SYSW324 的資料
+            query.SourceProgram = "SYSW324";
             var result = await _service.GetPurchaseReceiptsAsync(query);
             return result;
-        }, "查詢驗收單列表失敗");
+        }, "查詢驗收單列表失敗 (SYSW324)");
     }
 
     /// <summary>

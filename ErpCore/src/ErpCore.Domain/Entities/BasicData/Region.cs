@@ -50,4 +50,3 @@ public class Region
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

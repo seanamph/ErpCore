@@ -14,4 +14,14 @@ public class PagedQuery
     /// 每頁筆數
     /// </summary>
     public int PageSize { get; set; } = 20;
+
+    /// <summary>
+    /// 排序欄位
+    /// </summary>
+    public string? SortField { get; set; }
+
+    /// <summary>
+    /// 排序方向 (ASC/DESC)
+    /// </summary>
+    public string? SortOrder { get; set; }
 }

@@ -7,7 +7,7 @@ public class VendorDto
 {
     public string VendorId { get; set; } = string.Empty;
     public string GuiId { get; set; } = string.Empty;
-    public string GuiType { get; set; } = "1";
+    public string GuiType { get; set; } = string.Empty;
     public string VendorName { get; set; } = string.Empty;
     public string? VendorNameE { get; set; }
     public string? VendorNameS { get; set; }
@@ -63,7 +63,7 @@ public class VendorQueryDto
 public class CreateVendorDto
 {
     public string GuiId { get; set; } = string.Empty;
-    public string GuiType { get; set; } = "1";
+    public string GuiType { get; set; } = string.Empty;
     public string VendorName { get; set; } = string.Empty;
     public string? VendorNameE { get; set; }
     public string? VendorNameS { get; set; }
@@ -141,4 +141,3 @@ public class CheckGuiIdResultDto
     public bool Exists { get; set; }
     public string? VendorId { get; set; }
 }
-

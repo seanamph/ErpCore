@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Api.Controllers.BasicData;
 
 /// <summary>
-/// 廠/客基本資料維護作業控制器 (SYSB206)
+/// 廠/客基本資料維護控制器 (SYSB206)
 /// </summary>
 [Route("api/v1/vendors")]
 public class VendorsController : BaseController
@@ -115,4 +115,3 @@ public class VendorsController : BaseController
         }, "批次刪除廠商失敗");
     }
 }
-

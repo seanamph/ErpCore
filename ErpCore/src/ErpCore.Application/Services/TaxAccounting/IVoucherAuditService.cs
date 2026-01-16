@@ -8,7 +8,7 @@ namespace ErpCore.Application.Services.TaxAccounting;
 /// </summary>
 public interface IVoucherAuditService
 {
-    Task<List<SystemVoucherCountDto>> GetSystemListAsync();
+    Task<List<ErpCore.Application.DTOs.TaxAccounting.SystemVoucherCountDto>> GetSystemListAsync();
     Task<PagedResult<TmpVoucherDto>> GetTmpVouchersAsync(TmpVoucherQueryDto query);
     Task<TmpVoucherDetailDto> GetTmpVoucherByIdAsync(long tKey);
     Task<TmpVoucherDetailDto> UpdateTmpVoucherAsync(long tKey, UpdateTmpVoucherDto dto);

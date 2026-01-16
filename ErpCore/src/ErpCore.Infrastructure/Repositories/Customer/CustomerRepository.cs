@@ -1,9 +1,12 @@
 using Dapper;
-using ErpCore.Domain.Entities.Customer;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using CustomerEntity = ErpCore.Domain.Entities.Customer.Customer;
+using CustomerContact = ErpCore.Domain.Entities.Customer.CustomerContact;
+using CustomerTransaction = ErpCore.Domain.Entities.Customer.CustomerTransaction;
+using QueryHistory = ErpCore.Domain.Entities.Customer.QueryHistory;
 
 namespace ErpCore.Infrastructure.Repositories.Customer;
 
@@ -18,7 +21,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
     {
     }
 
-    public async Task<Customer?> GetByIdAsync(string customerId)
+    public async Task<CustomerEntity?> GetByIdAsync(string customerId)
     {
         try
         {
@@ -26,7 +29,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
                 SELECT * FROM Customers 
                 WHERE CustomerId = @CustomerId";
 
-            return await QueryFirstOrDefaultAsync<Customer>(sql, new { CustomerId = customerId });
+            return await QueryFirstOrDefaultAsync<CustomerEntity>(sql, new { CustomerId = customerId });
         }
         catch (Exception ex)
         {
@@ -35,7 +38,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<Customer?> GetByGuiIdAsync(string guiId)
+    public async Task<CustomerEntity?> GetByGuiIdAsync(string guiId)
     {
         try
         {
@@ -43,7 +46,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
                 SELECT * FROM Customers 
                 WHERE GuiId = @GuiId";
 
-            return await QueryFirstOrDefaultAsync<Customer>(sql, new { GuiId = guiId });
+            return await QueryFirstOrDefaultAsync<CustomerEntity>(sql, new { GuiId = guiId });
         }
         catch (Exception ex)
         {
@@ -52,7 +55,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<PagedResult<Customer>> QueryAsync(CustomerQuery query)
+    public async Task<PagedResult<CustomerEntity>> QueryAsync(CustomerQuery query)
     {
         try
         {
@@ -103,11 +106,11 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<Customer>(sql, parameters);
+            var items = await QueryAsync<CustomerEntity>(sql, parameters);
 
             // 查詢總數
             var countSql = @"
-                SELECT COUNT(*) FROM Customers
+                SELECT COUNT(*) FROM CustomerEntitys
                 WHERE 1=1";
 
             var countParameters = new DynamicParameters();
@@ -115,11 +118,6 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
             {
                 countSql += " AND CustomerId LIKE @CustomerId";
                 countParameters.Add("CustomerId", $"%{query.CustomerId}%");
-            }
-            if (!string.IsNullOrEmpty(query.CustomerName))
-            {
-                countSql += " AND CustomerName LIKE @CustomerName";
-                countParameters.Add("CustomerName", $"%{query.CustomerName}%");
             }
             if (!string.IsNullOrEmpty(query.GuiId))
             {
@@ -139,7 +137,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<Customer>
+            return new PagedResult<CustomerEntity>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
@@ -154,7 +152,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<Customer> CreateAsync(Customer customer)
+    public async Task<CustomerEntity> CreateAsync(CustomerEntity customer)
     {
         try
         {
@@ -177,7 +175,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
                     @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 )";
 
-            var result = await QueryFirstOrDefaultAsync<Customer>(sql, customer);
+            var result = await QueryFirstOrDefaultAsync<CustomerEntity>(sql, customer);
             if (result == null)
             {
                 throw new InvalidOperationException("新增客戶失敗");
@@ -192,7 +190,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<Customer> UpdateAsync(Customer customer)
+    public async Task<CustomerEntity> UpdateAsync(CustomerEntity customer)
     {
         try
         {
@@ -231,7 +229,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
                 OUTPUT INSERTED.*
                 WHERE CustomerId = @CustomerId";
 
-            var result = await QueryFirstOrDefaultAsync<Customer>(sql, customer);
+            var result = await QueryFirstOrDefaultAsync<CustomerEntity>(sql, customer);
             if (result == null)
             {
                 throw new InvalidOperationException($"客戶不存在: {customer.CustomerId}");
@@ -365,7 +363,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<PagedResult<Customer>> AdvancedQueryAsync(CustomerAdvancedQuery query)
+    public async Task<PagedResult<CustomerEntity>> AdvancedQueryAsync(CustomerAdvancedQuery query)
     {
         try
         {
@@ -494,7 +492,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<Customer>(sql, parameters);
+            var items = await QueryAsync<CustomerEntity>(sql, parameters);
 
             // 查詢總數
             var countSql = @"
@@ -595,7 +593,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<Customer>
+            return new PagedResult<CustomerEntity>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
@@ -610,7 +608,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
         }
     }
 
-    public async Task<List<Customer>> SearchAsync(string keyword, int limit)
+    public async Task<List<CustomerEntity>> SearchAsync(string keyword, int limit)
     {
         try
         {
@@ -630,7 +628,7 @@ public class CustomerRepository : BaseRepository, ICustomerRepository
             parameters.Add("Keyword", $"%{keyword}%");
             parameters.Add("Limit", limit);
 
-            var items = await QueryAsync<Customer>(sql, parameters);
+            var items = await QueryAsync<CustomerEntity>(sql, parameters);
             return items.ToList();
         }
         catch (Exception ex)

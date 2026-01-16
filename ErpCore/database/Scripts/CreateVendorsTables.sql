@@ -56,4 +56,3 @@ BEGIN
     PRINT 'Vendors 表已存在';
 END
 GO
-

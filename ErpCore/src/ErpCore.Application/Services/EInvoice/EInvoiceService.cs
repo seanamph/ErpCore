@@ -376,9 +376,10 @@ public class EInvoiceService : BaseService, IEInvoiceService
                 NdType = query.NdType
             };
 
-            var result = await _repository.GetEInvoicesPagedAsync(repositoryQuery);
+            // 使用包含名稱的查詢方法
+            var result = await _repository.GetEInvoicesWithNamesPagedAsync(repositoryQuery);
 
-            var dtos = result.Items.Select(x => MapToDto(x)).ToList();
+            var dtos = result.Items.Select(x => MapToDtoFromWithNames(x)).ToList();
 
             return new PagedResult<EInvoiceDto>
             {
@@ -619,7 +620,7 @@ public class EInvoiceService : BaseService, IEInvoiceService
         };
     }
 
-    public async Task<PagedResult<EInvoiceReportDto>> GetEInvoiceReportsAsync(EInvoiceReportQueryDto query)
+    public async Task<PagedResult<ErpCore.Application.DTOs.EInvoice.EInvoiceReportDto>> GetEInvoiceReportsAsync(EInvoiceReportQueryDto query)
     {
         try
         {
@@ -633,6 +634,10 @@ public class EInvoiceService : BaseService, IEInvoiceService
                 OrderNo = query.OrderNo,
                 RetailerOrderNo = query.RetailerOrderNo,
                 StoreId = query.StoreId,
+                StoreFloor = query.StoreFloor,
+                StoreType = query.StoreType,
+                RetailerId = query.RetailerId,
+                ScId = query.ScId,
                 ProviderId = query.ProviderId,
                 GoodsId = query.GoodsId,
                 GoodsName = query.GoodsName,
@@ -646,9 +651,28 @@ public class EInvoiceService : BaseService, IEInvoiceService
 
             var result = await _repository.GetEInvoiceReportsPagedAsync(repositoryQuery);
 
-            return new PagedResult<EInvoiceReportDto>
+            return new PagedResult<ErpCore.Application.DTOs.EInvoice.EInvoiceReportDto>
             {
-                Items = result.Items,
+                Items = result.Items.Select(r => new ErpCore.Application.DTOs.EInvoice.EInvoiceReportDto
+                {
+                    ReportId = r.ReportId,
+                    ReportType = r.ReportType,
+                    OrderNo = r.OrderNo,
+                    RetailerOrderNo = r.RetailerOrderNo,
+                    StoreId = r.StoreId,
+                    StoreFloor = r.StoreFloor,
+                    StoreType = r.StoreType,
+                    RetailerId = r.RetailerId,
+                    ScId = r.ScId,
+                    ProviderId = r.ProviderId,
+                    GoodsId = r.GoodsId,
+                    GoodsName = r.GoodsName,
+                    OrderDate = r.OrderDate,
+                    ShipDate = r.ShipDate,
+                    OrderStatus = r.OrderStatus,
+                    ProcessStatus = r.ProcessStatus,
+                    CreatedAt = r.CreatedAt
+                }).ToList(),
                 TotalCount = result.TotalCount,
                 PageIndex = result.PageIndex,
                 PageSize = result.PageSize
@@ -676,6 +700,10 @@ public class EInvoiceService : BaseService, IEInvoiceService
                 OrderNo = query.OrderNo,
                 RetailerOrderNo = query.RetailerOrderNo,
                 StoreId = query.StoreId,
+                StoreFloor = query.StoreFloor,
+                StoreType = query.StoreType,
+                RetailerId = query.RetailerId,
+                ScId = query.ScId,
                 ProviderId = query.ProviderId,
                 GoodsId = query.GoodsId,
                 GoodsName = query.GoodsName,
@@ -717,6 +745,10 @@ public class EInvoiceService : BaseService, IEInvoiceService
                 OrderNo = query.OrderNo,
                 RetailerOrderNo = query.RetailerOrderNo,
                 StoreId = query.StoreId,
+                StoreFloor = query.StoreFloor,
+                StoreType = query.StoreType,
+                RetailerId = query.RetailerId,
+                ScId = query.ScId,
                 ProviderId = query.ProviderId,
                 GoodsId = query.GoodsId,
                 GoodsName = query.GoodsName,
@@ -748,6 +780,91 @@ public class EInvoiceService : BaseService, IEInvoiceService
     /// </summary>
     private List<ExportColumn> GetExportColumnsForReportType(string? reportType)
     {
+        // ECA4020: 商品銷售統計報表 - 根據開發計劃實現專門欄位
+        if (reportType == "ECA4020")
+        {
+            return new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SalesRanking", DisplayName = "排名", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "ScId", DisplayName = "專櫃代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ScName", DisplayName = "專櫃名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderGoodsId", DisplayName = "供應商商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "銷售數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "銷售金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AvgPrice", DisplayName = "平均價格", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesPercent", DisplayName = "銷售占比(%)", DataType = ExportDataType.Decimal }
+            };
+        }
+
+        // ECA4030: 零售商銷售統計報表 - 根據開發計劃實現專門欄位
+        if (reportType == "ECA4030")
+        {
+            return new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SalesRanking", DisplayName = "排名", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "RetailerId", DisplayName = "零售商代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerName", DisplayName = "零售商名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "銷售數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "銷售金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesPercent", DisplayName = "銷售占比(%)", DataType = ExportDataType.Decimal }
+            };
+        }
+
+        // ECA4040: 店別銷售統計報表 - 根據開發計劃實現專門欄位
+        if (reportType == "ECA4040")
+        {
+            return new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SalesRanking", DisplayName = "排名", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "StoreId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreFloor", DisplayName = "樓層", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StoreType", DisplayName = "類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "銷售數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "銷售金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesPercent", DisplayName = "銷售占比(%)", DataType = ExportDataType.Decimal }
+            };
+        }
+
+        // ECA4050: 出貨日期統計報表 - 根據開發計劃實現專門欄位
+        if (reportType == "ECA4050")
+        {
+            return new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ShipDate", DisplayName = "出貨日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "銷售數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "銷售金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesPercent", DisplayName = "銷售占比(%)", DataType = ExportDataType.Decimal }
+            };
+        }
+
+        // ECA4060: 訂單日期統計報表 - 根據開發計劃實現專門欄位
+        if (reportType == "ECA4060")
+        {
+            return new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "OrderDate", DisplayName = "訂單日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "SumYQty", DisplayName = "已開立數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "SumYSubtotal", DisplayName = "已開立金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SumYFee", DisplayName = "已開立運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesYPercent", DisplayName = "已開立占比(%)", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SumNQty", DisplayName = "未開立數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "SumNSubtotal", DisplayName = "未開立金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SumNFee", DisplayName = "未開立運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesNPercent", DisplayName = "未開立占比(%)", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SumAQty", DisplayName = "全部數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "SumASubtotal", DisplayName = "全部金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SumAFee", DisplayName = "全部運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesAPercent", DisplayName = "全部占比(%)", DataType = ExportDataType.Decimal }
+            };
+        }
+
         // 根據不同的報表類型返回不同的欄位定義
         // 預設返回所有欄位
         return new List<ExportColumn>
@@ -825,7 +942,7 @@ public class EInvoiceService : BaseService, IEInvoiceService
         };
     }
 
-    private EInvoiceDto MapToDto(EInvoice entity)
+    private EInvoiceDto MapToDto(ErpCore.Domain.Entities.EInvoice.EInvoice entity)
     {
         return new EInvoiceDto
         {
@@ -860,6 +977,125 @@ public class EInvoiceService : BaseService, IEInvoiceService
             UpdatedBy = entity.UpdatedBy,
             UpdatedAt = entity.UpdatedAt
         };
+    }
+
+    private EInvoiceDto MapToDtoFromWithNames(Infrastructure.Repositories.EInvoice.EInvoiceWithNamesDto item)
+    {
+        return new EInvoiceDto
+        {
+            InvoiceId = item.InvoiceId,
+            UploadId = item.UploadId,
+            OrderNo = item.OrderNo,
+            RetailerOrderNo = item.RetailerOrderNo,
+            RetailerOrderDetailNo = item.RetailerOrderDetailNo,
+            OrderDate = item.OrderDate,
+            StoreId = item.StoreId,
+            StoreName = item.StoreName,
+            ProviderId = item.ProviderId,
+            ProviderName = item.ProviderName,
+            NdType = item.NdType,
+            GoodsId = item.GoodsId,
+            GoodsName = item.GoodsName,
+            SpecId = item.SpecId,
+            ProviderGoodsId = item.ProviderGoodsId,
+            SpecColor = item.SpecColor,
+            SpecSize = item.SpecSize,
+            SuggestPrice = item.SuggestPrice,
+            InternetPrice = item.InternetPrice,
+            ShippingType = item.ShippingType,
+            ShippingFee = item.ShippingFee,
+            OrderQty = item.OrderQty,
+            OrderShippingFee = item.OrderShippingFee,
+            OrderSubtotal = item.OrderSubtotal,
+            OrderTotal = item.OrderTotal,
+            OrderStatus = item.OrderStatus,
+            ProcessStatus = item.ProcessStatus,
+            ErrorMessage = item.ErrorMessage,
+            CreatedBy = item.CreatedBy,
+            CreatedAt = item.CreatedAt,
+            UpdatedBy = item.UpdatedBy,
+            UpdatedAt = item.UpdatedAt
+        };
+    }
+
+    /// <summary>
+    /// 下載處理結果 (成功/失敗清單) (ECA3010)
+    /// </summary>
+    public async Task<byte[]> DownloadResultAsync(long uploadId, string type)
+    {
+        try
+        {
+            var upload = await _repository.GetUploadByIdAsync(uploadId);
+            if (upload == null)
+            {
+                throw new InvalidOperationException($"上傳記錄不存在: {uploadId}");
+            }
+
+            // 取得該上傳記錄的所有電子發票
+            var allInvoices = await _repository.GetEInvoicesByUploadIdAsync(uploadId);
+            
+            // 根據 type 篩選
+            List<EInvoice> filteredInvoices;
+            string sheetName;
+            
+            switch (type?.ToLower())
+            {
+                case "success":
+                    filteredInvoices = allInvoices.Where(x => x.ProcessStatus == "COMPLETED" && string.IsNullOrEmpty(x.ErrorMessage)).ToList();
+                    sheetName = "成功清單";
+                    break;
+                case "failed":
+                    filteredInvoices = allInvoices.Where(x => x.ProcessStatus != "COMPLETED" || !string.IsNullOrEmpty(x.ErrorMessage)).ToList();
+                    sheetName = "失敗清單";
+                    break;
+                case "all":
+                default:
+                    filteredInvoices = allInvoices;
+                    sheetName = "全部清單";
+                    break;
+            }
+
+            // 轉換為 DTO
+            var dtos = filteredInvoices.Select(x => MapToDto(x)).ToList();
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "InvoiceId", DisplayName = "發票ID", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderNo", DisplayName = "訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerOrderNo", DisplayName = "零售商訂單編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RetailerOrderDetailNo", DisplayName = "零售商訂單明細編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrderDate", DisplayName = "訂單日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "StoreId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderId", DisplayName = "供應商代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "NdType", DisplayName = "類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecId", DisplayName = "規格ID", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProviderGoodsId", DisplayName = "供應商商品編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecColor", DisplayName = "規格顏色", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SpecSize", DisplayName = "規格尺寸", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SuggestPrice", DisplayName = "建議售價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InternetPrice", DisplayName = "網路售價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ShippingType", DisplayName = "運送方式", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShippingFee", DisplayName = "運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderQty", DisplayName = "訂單數量", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "OrderShippingFee", DisplayName = "訂單運費", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderSubtotal", DisplayName = "訂單小計", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderTotal", DisplayName = "訂單總計", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderStatus", DisplayName = "訂單狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProcessStatus", DisplayName = "處理狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ErrorMessage", DisplayName = "錯誤訊息", DataType = ExportDataType.String }
+            };
+
+            var title = $"電子發票處理結果 - {sheetName} (上傳記錄: {upload.FileName})";
+            return _exportHelper.ExportToExcel(dtos, columns, sheetName, title);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"下載處理結果失敗: {uploadId}, Type: {type}", ex);
+            throw;
+        }
     }
 }
 

@@ -127,6 +127,48 @@ export default {
       ProgramId: ''
     })
 
+    // 搜尋角色（自動完成）
+    const searchRoles = async (queryString, cb) => {
+      try {
+        const response = await rolesApi.getRoles({
+          PageIndex: 1,
+          PageSize: 50,
+          RoleId: queryString || undefined,
+          RoleName: queryString || undefined
+        })
+        // 處理不同的響應格式
+        let roles = []
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            const items = response.data.data.items || response.data.data.Items || []
+            roles = items.map(item => ({
+              value: item.roleId || item.RoleId,
+              label: `${item.roleId || item.RoleId} - ${item.roleName || item.RoleName}`
+            }))
+          } else if (response.data.Data && response.data.Data.Items) {
+            roles = response.data.Data.Items.map(item => ({
+              value: item.RoleId,
+              label: `${item.RoleId} - ${item.RoleName}`
+            }))
+          }
+        } else if (response && response.Data && response.Data.Items) {
+          roles = response.Data.Items.map(item => ({
+            value: item.RoleId,
+            label: `${item.RoleId} - ${item.RoleName}`
+          }))
+        }
+        cb(roles)
+      } catch (error) {
+        console.error('搜尋角色失敗:', error)
+        cb([])
+      }
+    }
+
+    // 選擇角色
+    const handleRoleSelect = (item) => {
+      queryForm.RoleId = item.value
+    }
+
     // 查詢資料
     const loadData = async () => {
       if (!queryForm.RoleId) {
@@ -138,13 +180,41 @@ export default {
       try {
         const params = { ...queryForm }
         const response = await roleSystemPermissionApi.getList(params)
-        if (response.Data) {
+        // 處理不同的響應格式
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            roleInfo.RoleId = response.data.data.RoleId || ''
+            roleInfo.RoleName = response.data.data.RoleName || ''
+            tableData.value = response.data.data.Permissions || []
+            ElMessage.success('查詢成功')
+          } else if (response.data.Data) {
+            roleInfo.RoleId = response.data.Data.RoleId || ''
+            roleInfo.RoleName = response.data.Data.RoleName || ''
+            tableData.value = response.data.Data.Permissions || []
+            ElMessage.success('查詢成功')
+          } else {
+            ElMessage.warning(response.data.message || '查詢無資料')
+            roleInfo.RoleId = ''
+            roleInfo.RoleName = ''
+            tableData.value = []
+          }
+        } else if (response && response.Data) {
           roleInfo.RoleId = response.Data.RoleId || ''
           roleInfo.RoleName = response.Data.RoleName || ''
           tableData.value = response.Data.Permissions || []
+          ElMessage.success('查詢成功')
+        } else {
+          ElMessage.warning('查詢無資料')
+          roleInfo.RoleId = ''
+          roleInfo.RoleName = ''
+          tableData.value = []
         }
       } catch (error) {
-        ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
+        console.error('查詢失敗:', error)
+        ElMessage.error('查詢失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
+        roleInfo.RoleId = ''
+        roleInfo.RoleName = ''
+        tableData.value = []
       } finally {
         loading.value = false
       }
@@ -182,8 +252,11 @@ export default {
         }
         const response = await roleSystemPermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         })
         const url = window.URL.createObjectURL(blob)
@@ -198,7 +271,7 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 
@@ -216,8 +289,11 @@ export default {
         }
         const response = await roleSystemPermissionApi.exportReport(data)
         
+        // 處理響應數據（可能是 response.data 或 response）
+        const blobData = response.data || response
+        
         // 下載檔案
-        const blob = new Blob([response], {
+        const blob = new Blob([blobData], {
           type: 'application/pdf'
         })
         const url = window.URL.createObjectURL(blob)
@@ -232,7 +308,7 @@ export default {
         ElMessage.success('匯出成功')
       } catch (error) {
         console.error('匯出失敗:', error)
-        ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+        ElMessage.error('匯出失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
       }
     }
 

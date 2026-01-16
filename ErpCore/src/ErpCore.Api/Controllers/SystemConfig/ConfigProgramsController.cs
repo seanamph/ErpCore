@@ -102,4 +102,3 @@ public class ConfigProgramsController : BaseController
         }, "批次刪除作業失敗");
     }
 }
-

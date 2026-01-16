@@ -1,7 +1,7 @@
 namespace ErpCore.Domain.Entities.BasicData;
 
 /// <summary>
-/// 廠商資料實體 (SYSB206)
+/// 廠/客基本資料實體 (SYSB206)
 /// </summary>
 public class Vendor
 {
@@ -18,7 +18,7 @@ public class Vendor
     /// <summary>
     /// 識別類型 (1:統一編號, 2:身份證字號, 3:自編編號)
     /// </summary>
-    public string GuiType { get; set; } = "1";
+    public string GuiType { get; set; } = string.Empty;
 
     /// <summary>
     /// 廠商名稱(中文)
@@ -180,4 +180,3 @@ public class Vendor
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

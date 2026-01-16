@@ -1,6 +1,6 @@
 using System.Data;
 using Dapper;
-using ErpCore.Domain.Entities.Lease;
+using LeaseEntity = ErpCore.Domain.Entities.Lease.Lease;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Logging;
@@ -18,7 +18,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
     {
     }
 
-    public async Task<Lease?> GetByIdAsync(string leaseId)
+    public async Task<LeaseEntity?> GetByIdAsync(string leaseId)
     {
         try
         {
@@ -26,7 +26,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
                 SELECT * FROM Leases 
                 WHERE LeaseId = @LeaseId";
 
-            return await QueryFirstOrDefaultAsync<Lease>(sql, new { LeaseId = leaseId });
+            return await QueryFirstOrDefaultAsync<LeaseEntity>(sql, new { LeaseId = leaseId });
         }
         catch (Exception ex)
         {
@@ -35,7 +35,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
         }
     }
 
-    public async Task<IEnumerable<Lease>> QueryAsync(LeaseQuery query)
+    public async Task<IEnumerable<LeaseEntity>> QueryAsync(LeaseQuery query)
     {
         try
         {
@@ -99,7 +99,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
             parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
             parameters.Add("PageSize", query.PageSize);
 
-            return await QueryAsync<Lease>(sql, parameters);
+            return await QueryAsync<LeaseEntity>(sql, parameters);
         }
         catch (Exception ex)
         {
@@ -193,7 +193,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
         }
     }
 
-    public async Task<Lease> CreateAsync(Lease lease)
+    public async Task<LeaseEntity> CreateAsync(LeaseEntity lease)
     {
         try
         {
@@ -248,7 +248,7 @@ public class LeaseRepository : BaseRepository, ILeaseRepository
         }
     }
 
-    public async Task<Lease> UpdateAsync(Lease lease)
+    public async Task<LeaseEntity> UpdateAsync(LeaseEntity lease)
     {
         try
         {

@@ -1,4 +1,5 @@
 using ErpCore.Application.DTOs.Core;
+using ErpCore.Shared.Common;
 
 namespace ErpCore.Application.Services.Core;
 

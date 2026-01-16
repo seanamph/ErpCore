@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Api.Controllers.BasicData;
 
 /// <summary>
-/// 區域基本資料維護作業控制器 (SYSB450)
+/// 區域基本資料維護控制器 (SYSB450)
 /// </summary>
 [Route("api/v1/areas")]
 public class AreasController : BaseController
@@ -112,8 +112,7 @@ public class AreasController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.UpdateStatusAsync(areaId, dto.Status);
+            await _service.UpdateStatusAsync(areaId, dto);
         }, $"更新區域狀態失敗: {areaId}");
     }
 }
-

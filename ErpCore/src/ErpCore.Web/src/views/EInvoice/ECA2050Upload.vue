@@ -283,9 +283,9 @@ const handleRefresh = async () => {
     const response = await einvoiceApi.getUploads({
       PageIndex: pagination.PageIndex,
       PageSize: pagination.PageSize,
-      UploadType: 'ECA2050',
       SortField: 'UploadDate',
-      SortOrder: 'DESC'
+      SortOrder: 'DESC',
+      UploadType: 'ECA2050'
     })
     
     if (response.data.Success) {

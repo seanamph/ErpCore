@@ -1,5 +1,5 @@
-using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Domain.Entities.DropdownList;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 
 namespace ErpCore.Infrastructure.Repositories.DropdownList;
@@ -10,7 +10,7 @@ namespace ErpCore.Infrastructure.Repositories.DropdownList;
 public interface IMenuRepository
 {
     Task<Menu?> GetByIdAsync(string menuId);
-    Task<PagedResult<Menu>> QueryAsync(MenuQueryDto query);
-    Task<IEnumerable<MenuOptionDto>> GetOptionsAsync(string? systemId = null, string? status = "1");
+    Task<PagedResult<Menu>> QueryAsync(MenuQuery query);
+    Task<IEnumerable<MenuOption>> GetOptionsAsync(string? systemId = null, string? status = "1");
 }
 

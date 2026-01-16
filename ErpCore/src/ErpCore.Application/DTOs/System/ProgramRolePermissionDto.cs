@@ -32,13 +32,13 @@ public class ProgramRolePermissionListResponseDto
     /// <summary>
     /// 角色列表
     /// </summary>
-    public List<RolePermissionDto> Roles { get; set; } = new();
+    public List<ProgramRolePermissionItemDto> Roles { get; set; } = new();
 }
 
 /// <summary>
 /// 角色權限 DTO (SYS0740)
 /// </summary>
-public class RolePermissionDto
+public class ProgramRolePermissionItemDto
 {
     /// <summary>
     /// 角色代碼

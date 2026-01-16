@@ -1,10 +1,6 @@
--- =============================================
--- 供應商商品資料維護資料表建立腳本
--- 功能代碼: SYSW110
--- 建立日期: 2024-01-01
--- =============================================
+-- 供應商商品資料維護作業資料表 (SYSW110)
+-- 對應舊系統 SUPP_GOODS 表
 
--- 1. 供應商商品主檔
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SupplierGoods]') AND type in (N'U'))
 BEGIN
     CREATE TABLE [dbo].[SupplierGoods] (
@@ -13,7 +9,7 @@ BEGIN
         [ShopId] NVARCHAR(50) NOT NULL, -- 店別代碼 (SHOP_ID)
         [Lprc] DECIMAL(18, 4) NULL DEFAULT 0, -- 進價 (LPRC)
         [Mprc] DECIMAL(18, 4) NULL DEFAULT 0, -- 中價 (MPRC)
-        [Tax] NVARCHAR(10) NULL DEFAULT '1', -- 稅別 (TAX, DEFAULT 1)
+        [Tax] NVARCHAR(10) NULL DEFAULT '1', -- 稅別 (TAX, DEFAULT 1) 1:應稅, 0:免稅
         [MinQty] DECIMAL(18, 4) NULL DEFAULT 0, -- 最小訂購量 (MINQTY)
         [MaxQty] DECIMAL(18, 4) NULL DEFAULT 0, -- 最大訂購量 (MAXQTY)
         [Unit] NVARCHAR(20) NULL, -- 商品單位 (UNIT)
@@ -46,11 +42,9 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_SupplierGoods_Status] ON [dbo].[SupplierGoods] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_SupplierGoods_StartDate_EndDate] ON [dbo].[SupplierGoods] ([StartDate], [EndDate]);
 
-    PRINT '資料表 SupplierGoods 建立成功';
+    PRINT 'SupplierGoods 資料表建立成功';
 END
 ELSE
 BEGIN
-    PRINT '資料表 SupplierGoods 已存在';
+    PRINT 'SupplierGoods 資料表已存在';
 END
-GO
-

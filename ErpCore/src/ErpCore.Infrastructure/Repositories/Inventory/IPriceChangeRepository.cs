@@ -4,7 +4,7 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Infrastructure.Repositories.Inventory;
 
 /// <summary>
-/// 變價單 Repository 介面
+/// 商品永久變價 Repository 介面
 /// </summary>
 public interface IPriceChangeRepository
 {
@@ -31,12 +31,17 @@ public interface IPriceChangeRepository
     /// <summary>
     /// 新增變價單
     /// </summary>
-    Task<PriceChangeMaster> CreateAsync(PriceChangeMaster priceChange, List<PriceChangeDetail> details);
+    Task<PriceChangeMaster> CreateAsync(PriceChangeMaster priceChange);
+
+    /// <summary>
+    /// 新增變價單明細
+    /// </summary>
+    Task<PriceChangeDetail> CreateDetailAsync(PriceChangeDetail detail);
 
     /// <summary>
     /// 修改變價單
     /// </summary>
-    Task<PriceChangeMaster> UpdateAsync(PriceChangeMaster priceChange, List<PriceChangeDetail> details);
+    Task<PriceChangeMaster> UpdateAsync(PriceChangeMaster priceChange);
 
     /// <summary>
     /// 刪除變價單
@@ -44,19 +49,9 @@ public interface IPriceChangeRepository
     Task DeleteAsync(string priceChangeId, string priceChangeType);
 
     /// <summary>
-    /// 更新變價單狀態
+    /// 刪除變價單明細
     /// </summary>
-    Task UpdateStatusAsync(string priceChangeId, string priceChangeType, string status, string? empId, DateTime? date);
-
-    /// <summary>
-    /// 更新商品進價
-    /// </summary>
-    Task UpdateProductPurchasePriceAsync(string goodsId, decimal price, string updatedBy);
-
-    /// <summary>
-    /// 更新商品售價
-    /// </summary>
-    Task UpdateProductSalePriceAsync(string goodsId, decimal price, string updatedBy);
+    Task DeleteDetailsAsync(string priceChangeId, string priceChangeType);
 }
 
 /// <summary>
@@ -78,4 +73,3 @@ public class PriceChangeQuery
     public DateTime? StartDateFrom { get; set; }
     public DateTime? StartDateTo { get; set; }
 }
-

@@ -1,4 +1,5 @@
 using ErpCore.Domain.Entities.Contract;
+using ContractEntity = ErpCore.Domain.Entities.Contract.Contract;
 
 namespace ErpCore.Infrastructure.Repositories.Contract;
 
@@ -7,12 +8,12 @@ namespace ErpCore.Infrastructure.Repositories.Contract;
 /// </summary>
 public interface IContractRepository
 {
-    Task<Contract?> GetByIdAsync(string contractId, int version);
-    Task<IEnumerable<Contract>> QueryAsync(ContractQuery query);
+    Task<ContractEntity?> GetByIdAsync(string contractId, int version);
+    Task<IEnumerable<ContractEntity>> QueryAsync(ContractQuery query);
     Task<int> GetCountAsync(ContractQuery query);
     Task<bool> ExistsAsync(string contractId, int version);
-    Task<Contract> CreateAsync(Contract contract);
-    Task<Contract> UpdateAsync(Contract contract);
+    Task<ContractEntity> CreateAsync(ContractEntity contract);
+    Task<ContractEntity> UpdateAsync(ContractEntity contract);
     Task DeleteAsync(string contractId, int version);
     Task<int> GetNextVersionAsync(string contractId);
 }

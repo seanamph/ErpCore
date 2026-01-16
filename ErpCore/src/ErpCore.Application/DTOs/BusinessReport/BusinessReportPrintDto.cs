@@ -15,6 +15,7 @@ public class BusinessReportPrintDto
     public string? EmpName { get; set; }
     public decimal? Qty { get; set; }
     public string Status { get; set; } = "P";
+    public string? StatusName { get; set; }
     public string? Verifier { get; set; }
     public string? VerifierName { get; set; }
     public DateTime? VerifyDate { get; set; }
@@ -61,17 +62,20 @@ public class CreateBusinessReportPrintDto
 /// </summary>
 public class UpdateBusinessReportPrintDto
 {
+    public int GiveYear { get; set; }
+    public string SiteId { get; set; } = string.Empty;
     public string? OrgId { get; set; }
+    public string EmpId { get; set; } = string.Empty;
     public string? EmpName { get; set; }
     public decimal? Qty { get; set; }
-    public string? Status { get; set; }
+    public string Status { get; set; } = "P";
     public string? Notes { get; set; }
 }
 
 /// <summary>
 /// 批次審核 DTO (SYSL150)
 /// </summary>
-public class BatchAuditBusinessReportPrintDto
+public class BatchAuditDto
 {
     public List<long> TKeys { get; set; } = new();
     public string Status { get; set; } = "A";
@@ -98,9 +102,9 @@ public class CopyNextYearDto
 }
 
 /// <summary>
-/// 複製結果 DTO (SYSL150)
+/// 複製下一年度資料結果 DTO (SYSL150)
 /// </summary>
-public class CopyResultDto
+public class CopyNextYearResultDto
 {
     public int CopiedCount { get; set; }
 }
@@ -121,4 +125,3 @@ public class CalculateQtyResultDto
 {
     public decimal Qty { get; set; }
 }
-

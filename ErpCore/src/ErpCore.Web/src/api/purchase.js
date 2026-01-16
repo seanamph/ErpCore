@@ -145,6 +145,11 @@ export const purchaseOrderApi = {
   // 取消採購單
   cancelPurchaseOrder: (orderId) => {
     return axios.post(`/purchase-orders/${orderId}/cancel`)
+  },
+
+  // 結案採購單
+  closePurchaseOrder: (orderId) => {
+    return axios.put(`/purchase-orders/${orderId}/close`)
   }
 }
 
@@ -355,6 +360,87 @@ export const purchaseOrderV2Api = {
   // 取消採購單
   cancelPurchaseOrder: (orderId) => {
     return axios.post(`/purchase-orders-v2/${orderId}/cancel`)
+  }
+}
+
+/**
+ * 現場打單作業 API (SYSW322)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const onSitePurchaseOrderApi = {
+  // 查詢現場打單申請單列表
+  getOnSitePurchaseOrders: (params) => {
+    return axios.get('/on-site-purchase-orders', { params })
+  },
+
+  // 查詢單筆現場打單申請單
+  getOnSitePurchaseOrder: (orderId) => {
+    return axios.get(`/on-site-purchase-orders/${orderId}`)
+  },
+
+  // 新增現場打單申請單
+  createOnSitePurchaseOrder: (data) => {
+    return axios.post('/on-site-purchase-orders', data)
+  },
+
+  // 修改現場打單申請單
+  updateOnSitePurchaseOrder: (orderId, data) => {
+    return axios.put(`/on-site-purchase-orders/${orderId}`, data)
+  },
+
+  // 刪除現場打單申請單
+  deleteOnSitePurchaseOrder: (orderId) => {
+    return axios.delete(`/on-site-purchase-orders/${orderId}`)
+  },
+
+  // 送出現場打單申請單
+  submitOnSitePurchaseOrder: (orderId) => {
+    return axios.put(`/on-site-purchase-orders/${orderId}/submit`)
+  },
+
+  // 審核現場打單申請單
+  approveOnSitePurchaseOrder: (orderId) => {
+    return axios.put(`/on-site-purchase-orders/${orderId}/approve`)
+  },
+
+  // 取消現場打單申請單
+  cancelOnSitePurchaseOrder: (orderId) => {
+    return axios.put(`/on-site-purchase-orders/${orderId}/cancel`)
+  }
+}
+
+/**
+ * 採購單查詢系列 API (SYSP310-SYSP330)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const purchaseOrderQueryApi = {
+  // 查詢採購單列表
+  queryPurchaseOrders: (params) => {
+    return axios.get('/purchase-orders/query', { params })
+  },
+
+  // 查詢採購單明細
+  getPurchaseOrderDetails: (orderId) => {
+    return axios.get(`/purchase-orders/${orderId}/details`)
+  },
+
+  // 查詢採購單統計資料
+  getPurchaseOrderStatistics: (params) => {
+    return axios.get('/purchase-orders/statistics', { params })
+  },
+
+  // 匯出採購單查詢結果
+  exportPurchaseOrders: (data) => {
+    return axios.post('/purchase-orders/export', data, {
+      responseType: 'blob'
+    })
+  },
+
+  // 列印採購單
+  printPurchaseOrder: (orderId) => {
+    return axios.get(`/purchase-orders/${orderId}/print`, {
+      responseType: 'blob'
+    })
   }
 }
 

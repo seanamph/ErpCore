@@ -118,6 +118,8 @@ public class AllocationRatioQuery : PagedQuery
     public string? DisYm { get; set; }
     public string? StypeId { get; set; }
     public string? OrgId { get; set; }
+    public string? SortField { get; set; }
+    public string? SortOrder { get; set; }
 }
 
 /// <summary>

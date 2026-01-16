@@ -68,4 +68,3 @@ public class UpdateAreaStatusDto
 {
     public string Status { get; set; } = "A";
 }
-

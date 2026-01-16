@@ -2,6 +2,7 @@ using ErpCore.Application.DTOs.Communication;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.Communication;
 using ErpCore.Infrastructure.Repositories.Communication;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using System.Text;
 

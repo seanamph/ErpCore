@@ -1,4 +1,4 @@
-import axios from '@/utils/request'
+import axios from './axios'
 
 /**
  * 耗材標籤列印作業 API (SYSA254)

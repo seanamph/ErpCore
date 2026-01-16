@@ -1,5 +1,8 @@
-using ErpCore.Domain.Entities.Customer;
 using ErpCore.Shared.Common;
+using CustomerEntity = ErpCore.Domain.Entities.Customer.Customer;
+using CustomerContact = ErpCore.Domain.Entities.Customer.CustomerContact;
+using CustomerTransaction = ErpCore.Domain.Entities.Customer.CustomerTransaction;
+using QueryHistory = ErpCore.Domain.Entities.Customer.QueryHistory;
 
 namespace ErpCore.Infrastructure.Repositories.Customer;
 
@@ -11,27 +14,27 @@ public interface ICustomerRepository
     /// <summary>
     /// 根據客戶編號查詢客戶
     /// </summary>
-    Task<Customer?> GetByIdAsync(string customerId);
+    Task<CustomerEntity?> GetByIdAsync(string customerId);
 
     /// <summary>
     /// 根據統一編號查詢客戶
     /// </summary>
-    Task<Customer?> GetByGuiIdAsync(string guiId);
+    Task<CustomerEntity?> GetByGuiIdAsync(string guiId);
 
     /// <summary>
     /// 查詢客戶列表（分頁）
     /// </summary>
-    Task<PagedResult<Customer>> QueryAsync(CustomerQuery query);
+    Task<PagedResult<CustomerEntity>> QueryAsync(CustomerQuery query);
 
     /// <summary>
     /// 新增客戶
     /// </summary>
-    Task<Customer> CreateAsync(Customer customer);
+    Task<CustomerEntity> CreateAsync(CustomerEntity customer);
 
     /// <summary>
     /// 修改客戶
     /// </summary>
-    Task<Customer> UpdateAsync(Customer customer);
+    Task<CustomerEntity> UpdateAsync(CustomerEntity customer);
 
     /// <summary>
     /// 刪除客戶
@@ -66,12 +69,12 @@ public interface ICustomerRepository
     /// <summary>
     /// 進階查詢客戶列表 (CUS5120)
     /// </summary>
-    Task<PagedResult<Customer>> AdvancedQueryAsync(CustomerAdvancedQuery query);
+    Task<PagedResult<CustomerEntity>> AdvancedQueryAsync(CustomerAdvancedQuery query);
 
     /// <summary>
     /// 快速搜尋客戶 (CUS5120)
     /// </summary>
-    Task<List<Customer>> SearchAsync(string keyword, int limit);
+    Task<List<CustomerEntity>> SearchAsync(string keyword, int limit);
 
     /// <summary>
     /// 查詢客戶交易記錄 (CUS5120)

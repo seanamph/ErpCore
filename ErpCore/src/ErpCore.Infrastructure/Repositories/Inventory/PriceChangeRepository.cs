@@ -9,7 +9,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.Inventory;
 
 /// <summary>
-/// 變價單 Repository 實作
+/// 商品永久變價 Repository 實作
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class PriceChangeRepository : BaseRepository, IPriceChangeRepository
@@ -219,61 +219,28 @@ public class PriceChangeRepository : BaseRepository, IPriceChangeRepository
         }
     }
 
-    public async Task<PriceChangeMaster> CreateAsync(PriceChangeMaster priceChange, List<PriceChangeDetail> details)
+    public async Task<PriceChangeMaster> CreateAsync(PriceChangeMaster priceChange)
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
-            using var transaction = connection.BeginTransaction();
+            const string sql = @"
+                INSERT INTO PriceChangeMasters (
+                    PriceChangeId, PriceChangeType, SupplierId, LogoId, ApplyEmpId, ApplyOrgId,
+                    ApplyDate, StartDate, ApproveEmpId, ApproveDate, ConfirmEmpId, ConfirmDate,
+                    Status, TotalAmount, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt,
+                    CreatedPriority, CreatedGroup
+                ) VALUES (
+                    @PriceChangeId, @PriceChangeType, @SupplierId, @LogoId, @ApplyEmpId, @ApplyOrgId,
+                    @ApplyDate, @StartDate, @ApproveEmpId, @ApproveDate, @ConfirmEmpId, @ConfirmDate,
+                    @Status, @TotalAmount, @Notes, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt,
+                    @CreatedPriority, @CreatedGroup
+                )";
 
-            try
-            {
-                // 新增主檔
-                const string masterSql = @"
-                    INSERT INTO PriceChangeMasters (
-                        PriceChangeId, PriceChangeType, SupplierId, LogoId, ApplyEmpId, ApplyOrgId,
-                        ApplyDate, StartDate, ApproveEmpId, ApproveDate, ConfirmEmpId, ConfirmDate,
-                        Status, TotalAmount, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt,
-                        CreatedPriority, CreatedGroup
-                    ) VALUES (
-                        @PriceChangeId, @PriceChangeType, @SupplierId, @LogoId, @ApplyEmpId, @ApplyOrgId,
-                        @ApplyDate, @StartDate, @ApproveEmpId, @ApproveDate, @ConfirmEmpId, @ConfirmDate,
-                        @Status, @TotalAmount, @Notes, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt,
-                        @CreatedPriority, @CreatedGroup
-                    )";
+            priceChange.CreatedAt = DateTime.Now;
+            priceChange.UpdatedAt = DateTime.Now;
 
-                priceChange.CreatedAt = DateTime.Now;
-                priceChange.UpdatedAt = DateTime.Now;
-
-                await connection.ExecuteAsync(masterSql, priceChange, transaction);
-
-                // 新增明細
-                if (details != null && details.Count > 0)
-                {
-                    const string detailSql = @"
-                        INSERT INTO PriceChangeDetails (
-                            PriceChangeId, PriceChangeType, LineNum, GoodsId, BeforePrice, AfterPrice,
-                            ChangeQty, Notes, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup
-                        ) VALUES (
-                            @PriceChangeId, @PriceChangeType, @LineNum, @GoodsId, @BeforePrice, @AfterPrice,
-                            @ChangeQty, @Notes, @CreatedBy, @CreatedAt, @CreatedPriority, @CreatedGroup
-                        )";
-
-                    foreach (var detail in details)
-                    {
-                        detail.CreatedAt = DateTime.Now;
-                        await connection.ExecuteAsync(detailSql, detail, transaction);
-                    }
-                }
-
-                transaction.Commit();
-                return priceChange;
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
+            await ExecuteAsync(sql, priceChange);
+            return priceChange;
         }
         catch (Exception ex)
         {
@@ -282,67 +249,60 @@ public class PriceChangeRepository : BaseRepository, IPriceChangeRepository
         }
     }
 
-    public async Task<PriceChangeMaster> UpdateAsync(PriceChangeMaster priceChange, List<PriceChangeDetail> details)
+    public async Task<PriceChangeDetail> CreateDetailAsync(PriceChangeDetail detail)
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
-            using var transaction = connection.BeginTransaction();
+            const string sql = @"
+                INSERT INTO PriceChangeDetails (
+                    PriceChangeId, PriceChangeType, LineNum, GoodsId, BeforePrice, AfterPrice,
+                    ChangeQty, Notes, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup
+                ) VALUES (
+                    @PriceChangeId, @PriceChangeType, @LineNum, @GoodsId, @BeforePrice, @AfterPrice,
+                    @ChangeQty, @Notes, @CreatedBy, @CreatedAt, @CreatedPriority, @CreatedGroup
+                );
+                SELECT CAST(SCOPE_IDENTITY() as BIGINT);";
 
-            try
-            {
-                // 更新主檔
-                const string masterSql = @"
-                    UPDATE PriceChangeMasters SET
-                        SupplierId = @SupplierId,
-                        LogoId = @LogoId,
-                        ApplyOrgId = @ApplyOrgId,
-                        ApplyDate = @ApplyDate,
-                        StartDate = @StartDate,
-                        TotalAmount = @TotalAmount,
-                        Notes = @Notes,
-                        UpdatedBy = @UpdatedBy,
-                        UpdatedAt = @UpdatedAt
-                    WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
+            detail.CreatedAt = DateTime.Now;
 
-                priceChange.UpdatedAt = DateTime.Now;
+            var id = await ExecuteScalarAsync<long>(sql, detail);
+            detail.Id = id;
+            return detail;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"新增變價單明細失敗: {detail.PriceChangeId}/{detail.PriceChangeType}", ex);
+            throw;
+        }
+    }
 
-                await connection.ExecuteAsync(masterSql, priceChange, transaction);
+    public async Task<PriceChangeMaster> UpdateAsync(PriceChangeMaster priceChange)
+    {
+        try
+        {
+            const string sql = @"
+                UPDATE PriceChangeMasters SET
+                    SupplierId = @SupplierId,
+                    LogoId = @LogoId,
+                    ApplyEmpId = @ApplyEmpId,
+                    ApplyOrgId = @ApplyOrgId,
+                    ApplyDate = @ApplyDate,
+                    StartDate = @StartDate,
+                    ApproveEmpId = @ApproveEmpId,
+                    ApproveDate = @ApproveDate,
+                    ConfirmEmpId = @ConfirmEmpId,
+                    ConfirmDate = @ConfirmDate,
+                    Status = @Status,
+                    TotalAmount = @TotalAmount,
+                    Notes = @Notes,
+                    UpdatedBy = @UpdatedBy,
+                    UpdatedAt = @UpdatedAt
+                WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
 
-                // 刪除舊明細
-                const string deleteDetailSql = @"
-                    DELETE FROM PriceChangeDetails 
-                    WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
+            priceChange.UpdatedAt = DateTime.Now;
 
-                await connection.ExecuteAsync(deleteDetailSql, new { priceChange.PriceChangeId, priceChange.PriceChangeType }, transaction);
-
-                // 新增新明細
-                if (details != null && details.Count > 0)
-                {
-                    const string detailSql = @"
-                        INSERT INTO PriceChangeDetails (
-                            PriceChangeId, PriceChangeType, LineNum, GoodsId, BeforePrice, AfterPrice,
-                            ChangeQty, Notes, CreatedBy, CreatedAt, CreatedPriority, CreatedGroup
-                        ) VALUES (
-                            @PriceChangeId, @PriceChangeType, @LineNum, @GoodsId, @BeforePrice, @AfterPrice,
-                            @ChangeQty, @Notes, @CreatedBy, @CreatedAt, @CreatedPriority, @CreatedGroup
-                        )";
-
-                    foreach (var detail in details)
-                    {
-                        detail.CreatedAt = DateTime.Now;
-                        await connection.ExecuteAsync(detailSql, detail, transaction);
-                    }
-                }
-
-                transaction.Commit();
-                return priceChange;
-            }
-            catch
-            {
-                transaction.Rollback();
-                throw;
-            }
+            await ExecuteAsync(sql, priceChange);
+            return priceChange;
         }
         catch (Exception ex)
         {
@@ -368,113 +328,20 @@ public class PriceChangeRepository : BaseRepository, IPriceChangeRepository
         }
     }
 
-    public async Task UpdateStatusAsync(string priceChangeId, string priceChangeType, string status, string? empId, DateTime? date)
+    public async Task DeleteDetailsAsync(string priceChangeId, string priceChangeType)
     {
         try
         {
-            var sql = "";
-            var parameters = new DynamicParameters();
-
-            if (status == "2") // 已審核
-            {
-                sql = @"
-                    UPDATE PriceChangeMasters SET
-                        Status = @Status,
-                        ApproveEmpId = @EmpId,
-                        ApproveDate = @Date,
-                        UpdatedAt = @UpdatedAt
-                    WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
-                parameters.Add("EmpId", empId);
-                parameters.Add("Date", date);
-            }
-            else if (status == "10") // 已確認
-            {
-                sql = @"
-                    UPDATE PriceChangeMasters SET
-                        Status = @Status,
-                        ConfirmEmpId = @EmpId,
-                        ConfirmDate = @Date,
-                        UpdatedAt = @UpdatedAt
-                    WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
-                parameters.Add("EmpId", empId);
-                parameters.Add("Date", date);
-            }
-            else if (status == "9") // 已作廢
-            {
-                sql = @"
-                    UPDATE PriceChangeMasters SET
-                        Status = @Status,
-                        UpdatedAt = @UpdatedAt
-                    WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
-            }
-
-            parameters.Add("Status", status);
-            parameters.Add("PriceChangeId", priceChangeId);
-            parameters.Add("PriceChangeType", priceChangeType);
-            parameters.Add("UpdatedAt", DateTime.Now);
-
-            await ExecuteAsync(sql, parameters);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"更新變價單狀態失敗: {priceChangeId}/{priceChangeType}", ex);
-            throw;
-        }
-    }
-
-    public async Task UpdateProductPurchasePriceAsync(string goodsId, decimal price, string updatedBy)
-    {
-        try
-        {
-            // 更新商品進價（商品表名為 Products，進價欄位為 Lprc）
             const string sql = @"
-                UPDATE Products SET
-                    Lprc = @Price,
-                    UpdatedBy = @UpdatedBy,
-                    UpdatedAt = @UpdatedAt
-                WHERE GoodsId = @GoodsId";
+                DELETE FROM PriceChangeDetails 
+                WHERE PriceChangeId = @PriceChangeId AND PriceChangeType = @PriceChangeType";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("Price", price);
-            parameters.Add("GoodsId", goodsId);
-            parameters.Add("UpdatedBy", updatedBy);
-            parameters.Add("UpdatedAt", DateTime.Now);
-
-            await ExecuteAsync(sql, parameters);
+            await ExecuteAsync(sql, new { PriceChangeId = priceChangeId, PriceChangeType = priceChangeType });
         }
         catch (Exception ex)
         {
-            _logger.LogError($"更新商品進價失敗: {goodsId}", ex);
-            throw;
-        }
-    }
-
-    public async Task UpdateProductSalePriceAsync(string goodsId, decimal price, string updatedBy)
-    {
-        try
-        {
-            // 更新商品售價（商品表名為 Products，售價欄位為 Mprc）
-            // 注意：根據系統設計，售價可能存儲在 Mprc（中價）欄位中
-            const string sql = @"
-                UPDATE Products SET
-                    Mprc = @Price,
-                    UpdatedBy = @UpdatedBy,
-                    UpdatedAt = @UpdatedAt
-                WHERE GoodsId = @GoodsId";
-
-            var parameters = new DynamicParameters();
-            parameters.Add("Price", price);
-            parameters.Add("GoodsId", goodsId);
-            parameters.Add("UpdatedBy", updatedBy);
-            parameters.Add("UpdatedAt", DateTime.Now);
-
-            await ExecuteAsync(sql, parameters);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"更新商品售價失敗: {goodsId}", ex);
+            _logger.LogError($"刪除變價單明細失敗: {priceChangeId}/{priceChangeType}", ex);
             throw;
         }
     }
 }
-

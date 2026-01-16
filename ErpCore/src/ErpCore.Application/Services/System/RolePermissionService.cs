@@ -29,7 +29,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<PagedResult<RolePermissionDto>> GetRolePermissionsAsync(string roleId, RolePermissionQueryDto query)
+    public async Task<PagedResult<ErpCore.Application.DTOs.System.RolePermissionDto>> GetRolePermissionsAsync(string roleId, RolePermissionQueryDto query)
     {
         try
         {
@@ -54,7 +54,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
 
             var result = await _repository.QueryPermissionsAsync(roleId, repositoryQuery);
 
-            var dtos = result.Items.Select(x => new RolePermissionDto
+            var dtos = result.Items.Select(x => new ErpCore.Application.DTOs.System.RolePermissionDto
             {
                 TKey = x.TKey,
                 RoleId = x.RoleId,
@@ -97,7 +97,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
             }
 
             var stats = await _repository.GetSystemStatsAsync(roleId);
-            return stats.Select(x => new RolePermissionStatsDto
+            return stats.Select(x => new ErpCore.Application.DTOs.System.RolePermissionStatsDto
             {
                 SystemId = x.SystemId,
                 SystemName = x.SystemName,
@@ -365,7 +365,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
         }
     }
 
-    public async Task<List<RoleSystemListDto>> GetRoleSystemsAsync(string roleId)
+    public async Task<List<ErpCore.Application.DTOs.System.RoleSystemListDto>> GetRoleSystemsAsync(string roleId)
     {
         try
         {
@@ -406,7 +406,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
             }
 
             var menus = await _repository.GetRoleMenusAsync(roleId, systemId);
-            return menus.Select(x => new RoleMenuListDto
+            return menus.Select(x => new ErpCore.Application.DTOs.System.RoleMenuListDto
             {
                 MenuId = x.MenuId,
                 MenuName = x.MenuName,
@@ -423,7 +423,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
         }
     }
 
-    public async Task<List<RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null)
+    public async Task<List<ErpCore.Application.DTOs.System.RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null)
     {
         try
         {
@@ -464,7 +464,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
             }
 
             var buttons = await _repository.GetRoleButtonsAsync(roleId, programId);
-            return buttons.Select(x => new RoleButtonListDto
+            return buttons.Select(x => new ErpCore.Application.DTOs.System.RoleButtonListDto
             {
                 ButtonId = x.ButtonId,
                 ButtonName = x.ButtonName,
@@ -481,7 +481,7 @@ public class RolePermissionService : BaseService, IRolePermissionService
         }
     }
 
-    public async Task<RolePermissionDto> UpdateRolePermissionAsync(string roleId, long tKey, UpdateRolePermissionDto dto)
+    public async Task<ErpCore.Application.DTOs.System.RolePermissionDto> UpdateRolePermissionAsync(string roleId, long tKey, UpdateRolePermissionDto dto)
     {
         try
         {

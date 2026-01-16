@@ -1,4 +1,4 @@
-using ErpCore.Api.Configuration;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -11,11 +11,11 @@ namespace ErpCore.Infrastructure.Authentication;
 /// </summary>
 public class TokenValidator
 {
-    private readonly JwtConfig _jwtConfig;
+    private readonly IJwtConfig _jwtConfig;
     private readonly ILoggerService _logger;
     private readonly JwtTokenService _jwtTokenService;
 
-    public TokenValidator(JwtConfig jwtConfig, ILoggerService logger, JwtTokenService jwtTokenService)
+    public TokenValidator(IJwtConfig jwtConfig, ILoggerService logger, JwtTokenService jwtTokenService)
     {
         _jwtConfig = jwtConfig;
         _logger = logger;

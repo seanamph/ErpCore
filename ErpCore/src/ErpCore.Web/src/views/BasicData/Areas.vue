@@ -236,7 +236,13 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          response = await areasApi.updateArea(form.AreaId, form)
+          const updateData = {
+            AreaName: form.AreaName,
+            SeqNo: form.SeqNo,
+            Status: form.Status,
+            Notes: form.Notes
+          }
+          response = await areasApi.updateArea(form.AreaId, updateData)
         } else {
           response = await areasApi.createArea(form)
         }
@@ -294,35 +300,32 @@ onMounted(() => {
 
 .areas {
   padding: 20px;
-}
 
-.page-header {
-  margin-bottom: 20px;
-  
-  h1 {
-    font-size: 24px;
-    font-weight: bold;
-    color: $primary-color;
-    margin: 0;
+  .page-header {
+    margin-bottom: 20px;
+    
+    h1 {
+      font-size: 24px;
+      font-weight: bold;
+      color: $primary-color;
+      margin: 0;
+    }
+  }
+
+  .search-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
+    
+    .search-form {
+      margin: 0;
+    }
+  }
+
+  .table-card {
+    margin-bottom: 20px;
+    background-color: $card-bg;
+    border-color: $card-border;
   }
 }
-
-.search-card {
-  margin-bottom: 20px;
-  background-color: $card-bg;
-  border-color: $card-border;
-  color: $card-text;
-}
-
-.search-form {
-  margin: 0;
-}
-
-.table-card {
-  margin-bottom: 20px;
-  background-color: $card-bg;
-  border-color: $card-border;
-  color: $card-text;
-}
 </style>
-

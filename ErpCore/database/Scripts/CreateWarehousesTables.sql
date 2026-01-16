@@ -33,4 +33,3 @@ BEGIN
     PRINT 'Warehouses 表已存在';
 END
 GO
-

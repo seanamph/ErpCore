@@ -97,7 +97,7 @@ public class PopPrintService : BaseService, IPopPrintService
                     GoodsName = product.GoodsName,
                     BarCode = product.BarCode,
                     BarCodeText = product.BarCode,
-                    Price = product.Price,
+                    Price = product.Price ?? product.Mprc, // 使用 Price 或 Mprc 作为价格
                     Unit = product.Unit,
                     PrintFormat = dto.PrintFormat
                 };

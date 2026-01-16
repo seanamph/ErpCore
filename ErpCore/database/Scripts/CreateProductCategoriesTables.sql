@@ -38,6 +38,16 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_ProductCategories_ClassType] ON [dbo].[ProductCategories] ([ClassType]);
     CREATE NONCLUSTERED INDEX [IX_ProductCategories_Status] ON [dbo].[ProductCategories] ([Status]);
     
+    -- 唯一性約束：分類代碼在同一個分類區分和父分類下必須唯一
+    -- 注意：由於 ParentTKey 可能為 NULL，使用唯一索引而非約束
+    CREATE UNIQUE NONCLUSTERED INDEX [UQ_ProductCategories_ClassId_ClassMode_ParentTKey] 
+    ON [dbo].[ProductCategories] ([ClassId], [ClassMode], [ParentTKey])
+    WHERE [ParentTKey] IS NOT NULL;
+    
+    CREATE UNIQUE NONCLUSTERED INDEX [UQ_ProductCategories_ClassId_ClassMode_NullParent] 
+    ON [dbo].[ProductCategories] ([ClassId], [ClassMode])
+    WHERE [ParentTKey] IS NULL;
+    
     PRINT 'ProductCategories 表建立成功';
 END
 ELSE

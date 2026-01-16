@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using Dapper;
 using ErpCore.Domain.Entities.ReportManagement;
 using ErpCore.Infrastructure.Data;
@@ -132,7 +133,7 @@ public class ReceiptVoucherTransferRepository : BaseRepository, IReceiptVoucherT
 
             return new PagedResult<ReceiptVoucherTransfer>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

@@ -131,11 +131,3 @@ public class BankManagementController : BaseController
     }
 }
 
-/// <summary>
-/// 更新狀態 DTO
-/// </summary>
-public class UpdateStatusDto
-{
-    public string Status { get; set; } = string.Empty;
-}
-

@@ -190,7 +190,7 @@ public class TypeCodeService : BaseService, ITypeCodeService
     /// <summary>
     /// 將 Entity 轉換為 DTO
     /// </summary>
-    private TypeCodeDto MapToDto(TypeCode typeCode)
+    private TypeCodeDto MapToDto(ErpCore.Domain.Entities.StoreFloor.TypeCode typeCode)
     {
         return new TypeCodeDto
         {

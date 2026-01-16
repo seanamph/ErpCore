@@ -458,12 +458,12 @@ public class ConsumableSalesRepository : BaseRepository, IConsumableSalesReposit
         }
     }
 
-    public async Task UpdateInventoryQuantityAsync(string consumableId, string siteId, decimal quantityChange, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateInventoryQuantityAsync(string consumableId, string siteId, decimal quantityChange, IDbTransaction? transaction = null)
     {
         try
         {
             using var connection = transaction?.Connection ?? _connectionFactory.CreateConnection();
-            if (connection.State != System.Data.ConnectionState.Open)
+            if (connection.State != ConnectionState.Open)
             {
                 connection.Open();
             }

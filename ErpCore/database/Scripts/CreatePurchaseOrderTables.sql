@@ -1,7 +1,8 @@
 -- =============================================
 -- 訂退貨申請作業資料表建立腳本
--- 功能代碼: SYSW315
+-- 功能代碼: SYSW315, SYSW316
 -- 建立日期: 2024-01-01
+-- 說明: 共用資料表，透過 SourceProgram 欄位區分不同功能
 -- =============================================
 
 -- 1. 採購單主檔
@@ -23,7 +24,7 @@ BEGIN
         [Memo] NVARCHAR(500) NULL, -- 備註 (MEMO)
         [ExpectedDate] DATETIME2 NULL, -- 預期交貨日期 (EXPECTED_DATE)
         [SiteId] NVARCHAR(50) NULL, -- 分公司代碼 (SITE_ID)
-        [SourceProgram] NVARCHAR(20) NULL DEFAULT 'SYSW315', -- 來源程式 (SYSW315/SYSW316)
+        [SourceProgram] NVARCHAR(20) NULL DEFAULT 'SYSW315', -- 來源程式 (SYSW315/SYSW316/SYSW322)
         [CreatedBy] NVARCHAR(50) NULL,
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
         [UpdatedBy] NVARCHAR(50) NULL,

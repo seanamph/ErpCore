@@ -27,11 +27,11 @@ public class TransferReturnController : BaseController
     /// </summary>
     [HttpGet("pending-transfers")]
     public async Task<ActionResult<ApiResponse<PagedResult<PendingTransferOrderDto>>>> GetPendingTransfers(
-        [FromQuery] PendingTransferQueryDto query)
+        [FromQuery] PendingTransferOrderQueryDto query)
     {
         return await ExecuteAsync(async () =>
         {
-            var result = await _service.GetPendingTransfersAsync(query);
+            var result = await _service.GetPendingOrdersAsync(query);
             return result;
         }, "查詢待驗退調撥單失敗");
     }

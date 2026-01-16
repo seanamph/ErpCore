@@ -1,7 +1,6 @@
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -14,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class AreaService : BaseService, IAreaService
 {
     private readonly IAreaRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public AreaService(
         IAreaRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<AreaDto>> GetAreasAsync(AreaQueryDto query)
@@ -119,13 +115,15 @@ public class AreaService : BaseService, IAreaService
             {
                 AreaId = dto.AreaId,
                 AreaName = dto.AreaName,
-                SeqNo = dto.SeqNo,
-                Status = dto.Status,
+                SeqNo = dto.SeqNo ?? 0,
+                Status = dto.Status ?? "A",
                 Notes = dto.Notes,
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -151,8 +149,8 @@ public class AreaService : BaseService, IAreaService
             }
 
             entity.AreaName = dto.AreaName;
-            entity.SeqNo = dto.SeqNo;
-            entity.Status = dto.Status;
+            entity.SeqNo = dto.SeqNo ?? 0;
+            entity.Status = dto.Status ?? "A";
             entity.Notes = dto.Notes;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
@@ -202,23 +200,17 @@ public class AreaService : BaseService, IAreaService
         }
     }
 
-    public async Task UpdateStatusAsync(string areaId, string status)
+    public async Task UpdateStatusAsync(string areaId, UpdateAreaStatusDto dto)
     {
         try
         {
-            // 檢查是否存在
             var entity = await _repository.GetByIdAsync(areaId);
             if (entity == null)
             {
                 throw new InvalidOperationException($"區域不存在: {areaId}");
             }
 
-            if (status != "A" && status != "I")
-            {
-                throw new ArgumentException("狀態值必須為 A(啟用) 或 I(停用)");
-            }
-
-            entity.Status = status;
+            entity.Status = dto.Status;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
 
@@ -243,10 +235,9 @@ public class AreaService : BaseService, IAreaService
             throw new ArgumentException("區域名稱不能為空");
         }
 
-        if (dto.Status != "A" && dto.Status != "I")
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "A" && dto.Status != "I")
         {
-            throw new ArgumentException("狀態值必須為 A(啟用) 或 I(停用)");
+            throw new ArgumentException("狀態值必須為 A (啟用) 或 I (停用)");
         }
     }
 }
-

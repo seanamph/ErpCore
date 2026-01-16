@@ -27,12 +27,8 @@ public class ConsumablePrintRepository : BaseRepository, IConsumablePrintReposit
                     c.ConsumableId, c.ConsumableName, c.CategoryId, c.Unit, c.Specification,
                     c.Brand, c.Model, c.BarCode, c.Status, c.AssetStatus, c.SiteId,
                     c.Location, c.Quantity, c.MinQuantity, c.MaxQuantity, c.Price,
-                    c.SupplierId, c.Notes, c.CreatedBy, c.CreatedAt, c.UpdatedBy, c.UpdatedAt,
-                    cc.CategoryName,
-                    s.SiteName
+                    c.SupplierId, c.Notes, c.CreatedBy, c.CreatedAt, c.UpdatedBy, c.UpdatedAt
                 FROM Consumables c
-                LEFT JOIN ConsumableCategories cc ON c.CategoryId = cc.CategoryId
-                LEFT JOIN Shops s ON c.SiteId = s.ShopId
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();

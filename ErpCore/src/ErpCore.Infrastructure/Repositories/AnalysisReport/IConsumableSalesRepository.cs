@@ -52,7 +52,7 @@ public interface IConsumableSalesRepository
     /// <summary>
     /// 更新耗材庫存數量
     /// </summary>
-    Task UpdateInventoryQuantityAsync(string consumableId, string siteId, decimal quantityChange, System.Data.IDbTransaction? transaction = null);
+    Task UpdateInventoryQuantityAsync(string consumableId, string siteId, decimal quantityChange, IDbTransaction? transaction = null);
 }
 
 /// <summary>

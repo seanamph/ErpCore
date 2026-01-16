@@ -1,11 +1,11 @@
 using Dapper;
-using ErpCore.Application.DTOs.System;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace ErpCore.Infrastructure.Repositories.System;
 
@@ -19,7 +19,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
     }
 
-    public async Task<PagedResult<ItemPermissionDto>> QueryPermissionsAsync(string itemId, ItemPermissionQuery query)
+    public async Task<PagedResult<ItemPermissionQueryResult>> QueryPermissionsAsync(string itemId, ItemPermissionQueryModel query)
     {
         try
         {
@@ -86,7 +86,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<ItemPermissionDto>(sql, parameters);
+            var items = await QueryAsync<ItemPermissionQueryResult>(sql, parameters);
 
             // 查詢總數
             var countSql = @"
@@ -127,7 +127,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<ItemPermissionDto>
+            return new PagedResult<ItemPermissionQueryResult>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
@@ -142,7 +142,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
         }
     }
 
-    public async Task<List<ItemSystemDto>> GetSystemListAsync(string itemId)
+    public async Task<List<ItemSystemQueryResult>> GetSystemListAsync(string itemId)
     {
         try
         {
@@ -161,7 +161,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
                     AND IP.ButtonId = CB.ButtonId
                 GROUP BY CS.SystemId, CS.SystemName";
 
-            var items = await QueryAsync<ItemSystemDto>(sql, new { ItemId = itemId });
+            var items = await QueryAsync<ItemSystemQueryResult>(sql, new { ItemId = itemId });
 
             foreach (var item in items)
             {
@@ -188,7 +188,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
         }
     }
 
-    public async Task<List<ItemMenuDto>> GetMenuListAsync(string itemId, string systemId)
+    public async Task<List<ItemMenuQueryResult>> GetMenuListAsync(string itemId, string systemId)
     {
         try
         {
@@ -208,7 +208,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
                 WHERE CP.SystemId = @SystemId
                 GROUP BY CSS.SubSystemId, CSS.SubSystemName";
 
-            var items = await QueryAsync<ItemMenuDto>(sql, new { ItemId = itemId, SystemId = systemId });
+            var items = await QueryAsync<ItemMenuQueryResult>(sql, new { ItemId = itemId, SystemId = systemId });
 
             foreach (var item in items)
             {
@@ -235,7 +235,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
         }
     }
 
-    public async Task<List<ItemProgramDto>> GetProgramListAsync(string itemId, string menuId)
+    public async Task<List<ItemProgramQueryResult>> GetProgramListAsync(string itemId, string menuId)
     {
         try
         {
@@ -254,7 +254,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
                 WHERE CP.SubSystemId = @MenuId
                 GROUP BY CP.ProgramId, CP.ProgramName";
 
-            var items = await QueryAsync<ItemProgramDto>(sql, new { ItemId = itemId, MenuId = menuId });
+            var items = await QueryAsync<ItemProgramQueryResult>(sql, new { ItemId = itemId, MenuId = menuId });
 
             foreach (var item in items)
             {
@@ -281,7 +281,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
         }
     }
 
-    public async Task<List<ItemButtonDto>> GetButtonListAsync(string itemId, string programId)
+    public async Task<List<ItemButtonQueryResult>> GetButtonListAsync(string itemId, string programId)
     {
         try
         {
@@ -299,7 +299,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
                 WHERE CB.ProgramId = @ProgramId
                 ORDER BY CB.ButtonId";
 
-            var items = await QueryAsync<ItemButtonDto>(sql, new { ItemId = itemId, ProgramId = programId });
+            var items = await QueryAsync<ItemButtonQueryResult>(sql, new { ItemId = itemId, ProgramId = programId });
             return items.ToList();
         }
         catch (Exception ex)
@@ -359,7 +359,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection() as SqlConnection ?? throw new InvalidOperationException("Connection must be SqlConnection");
             await connection.OpenAsync();
 
             using var transaction = connection.BeginTransaction();
@@ -497,7 +497,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection() as SqlConnection ?? throw new InvalidOperationException("Connection must be SqlConnection");
             await connection.OpenAsync();
 
             using var transaction = connection.BeginTransaction();
@@ -577,7 +577,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection() as SqlConnection ?? throw new InvalidOperationException("Connection must be SqlConnection");
             await connection.OpenAsync();
 
             using var transaction = connection.BeginTransaction();
@@ -655,7 +655,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection() as SqlConnection ?? throw new InvalidOperationException("Connection must be SqlConnection");
             await connection.OpenAsync();
 
             using var transaction = connection.BeginTransaction();
@@ -728,7 +728,7 @@ public class ItemPermissionRepository : BaseRepository, IItemPermissionRepositor
     {
         try
         {
-            using var connection = _connectionFactory.CreateConnection();
+            using var connection = _connectionFactory.CreateConnection() as SqlConnection ?? throw new InvalidOperationException("Connection must be SqlConnection");
             await connection.OpenAsync();
 
             using var transaction = connection.BeginTransaction();

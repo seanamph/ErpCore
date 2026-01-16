@@ -96,6 +96,12 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
             parameters.Add("ReceiptDateTo", query.ReceiptDateTo);
         }
 
+        if (!string.IsNullOrEmpty(query.SourceProgram))
+        {
+            sql += " AND SourceProgram = @SourceProgram";
+            parameters.Add("SourceProgram", query.SourceProgram);
+        }
+
         sql += " ORDER BY ReceiptDate DESC, ReceiptId DESC";
         sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
@@ -155,6 +161,12 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
             parameters.Add("ReceiptDateTo", query.ReceiptDateTo);
         }
 
+        if (!string.IsNullOrEmpty(query.SourceProgram))
+        {
+            sql += " AND SourceProgram = @SourceProgram";
+            parameters.Add("SourceProgram", query.SourceProgram);
+        }
+
         return await ExecuteScalarAsync<int>(sql, parameters);
     }
 
@@ -178,10 +190,12 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
                 INSERT INTO PurchaseReceipts 
                 (ReceiptId, OrderId, ReceiptDate, ShopId, SupplierId, Status, 
                  ReceiptUserId, TotalAmount, TotalQty, Memo, IsSettled, SettledDate, 
+                 PurchaseOrderType, IsSettledAdjustment, OriginalReceiptId, AdjustmentReason,
                  CreatedBy, CreatedAt, UpdatedBy, UpdatedAt)
                 VALUES 
                 (@ReceiptId, @OrderId, @ReceiptDate, @ShopId, @SupplierId, @Status,
                  @ReceiptUserId, @TotalAmount, @TotalQty, @Memo, @IsSettled, @SettledDate,
+                 @PurchaseOrderType, @IsSettledAdjustment, @OriginalReceiptId, @AdjustmentReason,
                  @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt)";
 
             await connection.ExecuteAsync(insertMainSql, entity, transaction);
@@ -236,6 +250,7 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
                     TotalAmount = @TotalAmount,
                     TotalQty = @TotalQty,
                     Memo = @Memo,
+                    AdjustmentReason = @AdjustmentReason,
                     UpdatedBy = @UpdatedBy,
                     UpdatedAt = @UpdatedAt
                 WHERE ReceiptId = @ReceiptId";
@@ -258,12 +273,14 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
                 const string insertDetailSql = @"
                     INSERT INTO PurchaseReceiptDetails 
                     (DetailId, ReceiptId, OrderDetailId, LineNum, GoodsId, BarcodeId,
-                     OrderQty, ReceiptQty, UnitPrice, Amount, Memo,
-                     CreatedBy, CreatedAt)
+                     OrderQty, ReceiptQty, UnitPrice, Amount, 
+                     OriginalReceiptQty, AdjustmentQty, OriginalUnitPrice, AdjustmentPrice,
+                     Memo, CreatedBy, CreatedAt)
                     VALUES 
                     (@DetailId, @ReceiptId, @OrderDetailId, @LineNum, @GoodsId, @BarcodeId,
-                     @OrderQty, @ReceiptQty, @UnitPrice, @Amount, @Memo,
-                     @CreatedBy, @CreatedAt)";
+                     @OrderQty, @ReceiptQty, @UnitPrice, @Amount,
+                     @OriginalReceiptQty, @AdjustmentQty, @OriginalUnitPrice, @AdjustmentPrice,
+                     @Memo, @CreatedBy, @CreatedAt)";
 
                 await connection.ExecuteAsync(insertDetailSql, detail, transaction);
             }
@@ -421,7 +438,7 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
     /// <summary>
     /// 更新狀態
     /// </summary>
-    public async Task UpdateStatusAsync(string receiptId, string status, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string receiptId, string status, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -477,7 +494,7 @@ public class PurchaseReceiptRepository : BaseRepository, IPurchaseReceiptReposit
     /// <summary>
     /// 產生驗收單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateReceiptIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateReceiptIdAsync(global::System.Data.IDbConnection connection, global::System.Data.IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 ReceiptId 

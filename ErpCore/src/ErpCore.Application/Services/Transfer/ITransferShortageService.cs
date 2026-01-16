@@ -4,13 +4,13 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Application.Services.Transfer;
 
 /// <summary>
-/// 調撥短溢單服務介面
+/// 調撥短溢單服務介面 (SYSW384)
 /// </summary>
 public interface ITransferShortageService
 {
     Task<PagedResult<TransferShortageDto>> GetTransferShortagesAsync(TransferShortageQueryDto query);
-    Task<TransferShortageDto> GetTransferShortageByIdAsync(string shortageId);
-    Task<TransferShortageDto> CreateShortageFromTransferAsync(string transferId);
+    Task<TransferShortageDetailFullDto> GetTransferShortageByIdAsync(string shortageId);
+    Task<TransferShortageDetailFullDto> CreateShortageFromTransferAsync(string transferId);
     Task<string> CreateTransferShortageAsync(CreateTransferShortageDto dto);
     Task UpdateTransferShortageAsync(string shortageId, UpdateTransferShortageDto dto);
     Task DeleteTransferShortageAsync(string shortageId);

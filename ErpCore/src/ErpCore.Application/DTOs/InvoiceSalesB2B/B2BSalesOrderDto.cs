@@ -134,22 +134,3 @@ public class UpdateB2BSalesOrderDetailDto
     public string? Memo { get; set; }
 }
 
-/// <summary>
-/// B2B銷售單查詢 DTO
-/// </summary>
-public class B2BSalesOrderQueryDto
-{
-    public int PageIndex { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-    public string? SortField { get; set; }
-    public string? SortOrder { get; set; }
-    public string? OrderId { get; set; }
-    public string? OrderType { get; set; }
-    public string? ShopId { get; set; }
-    public string? CustomerId { get; set; }
-    public string? Status { get; set; }
-    public DateTime? OrderDateFrom { get; set; }
-    public DateTime? OrderDateTo { get; set; }
-    public string? B2BFlag { get; set; } = "Y";
-}
-

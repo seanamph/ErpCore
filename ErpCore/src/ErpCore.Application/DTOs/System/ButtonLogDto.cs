@@ -126,31 +126,31 @@ public class CreateButtonLogDto
     /// <summary>
     /// 作業代碼
     /// </summary>
-    [System.ComponentModel.DataAnnotations.StringLength(50, ErrorMessage = "作業代碼長度不能超過50")]
+    [global::System.ComponentModel.DataAnnotations.StringLength(50, ErrorMessage = "作業代碼長度不能超過50")]
     public string? ProgId { get; set; }
 
     /// <summary>
     /// 作業名稱
     /// </summary>
-    [System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "作業名稱長度不能超過100")]
+    [global::System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "作業名稱長度不能超過100")]
     public string? ProgName { get; set; }
 
     /// <summary>
     /// 按鈕名稱
     /// </summary>
-    [System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "按鈕名稱長度不能超過100")]
+    [global::System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "按鈕名稱長度不能超過100")]
     public string? ButtonName { get; set; }
 
     /// <summary>
     /// 網頁位址
     /// </summary>
-    [System.ComponentModel.DataAnnotations.StringLength(500, ErrorMessage = "網頁位址長度不能超過500")]
+    [global::System.ComponentModel.DataAnnotations.StringLength(500, ErrorMessage = "網頁位址長度不能超過500")]
     public string? Url { get; set; }
 
     /// <summary>
     /// 框架名稱
     /// </summary>
-    [System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "框架名稱長度不能超過100")]
+    [global::System.ComponentModel.DataAnnotations.StringLength(100, ErrorMessage = "框架名稱長度不能超過100")]
     public string? FrameName { get; set; }
 }
 

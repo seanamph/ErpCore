@@ -70,4 +70,3 @@ public class BatchDeleteBankDto
 {
     public List<string> BankIds { get; set; } = new();
 }
-

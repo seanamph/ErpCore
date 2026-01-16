@@ -1,9 +1,9 @@
 using Dapper;
-using ErpCore.Domain.Entities.SystemExtension;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using SystemExtensionEntity = ErpCore.Domain.Entities.SystemExtension.SystemExtension;
 
 namespace ErpCore.Infrastructure.Repositories.SystemExtension;
 
@@ -18,7 +18,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
     {
     }
 
-    public async Task<SystemExtension?> GetByTKeyAsync(long tKey)
+    public async Task<SystemExtensionEntity?> GetByTKeyAsync(long tKey)
     {
         try
         {
@@ -26,7 +26,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
                 SELECT * FROM SystemExtensions 
                 WHERE TKey = @TKey";
 
-            return await QueryFirstOrDefaultAsync<SystemExtension>(sql, new { TKey = tKey });
+            return await QueryFirstOrDefaultAsync<SystemExtensionEntity>(sql, new { TKey = tKey });
         }
         catch (Exception ex)
         {
@@ -35,7 +35,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
         }
     }
 
-    public async Task<SystemExtension?> GetByExtensionIdAsync(string extensionId)
+    public async Task<SystemExtensionEntity?> GetByExtensionIdAsync(string extensionId)
     {
         try
         {
@@ -43,7 +43,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
                 SELECT * FROM SystemExtensions 
                 WHERE ExtensionId = @ExtensionId";
 
-            return await QueryFirstOrDefaultAsync<SystemExtension>(sql, new { ExtensionId = extensionId });
+            return await QueryFirstOrDefaultAsync<SystemExtensionEntity>(sql, new { ExtensionId = extensionId });
         }
         catch (Exception ex)
         {
@@ -52,7 +52,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
         }
     }
 
-    public async Task<PagedResult<SystemExtension>> QueryAsync(SystemExtensionQuery query)
+    public async Task<PagedResult<SystemExtensionEntity>> QueryAsync(SystemExtensionQuery query)
     {
         try
         {
@@ -109,7 +109,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<SystemExtension>(sql, parameters);
+            var items = await QueryAsync<SystemExtensionEntity>(sql, parameters);
 
             // 查詢總數
             var countSql = @"
@@ -150,7 +150,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<SystemExtension>
+            return new PagedResult<SystemExtensionEntity>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
@@ -165,7 +165,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
         }
     }
 
-    public async Task<SystemExtension> CreateAsync(SystemExtension systemExtension)
+    public async Task<SystemExtensionEntity> CreateAsync(SystemExtensionEntity systemExtension)
     {
         try
         {
@@ -182,7 +182,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
                     @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 )";
 
-            var result = await QueryFirstOrDefaultAsync<SystemExtension>(sql, systemExtension);
+            var result = await QueryFirstOrDefaultAsync<SystemExtensionEntity>(sql, systemExtension);
             if (result == null)
             {
                 throw new InvalidOperationException("新增系統擴展失敗");
@@ -197,7 +197,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
         }
     }
 
-    public async Task<SystemExtension> UpdateAsync(SystemExtension systemExtension)
+    public async Task<SystemExtensionEntity> UpdateAsync(SystemExtensionEntity systemExtension)
     {
         try
         {
@@ -215,7 +215,7 @@ public class SystemExtensionRepository : BaseRepository, ISystemExtensionReposit
                 OUTPUT INSERTED.*
                 WHERE TKey = @TKey";
 
-            var result = await QueryFirstOrDefaultAsync<SystemExtension>(sql, systemExtension);
+            var result = await QueryFirstOrDefaultAsync<SystemExtensionEntity>(sql, systemExtension);
             if (result == null)
             {
                 throw new InvalidOperationException($"系統擴展不存在: {systemExtension.TKey}");

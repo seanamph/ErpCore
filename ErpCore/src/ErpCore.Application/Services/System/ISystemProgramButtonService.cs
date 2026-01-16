@@ -16,5 +16,15 @@ public interface ISystemProgramButtonService
     /// 匯出系統作業與功能列表報表
     /// </summary>
     Task<byte[]> ExportSystemProgramButtonsAsync(string systemId, string exportFormat);
+
+    /// <summary>
+    /// 查詢系統作業與功能列表（出庫用）(SYS0999)
+    /// </summary>
+    Task<SystemProgramButtonResponseDto> GetSystemProgramButtonsForExportAsync(string systemId);
+
+    /// <summary>
+    /// 匯出系統作業與功能列表報表（出庫用）(SYS0999)
+    /// </summary>
+    Task<byte[]> ExportSystemProgramButtonsReportAsync(string systemId, string exportFormat);
 }
 

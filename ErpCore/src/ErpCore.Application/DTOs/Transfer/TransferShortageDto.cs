@@ -1,7 +1,7 @@
 namespace ErpCore.Application.DTOs.Transfer;
 
 /// <summary>
-/// 調撥短溢單 DTO
+/// 調撥短溢單 DTO (SYSW384)
 /// </summary>
 public class TransferShortageDto
 {
@@ -103,8 +103,6 @@ public class UpdateTransferShortageDto
 public class UpdateTransferShortageDetailDto
 {
     public Guid? DetailId { get; set; }
-    public decimal TransferQty { get; set; }
-    public decimal ReceiptQty { get; set; }
     public decimal ShortageQty { get; set; }
     public decimal? UnitPrice { get; set; }
     public string? ShortageReason { get; set; }
@@ -120,6 +118,7 @@ public class TransferShortageQueryDto
     public int PageSize { get; set; } = 20;
     public string? ShortageId { get; set; }
     public string? TransferId { get; set; }
+    public string? ReceiptId { get; set; }
     public string? FromShopId { get; set; }
     public string? ToShopId { get; set; }
     public string? Status { get; set; }
@@ -147,4 +146,12 @@ public class ProcessTransferShortageDto
     public DateTime ProcessDate { get; set; }
     public string ProcessType { get; set; } = string.Empty;
     public string? Notes { get; set; }
+}
+
+/// <summary>
+/// 調撥短溢單詳細 DTO（含明細）
+/// </summary>
+public class TransferShortageDetailFullDto : TransferShortageDto
+{
+    // 繼承所有 TransferShortageDto 的屬性，Details 已包含在基類中
 }

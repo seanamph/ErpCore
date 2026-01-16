@@ -97,6 +97,8 @@
             <el-button v-if="row.Status === 'D'" type="warning" size="small" @click="handleEdit(row)">修改</el-button>
             <el-button v-if="row.Status === 'D'" type="danger" size="small" @click="handleDelete(row)">刪除</el-button>
             <el-button v-if="row.Status === 'D'" type="success" size="small" @click="handleSubmit(row)">送出</el-button>
+            <el-button v-if="row.Status === 'S'" type="info" size="small" @click="handleApprove(row)">審核</el-button>
+            <el-button v-if="row.Status === 'D' || row.Status === 'S'" type="danger" size="small" @click="handleCancel(row)">取消</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -105,47 +107,29 @@
       <el-pagination
         v-model:current-page="pagination.PageIndex"
         v-model:page-size="pagination.PageSize"
-        :page-sizes="[10, 20, 50, 100]"
         :total="pagination.TotalCount"
+        :page-sizes="[10, 20, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handlePageChange"
-        style="margin-top: 20px; text-align: right;"
+        style="margin-top: 20px; text-align: right"
       />
     </el-card>
 
     <!-- 新增/修改對話框 -->
     <el-dialog
-      v-model="dialogVisible"
       :title="dialogTitle"
-      width="90%"
-      :close-on-click-modal="false"
+      v-model="dialogVisible"
+      width="1200px"
+      @close="handleDialogClose"
     >
-      <el-form
-        ref="formRef"
-        :model="formData"
-        :rules="formRules"
-        label-width="120px"
-      >
+      <el-form :model="formData" :rules="formRules" ref="formRef" label-width="140px">
         <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="採購單號" prop="OrderId">
-              <el-input v-model="formData.OrderId" :disabled="isEdit" placeholder="系統自動產生" />
-            </el-form-item>
-          </el-col>
           <el-col :span="12">
             <el-form-item label="採購日期" prop="OrderDate">
-              <el-date-picker
-                v-model="formData.OrderDate"
-                type="date"
-                placeholder="請選擇採購日期"
-                value-format="YYYY-MM-DD"
-                style="width: 100%"
-              />
+              <el-date-picker v-model="formData.OrderDate" type="date" placeholder="請選擇日期" style="width: 100%" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="單據類型" prop="OrderType">
               <el-select v-model="formData.OrderType" placeholder="請選擇單據類型" style="width: 100%">
@@ -154,72 +138,47 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="分店代碼" prop="ShopId">
-              <el-input v-model="formData.ShopId" />
+              <el-input v-model="formData.ShopId" placeholder="請輸入分店代碼" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="供應商代碼" prop="SupplierId">
+              <el-input v-model="formData.SupplierId" placeholder="請輸入供應商代碼" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="供應商代碼" prop="SupplierId">
-              <el-input v-model="formData.SupplierId" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="預期交貨日期">
-              <el-date-picker
-                v-model="formData.ExpectedDate"
-                type="date"
-                placeholder="請選擇預期交貨日期"
-                value-format="YYYY-MM-DD"
-                style="width: 100%"
-              />
+              <el-date-picker v-model="formData.ExpectedDate" type="date" placeholder="請選擇日期" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="備註">
+              <el-input v-model="formData.Memo" type="textarea" :rows="2" placeholder="請輸入備註" />
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="備註">
-          <el-input v-model="formData.Memo" type="textarea" :rows="2" />
-        </el-form-item>
 
-        <!-- 明細表格 - 現場打單特殊設計 -->
-        <el-divider>商品明細（支援條碼掃描）</el-divider>
-        
-        <!-- 條碼掃描輸入區 -->
-        <el-row :gutter="20" style="margin-bottom: 10px;">
-          <el-col :span="12">
-            <el-input
-              v-model="barcodeInput"
-              placeholder="請掃描或輸入條碼，按 Enter 鍵自動新增"
-              @keyup.enter="handleBarcodeScan"
-              ref="barcodeInputRef"
-              clearable
-            >
-              <template #prepend>條碼</template>
-              <template #append>
-                <el-button @click="handleBarcodeScan" type="primary">查詢</el-button>
-              </template>
-            </el-input>
-          </el-col>
-          <el-col :span="12">
-            <el-button type="primary" @click="handleQuickAddGoods">快速新增商品</el-button>
-          </el-col>
-        </el-row>
-
-        <el-table
-          :data="formData.Details"
-          border
-          style="margin-top: 20px"
-        >
-          <el-table-column type="index" label="序號" width="60" />
-          <el-table-column prop="BarcodeId" label="條碼" width="150">
+        <el-divider>商品明細</el-divider>
+        <el-table :data="formData.Details" border style="width: 100%">
+          <el-table-column prop="LineNum" label="序號" width="60" />
+          <el-table-column prop="GoodsId" label="商品編號" width="150">
             <template #default="{ row, $index }">
-              <el-input v-model="row.BarcodeId" @blur="handleBarcodeChange($index)" />
+              <el-input v-model="row.GoodsId" @blur="handleGoodsChange($index)" />
             </template>
           </el-table-column>
-          <el-table-column prop="GoodsId" label="商品編號" width="150" />
           <el-table-column prop="GoodsName" label="商品名稱" width="200" />
-          <el-table-column prop="OrderQty" label="數量" width="120">
+          <el-table-column prop="BarcodeId" label="條碼編號" width="150">
+            <template #default="{ row, $index }">
+              <el-input v-model="row.BarcodeId" @keyup.enter="handleBarcodeScan($index)" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="OrderQty" label="訂購數量" width="120">
             <template #default="{ row, $index }">
               <el-input-number
                 v-model="row.OrderQty"
@@ -274,9 +233,10 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { onSitePurchaseOrderApi } from '@/api/purchase'
+import { getProductById } from '@/api/modules/product'
 
 export default {
   name: 'OnSitePurchaseOrder',
@@ -286,8 +246,6 @@ export default {
     const isEdit = ref(false)
     const formRef = ref(null)
     const tableData = ref([])
-    const barcodeInput = ref('')
-    const barcodeInputRef = ref(null)
 
     // 查詢表單
     const queryForm = reactive({
@@ -315,20 +273,20 @@ export default {
       OrderType: 'PO',
       ShopId: '',
       SupplierId: '',
+      ExpectedDate: null,
       Memo: '',
-      ExpectedDate: '',
       Details: []
     })
 
     // 表單驗證規則
     const formRules = {
-      OrderDate: [{ required: true, message: '請選擇採購日期', trigger: 'blur' }],
+      OrderDate: [{ required: true, message: '請選擇採購日期', trigger: 'change' }],
       OrderType: [{ required: true, message: '請選擇單據類型', trigger: 'change' }],
       ShopId: [{ required: true, message: '請輸入分店代碼', trigger: 'blur' }],
       SupplierId: [{ required: true, message: '請輸入供應商代碼', trigger: 'blur' }]
     }
 
-    // 計算總數量和總金額
+    // 計算總金額和總數量
     const totalQty = computed(() => {
       return formData.Details.reduce((sum, item) => sum + (item.OrderQty || 0), 0)
     })
@@ -337,288 +295,217 @@ export default {
       return formData.Details.reduce((sum, item) => sum + ((item.UnitPrice || 0) * (item.OrderQty || 0)), 0)
     })
 
-    const dialogTitle = computed(() => {
-      return isEdit.value ? '修改現場打單申請單' : '新增現場打單申請單'
-    })
-
     // 格式化日期
     const formatDate = (date) => {
       if (!date) return ''
-      return new Date(date).toLocaleDateString('zh-TW')
+      const d = new Date(date)
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    }
+
+    // 格式化貨幣
+    const formatCurrency = (amount) => {
+      if (!amount && amount !== 0) return '0.00'
+      return Number(amount).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     }
 
     // 格式化數字
     const formatNumber = (num) => {
-      if (num == null) return '0'
+      if (!num && num !== 0) return '0'
       return Number(num).toLocaleString('zh-TW', { minimumFractionDigits: 0, maximumFractionDigits: 4 })
-    }
-
-    // 格式化貨幣
-    const formatCurrency = (num) => {
-      if (num == null) return '$0'
-      return '$' + Number(num).toLocaleString('zh-TW', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
     }
 
     // 取得狀態類型
     const getStatusType = (status) => {
-      const statusMap = {
+      const types = {
         'D': 'info',
         'S': 'warning',
         'A': 'success',
         'X': 'danger'
       }
-      return statusMap[status] || 'info'
+      return types[status] || 'info'
     }
 
     // 取得狀態文字
     const getStatusText = (status) => {
-      const statusMap = {
+      const texts = {
         'D': '草稿',
         'S': '已送出',
         'A': '已審核',
         'X': '已取消'
       }
-      return statusMap[status] || status
+      return texts[status] || status
     }
 
-    // 查詢列表
-    const handleSearch = async () => {
+    // 查詢資料
+    const loadData = async () => {
+      loading.value = true
       try {
-        loading.value = true
         const params = {
           ...queryForm,
-          OrderDateFrom: queryForm.OrderDateRange?.[0] || null,
-          OrderDateTo: queryForm.OrderDateRange?.[1] || null,
           PageIndex: pagination.PageIndex,
           PageSize: pagination.PageSize
+        }
+        
+        // 處理日期範圍
+        if (queryForm.OrderDateRange && queryForm.OrderDateRange.length === 2) {
+          params.OrderDateFrom = queryForm.OrderDateRange[0]
+          params.OrderDateTo = queryForm.OrderDateRange[1]
         }
         delete params.OrderDateRange
 
         const response = await onSitePurchaseOrderApi.getOnSitePurchaseOrders(params)
-        if (response.data.success) {
-          tableData.value = response.data.data.Items || []
-          pagination.TotalCount = response.data.data.TotalCount || 0
-        } else {
-          ElMessage.error(response.data.message || '查詢失敗')
+        if (response.Data) {
+          tableData.value = response.Data.Items || []
+          pagination.TotalCount = response.Data.TotalCount || 0
         }
       } catch (error) {
-        ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
+        ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
       } finally {
         loading.value = false
       }
     }
 
-    // 重置查詢
-    const handleReset = () => {
-      queryForm.OrderId = ''
-      queryForm.OrderType = ''
-      queryForm.ShopId = ''
-      queryForm.SupplierId = ''
-      queryForm.Status = ''
-      queryForm.OrderDateRange = null
+    // 查詢
+    const handleSearch = () => {
       pagination.PageIndex = 1
+      loadData()
+    }
+
+    // 重置
+    const handleReset = () => {
+      Object.assign(queryForm, {
+        OrderId: '',
+        OrderType: '',
+        ShopId: '',
+        SupplierId: '',
+        Status: '',
+        OrderDateRange: null
+      })
       handleSearch()
     }
 
     // 新增
     const handleCreate = () => {
       isEdit.value = false
-      formData.OrderId = ''
-      formData.OrderDate = new Date().toISOString().split('T')[0]
-      formData.OrderType = 'PO'
-      formData.ShopId = ''
-      formData.SupplierId = ''
-      formData.Memo = ''
-      formData.ExpectedDate = ''
-      formData.Details = []
-      barcodeInput.value = ''
       dialogVisible.value = true
-      nextTick(() => {
-        barcodeInputRef.value?.focus()
+      Object.assign(formData, {
+        OrderId: '',
+        OrderDate: new Date().toISOString().split('T')[0],
+        OrderType: 'PO',
+        ShopId: '',
+        SupplierId: '',
+        ExpectedDate: null,
+        Memo: '',
+        Details: []
       })
     }
 
     // 查看
     const handleView = async (row) => {
       try {
-        loading.value = true
         const response = await onSitePurchaseOrderApi.getOnSitePurchaseOrder(row.OrderId)
-        if (response.data.success) {
-          const data = response.data.data
-          Object.assign(formData, {
-            OrderId: data.OrderId,
-            OrderDate: data.OrderDate.split('T')[0],
-            OrderType: data.OrderType,
-            ShopId: data.ShopId,
-            SupplierId: data.SupplierId,
-            Memo: data.Memo || '',
-            ExpectedDate: data.ExpectedDate ? data.ExpectedDate.split('T')[0] : '',
-            Details: (data.Details || []).map(d => ({
-              DetailId: d.DetailId,
-              LineNum: d.LineNum,
-              GoodsId: d.GoodsId,
-              GoodsName: d.GoodsName || '',
-              BarcodeId: d.BarcodeId || '',
-              OrderQty: d.OrderQty,
-              UnitPrice: d.UnitPrice,
-              Amount: d.Amount,
-              Memo: d.Memo || ''
-            }))
-          })
-          isEdit.value = false
+        if (response.Data) {
+          isEdit.value = true
           dialogVisible.value = true
-        } else {
-          ElMessage.error(response.data.message || '查詢失敗')
+          const order = response.Data
+          Object.assign(formData, {
+            OrderId: order.OrderId,
+            OrderDate: formatDate(order.OrderDate),
+            OrderType: order.OrderType,
+            ShopId: order.ShopId,
+            SupplierId: order.SupplierId,
+            ExpectedDate: order.ExpectedDate ? formatDate(order.ExpectedDate) : null,
+            Memo: order.Memo || '',
+            Details: order.Details || []
+          })
         }
       } catch (error) {
-        ElMessage.error('查詢失敗：' + (error.message || '未知錯誤'))
-      } finally {
-        loading.value = false
+        ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
       }
     }
 
     // 修改
     const handleEdit = async (row) => {
       await handleView(row)
-      isEdit.value = true
-      nextTick(() => {
-        barcodeInputRef.value?.focus()
-      })
     }
 
     // 刪除
     const handleDelete = async (row) => {
       try {
-        await ElMessageBox.confirm('確定要刪除此現場打單申請單嗎？', '提示', {
-          confirmButtonText: '確定',
-          cancelButtonText: '取消',
+        await ElMessageBox.confirm('確定要刪除此採購單嗎？', '確認', {
           type: 'warning'
         })
-
-        loading.value = true
-        const response = await onSitePurchaseOrderApi.deleteOnSitePurchaseOrder(row.OrderId)
-        if (response.data.success) {
-          ElMessage.success('刪除成功')
-          handleSearch()
-        } else {
-          ElMessage.error(response.data.message || '刪除失敗')
-        }
+        await onSitePurchaseOrderApi.deleteOnSitePurchaseOrder(row.OrderId)
+        ElMessage.success('刪除成功')
+        loadData()
       } catch (error) {
         if (error !== 'cancel') {
-          ElMessage.error('刪除失敗：' + (error.message || '未知錯誤'))
+          ElMessage.error('刪除失敗: ' + (error.message || '未知錯誤'))
         }
-      } finally {
-        loading.value = false
       }
     }
 
     // 送出
     const handleSubmit = async (row) => {
       try {
-        await ElMessageBox.confirm('確定要送出現場打單申請單嗎？', '提示', {
-          confirmButtonText: '確定',
-          cancelButtonText: '取消',
+        await ElMessageBox.confirm('確定要送出此採購單進行審核嗎？', '確認', {
           type: 'warning'
         })
-
-        loading.value = true
-        const response = await onSitePurchaseOrderApi.submitOnSitePurchaseOrder(row.OrderId)
-        if (response.data.success) {
-          ElMessage.success('送出成功')
-          handleSearch()
-        } else {
-          ElMessage.error(response.data.message || '送出失敗')
-        }
+        await onSitePurchaseOrderApi.submitOnSitePurchaseOrder(row.OrderId)
+        ElMessage.success('送出成功')
+        loadData()
       } catch (error) {
         if (error !== 'cancel') {
-          ElMessage.error('送出失敗：' + (error.message || '未知錯誤'))
+          ElMessage.error('送出失敗: ' + (error.message || '未知錯誤'))
         }
-      } finally {
-        loading.value = false
       }
     }
 
-    // 條碼掃描處理
-    const handleBarcodeScan = async () => {
-      if (!barcodeInput.value) {
-        ElMessage.warning('請輸入條碼')
-        return
-      }
-
+    // 審核
+    const handleApprove = async (row) => {
       try {
-        const response = await onSitePurchaseOrderApi.getGoodsByBarcode(barcodeInput.value)
-        if (response.data.success) {
-          const goods = response.data.data
-          // 檢查是否已存在
-          const existingIndex = formData.Details.findIndex(d => d.BarcodeId === goods.BarcodeId)
-          if (existingIndex >= 0) {
-            // 已存在，增加數量
-            formData.Details[existingIndex].OrderQty += 1
-            handleQtyChange(existingIndex)
-          } else {
-            // 新增商品到明細
-            formData.Details.push({
-              LineNum: formData.Details.length + 1,
-              GoodsId: goods.GoodsId,
-              GoodsName: goods.GoodsName,
-              BarcodeId: goods.BarcodeId,
-              OrderQty: 1,
-              UnitPrice: goods.UnitPrice || 0,
-              Amount: goods.UnitPrice || 0,
-              Memo: ''
-            })
-          }
-          barcodeInput.value = ''
-          nextTick(() => {
-            barcodeInputRef.value?.focus()
-          })
-          ElMessage.success('商品新增成功')
-        } else {
-          ElMessage.error(response.data.message || '查詢商品失敗')
-        }
+        await ElMessageBox.confirm('確定要審核通過此採購單嗎？', '確認', {
+          type: 'warning'
+        })
+        await onSitePurchaseOrderApi.approveOnSitePurchaseOrder(row.OrderId)
+        ElMessage.success('審核成功')
+        loadData()
       } catch (error) {
-        ElMessage.error('查詢商品失敗：' + (error.message || '未知錯誤'))
-      }
-    }
-
-    // 條碼變更處理
-    const handleBarcodeChange = async (index) => {
-      const detail = formData.Details[index]
-      if (detail.BarcodeId) {
-        try {
-          const response = await onSitePurchaseOrderApi.getGoodsByBarcode(detail.BarcodeId)
-          if (response.data.success) {
-            const goods = response.data.data
-            detail.GoodsId = goods.GoodsId
-            detail.GoodsName = goods.GoodsName
-            detail.UnitPrice = goods.UnitPrice || 0
-            handlePriceChange(index)
-          } else {
-            ElMessage.error(response.data.message || '查詢商品失敗')
-          }
-        } catch (error) {
-          ElMessage.error('查詢商品失敗：' + (error.message || '未知錯誤'))
+        if (error !== 'cancel') {
+          ElMessage.error('審核失敗: ' + (error.message || '未知錯誤'))
         }
       }
     }
 
-    // 快速新增商品
-    const handleQuickAddGoods = () => {
-      formData.Details.push({
-        LineNum: formData.Details.length + 1,
-        GoodsId: '',
-        GoodsName: '',
-        BarcodeId: '',
-        OrderQty: 1,
-        UnitPrice: 0,
-        Amount: 0,
-        Memo: ''
-      })
+    // 取消
+    const handleCancel = async (row) => {
+      try {
+        await ElMessageBox.confirm('確定要取消此採購單嗎？', '確認', {
+          type: 'warning'
+        })
+        await onSitePurchaseOrderApi.cancelOnSitePurchaseOrder(row.OrderId)
+        ElMessage.success('取消成功')
+        loadData()
+      } catch (error) {
+        if (error !== 'cancel') {
+          ElMessage.error('取消失敗: ' + (error.message || '未知錯誤'))
+        }
+      }
     }
 
     // 新增明細
     const handleAddDetail = () => {
-      handleQuickAddGoods()
+      formData.Details.push({
+        DetailId: null,
+        LineNum: formData.Details.length + 1,
+        GoodsId: '',
+        GoodsName: '',
+        BarcodeId: '',
+        OrderQty: 0,
+        UnitPrice: 0,
+        Amount: 0,
+        Memo: ''
+      })
     }
 
     // 刪除明細
@@ -630,86 +517,153 @@ export default {
       })
     }
 
+    // 商品變更
+    const handleGoodsChange = async (index) => {
+      const detail = formData.Details[index]
+      if (!detail || !detail.GoodsId) {
+        detail.GoodsName = ''
+        return
+      }
+
+      try {
+        const response = await getProductById(detail.GoodsId)
+        if (response.Data) {
+          detail.GoodsName = response.Data.GoodsName || ''
+          // 如果沒有單價，可以從商品資訊取得
+          if (!detail.UnitPrice && response.Data.UnitPrice) {
+            detail.UnitPrice = response.Data.UnitPrice
+          }
+        } else {
+          detail.GoodsName = ''
+          ElMessage.warning(`找不到商品編號: ${detail.GoodsId}`)
+        }
+      } catch (error) {
+        detail.GoodsName = ''
+        console.error('查詢商品資訊失敗:', error)
+        ElMessage.warning(`查詢商品資訊失敗: ${detail.GoodsId}`)
+      }
+    }
+
+    // 條碼掃描處理（現場打單特殊功能）
+    const handleBarcodeScan = async (index) => {
+      const detail = formData.Details[index]
+      if (!detail || !detail.BarcodeId) {
+        return
+      }
+
+      // 根據條碼查詢商品資訊
+      try {
+        const response = await onSitePurchaseOrderApi.getGoodsByBarcode(detail.BarcodeId)
+        if (response.Data) {
+          const goods = response.Data
+          detail.GoodsId = goods.GoodsId
+          detail.GoodsName = goods.GoodsName
+          detail.BarcodeId = goods.BarcodeId || detail.BarcodeId
+          if (!detail.UnitPrice && goods.UnitPrice) {
+            detail.UnitPrice = goods.UnitPrice
+          }
+          if (!detail.OrderQty) {
+            detail.OrderQty = 1
+          }
+          // 自動計算金額
+          detail.Amount = (detail.UnitPrice || 0) * (detail.OrderQty || 0)
+          ElMessage.success(`已找到商品: ${goods.GoodsName}`)
+        } else {
+          ElMessage.warning(`找不到條碼為 ${detail.BarcodeId} 的商品`)
+        }
+      } catch (error) {
+        console.error('條碼掃描失敗:', error)
+        ElMessage.error('條碼掃描失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
+      }
+    }
+
     // 數量變更
     const handleQtyChange = (index) => {
       const detail = formData.Details[index]
-      if (detail.UnitPrice != null && detail.OrderQty != null) {
-        detail.Amount = detail.UnitPrice * detail.OrderQty
+      if (detail) {
+        detail.Amount = (detail.UnitPrice || 0) * (detail.OrderQty || 0)
       }
     }
 
     // 單價變更
     const handlePriceChange = (index) => {
-      handleQtyChange(index)
+      const detail = formData.Details[index]
+      if (detail) {
+        detail.Amount = (detail.UnitPrice || 0) * (detail.OrderQty || 0)
+      }
     }
 
     // 提交表單
     const handleSubmitForm = async () => {
-      try {
-        await formRef.value.validate()
+      if (!formRef.value) return
+      await formRef.value.validate(async (valid) => {
+        if (valid) {
+          try {
+            // 驗證明細
+            if (!formData.Details || formData.Details.length === 0) {
+              ElMessage.warning('請至少新增一筆明細')
+              return
+            }
 
-        if (formData.Details.length === 0) {
-          ElMessage.warning('請至少新增一筆商品明細')
-          return
-        }
+            // 準備資料
+            const submitData = {
+              OrderDate: formData.OrderDate,
+              OrderType: formData.OrderType,
+              ShopId: formData.ShopId,
+              SupplierId: formData.SupplierId,
+              ExpectedDate: formData.ExpectedDate,
+              Memo: formData.Memo,
+              Details: formData.Details.map((item, index) => ({
+                LineNum: index + 1,
+                GoodsId: item.GoodsId,
+                BarcodeId: item.BarcodeId,
+                OrderQty: item.OrderQty || 0,
+                UnitPrice: item.UnitPrice || 0,
+                Memo: item.Memo || ''
+              }))
+            }
 
-        loading.value = true
-        const submitData = {
-          OrderDate: formData.OrderDate,
-          OrderType: formData.OrderType,
-          ShopId: formData.ShopId,
-          SupplierId: formData.SupplierId,
-          Memo: formData.Memo || '',
-          ExpectedDate: formData.ExpectedDate || null,
-          Details: formData.Details.map(d => ({
-            LineNum: d.LineNum,
-            GoodsId: d.GoodsId,
-            BarcodeId: d.BarcodeId || '',
-            OrderQty: d.OrderQty,
-            UnitPrice: d.UnitPrice,
-            Memo: d.Memo || ''
-          }))
+            if (isEdit.value) {
+              await onSitePurchaseOrderApi.updateOnSitePurchaseOrder(formData.OrderId, submitData)
+              ElMessage.success('修改成功')
+            } else {
+              await onSitePurchaseOrderApi.createOnSitePurchaseOrder(submitData)
+              ElMessage.success('新增成功')
+            }
+            dialogVisible.value = false
+            loadData()
+          } catch (error) {
+            ElMessage.error('操作失敗: ' + (error.message || '未知錯誤'))
+          }
         }
+      })
+    }
 
-        let response
-        if (isEdit.value) {
-          response = await onSitePurchaseOrderApi.updateOnSitePurchaseOrder(formData.OrderId, submitData)
-        } else {
-          response = await onSitePurchaseOrderApi.createOnSitePurchaseOrder(submitData)
-        }
-
-        if (response.data.success) {
-          ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
-          dialogVisible.value = false
-          handleSearch()
-        } else {
-          ElMessage.error(response.data.message || (isEdit.value ? '修改失敗' : '新增失敗'))
-        }
-      } catch (error) {
-        if (error !== false) {
-          ElMessage.error((isEdit.value ? '修改失敗' : '新增失敗') + '：' + (error.message || '未知錯誤'))
-        }
-      } finally {
-        loading.value = false
-      }
+    // 關閉對話框
+    const handleDialogClose = () => {
+      dialogVisible.value = false
+      formRef.value?.resetFields()
     }
 
     // 分頁大小變更
     const handleSizeChange = (size) => {
       pagination.PageSize = size
-      pagination.PageIndex = 1
-      handleSearch()
+      loadData()
     }
 
     // 分頁變更
     const handlePageChange = (page) => {
       pagination.PageIndex = page
-      handleSearch()
+      loadData()
     }
 
-    // 初始化
+    // 計算對話框標題
+    const dialogTitle = computed(() => {
+      return isEdit.value ? '修改現場打單申請單' : '新增現場打單申請單'
+    })
+
     onMounted(() => {
-      handleSearch()
+      loadData()
     })
 
     return {
@@ -722,14 +676,12 @@ export default {
       pagination,
       formData,
       formRules,
-      barcodeInput,
-      barcodeInputRef,
       totalQty,
       totalAmount,
       dialogTitle,
       formatDate,
-      formatNumber,
       formatCurrency,
+      formatNumber,
       getStatusType,
       getStatusText,
       handleSearch,
@@ -739,14 +691,16 @@ export default {
       handleEdit,
       handleDelete,
       handleSubmit,
-      handleBarcodeScan,
-      handleBarcodeChange,
-      handleQuickAddGoods,
+      handleApprove,
+      handleCancel,
       handleAddDetail,
       handleDeleteDetail,
+      handleGoodsChange,
+      handleBarcodeScan,
       handleQtyChange,
       handlePriceChange,
       handleSubmitForm,
+      handleDialogClose,
       handleSizeChange,
       handlePageChange
     }
@@ -767,7 +721,6 @@ export default {
       color: $primary-color;
       font-size: 24px;
       font-weight: bold;
-      margin: 0;
     }
   }
 
@@ -778,16 +731,11 @@ export default {
     color: $card-text;
   }
 
-  .search-form {
-    margin: 0;
-  }
-
   .table-card {
-    margin-bottom: 20px;
+    margin-top: 20px;
     background-color: $card-bg;
     border-color: $card-border;
     color: $card-text;
   }
 }
 </style>
-

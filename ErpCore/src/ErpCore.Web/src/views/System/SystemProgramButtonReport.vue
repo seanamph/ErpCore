@@ -85,8 +85,7 @@
 <script>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { systemProgramButtonApi } from '@/api/systemPermission'
-import { configSystemsApi } from '@/api/systemConfig'
+import { getSystems, getSystemProgramButtons, exportSystemProgramButtons } from '@/api/systems'
 
 export default {
   name: 'SystemProgramButtonReport',
@@ -107,15 +106,22 @@ export default {
     // 載入系統選項
     const loadSystemOptions = async () => {
       try {
-        const response = await configSystemsApi.getConfigSystems({
+        const response = await getSystems({
           Status: 'A',
           PageIndex: 1,
           PageSize: 1000,
           SortField: 'SystemId',
           SortOrder: 'ASC'
         })
-        if (response.data?.success && response.data.data) {
-          systemOptions.value = response.data.data.items || response.data.data || []
+        // 處理不同的響應格式
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            systemOptions.value = response.data.data.items || response.data.data.Items || []
+          } else if (response.data.Data && response.data.Data.Items) {
+            systemOptions.value = response.data.Data.Items
+          }
+        } else if (response && response.Data && response.Data.Items) {
+          systemOptions.value = response.Data.Items
         }
       } catch (error) {
         console.error('載入系統選項失敗:', error)
@@ -131,16 +137,25 @@ export default {
 
       loading.value = true
       try {
-        const response = await systemProgramButtonApi.getSystemProgramButtons(queryForm.SystemId)
-        if (response.data?.success && response.data.data) {
-          systemInfo.SystemId = response.data.data.SystemId || ''
-          systemInfo.SystemName = response.data.data.SystemName || ''
-          tableData.value = response.data.data.Programs || []
-        } else if (response.Data) {
-          // 兼容舊格式
-          systemInfo.SystemId = response.Data.SystemId || ''
-          systemInfo.SystemName = response.Data.SystemName || ''
-          tableData.value = response.Data.Programs || []
+        const response = await getSystemProgramButtons(queryForm.SystemId)
+        // 處理不同的響應格式
+        let data = null
+        if (response && response.data) {
+          if (response.data.success && response.data.data) {
+            data = response.data.data
+          } else if (response.data.Data) {
+            data = response.data.Data
+          }
+        } else if (response && response.Data) {
+          data = response.Data
+        } else {
+          data = response
+        }
+        
+        if (data) {
+          systemInfo.SystemId = data.SystemId || data.systemId || ''
+          systemInfo.SystemName = data.SystemName || data.systemName || ''
+          tableData.value = data.Programs || data.programs || []
         }
       } catch (error) {
         ElMessage.error('查詢失敗: ' + (error.message || '未知錯誤'))
@@ -172,7 +187,8 @@ export default {
       }
 
       try {
-        const response = await systemProgramButtonApi.exportSystemProgramButtons(queryForm.SystemId, 'Excel')
+        loading.value = true
+        const response = await exportSystemProgramButtons(queryForm.SystemId, 'Excel')
         
         // 下載檔案
         const blob = new Blob([response], {
@@ -191,6 +207,8 @@ export default {
       } catch (error) {
         console.error('匯出失敗:', error)
         ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+      } finally {
+        loading.value = false
       }
     }
 
@@ -202,7 +220,8 @@ export default {
       }
 
       try {
-        const response = await systemProgramButtonApi.exportSystemProgramButtons(queryForm.SystemId, 'PDF')
+        loading.value = true
+        const response = await exportSystemProgramButtons(queryForm.SystemId, 'PDF')
         
         // 下載檔案
         const blob = new Blob([response], {
@@ -221,6 +240,8 @@ export default {
       } catch (error) {
         console.error('匯出失敗:', error)
         ElMessage.error('匯出失敗: ' + (error.message || '未知錯誤'))
+      } finally {
+        loading.value = false
       }
     }
 

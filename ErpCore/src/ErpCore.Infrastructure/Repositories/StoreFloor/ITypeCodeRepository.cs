@@ -1,5 +1,6 @@
 using ErpCore.Domain.Entities.StoreFloor;
 using ErpCore.Shared.Common;
+using TypeCodeEntity = ErpCore.Domain.Entities.StoreFloor.TypeCode;
 
 namespace ErpCore.Infrastructure.Repositories.StoreFloor;
 
@@ -11,12 +12,12 @@ public interface ITypeCodeRepository
     /// <summary>
     /// 根據主鍵查詢類型代碼
     /// </summary>
-    Task<TypeCode?> GetByIdAsync(long tKey);
+    Task<TypeCodeEntity?> GetByIdAsync(long tKey);
 
     /// <summary>
     /// 查詢類型代碼列表（分頁）
     /// </summary>
-    Task<PagedResult<TypeCode>> QueryAsync(TypeCodeQuery query);
+    Task<PagedResult<TypeCodeEntity>> QueryAsync(TypeCodeQuery query);
 
     /// <summary>
     /// 查詢類型代碼總數
@@ -26,12 +27,12 @@ public interface ITypeCodeRepository
     /// <summary>
     /// 新增類型代碼
     /// </summary>
-    Task<TypeCode> CreateAsync(TypeCode typeCode);
+    Task<TypeCodeEntity> CreateAsync(TypeCodeEntity typeCode);
 
     /// <summary>
     /// 修改類型代碼
     /// </summary>
-    Task<TypeCode> UpdateAsync(TypeCode typeCode);
+    Task<TypeCodeEntity> UpdateAsync(TypeCodeEntity typeCode);
 
     /// <summary>
     /// 刪除類型代碼

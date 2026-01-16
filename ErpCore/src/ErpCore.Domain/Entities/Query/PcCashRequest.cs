@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace ErpCore.Domain.Entities.Query;
 
 /// <summary>
@@ -29,6 +31,11 @@ public class PcCashRequest
     /// 零用金單號列表 (JSON格式)
     /// </summary>
     public string? CashIds { get; set; }
+
+    /// <summary>
+    /// 零用金單號列表 (反序列化後的列表，不存儲到資料庫)
+    /// </summary>
+    public List<string>? CashIdList { get; set; }
 
     /// <summary>
     /// 請款金額

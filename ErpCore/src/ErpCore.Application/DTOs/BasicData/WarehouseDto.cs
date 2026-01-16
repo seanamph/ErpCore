@@ -75,4 +75,3 @@ public class UpdateWarehouseStatusDto
 {
     public string Status { get; set; } = "A";
 }
-

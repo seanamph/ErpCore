@@ -1,5 +1,5 @@
-using ErpCore.Domain.Entities.SystemExtension;
 using ErpCore.Shared.Common;
+using SystemExtensionEntity = ErpCore.Domain.Entities.SystemExtension.SystemExtension;
 
 namespace ErpCore.Infrastructure.Repositories.SystemExtension;
 
@@ -11,27 +11,27 @@ public interface ISystemExtensionRepository
     /// <summary>
     /// 根據主鍵查詢系統擴展
     /// </summary>
-    Task<SystemExtension?> GetByTKeyAsync(long tKey);
+    Task<SystemExtensionEntity?> GetByTKeyAsync(long tKey);
 
     /// <summary>
     /// 根據擴展功能代碼查詢系統擴展
     /// </summary>
-    Task<SystemExtension?> GetByExtensionIdAsync(string extensionId);
+    Task<SystemExtensionEntity?> GetByExtensionIdAsync(string extensionId);
 
     /// <summary>
     /// 查詢系統擴展列表（分頁）
     /// </summary>
-    Task<PagedResult<SystemExtension>> QueryAsync(SystemExtensionQuery query);
+    Task<PagedResult<SystemExtensionEntity>> QueryAsync(SystemExtensionQuery query);
 
     /// <summary>
     /// 新增系統擴展
     /// </summary>
-    Task<SystemExtension> CreateAsync(SystemExtension systemExtension);
+    Task<SystemExtensionEntity> CreateAsync(SystemExtensionEntity systemExtension);
 
     /// <summary>
     /// 修改系統擴展
     /// </summary>
-    Task<SystemExtension> UpdateAsync(SystemExtension systemExtension);
+    Task<SystemExtensionEntity> UpdateAsync(SystemExtensionEntity systemExtension);
 
     /// <summary>
     /// 刪除系統擴展

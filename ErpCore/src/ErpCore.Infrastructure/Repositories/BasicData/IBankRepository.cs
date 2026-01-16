@@ -53,4 +53,3 @@ public class BankQuery
     public string? Status { get; set; }
     public string? BankKind { get; set; }
 }
-

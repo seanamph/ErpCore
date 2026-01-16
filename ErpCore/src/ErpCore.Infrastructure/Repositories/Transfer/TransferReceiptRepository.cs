@@ -421,7 +421,7 @@ public class TransferReceiptRepository : BaseRepository, ITransferReceiptReposit
     /// <summary>
     /// 更新狀態
     /// </summary>
-    public async Task UpdateStatusAsync(string receiptId, string status, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string receiptId, string status, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -477,7 +477,7 @@ public class TransferReceiptRepository : BaseRepository, ITransferReceiptReposit
     /// <summary>
     /// 產生驗收單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateReceiptIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateReceiptIdAsync(global::System.Data.IDbConnection connection, global::System.Data.IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 ReceiptId 

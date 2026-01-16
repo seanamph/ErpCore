@@ -16,7 +16,7 @@ public interface IBankService
     /// <summary>
     /// 查詢單筆銀行
     /// </summary>
-    Task<BankDto> GetBankByIdAsync(string bankId);
+    Task<BankDto> GetBankAsync(string bankId);
 
     /// <summary>
     /// 新增銀行
@@ -38,4 +38,3 @@ public interface IBankService
     /// </summary>
     Task DeleteBanksBatchAsync(BatchDeleteBankDto dto);
 }
-

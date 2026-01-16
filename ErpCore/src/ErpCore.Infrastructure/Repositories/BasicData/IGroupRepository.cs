@@ -54,4 +54,3 @@ public class GroupQuery
     public string? OrgId { get; set; }
     public string? Status { get; set; }
 }
-

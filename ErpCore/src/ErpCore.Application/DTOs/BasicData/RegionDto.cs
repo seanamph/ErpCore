@@ -53,4 +53,3 @@ public class BatchDeleteRegionDto
 {
     public List<string> RegionIds { get; set; } = new();
 }
-

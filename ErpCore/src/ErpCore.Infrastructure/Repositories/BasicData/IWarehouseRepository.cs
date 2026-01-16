@@ -53,4 +53,3 @@ public class WarehouseQuery
     public string? WarehouseType { get; set; }
     public string? Status { get; set; }
 }
-

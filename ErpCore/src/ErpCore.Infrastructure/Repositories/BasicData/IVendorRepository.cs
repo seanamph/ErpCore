@@ -65,4 +65,3 @@ public class VendorQuery
     public string? SysId { get; set; }
     public string? OrgId { get; set; }
 }
-

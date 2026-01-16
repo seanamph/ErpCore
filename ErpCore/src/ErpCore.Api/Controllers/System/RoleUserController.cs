@@ -60,9 +60,7 @@ public class RoleUserController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.BatchDeleteRoleUsersAsync(
-                request.RoleId,
-                request.UserIds);
+            await _service.BatchDeleteRoleUsersAsync(request.RoleId, request.UserIds);
             return (object?)null;
         }, "批次刪除使用者角色對應失敗");
     }

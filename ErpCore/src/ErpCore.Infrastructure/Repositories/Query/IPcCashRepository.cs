@@ -1,5 +1,5 @@
 using ErpCore.Domain.Entities.Query;
-using ErpCore.Application.DTOs.Query;
+using ErpCore.Shared.Common;
 
 namespace ErpCore.Infrastructure.Repositories.Query;
 
@@ -10,7 +10,7 @@ public interface IPcCashRepository
 {
     Task<PcCash?> GetByIdAsync(long tKey);
     Task<PcCash?> GetByCashIdAsync(string cashId);
-    Task<PagedResult<PcCashDto>> QueryAsync(PcCashQueryDto query);
+    Task<PagedResult<PcCash>> QueryAsync(PcCashQueryParams query);
     Task<PcCash> CreateAsync(PcCash entity);
     Task<PcCash> UpdateAsync(PcCash entity);
     Task DeleteAsync(long tKey);

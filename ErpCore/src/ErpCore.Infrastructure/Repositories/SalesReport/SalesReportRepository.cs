@@ -1,10 +1,12 @@
 using System.Data;
+using System.Linq;
 using Dapper;
 using ErpCore.Domain.Entities.SalesReport;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using SalesReportEntity = ErpCore.Domain.Entities.SalesReport.SalesReport;
 
 namespace ErpCore.Infrastructure.Repositories.SalesReport;
 
@@ -19,7 +21,7 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
     {
     }
 
-    public async Task<SalesReport?> GetByIdAsync(string reportId)
+    public async Task<SalesReportEntity?> GetByIdAsync(string reportId)
     {
         try
         {
@@ -27,7 +29,7 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
                 SELECT * FROM SalesReports 
                 WHERE ReportId = @ReportId";
 
-            return await QueryFirstOrDefaultAsync<SalesReport>(sql, new { ReportId = reportId });
+            return await QueryFirstOrDefaultAsync<SalesReportEntity>(sql, new { ReportId = reportId });
         }
         catch (Exception ex)
         {
@@ -36,7 +38,7 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
         }
     }
 
-    public async Task<PagedResult<SalesReport>> QueryAsync(SalesReportQuery query)
+    public async Task<PagedResult<SalesReportEntity>> QueryAsync(SalesReportQuery query)
     {
         try
         {
@@ -87,11 +89,11 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
             parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<SalesReport>(sql, parameters);
+            var items = await QueryAsync<SalesReportEntity>(sql, parameters);
 
-            return new PagedResult<SalesReport>
+            return new PagedResult<SalesReportEntity>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
@@ -104,7 +106,7 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
         }
     }
 
-    public async Task<SalesReport> CreateAsync(SalesReport report)
+    public async Task<SalesReportEntity> CreateAsync(SalesReportEntity report)
     {
         try
         {
@@ -124,7 +126,7 @@ public class SalesReportRepository : BaseRepository, ISalesReportRepository
         }
     }
 
-    public async Task<SalesReport> UpdateAsync(SalesReport report)
+    public async Task<SalesReportEntity> UpdateAsync(SalesReportEntity report)
     {
         try
         {

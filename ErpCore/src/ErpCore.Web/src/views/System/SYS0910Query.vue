@@ -143,6 +143,7 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { ArrowDown } from '@element-plus/icons-vue'
 import { queryUsersGet, queryUserById, exportUserQuery } from '@/api/users'
 
 // 查詢表單
@@ -324,7 +325,7 @@ const handlePageChange = (page) => {
 }
 
 // 匯出
-const handleExport = async () => {
+const handleExport = async (format = 'excel') => {
   try {
     loading.value = true
     const params = {
@@ -340,16 +341,20 @@ const handleExport = async () => {
       Title: queryForm.Title || undefined,
       ShopId: queryForm.ShopId || undefined
     }
-    const response = await exportUserQuery(params, 'excel')
+    const response = await exportUserQuery(params, format)
     
     // 創建下載連結
-    const blob = new Blob([response], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    })
+    const contentType = format === 'pdf'
+      ? 'application/pdf'
+      : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    const fileExtension = format === 'pdf' ? 'pdf' : 'xlsx'
+    const fileName = `使用者查詢結果_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.${fileExtension}`
+    
+    const blob = new Blob([response], { type: contentType })
     const url = window.URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `使用者查詢結果_${new Date().toISOString().slice(0, 10)}.xlsx`
+    link.download = fileName
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)

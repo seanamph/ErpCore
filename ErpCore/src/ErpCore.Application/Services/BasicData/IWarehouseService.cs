@@ -43,4 +43,3 @@ public interface IWarehouseService
     /// </summary>
     Task UpdateStatusAsync(string warehouseId, UpdateWarehouseStatusDto dto);
 }
-

@@ -16,7 +16,7 @@ public interface IRegionService
     /// <summary>
     /// 查詢單筆地區
     /// </summary>
-    Task<RegionDto> GetRegionByIdAsync(string regionId);
+    Task<RegionDto> GetRegionAsync(string regionId);
 
     /// <summary>
     /// 新增地區
@@ -38,4 +38,3 @@ public interface IRegionService
     /// </summary>
     Task DeleteRegionsBatchAsync(BatchDeleteRegionDto dto);
 }
-

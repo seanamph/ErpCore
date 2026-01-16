@@ -144,8 +144,8 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="24">
-            <el-form-item label="備註" prop="Memo">
-              <el-input v-model="formData.Memo" type="textarea" :rows="3" placeholder="請輸入備註" />
+            <el-form-item label="備註" prop="Notes">
+              <el-input v-model="formData.Notes" type="textarea" :rows="3" placeholder="請輸入備註" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -259,14 +259,17 @@ export default {
       Object.assign(formData, {
         SupplierId: '',
         SupplierName: '',
+        SupplierNameE: '',
         ContactPerson: '',
         Phone: '',
         Email: '',
         Fax: '',
         Address: '',
+        PaymentTerms: '',
         TaxId: '',
         Status: 'A',
-        Memo: ''
+        Rating: '',
+        Notes: ''
       })
     }
 

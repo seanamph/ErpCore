@@ -4,6 +4,7 @@ using ErpCore.Application.Services.Base;
 using ErpCore.Application.Services.Loyalty;
 using ErpCore.Domain.Entities.Kiosk;
 using ErpCore.Infrastructure.Repositories.Kiosk;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using System.Text.Json;
 using System.Security.Cryptography;

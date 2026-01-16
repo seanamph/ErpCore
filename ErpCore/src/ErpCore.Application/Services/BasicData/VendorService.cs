@@ -1,7 +1,6 @@
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -14,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class VendorService : BaseService, IVendorService
 {
     private readonly IVendorRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public VendorService(
         IVendorRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<VendorDto>> GetVendorsAsync(VendorQueryDto query)
@@ -46,7 +42,42 @@ public class VendorService : BaseService, IVendorService
 
             var result = await _repository.QueryAsync(repositoryQuery);
 
-            var dtos = result.Items.Select(x => MapToDto(x)).ToList();
+            var dtos = result.Items.Select(x => new VendorDto
+            {
+                VendorId = x.VendorId,
+                GuiId = x.GuiId,
+                GuiType = x.GuiType,
+                VendorName = x.VendorName,
+                VendorNameE = x.VendorNameE,
+                VendorNameS = x.VendorNameS,
+                Mcode = x.Mcode,
+                VendorRegAddr = x.VendorRegAddr,
+                TaxAddr = x.TaxAddr,
+                VendorRegTel = x.VendorRegTel,
+                VendorFax = x.VendorFax,
+                VendorEmail = x.VendorEmail,
+                InvEmail = x.InvEmail,
+                ChargeStaff = x.ChargeStaff,
+                ChargeTitle = x.ChargeTitle,
+                ChargePid = x.ChargePid,
+                ChargeTel = x.ChargeTel,
+                ChargeAddr = x.ChargeAddr,
+                ChargeEmail = x.ChargeEmail,
+                Status = x.Status,
+                SysId = x.SysId,
+                PayType = x.PayType,
+                SuplBankId = x.SuplBankId,
+                SuplBankAcct = x.SuplBankAcct,
+                SuplAcctName = x.SuplAcctName,
+                TicketBe = x.TicketBe,
+                CheckTitle = x.CheckTitle,
+                OrgId = x.OrgId,
+                Notes = x.Notes,
+                CreatedBy = x.CreatedBy,
+                CreatedAt = x.CreatedAt,
+                UpdatedBy = x.UpdatedBy,
+                UpdatedAt = x.UpdatedAt
+            }).ToList();
 
             return new PagedResult<VendorDto>
             {
@@ -73,7 +104,42 @@ public class VendorService : BaseService, IVendorService
                 throw new InvalidOperationException($"廠商不存在: {vendorId}");
             }
 
-            return MapToDto(entity);
+            return new VendorDto
+            {
+                VendorId = entity.VendorId,
+                GuiId = entity.GuiId,
+                GuiType = entity.GuiType,
+                VendorName = entity.VendorName,
+                VendorNameE = entity.VendorNameE,
+                VendorNameS = entity.VendorNameS,
+                Mcode = entity.Mcode,
+                VendorRegAddr = entity.VendorRegAddr,
+                TaxAddr = entity.TaxAddr,
+                VendorRegTel = entity.VendorRegTel,
+                VendorFax = entity.VendorFax,
+                VendorEmail = entity.VendorEmail,
+                InvEmail = entity.InvEmail,
+                ChargeStaff = entity.ChargeStaff,
+                ChargeTitle = entity.ChargeTitle,
+                ChargePid = entity.ChargePid,
+                ChargeTel = entity.ChargeTel,
+                ChargeAddr = entity.ChargeAddr,
+                ChargeEmail = entity.ChargeEmail,
+                Status = entity.Status,
+                SysId = entity.SysId,
+                PayType = entity.PayType,
+                SuplBankId = entity.SuplBankId,
+                SuplBankAcct = entity.SuplBankAcct,
+                SuplAcctName = entity.SuplAcctName,
+                TicketBe = entity.TicketBe,
+                CheckTitle = entity.CheckTitle,
+                OrgId = entity.OrgId,
+                Notes = entity.Notes,
+                CreatedBy = entity.CreatedBy,
+                CreatedAt = entity.CreatedAt,
+                UpdatedBy = entity.UpdatedBy,
+                UpdatedAt = entity.UpdatedAt
+            };
         }
         catch (Exception ex)
         {
@@ -148,8 +214,8 @@ public class VendorService : BaseService, IVendorService
                 ChargeTel = dto.ChargeTel,
                 ChargeAddr = dto.ChargeAddr,
                 ChargeEmail = dto.ChargeEmail,
-                Status = dto.Status,
-                SysId = dto.SysId,
+                Status = dto.Status ?? "A",
+                SysId = dto.SysId ?? "1",
                 PayType = dto.PayType,
                 SuplBankId = dto.SuplBankId,
                 SuplBankAcct = dto.SuplBankAcct,
@@ -161,7 +227,9 @@ public class VendorService : BaseService, IVendorService
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -202,8 +270,8 @@ public class VendorService : BaseService, IVendorService
             entity.ChargeTel = dto.ChargeTel;
             entity.ChargeAddr = dto.ChargeAddr;
             entity.ChargeEmail = dto.ChargeEmail;
-            entity.Status = dto.Status;
-            entity.SysId = dto.SysId;
+            entity.Status = dto.Status ?? "A";
+            entity.SysId = dto.SysId ?? "1";
             entity.PayType = dto.PayType;
             entity.SuplBankId = dto.SuplBankId;
             entity.SuplBankAcct = dto.SuplBankAcct;
@@ -274,51 +342,21 @@ public class VendorService : BaseService, IVendorService
         }
     }
 
-    private VendorDto MapToDto(Vendor entity)
-    {
-        return new VendorDto
-        {
-            VendorId = entity.VendorId,
-            GuiId = entity.GuiId,
-            GuiType = entity.GuiType,
-            VendorName = entity.VendorName,
-            VendorNameE = entity.VendorNameE,
-            VendorNameS = entity.VendorNameS,
-            Mcode = entity.Mcode,
-            VendorRegAddr = entity.VendorRegAddr,
-            TaxAddr = entity.TaxAddr,
-            VendorRegTel = entity.VendorRegTel,
-            VendorFax = entity.VendorFax,
-            VendorEmail = entity.VendorEmail,
-            InvEmail = entity.InvEmail,
-            ChargeStaff = entity.ChargeStaff,
-            ChargeTitle = entity.ChargeTitle,
-            ChargePid = entity.ChargePid,
-            ChargeTel = entity.ChargeTel,
-            ChargeAddr = entity.ChargeAddr,
-            ChargeEmail = entity.ChargeEmail,
-            Status = entity.Status,
-            SysId = entity.SysId,
-            PayType = entity.PayType,
-            SuplBankId = entity.SuplBankId,
-            SuplBankAcct = entity.SuplBankAcct,
-            SuplAcctName = entity.SuplAcctName,
-            TicketBe = entity.TicketBe,
-            CheckTitle = entity.CheckTitle,
-            OrgId = entity.OrgId,
-            Notes = entity.Notes,
-            CreatedBy = entity.CreatedBy,
-            CreatedAt = entity.CreatedAt,
-            UpdatedBy = entity.UpdatedBy,
-            UpdatedAt = entity.UpdatedAt
-        };
-    }
-
     private void ValidateCreateDto(CreateVendorDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.GuiId))
         {
-            throw new ArgumentException("統一編號不能為空");
+            throw new ArgumentException("統一編號/身份證字號/自編編號不能為空");
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.GuiType))
+        {
+            throw new ArgumentException("識別類型不能為空");
+        }
+
+        if (dto.GuiType != "1" && dto.GuiType != "2" && dto.GuiType != "3")
+        {
+            throw new ArgumentException("識別類型必須為 1 (統一編號)、2 (身份證字號) 或 3 (自編編號)");
         }
 
         if (string.IsNullOrWhiteSpace(dto.VendorName))
@@ -326,15 +364,9 @@ public class VendorService : BaseService, IVendorService
             throw new ArgumentException("廠商名稱不能為空");
         }
 
-        if (dto.GuiType != "1" && dto.GuiType != "2" && dto.GuiType != "3")
+        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "A" && dto.Status != "I")
         {
-            throw new ArgumentException("識別類型必須為 1(統一編號)、2(身份證字號) 或 3(自編編號)");
-        }
-
-        if (dto.Status != "A" && dto.Status != "I")
-        {
-            throw new ArgumentException("狀態值必須為 A(啟用) 或 I(停用)");
+            throw new ArgumentException("狀態值必須為 A (啟用) 或 I (停用)");
         }
     }
 }
-

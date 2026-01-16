@@ -445,8 +445,8 @@ public class StocktakingPlanService : BaseService, IStocktakingPlanService
                 throw new InvalidOperationException($"盤點計劃無明細資料: {planId}");
             }
 
-            // 產生庫存調整單
-            string adjustmentId;
+            // 產生庫存調整單（按店舖分組，每個店舖產生一個調整單）
+            var adjustmentIds = new List<string>();
             try
             {
                 var plan = await _repository.GetByIdAsync(planId);
@@ -455,36 +455,48 @@ public class StocktakingPlanService : BaseService, IStocktakingPlanService
                     throw new InvalidOperationException($"盤點計劃不存在: {planId}");
                 }
 
-                // 建立庫存調整單 DTO
-                var adjustmentDto = new CreateInventoryAdjustmentDto
-                {
-                    AdjustmentDate = DateTime.Now,
-                    ShopId = plan.ShopId,
-                    AdjustmentType = "STOCKTAKING", // 盤點調整
-                    AdjustmentUser = GetCurrentUserId(),
-                    Memo = $"盤點計劃: {planId}",
-                    SourceNo = planId,
-                    SourceNum = plan.PlanId,
-                    SourceCheckDate = plan.PlanDate,
-                    Details = detailsList.Select(d => new CreateInventoryAdjustmentDetailDto
-                    {
-                        GoodsId = d.GoodsId,
-                        BarcodeId = d.BarcodeId,
-                        AdjustmentQty = d.DifferenceQty, // 差異數量
-                        UnitCost = d.UnitCost,
-                        Reason = "盤點差異",
-                        Memo = $"盤點計劃: {planId}"
-                    }).ToList()
-                };
+                // 按店舖分組
+                var detailsByShop = detailsList.GroupBy(d => d.ShopId);
 
-                adjustmentId = await _stockAdjustmentService.CreateInventoryAdjustmentAsync(adjustmentDto);
-                _logger.LogInfo($"產生庫存調整單成功: PlanId={planId}, AdjustmentId={adjustmentId}");
+                foreach (var shopGroup in detailsByShop)
+                {
+                    var shopId = shopGroup.Key;
+                    var shopDetails = shopGroup.ToList();
+
+                    // 建立庫存調整單 DTO
+                    var adjustmentDto = new CreateInventoryAdjustmentDto
+                    {
+                        AdjustmentDate = DateTime.Now,
+                        ShopId = shopId,
+                        AdjustmentType = "STOCKTAKING", // 盤點調整
+                        AdjustmentUser = GetCurrentUserId(),
+                        Memo = $"盤點計劃: {planId}",
+                        SourceNo = planId,
+                        SourceNum = plan.PlanId,
+                        SourceCheckDate = plan.PlanDate,
+                        Details = shopDetails.Select(d => new CreateInventoryAdjustmentDetailDto
+                        {
+                            GoodsId = d.GoodsId,
+                            BarcodeId = null, // StocktakingDetail 沒有 BarcodeId
+                            AdjustmentQty = d.DiffQty, // 差異數量
+                            UnitCost = d.UnitCost,
+                            Reason = "盤點差異",
+                            Memo = $"盤點計劃: {planId}"
+                        }).ToList()
+                    };
+
+                    var adjustmentId = await _stockAdjustmentService.CreateInventoryAdjustmentAsync(adjustmentDto);
+                    adjustmentIds.Add(adjustmentId);
+                    _logger.LogInfo($"產生庫存調整單成功: PlanId={planId}, ShopId={shopId}, AdjustmentId={adjustmentId}");
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError($"產生庫存調整單失敗: PlanId={planId}", ex);
                 throw new InvalidOperationException($"產生庫存調整單失敗: {ex.Message}", ex);
             }
+
+            var adjustmentId = adjustmentIds.FirstOrDefault() ?? string.Empty;
 
             using var connection = _connectionFactory.CreateConnection();
             connection.Open();
@@ -504,8 +516,8 @@ public class StocktakingPlanService : BaseService, IStocktakingPlanService
                 await transaction.Connection!.ExecuteAsync(sql, new { PlanId = planId }, transaction);
 
                 transaction.Commit();
-                _logger.LogInfo($"確認盤點結果成功: PlanId={planId}, AdjustmentId={adjustmentId}");
-                return adjustmentId;
+                _logger.LogInfo($"確認盤點結果成功: PlanId={planId}, AdjustmentIds={string.Join(",", adjustmentIds)}");
+                return adjustmentId; // 返回第一個調整單ID
             }
             catch
             {

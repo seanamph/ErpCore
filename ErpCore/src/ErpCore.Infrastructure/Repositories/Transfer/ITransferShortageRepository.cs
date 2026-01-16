@@ -1,9 +1,10 @@
+using System.Data;
 using ErpCore.Domain.Entities.Transfer;
 
 namespace ErpCore.Infrastructure.Repositories.Transfer;
 
 /// <summary>
-/// 調撥短溢單 Repository 介面
+/// 調撥短溢單 Repository 介面 (SYSW384)
 /// </summary>
 public interface ITransferShortageRepository
 {
@@ -15,7 +16,7 @@ public interface ITransferShortageRepository
     Task<string> CreateAsync(TransferShortage entity, List<TransferShortageDetail> details);
     Task UpdateAsync(TransferShortage entity, List<TransferShortageDetail> details);
     Task DeleteAsync(string shortageId);
-    Task UpdateStatusAsync(string shortageId, string status, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string shortageId, string status, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateShortageIdAsync();
 }
 
@@ -26,6 +27,7 @@ public class TransferShortageQuery
 {
     public string? ShortageId { get; set; }
     public string? TransferId { get; set; }
+    public string? ReceiptId { get; set; }
     public string? FromShopId { get; set; }
     public string? ToShopId { get; set; }
     public string? Status { get; set; }

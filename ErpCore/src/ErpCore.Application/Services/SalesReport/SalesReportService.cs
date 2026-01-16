@@ -209,7 +209,7 @@ public class SalesReportService : BaseService, ISalesReportService
         }
     }
 
-    private SalesReportDto MapToDto(SalesReport entity)
+    private SalesReportDto MapToDto(ErpCore.Domain.Entities.SalesReport.SalesReport entity)
     {
         return new SalesReportDto
         {

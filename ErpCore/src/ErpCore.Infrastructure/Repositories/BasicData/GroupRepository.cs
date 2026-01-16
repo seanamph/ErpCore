@@ -40,44 +40,43 @@ public class GroupRepository : BaseRepository, IGroupRepository
         try
         {
             var sql = @"
-                SELECT g.* 
-                FROM Groups g
+                SELECT * FROM Groups
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
 
             if (!string.IsNullOrEmpty(query.GroupId))
             {
-                sql += " AND g.GroupId LIKE @GroupId";
+                sql += " AND GroupId LIKE @GroupId";
                 parameters.Add("GroupId", $"%{query.GroupId}%");
             }
 
             if (!string.IsNullOrEmpty(query.GroupName))
             {
-                sql += " AND g.GroupName LIKE @GroupName";
+                sql += " AND GroupName LIKE @GroupName";
                 parameters.Add("GroupName", $"%{query.GroupName}%");
             }
 
             if (!string.IsNullOrEmpty(query.DeptId))
             {
-                sql += " AND g.DeptId = @DeptId";
+                sql += " AND DeptId = @DeptId";
                 parameters.Add("DeptId", query.DeptId);
             }
 
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                sql += " AND g.OrgId = @OrgId";
+                sql += " AND OrgId = @OrgId";
                 parameters.Add("OrgId", query.OrgId);
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
-                sql += " AND g.Status = @Status";
+                sql += " AND Status = @Status";
                 parameters.Add("Status", query.Status);
             }
 
             // 排序
-            var sortField = string.IsNullOrEmpty(query.SortField) ? "g.GroupId" : $"g.{query.SortField}";
+            var sortField = string.IsNullOrEmpty(query.SortField) ? "GroupId" : query.SortField;
             var sortOrder = string.IsNullOrEmpty(query.SortOrder) || query.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC";
             sql += $" ORDER BY {sortField} {sortOrder}";
 
@@ -91,33 +90,33 @@ public class GroupRepository : BaseRepository, IGroupRepository
 
             // 查詢總數
             var countSql = @"
-                SELECT COUNT(*) FROM Groups g
+                SELECT COUNT(*) FROM Groups
                 WHERE 1=1";
 
             var countParameters = new DynamicParameters();
             if (!string.IsNullOrEmpty(query.GroupId))
             {
-                countSql += " AND g.GroupId LIKE @GroupId";
+                countSql += " AND GroupId LIKE @GroupId";
                 countParameters.Add("GroupId", $"%{query.GroupId}%");
             }
             if (!string.IsNullOrEmpty(query.GroupName))
             {
-                countSql += " AND g.GroupName LIKE @GroupName";
+                countSql += " AND GroupName LIKE @GroupName";
                 countParameters.Add("GroupName", $"%{query.GroupName}%");
             }
             if (!string.IsNullOrEmpty(query.DeptId))
             {
-                countSql += " AND g.DeptId = @DeptId";
+                countSql += " AND DeptId = @DeptId";
                 countParameters.Add("DeptId", query.DeptId);
             }
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                countSql += " AND g.OrgId = @OrgId";
+                countSql += " AND OrgId = @OrgId";
                 countParameters.Add("OrgId", query.OrgId);
             }
             if (!string.IsNullOrEmpty(query.Status))
             {
-                countSql += " AND g.Status = @Status";
+                countSql += " AND Status = @Status";
                 countParameters.Add("Status", query.Status);
             }
 
@@ -235,4 +234,3 @@ public class GroupRepository : BaseRepository, IGroupRepository
         }
     }
 }
-

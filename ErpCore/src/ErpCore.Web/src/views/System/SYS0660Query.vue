@@ -18,7 +18,7 @@
           <el-button 
             type="primary" 
             icon="Search" 
-            @click="openUserListDialog"
+            @click="openUserListDialog('changeUser')"
             style="margin-left: 10px"
           >
             選擇
@@ -38,6 +38,12 @@
             placeholder="請輸入作業代碼"
             clearable
             style="width: 200px"
+          />
+          <el-input 
+            v-model="programName" 
+            readonly 
+            style="width: 200px; margin-left: 10px"
+            placeholder="作業名稱"
           />
         </el-form-item>
         
@@ -75,6 +81,7 @@
             </span>
             <span v-if="queryForm.ProgramId">
               作業代碼: <strong>{{ queryForm.ProgramId }}</strong>
+              <span v-if="programName">，作業名稱: <strong>{{ programName }}</strong></span>
             </span>
             <span v-if="dateRange && dateRange.length === 2">
               日期範圍: <strong>{{ dateRange[0] }} ~ {{ dateRange[1] }}</strong>
@@ -148,9 +155,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 import { changeLogsApi } from '@/api/changeLogs'
+import { getProgramById } from '@/api/programs'
 import MultiUserListDialog from '@/components/MultiUserListDialog.vue'
 import dayjs from 'dayjs'
 
@@ -166,8 +174,9 @@ const queryForm = reactive({
 // 日期範圍
 const dateRange = ref([])
 
-// 使用者名稱
+// 使用者名稱和作業名稱
 const changeUserName = ref('')
+const programName = ref('')
 
 // 查詢結果
 const changeLogList = ref([])
@@ -184,6 +193,7 @@ const pagination = reactive({
 
 // 選擇對話框
 const userListDialogVisible = ref(false)
+const currentUserType = ref('') // 'changeUser'
 
 // 表單驗證規則
 const rules = {
@@ -191,6 +201,27 @@ const rules = {
     { required: true, message: '請選擇日期範圍', trigger: 'change' }
   ]
 }
+
+// 監聽作業代碼變化，自動載入作業名稱
+watch(() => queryForm.ProgramId, async (newValue) => {
+  if (newValue) {
+    try {
+      const response = await getProgramById(newValue)
+      if (response.data?.Success && response.data?.Data) {
+        programName.value = response.data.Data.ProgramName || ''
+      } else if (response.data?.Data?.ProgramName) {
+        programName.value = response.data.Data.ProgramName
+      } else {
+        programName.value = ''
+      }
+    } catch (error) {
+      // 如果查詢失敗，清空作業名稱
+      programName.value = ''
+    }
+  } else {
+    programName.value = ''
+  }
+})
 
 // 格式化日期時間
 const formatDateTime = (dateTime) => {
@@ -212,7 +243,8 @@ const detailTableData = (item) => {
 }
 
 // 打開使用者列表對話框
-const openUserListDialog = () => {
+const openUserListDialog = (type) => {
+  currentUserType.value = type
   userListDialogVisible.value = true
 }
 
@@ -220,8 +252,10 @@ const openUserListDialog = () => {
 const handleUserSelected = (users) => {
   if (users && users.length > 0) {
     const user = users[0]
-    queryForm.ChangeUserId = user.UserId
-    changeUserName.value = user.UserName || ''
+    if (currentUserType.value === 'changeUser') {
+      queryForm.ChangeUserId = user.UserId
+      changeUserName.value = user.UserName || ''
+    }
   }
   userListDialogVisible.value = false
 }
@@ -284,6 +318,7 @@ const handleReset = () => {
   queryForm.ProgramId = ''
   dateRange.value = []
   changeUserName.value = ''
+  programName.value = ''
   changeLogList.value = []
   activeNames.value = []
   hasSearched.value = false

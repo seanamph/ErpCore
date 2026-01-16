@@ -1,4 +1,4 @@
-using System.Data;
+using global::System.Data;
 using Dapper;
 using ErpCore.Domain.Entities.InventoryCheck;
 using ErpCore.Infrastructure.Data;

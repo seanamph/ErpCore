@@ -40,4 +40,3 @@ export const groupsApi = {
     return axios.put(`/groups/${groupId}/status`, data)
   }
 }
-

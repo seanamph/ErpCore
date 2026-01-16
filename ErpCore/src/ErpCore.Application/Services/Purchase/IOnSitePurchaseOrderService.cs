@@ -39,8 +39,17 @@ public interface IOnSitePurchaseOrderService
     Task SubmitOnSitePurchaseOrderAsync(string orderId);
 
     /// <summary>
-    /// 根據條碼查詢商品資訊
+    /// 審核現場打單申請單
+    /// </summary>
+    Task ApproveOnSitePurchaseOrderAsync(string orderId);
+
+    /// <summary>
+    /// 取消現場打單申請單
+    /// </summary>
+    Task CancelOnSitePurchaseOrderAsync(string orderId);
+
+    /// <summary>
+    /// 根據條碼查詢商品資訊（現場打單專用）
     /// </summary>
     Task<GoodsByBarcodeDto> GetGoodsByBarcodeAsync(string barcode);
 }
-

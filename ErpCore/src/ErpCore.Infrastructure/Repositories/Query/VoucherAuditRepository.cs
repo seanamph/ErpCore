@@ -5,7 +5,6 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
-using ErpCore.Application.DTOs.Query;
 
 namespace ErpCore.Infrastructure.Repositories.Query;
 
@@ -54,7 +53,7 @@ public class VoucherAuditRepository : BaseRepository, IVoucherAuditRepository
         }
     }
 
-    public async Task<PagedResult<VoucherAuditDto>> QueryAsync(VoucherAuditQueryDto query)
+    public async Task<PagedResult<VoucherAudit>> QueryAsync(VoucherAuditQueryParams query)
     {
         try
         {
@@ -101,7 +100,7 @@ public class VoucherAuditRepository : BaseRepository, IVoucherAuditRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<VoucherAuditDto>(sql, parameters);
+            var items = await QueryAsync<VoucherAudit>(sql, parameters);
 
             // 查詢總數
             var countSql = @"SELECT COUNT(*) FROM VoucherAudit va WHERE 1=1";
@@ -133,7 +132,7 @@ public class VoucherAuditRepository : BaseRepository, IVoucherAuditRepository
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<VoucherAuditDto>
+            return new PagedResult<VoucherAudit>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,

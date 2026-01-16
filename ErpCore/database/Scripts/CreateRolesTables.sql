@@ -1,8 +1,5 @@
--- =============================================
--- 角色基本資料維護資料表建立腳本
--- 功能代碼: SYS0210
--- 建立日期: 2024-01-01
--- =============================================
+-- SYS0210 - 角色基本資料維護作業
+-- 建立 Roles 相關資料表
 
 -- 1. 建立 Roles 主表
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Roles]') AND type in (N'U'))
@@ -31,7 +28,7 @@ BEGIN
 END
 GO
 
--- 2. 建立 UserRoles 使用者角色對應表 (SYS0220)
+-- 2. 建立 UserRoles 資料表（使用者角色對應）
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserRoles]') AND type in (N'U'))
 BEGIN
     CREATE TABLE [dbo].[UserRoles] (
@@ -39,10 +36,6 @@ BEGIN
         [RoleId] NVARCHAR(50) NOT NULL, -- 角色代碼
         [CreatedBy] NVARCHAR(50) NULL, -- 建立者
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
-        [UpdatedBy] NVARCHAR(50) NULL, -- 更新者
-        [UpdatedAt] DATETIME2 NULL, -- 更新時間
-        [CreatedPriority] INT NULL, -- 建立者等級
-        [CreatedGroup] NVARCHAR(50) NULL, -- 建立者群組
         CONSTRAINT [PK_UserRoles] PRIMARY KEY CLUSTERED ([UserId], [RoleId]),
         CONSTRAINT [FK_UserRoles_Users] FOREIGN KEY ([UserId]) REFERENCES [dbo].[Users] ([UserId]) ON DELETE CASCADE,
         CONSTRAINT [FK_UserRoles_Roles] FOREIGN KEY ([RoleId]) REFERENCES [dbo].[Roles] ([RoleId]) ON DELETE CASCADE
@@ -56,41 +49,16 @@ BEGIN
 END
 ELSE
 BEGIN
-    -- 如果表已存在，檢查並添加缺失的欄位
-    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[UserRoles]') AND name = 'UpdatedBy')
-    BEGIN
-        ALTER TABLE [dbo].[UserRoles] ADD [UpdatedBy] NVARCHAR(50) NULL;
-        PRINT 'UserRoles 資料表已添加 UpdatedBy 欄位';
-    END
-
-    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[UserRoles]') AND name = 'UpdatedAt')
-    BEGIN
-        ALTER TABLE [dbo].[UserRoles] ADD [UpdatedAt] DATETIME2 NULL;
-        PRINT 'UserRoles 資料表已添加 UpdatedAt 欄位';
-    END
-
-    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[UserRoles]') AND name = 'CreatedPriority')
-    BEGIN
-        ALTER TABLE [dbo].[UserRoles] ADD [CreatedPriority] INT NULL;
-        PRINT 'UserRoles 資料表已添加 CreatedPriority 欄位';
-    END
-
-    IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID(N'[dbo].[UserRoles]') AND name = 'CreatedGroup')
-    BEGIN
-        ALTER TABLE [dbo].[UserRoles] ADD [CreatedGroup] NVARCHAR(50) NULL;
-        PRINT 'UserRoles 資料表已添加 CreatedGroup 欄位';
-    END
-
-    PRINT 'UserRoles 資料表已存在，欄位檢查完成';
+    PRINT 'UserRoles 資料表已存在';
 END
 GO
 
--- 3. 建立 RolePermissions 角色權限對應表
+-- 3. 建立 RolePermissions 資料表（角色權限對應）
 IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RolePermissions]') AND type in (N'U'))
 BEGIN
     CREATE TABLE [dbo].[RolePermissions] (
         [RoleId] NVARCHAR(50) NOT NULL, -- 角色代碼
-        [SystemId] NVARCHAR(50) NOT NULL, -- 系統代碼
+        [SystemId] NVARCHAR(50) NOT NULL, -- 主系統代碼
         [ProgramId] NVARCHAR(50) NOT NULL, -- 作業代碼
         [CreatedBy] NVARCHAR(50) NULL, -- 建立者
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(), -- 建立時間
@@ -110,4 +78,3 @@ BEGIN
     PRINT 'RolePermissions 資料表已存在';
 END
 GO
-

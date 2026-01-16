@@ -1,5 +1,5 @@
 <template>
-  <div class="role-user-report">
+  <div class="role-user-list-report">
     <div class="page-header">
       <h1>角色之使用者列表 (SYS0750)</h1>
     </div>
@@ -36,35 +36,34 @@
         <div class="result-header">
           <span>查詢結果</span>
           <div class="role-info">
-            <span>角色代碼：{{ roleUserData.RoleId }}</span>
-            <span>角色名稱：{{ roleUserData.RoleName }}</span>
+            <span>角色代碼：{{ roleData.roleId || roleData.RoleId }}</span>
+            <span>角色名稱：{{ roleData.roleName || roleData.RoleName }}</span>
           </div>
         </div>
       </template>
 
       <!-- 使用者列表表格 -->
       <el-table
-        :data="roleUserData.Users"
+        :data="tableData"
         v-loading="loading"
         border
         stripe
         style="width: 100%"
       >
         <el-table-column type="index" label="序號" width="60" />
-        <el-table-column prop="UserId" label="使用者代碼" width="120" />
-        <el-table-column prop="UserName" label="使用者名稱" width="150" />
-        <el-table-column prop="UserTypeName" label="使用者型態" width="120" />
-        <el-table-column prop="StatusName" label="帳號狀態" width="100" />
-        <el-table-column prop="Title" label="職稱" width="120" />
-        <el-table-column prop="OrgId" label="組織代碼" width="120" />
-        <el-table-column prop="OrgName" label="組織名稱" width="200" />
+        <el-table-column prop="userId" label="使用者代碼" width="120" />
+        <el-table-column prop="userName" label="使用者名稱" width="200" />
+        <el-table-column prop="userTypeName" label="使用者型態" width="120" />
+        <el-table-column prop="statusName" label="帳號狀態" width="100" />
+        <el-table-column prop="title" label="職稱" width="150" />
+        <el-table-column prop="orgName" label="組織" width="200" />
         <el-table-column label="操作" width="100" fixed="right">
           <template #default="scope">
             <el-button
               type="danger"
               size="small"
               @click="handleDelete(scope.row)"
-              :loading="deleting[scope.row.UserId]"
+              :loading="deleting[scope.row.userId]"
             >
               刪除
             </el-button>
@@ -76,17 +75,17 @@
 </template>
 
 <script>
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { roleUserApi } from '@/api/systemPermission'
-import { getRoles } from '@/api/roles'
+import { rolesApi } from '@/api/roles'
 
 export default {
   name: 'RoleUserListReport',
   setup() {
     const queryFormRef = ref(null)
     const loading = ref(false)
-    const roleUserData = ref(null)
+    const roleData = ref(null)
     const deleting = ref({})
 
     // 查詢表單
@@ -102,12 +101,34 @@ export default {
     }
 
     // 是否有資料
-    const hasData = computed(() => roleUserData.value !== null && roleUserData.value.Users && roleUserData.value.Users.length > 0)
+    const hasData = computed(() => {
+      if (!roleData.value) return false
+      const users = roleData.value.users || roleData.value.Users || []
+      return users.length > 0
+    })
+
+    // 表格資料
+    const tableData = computed(() => {
+      if (!roleData.value || !roleData.value.Users) {
+        return []
+      }
+      return roleData.value.Users.map(user => ({
+        userId: user.userId || user.UserId,
+        userName: user.userName || user.UserName,
+        userType: user.userType || user.UserType,
+        userTypeName: user.userTypeName || user.UserTypeName,
+        status: user.status || user.Status,
+        statusName: user.statusName || user.StatusName,
+        title: user.title || user.Title || '',
+        orgId: user.orgId || user.OrgId || '',
+        orgName: user.orgName || user.OrgName || ''
+      }))
+    })
 
     // 搜尋角色（自動完成）
     const searchRoles = async (queryString, cb) => {
       try {
-        const response = await getRoles({
+        const response = await rolesApi.getRoles({
           PageIndex: 1,
           PageSize: 50,
           RoleId: queryString || undefined,
@@ -155,33 +176,33 @@ export default {
 
       loading.value = true
       try {
-        const params = { RoleId: queryForm.RoleId }
+        const params = { roleId: queryForm.RoleId }
         const response = await roleUserApi.getList(params)
         // 處理不同的響應格式
         if (response && response.data) {
           if (response.data.success && response.data.data) {
-            roleUserData.value = response.data.data
+            roleData.value = response.data.data
             ElMessage.success('查詢成功')
           } else if (response.data.Data) {
             // 兼容舊格式
-            roleUserData.value = response.data.Data
+            roleData.value = response.data.Data
             ElMessage.success('查詢成功')
           } else {
             ElMessage.warning(response.data.message || '查詢無資料')
-            roleUserData.value = null
+            roleData.value = null
           }
         } else if (response && response.Data) {
           // 兼容舊格式
-          roleUserData.value = response.Data
+          roleData.value = response.Data
           ElMessage.success('查詢成功')
         } else {
           ElMessage.warning('查詢無資料')
-          roleUserData.value = null
+          roleData.value = null
         }
       } catch (error) {
         console.error('查詢失敗:', error)
         ElMessage.error('查詢失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
-        roleUserData.value = null
+        roleData.value = null
       } finally {
         loading.value = false
       }
@@ -202,14 +223,14 @@ export default {
       if (queryFormRef.value) {
         queryFormRef.value.resetFields()
       }
-      roleUserData.value = null
+      roleData.value = null
     }
 
     // 刪除使用者角色對應
     const handleDelete = async (row) => {
       try {
         await ElMessageBox.confirm(
-          `確定要刪除使用者「${row.UserName}」的角色對應嗎？`,
+          `確定要刪除使用者「${row.userName}」與角色「${queryForm.RoleId}」的對應關係嗎？`,
           '確認刪除',
           {
             confirmButtonText: '確定',
@@ -218,22 +239,19 @@ export default {
           }
         )
 
-        deleting.value[row.UserId] = true
+        deleting.value[row.userId] = true
         try {
-          await roleUserApi.deleteRoleUser(queryForm.RoleId, row.UserId)
+          await roleUserApi.deleteRoleUser(queryForm.RoleId, row.userId)
           ElMessage.success('刪除成功')
           // 重新載入資料
           await loadData()
-        } catch (error) {
-          console.error('刪除失敗:', error)
-          ElMessage.error('刪除失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
         } finally {
-          deleting.value[row.UserId] = false
+          deleting.value[row.userId] = false
         }
       } catch (error) {
-        // 使用者取消
         if (error !== 'cancel') {
-          console.error('刪除確認失敗:', error)
+          console.error('刪除失敗:', error)
+          ElMessage.error('刪除失敗: ' + (error.response?.data?.message || error.message || '未知錯誤'))
         }
       }
     }
@@ -246,8 +264,8 @@ export default {
       }
       try {
         const data = {
-          Request: { RoleId: queryForm.RoleId },
-          ExportFormat: 'Excel'
+          request: { roleId: queryForm.RoleId },
+          exportFormat: 'Excel'
         }
         const response = await roleUserApi.exportReport(data)
         
@@ -282,8 +300,8 @@ export default {
       }
       try {
         const data = {
-          Request: { RoleId: queryForm.RoleId },
-          ExportFormat: 'PDF'
+          request: { roleId: queryForm.RoleId },
+          exportFormat: 'PDF'
         }
         const response = await roleUserApi.exportReport(data)
         
@@ -313,11 +331,12 @@ export default {
     return {
       queryFormRef,
       loading,
-      roleUserData,
+      roleData,
       deleting,
       queryForm,
       queryRules,
       hasData,
+      tableData,
       searchRoles,
       handleRoleSelect,
       handleSearch,
@@ -333,7 +352,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/styles/variables.scss';
 
-.role-user-report {
+.role-user-list-report {
   .page-header {
     margin-bottom: 20px;
     h1 {

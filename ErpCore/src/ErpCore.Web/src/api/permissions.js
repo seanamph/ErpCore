@@ -124,6 +124,31 @@ export const userPermissionsApi = {
   // 批量刪除使用者權限
   batchDeleteUserPermissions: (userId, data) => {
     return axios.delete(`/api/v1/users/${userId}/permissions/batch`, { data })
+  },
+
+  // 查詢使用者系統列表 (SYS0320)
+  getUserSystems: (userId) => {
+    return axios.get(`/api/v1/users/${userId}/permissions/systems`)
+  },
+
+  // 查詢使用者選單列表 (SYS0320)
+  getUserMenus: (userId, systemId) => {
+    return axios.get(`/api/v1/users/${userId}/permissions/menus`, { params: { systemId } })
+  },
+
+  // 查詢使用者作業列表 (SYS0320)
+  getUserPrograms: (userId, menuId) => {
+    return axios.get(`/api/v1/users/${userId}/permissions/programs`, { params: { menuId } })
+  },
+
+  // 查詢使用者按鈕列表 (SYS0320)
+  getUserButtons: (userId, programId) => {
+    return axios.get(`/api/v1/users/${userId}/permissions/buttons`, { params: { programId } })
+  },
+
+  // 修改使用者權限
+  updateUserPermission: (userId, tKey, data) => {
+    return axios.put(`/api/v1/users/${userId}/permissions/${tKey}`, data)
   }
 }
 
@@ -308,6 +333,24 @@ export const itemPermissionsApi = {
   // 批量刪除項目權限
   batchDeleteItemPermissions: (itemId, data) => {
     return axios.delete(`/api/v1/item-corresponds/${itemId}/permissions/batch`, { data })
+  }
+}
+
+/**
+ * 作業權限之使用者列表 API (SYS0720)
+ * 遵循 C# API 欄位命名 (PascalCase)
+ */
+export const programUserPermissionsApi = {
+  // 查詢作業權限之使用者列表
+  getProgramUserPermissionList: (params) => {
+    return axios.get('/api/v1/program-user-permissions/list', { params })
+  },
+
+  // 匯出作業權限之使用者報表
+  exportProgramUserPermissionReport: (data) => {
+    return axios.post('/api/v1/program-user-permissions/export', data, {
+      responseType: 'blob'
+    })
   }
 }
 

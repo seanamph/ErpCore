@@ -1,3 +1,5 @@
+using System.Data;
+using System.Text;
 using Dapper;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Infrastructure.Data;
@@ -245,7 +247,7 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
     {
         try
         {
-            var sql = new System.Text.StringBuilder(@"
+            var sql = new StringBuilder(@"
                 SELECT 
                     u.UserId,
                     u.UserName,
@@ -324,7 +326,7 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
         }
     }
 
-    public async Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null)
+    public async Task DeleteByRoleIdAsync(string roleId, IDbTransaction? transaction = null)
     {
         try
         {
@@ -346,7 +348,7 @@ public class UserRoleRepository : BaseRepository, IUserRoleRepository
         }
     }
 
-    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null)
+    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {

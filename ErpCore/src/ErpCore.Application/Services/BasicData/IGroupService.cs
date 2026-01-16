@@ -43,4 +43,3 @@ public interface IGroupService
     /// </summary>
     Task UpdateStatusAsync(string groupId, UpdateGroupStatusDto dto);
 }
-

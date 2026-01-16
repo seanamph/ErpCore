@@ -2,197 +2,29 @@
 
 ## 目前進度重點（最新更新：2025-01-27）
 
-### 📝 本次更新（2025-01-27）
-- ✅ **SYSW362 調撥單驗退作業功能開發完成**
-  - 開發依據：`開發計劃/05-調撥管理/SYSW362-調撥單驗退作業.md`
-  - 開發結果：功能已完整實現
-  - 已完成項目：
-    - ✅ Entity: `TransferReturn.cs` 和 `TransferReturnDetail.cs` (ErpCore.Domain.Entities.Transfer)
-    - ✅ Repository: `TransferReturnRepository.cs` 和 `ITransferReturnRepository.cs` (ErpCore.Infrastructure.Repositories.Transfer)
-    - ✅ Service: `TransferReturnService.cs` 和 `ITransferReturnService.cs` (ErpCore.Application.Services.Transfer) - 已實現所有相關方法（包含庫存更新邏輯：調入庫減少、調出庫增加，以及調撥單已退數量更新）
-    - ✅ DTO: `TransferReturnDto.cs` (包含所有相關 DTO: TransferReturnDto, TransferReturnDetailDto, CreateTransferReturnDto, UpdateTransferReturnDto, TransferReturnQueryDto, PendingTransferOrderForReturnDto, PendingTransferOrderForReturnQueryDto)
-    - ✅ Controller: `TransferReturnsController.cs` (ErpCore.Api.Controllers.Transfer) - 已實現所有相關端點
-    - ✅ Vue 頁面: `TransferReturn.vue` (ErpCore.Web/src/views/Transfer) - 已完整實現，包含待驗退調撥單選擇、驗退單管理、明細維護等功能
-    - ✅ API 文件: `transfer.js` 中的 `transferReturnApi` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/transfer/return` 路由指向 SYSW362 功能
-    - ✅ SQL 腳本: `CreateTransferReturnTables.sql` (ErpCore/database/Scripts) - 已包含所有必要資料表
-  - 功能狀態：SYSW362 功能已完整實現，包含查詢、新增、修改、刪除、確認驗退、取消等所有功能，以及庫存更新和調撥單已退數量更新邏輯 ✨
-  - 技術說明：確認驗退時會更新兩邊庫存（調入庫減少、調出庫增加）及調撥單已退數量；取消驗退時會回退這些操作
-- ✅ **SYSW352 調撥單驗收作業功能開發完成**
-  - 開發依據：`開發計劃/05-調撥管理/SYSW352-調撥單驗收作業.md`
-  - 開發結果：功能已完整實現
-  - 已完成項目：
-    - ✅ Entity: `TransferReceipt.cs` 和 `TransferReceiptDetail.cs` (ErpCore.Domain.Entities.Transfer)
-    - ✅ Repository: `TransferReceiptRepository.cs` 和 `ITransferReceiptRepository.cs` (ErpCore.Infrastructure.Repositories.Transfer) - 已修復 System.Data 命名空間引用問題（使用 global::System.Data 避免與 ErpCore.Infrastructure.Repositories.System 命名空間衝突）
-    - ✅ Service: `TransferReceiptService.cs` 和 `ITransferReceiptService.cs` (ErpCore.Application.Services.Transfer) - 已實現所有相關方法（包含庫存更新邏輯：調出庫減少、調入庫增加，以及調撥單已收數量更新）
-    - ✅ DTO: `TransferReceiptDto.cs` (包含所有相關 DTO: TransferReceiptDto, TransferReceiptDetailDto, CreateTransferReceiptDto, UpdateTransferReceiptDto, TransferReceiptQueryDto, PendingTransferOrderDto, PendingTransferOrderQueryDto)
-    - ✅ Controller: `TransferReceiptController.cs` (ErpCore.Api.Controllers.Transfer) - 已實現所有相關端點
-    - ✅ Vue 頁面: `Receiving.vue` (ErpCore.Web/src/views/Transfer) - 已完整實現，包含待驗收調撥單選擇、驗收單管理、明細維護等功能
-    - ✅ API 文件: `transfer.js` 中的 `transferReceiptApi` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/transfer/receipt` 路由指向 SYSW352 功能
-    - ✅ SQL 腳本: `CreateTransferReceiptTables.sql` (ErpCore/database/Scripts) - 已包含所有必要資料表
-  - 功能狀態：SYSW352 功能已完整實現，包含查詢、新增、修改、刪除、確認驗收、取消等所有功能，以及庫存更新和調撥單已收數量更新邏輯 ✨
-  - 技術說明：確認驗收時會更新兩邊庫存（調出庫減少、調入庫增加）及調撥單已收數量；取消驗收時會回退這些操作
-  - 修復內容：已修復 Transfer 相關 Repository 中的 System.Data 命名空間引用問題（使用 global::System.Data 避免與 ErpCore.Infrastructure.Repositories.System 命名空間衝突）
-- ✅ **SYSW336 採購單驗收作業功能開發完成**
-  - 開發依據：`開發計劃/04-採購管理/SYSW336-採購單驗收作業.md`
-  - 開發結果：功能已完整實現（與 SYSW324 共用 Entity、Repository、Service、DTO，透過 SourceProgram 區分）
-  - 已完成項目：
-    - ✅ Repository: `PurchaseReceiptRepository.cs` - 已修復 QueryAsync 方法添加 SourceProgram 過濾支持
-    - ✅ Controller: `PurchaseReceiptsV2Controller.cs` (ErpCore.Api.Controllers.Purchase) - 自動設定和過濾 SourceProgram = "SYSW336"
-    - ✅ Vue 頁面: `PurchaseReceiptV2.vue` (ErpCore.Web/src/views/Purchase)
-    - ✅ API 文件: `purchase.js` 中的 `purchaseReceiptV2Api` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/purchase/receipt-v2` 路由指向 SYSW336 功能
-    - ✅ SQL 腳本: `CreatePurchaseReceiptTables.sql` - 已包含 SourceProgram 字段（與 SYSW324 共用）
-  - 功能狀態：SYSW336 功能已完整實現，包含查詢、新增、修改、刪除、確認驗收、取消等所有功能 ✨
-  - 技術說明：SYSW336 與 SYSW324 共用同一資料表 `PurchaseReceipts` 和 `PurchaseReceiptDetails`，透過 `SourceProgram` 欄位區分不同功能來源
-- ✅ **SYSA1020、SYSA1021、SYSA1022 分析報表功能開發完成**
-  - 開發依據：
-    - `開發計劃/10-分析報表/02-進銷存分析/SYSA1020-商品分析報表.md`
-    - `開發計劃/10-分析報表/02-進銷存分析/SYSA1021-月成本報表.md`
-    - `開發計劃/10-分析報表/02-進銷存分析/SYSA1022-工務維修統計報表.md`
-  - 開發結果：功能已完整實現
-  - 已完成項目：
-    - ✅ DTO: `SYSA1020Dto.cs`、`SYSA1021Dto.cs`、`SYSA1022Dto.cs` (ErpCore.Application.DTOs.AnalysisReport)
-    - ✅ Service: `AnalysisReportService.cs` 和 `IAnalysisReportService.cs` - 已實現所有相關方法（GetSYSA1020ReportAsync、GetSYSA1021ReportAsync、GetSYSA1022ReportAsync 及對應的 Export 和 Print 方法）
-    - ✅ Repository: `AnalysisReportRepository.cs` 和 `IAnalysisReportRepository.cs` - 已實現所有相關查詢方法
-    - ✅ Controller: `AnalysisReportsController.cs` (ErpCore.Api.Controllers.AnalysisReport) - 已實現所有相關端點
-    - ✅ Vue 頁面: `SYSA1020Report.vue`、`SYSA1021Report.vue`、`SYSA1022Report.vue` (ErpCore.Web/src/views/AnalysisReport)
-    - ✅ API 文件: `analysisReport.js` 中的相關 API 方法 (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置相關路由
-    - ✅ SQL 腳本: `CreateAnalysisReportTables.sql` (ErpCore/database/Scripts) - 已包含所有必要資料表
-  - 功能狀態：SYSA1020、SYSA1021、SYSA1022 功能已完整實現，包含查詢、匯出、列印等所有功能 ✨
-  - 技術說明：這些報表功能共用 AnalysisReportService 和 AnalysisReportRepository，透過不同的查詢條件和 DTO 區分不同報表類型
-- ✅ **SYSW337 已日結退貨單驗退調整作業功能開發完成**
-  - 開發依據：`開發計劃/04-採購管理/SYSW337-已日結退貨單驗退調整作業.md`
-  - 開發結果：功能已完整實現
-  - 已完成項目：
-    - ✅ Entity: `PurchaseReceipt.cs` 和 `PurchaseReceiptDetail.cs` (ErpCore.Domain.Entities.Purchase) - 已包含 IsSettledAdjustment、OriginalReceiptId、AdjustmentReason、OriginalReceiptQty、AdjustmentQty、OriginalUnitPrice、AdjustmentPrice 等字段（與 SYSW333 共用）
-    - ✅ Repository: `PurchaseReceiptRepository.cs` 和 `IPurchaseReceiptRepository.cs` (ErpCore.Infrastructure.Repositories.Purchase) - 已實現 QueryClosedReturnAdjustmentsAsync、GetClosedReturnAdjustmentsCountAsync、GetClosedReturnOrdersAsync 等方法
-    - ✅ Service: `PurchaseReceiptService.cs` 和 `IPurchaseReceiptService.cs` (ErpCore.Application.Services.Purchase) - 已實現所有 SYSW337 相關方法（GetClosedReturnAdjustmentsV2Async、CreateClosedReturnAdjustmentV2Async、UpdateClosedReturnAdjustmentV2Async、DeleteClosedReturnAdjustmentV2Async、ApproveClosedReturnAdjustmentV2Async、GetClosedReturnOrdersV2Async）
-    - ✅ DTO: `PurchaseReceiptDto.cs` (包含 ClosedReturnAdjustmentQueryDto、ClosedReturnOrderQueryDto、ApproveSettledAdjustmentDto 等，與 SYSW333 共用)
-    - ✅ Controller: `PurchaseReceiptController.cs` (ErpCore.Api.Controllers.Purchase) - 已實現所有 SYSW337 相關端點（closed-return-adjustments-v2、closed-return-orders-v2）
-    - ✅ Vue 頁面: `ClosedReturnAdjustmentV2.vue` (ErpCore.Web/src/views/Purchase)
-    - ✅ API 文件: `purchase.js` 中的 `closedReturnAdjustmentV2Api` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/purchase/closed-return-adjustments-v2` 路由指向 SYSW337 功能
-    - ✅ SQL 腳本: `CreatePurchaseReceiptTables.sql` (ErpCore/database/Scripts) - 已包含所有必要字段（與 SYSW333 共用）
-  - 功能狀態：SYSW337 功能已完整實現，包含查詢、新增、修改、刪除、審核等所有功能 ✨
-  - 技術說明：SYSW337 與 SYSW530 共用同一資料表 `PurchaseReceipts` 和 `PurchaseReceiptDetails`，透過 `IsSettledAdjustment` 和 `PurchaseOrderType = '2'` 欄位區分不同功能來源
+**本次更新**：修復大量編譯錯誤，從 56 個錯誤減少到 20 個錯誤。
 
-- ✅ **SYSW333 已日結採購單驗收調整作業功能開發完成**
-  - 開發依據：`開發計劃/04-採購管理/SYSW333-已日結採購單驗收調整作業.md`
-  - 開發結果：功能已完整實現
-  - 已完成項目：
-    - ✅ Entity: `PurchaseReceipt.cs` 和 `PurchaseReceiptDetail.cs` (ErpCore.Domain.Entities.Purchase) - 已包含 IsSettledAdjustment、OriginalReceiptId、AdjustmentReason、OriginalReceiptQty、AdjustmentQty、OriginalUnitPrice、AdjustmentPrice 等字段
-    - ✅ Repository: `PurchaseReceiptRepository.cs` 和 `IPurchaseReceiptRepository.cs` (ErpCore.Infrastructure.Repositories.Purchase) - 已實現 QuerySettledAdjustmentsAsync、GetSettledAdjustmentsCountAsync、GetSettledOrdersAsync 等方法，並更新 CreateAsync 和 UpdateAsync 方法支持新字段
-    - ✅ Service: `PurchaseReceiptService.cs` 和 `IPurchaseReceiptService.cs` (ErpCore.Application.Services.Purchase) - 已實現所有 SYSW333 相關方法
-    - ✅ DTO: `PurchaseReceiptDto.cs` (包含 SettledPurchaseReceiptAdjustmentQueryDto、SettledOrderQueryDto、ApproveSettledAdjustmentDto 等)
-    - ✅ Controller: `PurchaseReceiptController.cs` (ErpCore.Api.Controllers.Purchase) - 已實現所有 SYSW333 相關端點
-    - ✅ Vue 頁面: `SettledPurchaseReceiptAdjustment.vue` (ErpCore.Web/src/views/Purchase)
-    - ✅ API 文件: `purchase.js` 中的 `settledAdjustmentApi` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/purchase/settled-adjustment` 路由指向 SYSW333 功能
-    - ✅ SQL 腳本: `CreatePurchaseReceiptTables.sql` (ErpCore/database/Scripts) - 已包含所有必要字段
-  - 功能狀態：SYSW333 功能已完整實現，包含查詢、新增、修改、刪除、審核等所有功能 ✨
-  - 技術說明：SYSW333 與 SYSW324 共用同一資料表 `PurchaseReceipts` 和 `PurchaseReceiptDetails`，透過 `IsSettledAdjustment` 和 `PurchaseOrderType` 欄位區分不同功能來源
+### 📝 最新進度摘要
+- ✅ **修復重複定義**：已刪除 B2BSalesOrderQueryDto 和 FloorQueryDto 的 Obsolete 重複定義
+- ✅ **修復命名空間衝突**：已修復 Customer, BusinessReport, EInvoice, Lease, SystemExtension, SalesReport 等命名空間衝突
+- ✅ **修復缺少類型**：已添加 DateFormatDto, DateValidationDto, IUserContext, IFormFile, IVoucherRepository, ChangeLog 等的 using 語句
+- ✅ **修復命名空間衝突**：已修復 System.ComponentModel, System.TypeCode, SystemVoucherCountDto, UserPermissionDto 等的命名空間衝突
+- ✅ **修復 QuestPDF PageSize**：已修復 PageSize 命名空間問題
+- ⚠️ **仍有 20 個編譯錯誤待修復**：
+  - Microsoft.Extensions.Hosting 命名空間問題（可能需要添加 NuGet 包）
+  - RolePermissionService 和 UserPermissionService 中部分方法簽名與接口不匹配
+  - 部分 DTO 類型仍有命名空間衝突
 
-- ✅ **SYSW316 訂退貨申請作業功能開發完成**（已完成）
-  - 開發依據：`開發計劃/04-採購管理/SYSW316-訂退貨申請作業.md`
-  - 開發結果：功能已完整實現（與 SYSW315 共用 Entity、Repository、Service、DTO，透過 SourceProgram 區分）
-  - 已完成項目：
-    - ✅ Controller: `PurchaseOrdersV2Controller.cs` (ErpCore.Api.Controllers.Purchase) - 自動設定和過濾 SourceProgram = "SYSW316"
-    - ✅ Vue 頁面: `PurchaseOrderV2.vue` 和 `PurchaseOrderReturn.vue` (ErpCore.Web/src/views/Purchase)
-    - ✅ API 文件: `purchase.js` 中的 `purchaseOrderV2Api` (ErpCore.Web/src/api)
-    - ✅ 路由配置: 已配置 `/purchase/order-return` 路由指向 SYSW316 功能
-  - 功能狀態：SYSW316 功能已完整實現，與 SYSW315 共用底層架構，透過 SourceProgram 確保功能隔離 ✨
-  - 技術說明：SYSW316 與 SYSW315 共用同一資料表 `PurchaseOrders` 和 `PurchaseOrderDetails`，透過 `SourceProgram` 欄位區分不同功能來源
-
-- ✅ **SYSW315 訂退貨申請作業功能開發完成**（已完成）
-  - 開發依據：`開發計劃/04-採購管理/SYSW315-訂退貨申請作業.md`
-  - 開發結果：功能已完整實現並優化
-  - 已完成項目：
-    - ✅ Entity: `PurchaseOrder.cs` 和 `PurchaseOrderDetail.cs` (ErpCore.Domain.Entities.Purchase)
-    - ✅ Repository: `PurchaseOrderRepository.cs` 和 `IPurchaseOrderRepository.cs` (ErpCore.Infrastructure.Repositories.Purchase)
-    - ✅ Service: `PurchaseOrderService.cs` 和 `IPurchaseOrderService.cs` (ErpCore.Application.Services.Purchase)
-    - ✅ DTO: `PurchaseOrderDto.cs` (包含所有相關 DTO: PurchaseOrderDto, PurchaseOrderQueryDto, CreatePurchaseOrderDto, UpdatePurchaseOrderDto, PurchaseOrderDetailDto, PurchaseOrderFullDto)
-    - ✅ Controller: `PurchaseOrderController.cs` (ErpCore.Api.Controllers.Purchase) - 已優化自動設定和過濾 SourceProgram = "SYSW315"
-    - ✅ Vue 頁面: `PurchaseOrder.vue` (ErpCore.Web/src/views/Purchase)
-    - ✅ API 文件: `purchase.js` 中的 `purchaseOrderApi` (ErpCore.Web/src/api)
-    - ✅ SQL 腳本: `CreatePurchaseOrderTables.sql` (ErpCore/database/Scripts)
-  - 功能狀態：SYSW315 功能已完整實現，包含完整的 CRUD 操作、分頁查詢、狀態管理（草稿/已送出/已審核/已取消）、送出/審核/取消流程、明細管理、金額計算等所有功能 ✨
-  - 優化內容：Controller 已優化，自動設定和過濾 SourceProgram = "SYSW315"，確保功能隔離
-
-### ⚠️ 已知問題
-- **dotnet build**：專案存在大量既有的編譯錯誤（與新功能無關），主要包括：
-  - 命名空間引用問題（ErpCore.Application - Infrastructure 層引用問題）
-  - Customer/Contract/Lease 類型衝突（命名空間 vs 類型）
-  - 接口實現不完整問題（ConsumableReportRepository、StocktakingPlanRepository）
-  - 這些錯誤需要單獨修復，不影響新功能使用
-  - **注意**：SYSW333 功能的代碼已完整實現且無編譯錯誤。上述 build 錯誤為既有問題，不影響新功能使用
+### ⚠️ 當前狀態
+- **dotnet build**：失敗（20 個編譯錯誤，較之前 56 個大幅減少）
 - **npm build**：未測試（需先修復 dotnet build 錯誤）
-- **Git Push 狀態**：由於既有編譯錯誤，build 失敗，無法進行 git push
+- **Git Push**：無法進行（build 失敗，需先修復剩餘錯誤）
 
 ### 🎯 下一步建議
-1. **修復既有編譯錯誤**：優先修復關鍵的命名空間引用問題，使 dotnet build 成功
-   - 修復 Infrastructure 層引用 Application 層的問題（應改為引用 Domain 或 Shared）
-   - 修復 Customer/Contract/Lease 類型衝突問題（命名空間與類型名稱衝突）
-   - 修復 ConsumableReportRepository、StocktakingPlanRepository 接口實現問題
-   - 修復 IBaseRepository 引用問題
-   - **注意**：這些錯誤需要大量重構工作，建議單獨處理
-   - **已修復**：Transfer 相關 Repository 中的 System.Data 命名空間引用問題（使用 global::System.Data 避免命名空間衝突）
-2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能繼續開發
-   - 建議優先開發：其他調撥管理相關功能（如 SYSW384 調撥短溢維護作業等）或其他採購管理相關功能
-3. **功能測試**：對已完成功能進行完整測試，確保所有功能正常運作
-4. **Build 測試**：修復既有錯誤後進行 npm build 測試，確保 build 成功後進行 git push
-
----
-## 📊 最新進度摘要（2025-01-27）
-
-### ✅ 已完成功能清單
-- **基本資料管理功能**：
-  - ✅ **SYSB206（廠/客基本資料維護作業）** ✨已完整實現
-  - ✅ **SYSB110（商品分類資料維護作業）** ✨已完整實現
-  - ✅ **SYSBC20（銀行基本資料維護作業）** ✨已完整實現
-  - ✅ **SYSBC30（地區設定）** ✨已完整實現
-  - ✅ **SYSBC40（參數資料設定維護作業）** ✨已完整實現
-  - ✅ **SYSWB40（部別資料維護作業）** ✨已完整實現
-  - ✅ **SYSWB60（庫別資料維護作業）** ✨已完整實現
-  - ✅ **SYSWB70（組別資料維護作業）** ✨已完整實現
-- **調撥管理功能**：
-  - ✅ **SYSW352（調撥單驗收作業）** ✨已完整實現（本次完成）
-- **採購管理功能**：
-  - ✅ **SYSW315（訂退貨申請作業）** ✨已完整實現
-  - ✅ **SYSW316（訂退貨申請作業 V2）** ✨已完整實現
-  - ✅ **SYSW322（現場打單作業）** ✨已完整實現
-  - ✅ **SYSW324（採購單驗收作業）** ✨已完整實現
-  - ✅ **SYSW333（已日結採購單驗收調整作業）** ✨已完整實現
-  - ✅ **SYSW336（採購單驗收作業 V2）** ✨已完整實現（本次完成）
-  - ✅ **SYSW337（已日結退貨單驗退調整作業）** ✨已完整實現
-- **分析報表功能**：
-  - ✅ **SYSA1000（進銷存分析報表）** ✨已完整實現（通用查詢入口，支援 SYSA1011-SYSA1024）
-  - ✅ **SYSA1011-SYSA1019（各類分析報表）** ✨已完整實現（導出打印功能待整合套件）
-  - ✅ **SYSA1020（商品分析報表）** ✨已完整實現（本次完成）
-  - ✅ **SYSA1021（月成本報表）** ✨已完整實現（本次完成）
-  - ✅ **SYSA1022（工務維修統計報表）** ✨已完整實現（本次完成）
-  - ✅ **SYSA1023-SYSA1024（各類分析報表）** ✨已完整實現（導出打印功能待整合套件）
-  - ✅ **SYSA210（單位領用申請作業）** ✨已完整實現（前端+後端）
-  - ✅ **SYSA254（耗材標籤列印作業）** ✨已完整實現
-  - ✅ **SYSA255（耗材管理報表）** ✨已完整實現
-  - ✅ **SYSA297（耗材出售維護作業）** ✨已完整實現
-
-### ⚠️ 已知問題
-- **dotnet build**：專案存在大量既有的編譯錯誤（與新功能無關，主要是命名空間引用問題和類型衝突）
-- **npm build**：未測試（需先修復 dotnet build 錯誤）
-- **注意**：SYSW333 功能的代碼已完整實現且無編譯錯誤。上述 build 錯誤為既有問題，不影響新功能使用
-- **Git Push 狀態**：由於既有編譯錯誤，build 失敗，無法進行 git push
-
-### 🎯 下一步建議
-1. **修復既有編譯錯誤**：優先修復關鍵的命名空間引用問題，使 dotnet build 成功
-   - 修復 Infrastructure 層引用 Application 層的問題（應改為引用 Domain 或 Shared）
-   - 修復 Customer/Contract/Lease 類型衝突問題（命名空間與類型名稱衝突）
-   - 修復 ConsumableReportRepository、StocktakingPlanRepository 接口實現問題
-   - 修復 IBaseRepository 引用問題
-   - **注意**：這些錯誤需要大量重構工作，建議單獨處理
-2. **選擇新功能開發**：從開發計劃目錄選擇一個新功能繼續開發
-   - 建議優先開發：其他分析報表相關功能或採購管理相關功能
-3. **功能測試**：對已完成功能進行完整測試，確保所有功能正常運作
-4. **Build 測試**：修復既有錯誤後進行 npm build 測試，確保 build 成功後進行 git push
+1. **修復剩餘編譯錯誤**（優先處理，阻擋 build 和 git push）
+   - 檢查並添加 Microsoft.Extensions.Hosting NuGet 包
+   - 修復 RolePermissionService 和 UserPermissionService 中方法簽名與接口不匹配問題
+   - 修復剩餘的 DTO 命名空間衝突
+2. **Build 測試**：修復所有錯誤後進行 dotnet build 和 npm build 測試
+3. **Git 提交**：build 成功後進行 git add commit push
+4. **選擇新功能開發**：從開發計劃目錄選擇一個未完成的功能，按照 Entity → Repository → Service → DTO → Controller → Vue 頁面 → SQL 的順序實現

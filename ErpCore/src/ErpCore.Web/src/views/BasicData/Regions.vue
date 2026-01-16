@@ -33,10 +33,9 @@
         <el-table-column prop="RegionId" label="地區編號" width="150" />
         <el-table-column prop="RegionName" label="地區名稱" width="200" />
         <el-table-column prop="Memo" label="備註" min-width="200" show-overflow-tooltip />
-        <el-table-column prop="CreatedBy" label="建立者" width="120" />
-        <el-table-column prop="CreatedAt" label="建立時間" width="180">
+        <el-table-column prop="UpdatedAt" label="更新時間" width="180">
           <template #default="{ row }">
-            {{ row.CreatedAt ? new Date(row.CreatedAt).toLocaleString('zh-TW') : '' }}
+            {{ formatDateTime(row.UpdatedAt) }}
           </template>
         </el-table-column>
         <el-table-column label="操作" width="200" fixed="right">
@@ -121,10 +120,27 @@ const form = reactive({
   Memo: ''
 })
 
+// 保存原始地區編號（用於修改）
+const originalRegionId = ref('')
+
 // 表單驗證規則
 const rules = {
   RegionId: [{ required: true, message: '請輸入地區編號', trigger: 'blur' }],
   RegionName: [{ required: true, message: '請輸入地區名稱', trigger: 'blur' }]
+}
+
+// 格式化日期時間
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return ''
+  const date = new Date(dateTime)
+  return date.toLocaleString('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
 }
 
 // 查詢
@@ -171,6 +187,7 @@ const handleCreate = () => {
 const handleEdit = async (row) => {
   isEdit.value = true
   dialogTitle.value = '修改地區'
+  originalRegionId.value = row.RegionId
   try {
     const response = await regionsApi.getRegion(row.RegionId)
     if (response.data.success) {
@@ -212,7 +229,12 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          response = await regionsApi.updateRegion(form.RegionId, form)
+          // 修改時使用原始地區編號
+          const updateData = {
+            RegionName: form.RegionName,
+            Memo: form.Memo
+          }
+          response = await regionsApi.updateRegion(originalRegionId.value, updateData)
         } else {
           response = await regionsApi.createRegion(form)
         }
@@ -241,6 +263,7 @@ const resetForm = () => {
   form.RegionId = ''
   form.RegionName = ''
   form.Memo = ''
+  originalRegionId.value = ''
   formRef.value?.resetFields()
 }
 
@@ -297,4 +320,3 @@ onMounted(() => {
   }
 }
 </style>
-

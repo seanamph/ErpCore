@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ErpCore.Api.Configuration;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,11 +13,11 @@ namespace ErpCore.Infrastructure.Authentication;
 /// </summary>
 public class JwtTokenService
 {
-    private readonly JwtConfig _jwtConfig;
+    private readonly IJwtConfig _jwtConfig;
     private readonly ILoggerService _logger;
     private readonly SymmetricSecurityKey _signingKey;
 
-    public JwtTokenService(JwtConfig jwtConfig, ILoggerService logger)
+    public JwtTokenService(IJwtConfig jwtConfig, ILoggerService logger)
     {
         _jwtConfig = jwtConfig;
         _logger = logger;

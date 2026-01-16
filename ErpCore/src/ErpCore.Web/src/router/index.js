@@ -18,7 +18,7 @@ const routes = [
       {
         path: 'return',
         name: 'TransferReturn',
-        component: () => import('../views/Transfer/Return.vue'),
+        component: () => import('../views/Transfer/TransferReturn.vue'),
         meta: { title: '調撥單驗退作業 (SYSW362)' }
       },
       {
@@ -74,6 +74,36 @@ const routes = [
         name: 'PriceChange',
         component: () => import('../views/Inventory/PriceChange.vue'),
         meta: { title: '商品永久變價作業 (SYSW150)' }
+      },
+      {
+        path: 'pop-print',
+        name: 'PopPrint',
+        component: () => import('../views/Inventory/PopPrint.vue'),
+        meta: { title: 'POP卡商品卡列印作業 (SYSW170)' }
+      },
+      {
+        path: 'pop-print-ap',
+        name: 'PopPrintAp',
+        component: () => import('../views/Inventory/PopPrintAp.vue'),
+        meta: { title: 'POP卡商品卡列印作業_AP (SYSW171)' }
+      },
+      {
+        path: 'pop-print-ua',
+        name: 'PopPrintUa',
+        component: () => import('../views/Inventory/PopPrintUa.vue'),
+        meta: { title: 'POP卡商品卡列印作業_UA (SYSW172)' }
+      },
+      {
+        path: 'textfile-upload',
+        name: 'TextFileUpload',
+        component: () => import('../views/Inventory/TextFileUpload.vue'),
+        meta: { title: 'BAT格式文本文件處理 - 文件上傳 (HT680)' }
+      },
+      {
+        path: 'textfile-process-logs',
+        name: 'TextFileProcessLogList',
+        component: () => import('../views/Inventory/TextFileProcessLogList.vue'),
+        meta: { title: 'BAT格式文本文件處理 - 處理記錄列表 (HT680)' }
       }
     ]
   },
@@ -88,9 +118,9 @@ const routes = [
         meta: { title: '訂退貨申請作業 (SYSW315)' }
       },
       {
-        path: 'order-return',
-        name: 'PurchaseOrderReturn',
-        component: () => import('../views/Purchase/PurchaseOrderReturn.vue'),
+        path: 'order-v2',
+        name: 'PurchaseOrderV2',
+        component: () => import('../views/Purchase/PurchaseOrderV2.vue'),
         meta: { title: '訂退貨申請作業 (SYSW316)' }
       },
       {
@@ -128,6 +158,12 @@ const routes = [
         name: 'OnSitePurchaseOrder',
         component: () => import('../views/Purchase/OnSitePurchaseOrder.vue'),
         meta: { title: '現場打單作業 (SYSW322)' }
+      },
+      {
+        path: 'query',
+        name: 'PurchaseOrderQuery',
+        component: () => import('../views/Purchase/PurchaseOrderQuery.vue'),
+        meta: { title: '採購單查詢 (SYSP310-SYSP330)' }
       }
     ]
   },
@@ -188,6 +224,42 @@ const routes = [
         name: 'EInvoiceReport',
         component: () => import('../views/EInvoice/EInvoiceReport.vue'),
         meta: { title: '電子發票報表查詢 (ECA3040)' }
+      },
+      {
+        path: 'eca4010-report',
+        name: 'ECA4010Report',
+        component: () => import('../views/EInvoice/ECA4010Report.vue'),
+        meta: { title: '電子發票報表查詢(訂單明細) (ECA4010)' }
+      },
+      {
+        path: 'eca4020-report',
+        name: 'ECA4020Report',
+        component: () => import('../views/EInvoice/ECA4020Report.vue'),
+        meta: { title: '電子發票報表查詢(商品銷售統計) (ECA4020)' }
+      },
+      {
+        path: 'eca4030-report',
+        name: 'ECA4030Report',
+        component: () => import('../views/EInvoice/ECA4030Report.vue'),
+        meta: { title: '電子發票報表查詢(零售商銷售統計) (ECA4030)' }
+      },
+      {
+        path: 'eca4040-report',
+        name: 'ECA4040Report',
+        component: () => import('../views/EInvoice/ECA4040Report.vue'),
+        meta: { title: '電子發票報表查詢(店別銷售統計) (ECA4040)' }
+      },
+      {
+        path: 'eca4050-report',
+        name: 'ECA4050Report',
+        component: () => import('../views/EInvoice/ECA4050Report.vue'),
+        meta: { title: '電子發票報表查詢(出貨日期統計) (ECA4050)' }
+      },
+      {
+        path: 'eca4060-report',
+        name: 'ECA4060Report',
+        component: () => import('../views/EInvoice/ECA4060Report.vue'),
+        meta: { title: '電子發票報表查詢(訂單日期統計) (ECA4060)' }
       }
     ]
   },
@@ -200,6 +272,30 @@ const routes = [
         name: 'EmployeeMealCardList',
         component: () => import('../views/BusinessReport/EmployeeMealCardList.vue'),
         meta: { title: '業務報表查詢作業 (SYSL130)' }
+      },
+      {
+        path: 'sysl135',
+        name: 'SYSL135Report',
+        component: () => import('../views/BusinessReport/SYSL135Report.vue'),
+        meta: { title: '業務報表查詢作業 (SYSL135)' }
+      },
+      {
+        path: 'sysl145-query',
+        name: 'SYSL145Query',
+        component: () => import('../views/BusinessReport/SYSL145Query.vue'),
+        meta: { title: '業務報表查詢作業 (SYSL145)' }
+      },
+      {
+        path: 'sysl150-query',
+        name: 'SYSL150Query',
+        component: () => import('../views/BusinessReport/SYSL150Query.vue'),
+        meta: { title: '業務報表列印作業 (SYSL150)' }
+      },
+      {
+        path: 'sysl160-query',
+        name: 'SYSL160Query',
+        component: () => import('../views/BusinessReport/SYSL160Query.vue'),
+        meta: { title: '業務報表列印明細作業 (SYSL160)' }
       }
     ]
   },
@@ -304,6 +400,12 @@ const routes = [
         meta: { title: '月成本報表 (SYSA1021)' }
       },
       {
+        path: 'sysa1018-report',
+        name: 'SYSA1018Report',
+        component: () => import('../views/AnalysisReport/SYSA1018Report.vue'),
+        meta: { title: '工務維修件數統計表 (SYSA1018)' }
+      },
+      {
         path: 'sysa1022-report',
         name: 'SYSA1022Report',
         component: () => import('../views/AnalysisReport/SYSA1022Report.vue'),
@@ -313,7 +415,24 @@ const routes = [
         path: 'sysa1023-report',
         name: 'SYSA1023Report',
         component: () => import('../views/AnalysisReport/SYSA1023Report.vue'),
-        meta: { title: '工務維修統計報表(報表類型) (SYSA1023)' }
+      },
+      {
+        path: 'sysa1024-report',
+        name: 'SYSA1024Report',
+        component: () => import('../views/AnalysisReport/SYSA1024Report.vue'),
+        meta: { title: '工務維修統計報表(其他) (SYSA1024)' }
+      },
+      {
+        path: 'syswc10-report',
+        name: 'SYSWC10Report',
+        component: () => import('../views/AnalysisReport/SYSWC10Report.vue'),
+        meta: { title: '庫存分析報表 (SYSWC10)' }
+      },
+      {
+        path: 'sales-analysis-report',
+        name: 'SalesAnalysisReport',
+        component: () => import('../views/AnalysisReport/SalesAnalysisReport.vue'),
+        meta: { title: '銷售分析報表' }
       }
     ]
   },
@@ -346,10 +465,34 @@ const routes = [
         meta: { title: '角色欄位權限設定 (SYS0330)' }
       },
       {
+        path: 'user-field-permissions',
+        name: 'SYS0340Query',
+        component: () => import('../views/System/SYS0340Query.vue'),
+        meta: { title: '使用者欄位權限設定 (SYS0340)' }
+      },
+      {
+        path: 'item-permissions',
+        name: 'SYS0360Query',
+        component: () => import('../views/System/SYS0360Query.vue'),
+        meta: { title: '系統對應權限設定 (SYS0360)' }
+      },
+      {
         path: 'system-config',
         name: 'SystemConfig',
         component: () => import('../views/System/SystemConfig.vue'),
         meta: { title: '系統設定 (CFG0410, CFG0420, CFG0430, CFG0440)' }
+      },
+      {
+        path: 'systems',
+        name: 'Systems',
+        component: () => import('../views/System/Systems.vue'),
+        meta: { title: '主系統項目資料維護 (SYS0410)' }
+      },
+      {
+        path: 'programs',
+        name: 'Programs',
+        component: () => import('../views/System/Programs.vue'),
+        meta: { title: '系統作業資料維護 (SYS0430)' }
       },
       {
         path: 'change-logs',
@@ -371,9 +514,27 @@ const routes = [
       },
       {
         path: 'users-query',
+        name: 'SYS0140Query',
+        component: () => import('../views/System/SYS0140Query.vue'),
+        meta: { title: '使用者資料查詢 (SYS0140)' }
+      },
+      {
+        path: 'users-query-sys0910',
         name: 'SYS0910Query',
         component: () => import('../views/System/SYS0910Query.vue'),
         meta: { title: '使用者查詢功能 (SYS0910)' }
+      },
+      {
+        path: 'users-query-sys0140',
+        name: 'SYS0140Query',
+        component: () => import('../views/System/SYS0140Query.vue'),
+        meta: { title: '使用者資料查詢 (SYS0140)' }
+      },
+      {
+        path: 'users-query-sys0140-old',
+        name: 'SYS0140QueryOld',
+        component: () => import('../views/System/SYS0140Query.vue'),
+        meta: { title: '使用者資料查詢 (SYS0140)' }
       },
       {
         path: 'user-agents',
@@ -442,6 +603,12 @@ const routes = [
         meta: { title: '使用者帳戶原則管理 (SYS0130)' }
       },
       {
+        path: 'roles',
+        name: 'SYS0210Query',
+        component: () => import('../views/System/SYS0210Query.vue'),
+        meta: { title: '角色基本資料維護 (SYS0210)' }
+      },
+      {
         path: 'user-roles',
         name: 'SYS0220Query',
         component: () => import('../views/System/SYS0220Query.vue'),
@@ -474,7 +641,7 @@ const routes = [
       {
         path: 'program-role-permissions',
         name: 'SYS0740Query',
-        component: () => import('../views/System/ProgramRolePermissionListReport.vue'),
+        component: () => import('../views/System/ProgramRolePermissionReport.vue'),
         meta: { title: '作業權限之角色列表 (SYS0740)' }
       },
       {
@@ -506,6 +673,12 @@ const routes = [
         name: 'SYS0810Query',
         component: () => import('../views/System/SystemProgramButtonReport.vue'),
         meta: { title: '系統作業與功能列表查詢 (SYS0810)' }
+      },
+      {
+        path: 'programs-and-buttons-export',
+        name: 'SYS0999Query',
+        component: () => import('../views/System/SystemProgramButtonExportQuery.vue'),
+        meta: { title: '系統作業與功能列表查詢（出庫用）(SYS0999)' }
       }
     ]
   },
@@ -608,6 +781,12 @@ const routes = [
         name: 'SystemList',
         component: () => import('../views/DropdownList/SystemList.vue'),
         meta: { title: '系統列表 (SYSID_LIST, USER_LIST)' }
+      },
+      {
+        path: 'user-list',
+        name: 'UserList',
+        component: () => import('../views/DropdownList/UserList.vue'),
+        meta: { title: '使用者列表 (USER_LIST)' }
       }
     ]
   },
@@ -894,8 +1073,14 @@ const routes = [
       {
         path: 'payment',
         name: 'ProcurementPayment',
-        component: () => import('../views/Procurement/Payment/index.vue'),
-        meta: { title: '付款管理 (SYSP271-SYSP2B0)' }
+        component: () => import('../views/Procurement/Payment.vue'),
+        meta: { title: '付款單維護 (SYSP271-SYSP2B0)' }
+      },
+      {
+        path: 'payment-voucher',
+        name: 'ProcurementPaymentVoucher',
+        component: () => import('../views/Procurement/PaymentVoucher.vue'),
+        meta: { title: '付款單維護 (SYSP271-SYSP2B0)' }
       },
       {
         path: 'bank-management',
@@ -904,16 +1089,46 @@ const routes = [
         meta: { title: '銀行管理' }
       },
       {
+        path: 'bank-account',
+        name: 'ProcurementBankAccount',
+        component: () => import('../views/Procurement/BankAccount.vue'),
+        meta: { title: '銀行帳戶維護' }
+      },
+      {
         path: 'procurement-report',
         name: 'ProcurementReport',
-        component: () => import('../views/Procurement/ProcurementReport/index.vue'),
+        component: () => import('../views/Purchase/PurchaseReportQuery.vue'),
         meta: { title: '採購報表查詢 (SYSP410-SYSP4I0)' }
+      },
+      {
+        path: 'purchase-report-print',
+        name: 'PurchaseReportPrint',
+        component: () => import('../views/Procurement/PurchaseReportPrint.vue'),
+        meta: { title: '採購報表列印' }
+      },
+      {
+        path: 'report-print/history',
+        name: 'PurchaseReportPrintHistory',
+        component: () => import('../views/Procurement/PurchaseReportPrintHistory.vue'),
+        meta: { title: '採購報表列印記錄' }
       },
       {
         path: 'procurement-other',
         name: 'ProcurementOther',
         component: () => import('../views/Procurement/ProcurementOther/index.vue'),
         meta: { title: '採購其他功能 (SYSP510-SYSP530)' }
+      },
+      {
+        path: 'purchase-extended',
+        name: 'PurchaseExtendedFunctions',
+        component: () => import('../views/Procurement/PurchaseExtendedFunctions.vue'),
+        meta: { title: '採購擴展功能 (SYSP610)' }
+      },
+      {
+        path: 'purchase-extended-maintenance',
+        name: 'PurchaseExtendedMaintenance',
+        component: () => import('../views/Procurement/PurchaseExtendedMaintenance.vue'),
+        meta: { title: '採購擴展維護 (SYSPA10-SYSPB60)' }
       }
     ]
   },
@@ -1284,6 +1499,30 @@ const routes = [
     ]
   },
   {
+    path: '/system-extension',
+    component: () => import('../views/Layout.vue'),
+    children: [
+      {
+        path: 'maintenance',
+        name: 'SystemExtension',
+        component: () => import('../views/SystemExtension/SystemExtension.vue'),
+        meta: { title: '系統擴展資料維護 (SYSX110)' }
+      },
+      {
+        path: 'query',
+        name: 'SystemExtensionQuery',
+        component: () => import('../views/SystemExtension/SystemExtensionQuery.vue'),
+        meta: { title: '系統擴展查詢 (SYSX120)' }
+      },
+      {
+        path: 'report',
+        name: 'SystemExtensionReport',
+        component: () => import('../views/SystemExtension/SYSX140Report.vue'),
+        meta: { title: '系統擴展報表 (SYSX140)' }
+      }
+    ]
+  },
+  {
     path: '/system-extension-e',
     component: () => import('../views/Layout.vue'),
     children: [
@@ -1570,9 +1809,9 @@ const routes = [
     component: () => import('../views/Layout.vue'),
     children: [
       {
-        path: 'product-category',
-        name: 'ProductCategory',
-        component: () => import('../views/BasicData/ProductCategory.vue'),
+        path: 'product-categories',
+        name: 'ProductCategories',
+        component: () => import('../views/BasicData/ProductCategories.vue'),
         meta: { title: '商品分類資料維護作業 (SYSB110)' }
       },
       {
@@ -1600,10 +1839,22 @@ const routes = [
         meta: { title: '地區設定 (SYSBC30)' }
       },
       {
+        path: 'departments',
+        name: 'Departments',
+        component: () => import('../views/BasicData/Departments.vue'),
+        meta: { title: '部別資料維護作業 (SYSWB40)' }
+      },
+      {
         path: 'warehouses',
         name: 'Warehouses',
         component: () => import('../views/BasicData/Warehouses.vue'),
         meta: { title: '庫別資料維護作業 (SYSWB60)' }
+      },
+      {
+        path: 'vendors',
+        name: 'Vendors',
+        component: () => import('../views/BasicData/Vendors.vue'),
+        meta: { title: '廠/客基本資料維護作業 (SYSB206)' }
       },
       {
         path: 'groups',
@@ -1622,6 +1873,18 @@ const routes = [
         name: 'Vendors',
         component: () => import('../views/BasicData/Vendors.vue'),
         meta: { title: '廠/客基本資料維護作業 (SYSB206)' }
+      }
+    ]
+  },
+  {
+    path: '/customer',
+    component: () => import('../views/Layout.vue'),
+    children: [
+      {
+        path: 'customers',
+        name: 'Customers',
+        component: () => import('../views/Customer/Customers.vue'),
+        meta: { title: '客戶基本資料維護作業 (CUS5110)' }
       }
     ]
   }

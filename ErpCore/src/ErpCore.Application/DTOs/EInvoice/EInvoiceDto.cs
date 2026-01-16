@@ -139,6 +139,10 @@ public class EInvoiceReportQueryDto
     public string? OrderNo { get; set; }
     public string? RetailerOrderNo { get; set; }
     public string? StoreId { get; set; }
+    public string? StoreFloor { get; set; } // ECA4040: 樓層
+    public string? StoreType { get; set; } // ECA4040: 類型
+    public string? RetailerId { get; set; } // ECA4010: 零售商ID
+    public string? ScId { get; set; } // ECA4010: 專櫃ID
     public string? ProviderId { get; set; }
     public string? GoodsId { get; set; }
     public string? GoodsName { get; set; }
@@ -181,5 +185,110 @@ public class EInvoiceReportDto
     public int? TotalQty { get; set; }
     public decimal? TotalAmount { get; set; }
     public int? TotalOrders { get; set; }
+    // ECA4020 專用欄位
+    public string? ScId { get; set; }
+    public string? ScName { get; set; }
+    public decimal? AvgPrice { get; set; }
+    public decimal? SalesPercent { get; set; }
+    public int? SalesRanking { get; set; }
+    // ECA4040 專用欄位
+    public string? StoreFloor { get; set; }
+    public string? StoreType { get; set; }
+    // ECA4060 專用欄位（已開立/未開立/全部統計）
+    public int? SumYQty { get; set; }
+    public decimal? SumYSubtotal { get; set; }
+    public decimal? SumYFee { get; set; }
+    public decimal? SalesYPercent { get; set; }
+    public int? SumNQty { get; set; }
+    public decimal? SumNSubtotal { get; set; }
+    public decimal? SumNFee { get; set; }
+    public decimal? SalesNPercent { get; set; }
+    public int? SumAQty { get; set; }
+    public decimal? SumASubtotal { get; set; }
+    public decimal? SumAFee { get; set; }
+    public decimal? SalesAPercent { get; set; }
+}
+
+/// <summary>
+/// 電子發票商品銷售統計報表 DTO (ECA4020)
+/// </summary>
+public class ECA4020ReportDto
+{
+    public string? ScId { get; set; }
+    public string? ScName { get; set; }
+    public string? GoodsId { get; set; }
+    public string? GoodsName { get; set; }
+    public string? ProviderGoodsId { get; set; }
+    public int SumQty { get; set; }
+    public decimal SumSubtotal { get; set; }
+    public decimal SumFee { get; set; }
+    public decimal AvgPrice { get; set; }
+    public decimal SalesPercent { get; set; }
+    public int SalesRanking { get; set; }
+}
+
+/// <summary>
+/// 電子發票零售商銷售統計報表 DTO (ECA4030)
+/// </summary>
+public class ECA4030ReportDto
+{
+    public string? RetailerId { get; set; }
+    public string? RetailerName { get; set; }
+    public int SumQty { get; set; }
+    public decimal SumSubtotal { get; set; }
+    public decimal SumFee { get; set; }
+    public decimal SalesPercent { get; set; }
+    public int SalesRanking { get; set; }
+}
+
+/// <summary>
+/// 電子發票店別銷售統計報表 DTO (ECA4040)
+/// </summary>
+public class ECA4040ReportDto
+{
+    public string? StoreId { get; set; }
+    public string? StoreName { get; set; }
+    public string? StoreFloor { get; set; }
+    public string? StoreType { get; set; }
+    public int SumQty { get; set; }
+    public decimal SumSubtotal { get; set; }
+    public decimal SumFee { get; set; }
+    public decimal SalesPercent { get; set; }
+    public int SalesRanking { get; set; }
+}
+
+/// <summary>
+/// 電子發票出貨日期統計報表 DTO (ECA4050)
+/// </summary>
+public class ECA4050ReportDto
+{
+    public DateTime? OrderShipDate { get; set; }
+    public int SumQty { get; set; }
+    public decimal SumSubtotal { get; set; }
+    public decimal SumFee { get; set; }
+    public decimal SalesPercent { get; set; }
+}
+
+/// <summary>
+/// 電子發票訂單日期統計報表 DTO (ECA4060)
+/// </summary>
+public class ECA4060ReportDto
+{
+    public DateTime? OrderDate { get; set; }
+    // 已開立發票(Y)統計
+    public int SumYQty { get; set; }
+    public decimal SumYSubtotal { get; set; }
+    public decimal SumYFee { get; set; }
+    public decimal SalesYPercent { get; set; }
+    // 未開立發票(N)統計
+    public int SumNQty { get; set; }
+    public decimal SumNSubtotal { get; set; }
+    public decimal SumNFee { get; set; }
+    public decimal SalesNPercent { get; set; }
+    // 全部(A)統計
+    public int SumAQty { get; set; }
+    public decimal SumASubtotal { get; set; }
+    public decimal SumAFee { get; set; }
+    public decimal SalesAPercent { get; set; }
 }
 

@@ -18,7 +18,7 @@ public interface ITransferReturnRepository
     Task DeleteAsync(string returnId);
     Task<IEnumerable<PendingTransferOrderForReturn>> GetPendingOrdersAsync(PendingTransferOrderForReturnQuery query);
     Task<int> GetPendingOrdersCountAsync(PendingTransferOrderForReturnQuery query);
-    Task UpdateStatusAsync(string returnId, string status, global::System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string returnId, string status, IDbTransaction? transaction = null);
     Task<string> GenerateReturnIdAsync();
 }
 

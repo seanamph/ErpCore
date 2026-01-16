@@ -5,30 +5,30 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.System;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
-using Dapper;
+using System.Data;
 
 namespace ErpCore.Application.Services.System;
 
 /// <summary>
-/// 角色服務實作
+/// 角色服務實作 (SYS0210)
 /// </summary>
 public class RoleService : BaseService, IRoleService
 {
     private readonly IRoleRepository _repository;
-    private readonly IRolePermissionRepository _permissionRepository;
-    private readonly IUserRoleRepository _userRoleRepository;
+    private readonly IRolePermissionRepository? _rolePermissionRepository;
+    private readonly IUserRoleRepository? _userRoleRepository;
     private readonly IDbConnectionFactory _connectionFactory;
 
     public RoleService(
         IRoleRepository repository,
-        IRolePermissionRepository permissionRepository,
-        IUserRoleRepository userRoleRepository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
-        IUserContext userContext) : base(logger, userContext)
+        IUserContext userContext,
+        IDbConnectionFactory connectionFactory,
+        IRolePermissionRepository? rolePermissionRepository = null,
+        IUserRoleRepository? userRoleRepository = null) : base(logger, userContext)
     {
         _repository = repository;
-        _permissionRepository = permissionRepository;
+        _rolePermissionRepository = rolePermissionRepository;
         _userRoleRepository = userRoleRepository;
         _connectionFactory = connectionFactory;
     }
@@ -108,7 +108,25 @@ public class RoleService : BaseService, IRoleService
         try
         {
             // 驗證資料
-            ValidateCreateDto(dto);
+            if (string.IsNullOrWhiteSpace(dto.RoleId))
+            {
+                throw new ArgumentException("角色代碼不能為空");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.RoleName))
+            {
+                throw new ArgumentException("角色名稱不能為空");
+            }
+
+            if (dto.RoleId.Length > 50)
+            {
+                throw new ArgumentException("角色代碼長度不能超過50字元");
+            }
+
+            if (dto.RoleName.Length > 100)
+            {
+                throw new ArgumentException("角色名稱長度不能超過100字元");
+            }
 
             // 檢查是否已存在
             var exists = await _repository.ExistsAsync(dto.RoleId);
@@ -122,10 +140,12 @@ public class RoleService : BaseService, IRoleService
                 RoleId = dto.RoleId,
                 RoleName = dto.RoleName,
                 RoleNote = dto.RoleNote,
-                CreatedBy = GetCurrentUserId(),
+                CreatedBy = _userContext.UserId,
                 CreatedAt = DateTime.Now,
-                UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedBy = _userContext.UserId,
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = _userContext.UserPriority,
+                CreatedGroup = _userContext.UserGroup
             };
 
             await _repository.CreateAsync(entity);
@@ -143,6 +163,17 @@ public class RoleService : BaseService, IRoleService
     {
         try
         {
+            // 驗證資料
+            if (string.IsNullOrWhiteSpace(dto.RoleName))
+            {
+                throw new ArgumentException("角色名稱不能為空");
+            }
+
+            if (dto.RoleName.Length > 100)
+            {
+                throw new ArgumentException("角色名稱長度不能超過100字元");
+            }
+
             // 檢查是否存在
             var entity = await _repository.GetByIdAsync(roleId);
             if (entity == null)
@@ -152,7 +183,7 @@ public class RoleService : BaseService, IRoleService
 
             entity.RoleName = dto.RoleName;
             entity.RoleNote = dto.RoleNote;
-            entity.UpdatedBy = GetCurrentUserId();
+            entity.UpdatedBy = _userContext.UserId;
             entity.UpdatedAt = DateTime.Now;
 
             await _repository.UpdateAsync(entity);
@@ -169,8 +200,8 @@ public class RoleService : BaseService, IRoleService
         try
         {
             // 檢查是否存在
-            var entity = await _repository.GetByIdAsync(roleId);
-            if (entity == null)
+            var exists = await _repository.ExistsAsync(roleId);
+            if (!exists)
             {
                 throw new InvalidOperationException($"角色不存在: {roleId}");
             }
@@ -191,38 +222,33 @@ public class RoleService : BaseService, IRoleService
         }
     }
 
-    public async Task DeleteRolesBatchAsync(BatchDeleteRoleDto dto)
-    {
-        try
-        {
-            foreach (var roleId in dto.RoleIds)
-            {
-                await DeleteRoleAsync(roleId);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("批次刪除角色失敗", ex);
-            throw;
-        }
-    }
-
     public async Task<string> CopyRoleAsync(string roleId, CopyRoleDto dto)
     {
         try
         {
-            // 檢查來源角色是否存在
+            // 驗證資料
+            if (string.IsNullOrWhiteSpace(dto.NewRoleId))
+            {
+                throw new ArgumentException("新角色代碼不能為空");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.NewRoleName))
+            {
+                throw new ArgumentException("新角色名稱不能為空");
+            }
+
+            // 檢查原角色是否存在
             var sourceRole = await _repository.GetByIdAsync(roleId);
             if (sourceRole == null)
             {
-                throw new InvalidOperationException($"來源角色不存在: {roleId}");
+                throw new InvalidOperationException($"角色不存在: {roleId}");
             }
 
             // 檢查新角色代碼是否已存在
             var exists = await _repository.ExistsAsync(dto.NewRoleId);
             if (exists)
             {
-                throw new InvalidOperationException($"角色代碼已存在: {dto.NewRoleId}");
+                throw new InvalidOperationException($"角色已存在: {dto.NewRoleId}");
             }
 
             // 建立新角色
@@ -231,54 +257,25 @@ public class RoleService : BaseService, IRoleService
                 RoleId = dto.NewRoleId,
                 RoleName = dto.NewRoleName,
                 RoleNote = sourceRole.RoleNote,
-                CreatedBy = GetCurrentUserId(),
+                CreatedBy = _userContext.UserId,
                 CreatedAt = DateTime.Now,
-                UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedBy = _userContext.UserId,
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = _userContext.UserPriority,
+                CreatedGroup = _userContext.UserGroup
             };
 
             await _repository.CreateAsync(newRole);
 
-            // 複製角色權限設定
-            try
+            // 複製權限設定（如果有 RolePermissionRepository）
+            if (_rolePermissionRepository != null)
             {
-                using var connection = _connectionFactory.CreateConnection();
-                await connection.OpenAsync();
-                using var transaction = connection.BeginTransaction();
-
-                try
-                {
-                    // 查詢來源角色的所有權限
-                    const string selectSql = @"
-                        SELECT ButtonId 
-                        FROM RoleButtons 
-                        WHERE RoleId = @SourceRoleId";
-
-                    var buttonIds = (await connection.QueryAsync<string>(
-                        selectSql, 
-                        new { SourceRoleId = roleId }, 
-                        transaction)).ToList();
-
-                    if (buttonIds.Any())
-                    {
-                        // 批量新增權限到新角色
-                        var createdBy = GetCurrentUserId();
-                        await _permissionRepository.BatchCreateAsync(newRole.RoleId, buttonIds, createdBy);
-                        _logger.LogInfo($"複製角色權限成功: 來源角色={roleId}, 新角色={newRole.RoleId}, 權限數量={buttonIds.Count}");
-                    }
-
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"複製角色權限失敗: 來源角色={roleId}, 新角色={newRole.RoleId}", ex);
-                // 不拋出異常，僅記錄日誌，因為角色已建立成功
+                // TODO: 實作複製權限設定的邏輯
+                // var permissions = await _rolePermissionRepository.GetByRoleIdAsync(roleId);
+                // foreach (var permission in permissions)
+                // {
+                //     await _rolePermissionRepository.CreateAsync(new RolePermission { ... });
+                // }
             }
 
             return newRole.RoleId;
@@ -290,37 +287,14 @@ public class RoleService : BaseService, IRoleService
         }
     }
 
-    private void ValidateCreateDto(CreateRoleDto dto)
-    {
-        if (string.IsNullOrWhiteSpace(dto.RoleId))
-        {
-            throw new ArgumentException("角色代碼不能為空");
-        }
-
-        if (string.IsNullOrWhiteSpace(dto.RoleName))
-        {
-            throw new ArgumentException("角色名稱不能為空");
-        }
-
-        if (dto.RoleId.Length > 50)
-        {
-            throw new ArgumentException("角色代碼長度不能超過50字元");
-        }
-
-        if (dto.RoleName.Length > 100)
-        {
-            throw new ArgumentException("角色名稱長度不能超過100字元");
-        }
-    }
-
-    public async Task<CopyRoleResultDto> CopyRoleToTargetAsync(CopyRoleRequestDto dto)
+    public async Task<CopyRoleResultDto> CopyRoleToTargetAsync(CopyRoleToTargetDto dto)
     {
         try
         {
-            // 1. 驗證來源角色和目的角色不能相同
+            // 1. 驗證來源和目的角色不能相同
             if (dto.SourceRoleId == dto.TargetRoleId)
             {
-                throw new InvalidOperationException("來源角色和目的角色不能相同");
+                throw new ArgumentException("來源角色和目的角色不能相同");
             }
 
             // 2. 驗證來源角色存在
@@ -338,10 +312,15 @@ public class RoleService : BaseService, IRoleService
             }
 
             // 4. 驗證來源角色有權限設定
-            var sourcePermissions = await _permissionRepository.GetByRoleIdAsync(dto.SourceRoleId);
+            if (_rolePermissionRepository == null)
+            {
+                throw new InvalidOperationException("角色權限 Repository 未注入");
+            }
+
+            var sourcePermissions = await _rolePermissionRepository.GetByRoleIdAsync(dto.SourceRoleId);
             if (!sourcePermissions.Any())
             {
-                throw new InvalidOperationException("來源角色沒有權限設定");
+                throw new InvalidOperationException($"來源角色沒有權限設定: {dto.SourceRoleId}");
             }
 
             // 5. 執行複製（在交易中）
@@ -352,37 +331,39 @@ public class RoleService : BaseService, IRoleService
             try
             {
                 // 清除目的角色權限
-                await _permissionRepository.DeleteByRoleIdAsync(dto.TargetRoleId, transaction);
-                _logger.LogInfo($"清除目的角色權限: {dto.TargetRoleId}");
+                await _rolePermissionRepository.DeleteByRoleIdAsync(dto.TargetRoleId, transaction);
 
                 // 複製權限
-                var currentUserId = GetCurrentUserId();
-                var permissionsCopied = await _permissionRepository.CopyFromRoleAsync(
+                var permissionsCopied = await _rolePermissionRepository.CopyFromRoleAsync(
                     dto.SourceRoleId,
                     dto.TargetRoleId,
-                    currentUserId,
+                    _userContext.UserId ?? string.Empty,
                     transaction
                 );
-                _logger.LogInfo($"複製角色權限成功: 來源={dto.SourceRoleId}, 目的={dto.TargetRoleId}, 數量={permissionsCopied}");
 
                 int usersCopied = 0;
                 if (dto.CopyUsers)
                 {
+                    if (_userRoleRepository == null)
+                    {
+                        throw new InvalidOperationException("使用者角色 Repository 未注入");
+                    }
+
                     // 清除目的角色使用者
                     await _userRoleRepository.DeleteByRoleIdAsync(dto.TargetRoleId, transaction);
-                    _logger.LogInfo($"清除目的角色使用者: {dto.TargetRoleId}");
 
                     // 複製使用者
                     usersCopied = await _userRoleRepository.CopyFromRoleAsync(
                         dto.SourceRoleId,
                         dto.TargetRoleId,
-                        currentUserId,
+                        _userContext.UserId ?? string.Empty,
                         transaction
                     );
-                    _logger.LogInfo($"複製角色使用者成功: 來源={dto.SourceRoleId}, 目的={dto.TargetRoleId}, 數量={usersCopied}");
                 }
 
-                transaction.Commit();
+                await transaction.CommitAsync();
+
+                _logger.LogInfo($"角色複製成功: {dto.SourceRoleId} -> {dto.TargetRoleId}, 權限: {permissionsCopied} 筆, 使用者: {usersCopied} 筆");
 
                 return new CopyRoleResultDto
                 {
@@ -392,9 +373,10 @@ public class RoleService : BaseService, IRoleService
                     UsersCopied = usersCopied
                 };
             }
-            catch
+            catch (Exception ex)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
+                _logger.LogError($"複製角色失敗: {dto.SourceRoleId} -> {dto.TargetRoleId}", ex);
                 throw;
             }
         }
@@ -405,11 +387,11 @@ public class RoleService : BaseService, IRoleService
         }
     }
 
-    public async Task<ValidateCopyResultDto> ValidateCopyRoleAsync(ValidateCopyRequestDto dto)
+    public async Task<ValidateCopyRoleResultDto> ValidateCopyRoleAsync(ValidateCopyRoleDto dto)
     {
         try
         {
-            var result = new ValidateCopyResultDto();
+            var result = new ValidateCopyRoleResultDto();
 
             // 檢查是否相同
             if (dto.SourceRoleId == dto.TargetRoleId)
@@ -429,10 +411,14 @@ public class RoleService : BaseService, IRoleService
             result.TargetRoleExists = targetRole != null;
 
             // 檢查來源角色權限
-            if (result.SourceRoleExists)
+            if (result.SourceRoleExists && _rolePermissionRepository != null)
             {
-                var permissions = await _permissionRepository.GetByRoleIdAsync(dto.SourceRoleId);
+                var permissions = await _rolePermissionRepository.GetByRoleIdAsync(dto.SourceRoleId);
                 result.SourceHasPermissions = permissions.Any();
+            }
+            else
+            {
+                result.SourceHasPermissions = false;
             }
 
             return result;
@@ -444,4 +430,3 @@ public class RoleService : BaseService, IRoleService
         }
     }
 }
-

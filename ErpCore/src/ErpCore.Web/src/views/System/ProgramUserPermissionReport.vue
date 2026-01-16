@@ -36,8 +36,8 @@
         <div class="result-header">
           <span>查詢結果</span>
           <div class="program-info">
-            <span>作業代碼：{{ permissionData.ProgramId }}</span>
-            <span>作業名稱：{{ permissionData.ProgramName }}</span>
+            <span>作業代碼：{{ permissionData.programId || permissionData.ProgramId }}</span>
+            <span>作業名稱：{{ permissionData.programName || permissionData.ProgramName }}</span>
           </div>
         </div>
       </template>
@@ -50,11 +50,11 @@
         stripe
         style="width: 100%"
       >
-        <el-table-column prop="UserId" label="使用者代碼" width="120" />
-        <el-table-column prop="UserName" label="使用者名稱" width="200" />
-        <el-table-column prop="ButtonId" label="按鈕代碼" width="120" />
-        <el-table-column prop="ButtonName" label="按鈕名稱" width="200" />
-        <el-table-column prop="PageId" label="頁面代碼" width="120" />
+        <el-table-column prop="userId" label="使用者代碼" width="120" />
+        <el-table-column prop="userName" label="使用者名稱" width="200" />
+        <el-table-column prop="buttonId" label="按鈕代碼" width="120" />
+        <el-table-column prop="buttonName" label="按鈕名稱" width="200" />
+        <el-table-column prop="pageId" label="頁面代碼" width="120" />
       </el-table>
     </el-card>
   </div>
@@ -87,7 +87,11 @@ export default {
     }
 
     // 是否有資料
-    const hasData = computed(() => permissionData.value !== null && permissionData.value.Users && permissionData.value.Users.length > 0)
+    const hasData = computed(() => {
+      if (!permissionData.value) return false
+      const users = permissionData.value.users || permissionData.value.Users || []
+      return users.length > 0
+    })
 
     // 扁平化表格資料
     const flattenedTableData = computed(() => {
@@ -171,7 +175,7 @@ export default {
 
       loading.value = true
       try {
-        const params = { ProgramId: queryForm.ProgramId }
+        const params = { programId: queryForm.ProgramId }
         const response = await programUserPermissionApi.getList(params)
         // 處理不同的響應格式
         if (response && response.data) {
@@ -229,8 +233,8 @@ export default {
       }
       try {
         const data = {
-          Request: { ProgramId: queryForm.ProgramId },
-          ExportFormat: 'Excel'
+          request: { programId: queryForm.ProgramId },
+          exportFormat: 'Excel'
         }
         const response = await programUserPermissionApi.exportReport(data)
         

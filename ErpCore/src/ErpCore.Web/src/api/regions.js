@@ -12,7 +12,7 @@ export const regionsApi = {
 
   // 查詢單筆地區
   getRegion: (regionId) => {
-    return axios.get(`/regions/${regionId}`)
+    return axios.get(`/regions/${encodeURIComponent(regionId)}`)
   },
 
   // 新增地區
@@ -22,12 +22,12 @@ export const regionsApi = {
 
   // 修改地區
   updateRegion: (regionId, data) => {
-    return axios.put(`/regions/${regionId}`, data)
+    return axios.put(`/regions/${encodeURIComponent(regionId)}`, data)
   },
 
   // 刪除地區
   deleteRegion: (regionId) => {
-    return axios.delete(`/regions/${regionId}`)
+    return axios.delete(`/regions/${encodeURIComponent(regionId)}`)
   },
 
   // 批次刪除地區
@@ -35,4 +35,3 @@ export const regionsApi = {
     return axios.delete('/regions/batch', { data })
   }
 }
-

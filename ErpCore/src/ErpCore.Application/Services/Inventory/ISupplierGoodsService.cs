@@ -36,11 +36,10 @@ public interface ISupplierGoodsService
     /// <summary>
     /// 批次刪除供應商商品
     /// </summary>
-    Task BatchDeleteSupplierGoodsAsync(BatchDeleteSupplierGoodsDto dto);
+    Task DeleteSupplierGoodsBatchAsync(BatchDeleteSupplierGoodsDto dto);
 
     /// <summary>
-    /// 更新供應商商品狀態
+    /// 更新狀態
     /// </summary>
-    Task UpdateStatusAsync(string supplierId, string barcodeId, string shopId, UpdateSupplierGoodsStatusDto dto);
+    Task UpdateStatusAsync(string supplierId, string barcodeId, string shopId, string status);
 }
-

@@ -25,12 +25,12 @@ export const systemPermissionApi = {
 export const programUserPermissionApi = {
   // 查詢作業權限之使用者列表
   getList: (params) => {
-    return axios.get('/program-user-permissions/list', { params })
+    return axios.get('/api/v1/program-user-permissions/list', { params })
   },
 
   // 匯出作業權限之使用者報表
   exportReport: (data) => {
-    return axios.post('/program-user-permissions/export', data, {
+    return axios.post('/api/v1/program-user-permissions/export', data, {
       responseType: 'blob'
     })
   }
@@ -43,12 +43,12 @@ export const programUserPermissionApi = {
 export const roleSystemPermissionApi = {
   // 查詢角色系統權限列表
   getList: (params) => {
-    return axios.get('/role-system-permissions/list', { params })
+    return axios.get('/api/v1/role-system-permissions/list', { params })
   },
 
   // 匯出角色系統權限報表
   exportReport: (data) => {
-    return axios.post('/role-system-permissions/export', data, {
+    return axios.post('/api/v1/role-system-permissions/export', data, {
       responseType: 'blob'
     })
   }
@@ -61,12 +61,12 @@ export const roleSystemPermissionApi = {
 export const programRolePermissionApi = {
   // 查詢作業權限之角色列表
   getList: (params) => {
-    return axios.get('/program-role-permissions/list', { params })
+    return axios.get('/api/v1/program-role-permissions/list', { params })
   },
 
   // 匯出作業權限之角色報表
   exportReport: (data) => {
-    return axios.post('/program-role-permissions/export', data, {
+    return axios.post('/api/v1/program-role-permissions/export', data, {
       responseType: 'blob'
     })
   }
@@ -79,22 +79,22 @@ export const programRolePermissionApi = {
 export const roleUserApi = {
   // 查詢角色之使用者列表
   getList: (params) => {
-    return axios.get('/role-users/list', { params })
+    return axios.get('/api/v1/role-users/list', { params })
   },
 
   // 刪除使用者角色對應
   deleteRoleUser: (roleId, userId) => {
-    return axios.delete(`/role-users/${roleId}/${userId}`)
+    return axios.delete(`/api/v1/role-users/${roleId}/${userId}`)
   },
 
   // 批次刪除使用者角色對應
   batchDeleteRoleUsers: (data) => {
-    return axios.delete('/role-users/batch', { data })
+    return axios.delete('/api/v1/role-users/batch', { data })
   },
 
   // 匯出角色之使用者報表
   exportReport: (data) => {
-    return axios.post('/role-users/export', data, {
+    return axios.post('/api/v1/role-users/export', data, {
       responseType: 'blob'
     })
   }

@@ -15,9 +15,9 @@ public interface IPurchaseOrderRepository
     Task<string> CreateAsync(PurchaseOrder entity, List<PurchaseOrderDetail> details);
     Task UpdateAsync(PurchaseOrder entity, List<PurchaseOrderDetail> details);
     Task DeleteAsync(string orderId);
-    Task UpdateStatusAsync(string orderId, string status, string? userId = null, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string orderId, string status, string? userId = null, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateOrderIdAsync();
-    Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null);
+    Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, global::System.Data.IDbTransaction? transaction = null);
 }
 
 /// <summary>

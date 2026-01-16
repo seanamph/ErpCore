@@ -4,6 +4,7 @@ using ErpCore.Domain.Entities.Communication;
 using ErpCore.Infrastructure.Repositories.Communication;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Net;
 using System.Net.Mail;
 

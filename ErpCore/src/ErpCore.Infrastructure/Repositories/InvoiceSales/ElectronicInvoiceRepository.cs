@@ -131,7 +131,7 @@ public class ElectronicInvoiceRepository : BaseRepository, IElectronicInvoiceRep
 
             return new PagedResult<ElectronicInvoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
@@ -278,7 +278,7 @@ public class ElectronicInvoiceRepository : BaseRepository, IElectronicInvoiceRep
 
             return new PagedResult<ElectronicInvoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

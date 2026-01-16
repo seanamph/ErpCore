@@ -13,6 +13,7 @@ namespace ErpCore.Application.Services.AnalysisReport;
 public class AnalysisReportService : BaseService, IAnalysisReportService
 {
     private readonly IAnalysisReportRepository _repository;
+    private readonly ExportHelper _exportHelper;
 
     public AnalysisReportService(
         IAnalysisReportRepository repository,
@@ -20,6 +21,7 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _exportHelper = new ExportHelper(logger);
     }
 
     public async Task<PagedResult<SYSA1011ReportDto>> GetSYSA1011ReportAsync(SYSA1011QueryDto query)
@@ -78,10 +80,43 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1011QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1011ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "狀態", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1011)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1011)");
+            }
         }
         catch (Exception ex)
         {
@@ -94,10 +129,36 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1011QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1011ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "狀態", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1011)");
         }
         catch (Exception ex)
         {
@@ -134,7 +195,9 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
                 DateType = query.DateType,
                 MaintainEmp = query.MaintainEmp,
                 BelongOrg = query.BelongOrg,
-                ApplyType = query.ApplyType
+                ApplyType = query.ApplyType,
+                OtherCondition1 = query.OtherCondition1,
+                OtherCondition2 = query.OtherCondition2
             };
 
             var result = await _repository.GetAnalysisReportAsync(reportId, repositoryQuery);
@@ -256,10 +319,47 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1012QueryDto
+            {
+                SiteId = query.SiteId,
+                GoodsId = query.GoodsId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                ReportMonth = query.ReportMonth,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1012ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReportMonth", DisplayName = "報表月份", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BeginQty", DisplayName = "期初數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "BeginAmt", DisplayName = "期初金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InQty", DisplayName = "進貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InAmt", DisplayName = "進貨金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutQty", DisplayName = "銷貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutAmt", DisplayName = "銷貨金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "EndQty", DisplayName = "期末數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "EndAmt", DisplayName = "期末金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "進銷存月報表 (SYSA1012)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "進銷存月報表", "進銷存月報表 (SYSA1012)");
+            }
         }
         catch (Exception ex)
         {
@@ -272,10 +372,40 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1012QueryDto
+            {
+                SiteId = query.SiteId,
+                GoodsId = query.GoodsId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                ReportMonth = query.ReportMonth,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1012ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReportMonth", DisplayName = "報表月份", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BeginQty", DisplayName = "期初數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "BeginAmt", DisplayName = "期初金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InQty", DisplayName = "進貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "InAmt", DisplayName = "進貨金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutQty", DisplayName = "銷貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutAmt", DisplayName = "銷貨金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "EndQty", DisplayName = "期末數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "EndAmt", DisplayName = "期末金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "進銷存月報表 (SYSA1012)");
         }
         catch (Exception ex)
         {
@@ -349,10 +479,58 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1013QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                SupplierId = query.SupplierId,
+                Use = query.Use,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1013ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "TxnNo", DisplayName = "出庫單號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TxnDate", DisplayName = "出庫日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Amt", DisplayName = "單價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ApplyQty", DisplayName = "申請數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "NAmt", DisplayName = "未稅金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "Use", DisplayName = "用途", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Vendor", DisplayName = "廠商", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StocksType", DisplayName = "庫存類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgAllocation", DisplayName = "單位分攤", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "耗材出庫明細表 (SYSA1013)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "耗材出庫明細表", "耗材出庫明細表 (SYSA1013)");
+            }
         }
         catch (Exception ex)
         {
@@ -365,10 +543,51 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1013QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                SupplierId = query.SupplierId,
+                Use = query.Use,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1013ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "TxnNo", DisplayName = "出庫單號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TxnDate", DisplayName = "出庫日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Amt", DisplayName = "單價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ApplyQty", DisplayName = "申請數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "NAmt", DisplayName = "未稅金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "Use", DisplayName = "用途", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Vendor", DisplayName = "廠商", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "StocksType", DisplayName = "庫存類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgAllocation", DisplayName = "單位分攤", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "耗材出庫明細表 (SYSA1013)");
         }
         catch (Exception ex)
         {
@@ -439,10 +658,47 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1014QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1014ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PurchaseQty", DisplayName = "進貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesQty", DisplayName = "銷貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "StockQty", DisplayName = "庫存數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectDate", DisplayName = "日期範圍", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1014)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1014)");
+            }
         }
         catch (Exception ex)
         {
@@ -455,10 +711,40 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1014QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                OrgId = query.OrgId,
+                GoodsId = query.GoodsId,
+                BeginDate = query.BeginDate,
+                EndDate = query.EndDate,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1014ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PurchaseQty", DisplayName = "進貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SalesQty", DisplayName = "銷貨數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "StockQty", DisplayName = "庫存數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectDate", DisplayName = "日期範圍", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1014)");
         }
         catch (Exception ex)
         {
@@ -525,10 +811,46 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1015QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1015ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1015)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1015)");
+            }
         }
         catch (Exception ex)
         {
@@ -541,10 +863,39 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1015QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1015ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1015)");
         }
         catch (Exception ex)
         {
@@ -612,10 +963,50 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1016QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1016ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1016)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1016)");
+            }
         }
         catch (Exception ex)
         {
@@ -628,10 +1019,43 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1016QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1016ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1016)");
         }
         catch (Exception ex)
         {
@@ -700,10 +1124,51 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1017QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1017ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "組織代碼", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1017)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1017)");
+            }
         }
         catch (Exception ex)
         {
@@ -716,10 +1181,44 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1017QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1017ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PackUnit", DisplayName = "包裝單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Unit", DisplayName = "單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SelectType", DisplayName = "篩選類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgId", DisplayName = "組織代碼", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1017)");
         }
         catch (Exception ex)
         {
@@ -775,10 +1274,38 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1018QueryDto
+            {
+                OrgId = query.OrgId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1018ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "OrgName", DisplayName = "組織單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintenanceType", DisplayName = "維修類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintenanceStatus", DisplayName = "維修狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ItemCount", DisplayName = "維修件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalCount", DisplayName = "總件數", DataType = ExportDataType.Integer }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "工務維修件數統計表 (SYSA1018)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "工務維修件數統計表", "工務維修件數統計表 (SYSA1018)");
+            }
         }
         catch (Exception ex)
         {
@@ -791,10 +1318,31 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1018QueryDto
+            {
+                OrgId = query.OrgId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1018ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "OrgName", DisplayName = "組織單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintenanceType", DisplayName = "維修類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintenanceStatus", DisplayName = "維修狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ItemCount", DisplayName = "維修件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalCount", DisplayName = "總件數", DataType = ExportDataType.Integer }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "工務維修件數統計表 (SYSA1018)");
         }
         catch (Exception ex)
         {
@@ -853,10 +1401,40 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1019QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1019ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgName", DisplayName = "請修單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FilterType", DisplayName = "篩選類型", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1019)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1019)");
+            }
         }
         catch (Exception ex)
         {
@@ -869,10 +1447,33 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1019QueryDto
+            {
+                OrgId = query.OrgId,
+                SiteId = query.SiteId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1019ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OrgName", DisplayName = "請修單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FilterType", DisplayName = "篩選類型", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1019)");
         }
         catch (Exception ex)
         {
@@ -930,10 +1531,40 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1020QueryDto
+            {
+                SiteId = query.SiteId,
+                PlanId = query.PlanId,
+                ShowType = query.ShowType,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1020ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PlanName", DisplayName = "計劃名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShowType", DisplayName = "顯示類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FilterType", DisplayName = "篩選類型", DataType = ExportDataType.String }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1020)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "商品分析報表", "商品分析報表 (SYSA1020)");
+            }
         }
         catch (Exception ex)
         {
@@ -946,10 +1577,33 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1020QueryDto
+            {
+                SiteId = query.SiteId,
+                PlanId = query.PlanId,
+                ShowType = query.ShowType,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1020ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "序號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "PlanName", DisplayName = "計劃名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ShowType", DisplayName = "顯示類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "FilterType", DisplayName = "篩選類型", DataType = ExportDataType.String }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "商品分析報表 (SYSA1020)");
         }
         catch (Exception ex)
         {
@@ -1013,10 +1667,46 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1021QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1021ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CostAmount", DisplayName = "成本金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AvgCost", DisplayName = "平均成本", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "月成本報表 (SYSA1021)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "月成本報表", "月成本報表 (SYSA1021)");
+            }
         }
         catch (Exception ex)
         {
@@ -1029,10 +1719,39 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1021QueryDto
+            {
+                SiteId = query.SiteId,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                GoodsId = query.GoodsId,
+                YearMonth = query.YearMonth,
+                FilterType = query.FilterType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1021ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "YearMonth", DisplayName = "年月", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BId", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MId", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SId", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "品項編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "品項名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Qty", DisplayName = "數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CostAmount", DisplayName = "成本金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AvgCost", DisplayName = "平均成本", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "月成本報表 (SYSA1021)");
         }
         catch (Exception ex)
         {
@@ -1095,10 +1814,45 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1022QueryDto
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1022ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表 (SYSA1022)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "工務維修統計報表", "工務維修統計報表 (SYSA1022)");
+            }
         }
         catch (Exception ex)
         {
@@ -1111,10 +1865,38 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1022QueryDto
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1022ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表 (SYSA1022)");
         }
         catch (Exception ex)
         {
@@ -1179,10 +1961,47 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 Excel/PDF 匯出功能
-            // 目前先返回空陣列，後續可整合 EPPlus 或 NPOI 等套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1023QueryDto
+            {
+                ReportType = query.ReportType,
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1023ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReportType", DisplayName = "報表類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表(報表類型) (SYSA1023)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "工務維修統計報表(報表類型)", "工務維修統計報表(報表類型) (SYSA1023)");
+            }
         }
         catch (Exception ex)
         {
@@ -1195,14 +2014,585 @@ public class AnalysisReportService : BaseService, IAnalysisReportService
     {
         try
         {
-            // TODO: 實作 PDF 列印功能
-            // 目前先返回空陣列，後續可整合 iTextSharp 或其他 PDF 套件
-            await Task.CompletedTask;
-            return Array.Empty<byte>();
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1023QueryDto
+            {
+                ReportType = query.ReportType,
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1023ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ReportType", DisplayName = "報表類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表(報表類型) (SYSA1023)");
         }
         catch (Exception ex)
         {
             _logger.LogError("列印工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1024ReportDto>> GetSYSA1024ReportAsync(SYSA1024QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSA1024Query
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                OtherCondition1 = query.OtherCondition1,
+                OtherCondition2 = query.OtherCondition2,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSA1024ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSA1024ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                ReportName = item.ReportName,
+                BelongStatus = item.BelongStatus,
+                ApplyDateB = item.ApplyDateB,
+                ApplyDateE = item.ApplyDateE,
+                BelongOrg = item.BelongOrg,
+                MaintainEmp = item.MaintainEmp,
+                ApplyType = item.ApplyType,
+                OtherCondition1 = item.OtherCondition1,
+                OtherCondition2 = item.OtherCondition2,
+                RequestCount = item.RequestCount,
+                TotalAmount = item.TotalAmount
+            }).ToList();
+
+            return new PagedResult<SYSA1024ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表(其他)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSA1024ReportAsync(SYSA1024QueryDto query, string format)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1024QueryDto
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                OtherCondition1 = query.OtherCondition1,
+                OtherCondition2 = query.OtherCondition2,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1024ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OtherCondition1", DisplayName = "其他條件1", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OtherCondition2", DisplayName = "其他條件2", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表(其他) (SYSA1024)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "工務維修統計報表(其他)", "工務維修統計報表(其他) (SYSA1024)");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出工務維修統計報表(其他)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSA1024ReportAsync(SYSA1024QueryDto query)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSA1024QueryDto
+            {
+                SiteId = query.SiteId,
+                BelongStatus = query.BelongStatus,
+                ApplyDateB = query.ApplyDateB,
+                ApplyDateE = query.ApplyDateE,
+                BelongOrg = query.BelongOrg,
+                MaintainEmp = query.MaintainEmp,
+                ApplyType = query.ApplyType,
+                OtherCondition1 = query.OtherCondition1,
+                OtherCondition2 = query.OtherCondition2,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSA1024ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongStatus", DisplayName = "費用負擔", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateB", DisplayName = "日統計表起", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyDateE", DisplayName = "日統計表迄", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BelongOrg", DisplayName = "費用歸屬單位", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MaintainEmp", DisplayName = "維保人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ApplyType", DisplayName = "請修類別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OtherCondition1", DisplayName = "其他條件1", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "OtherCondition2", DisplayName = "其他條件2", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "RequestCount", DisplayName = "申請件數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "工務維修統計報表(其他) (SYSA1024)");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印工務維修統計報表(其他)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSWC10ReportDto>> GetSYSWC10ReportAsync(SYSWC10QueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SYSWC10Query
+            {
+                GoodsIdFrom = query.GoodsIdFrom,
+                GoodsIdTo = query.GoodsIdTo,
+                GoodsName = query.GoodsName,
+                SiteIds = query.SiteIds,
+                WarehouseIds = query.WarehouseIds,
+                CategoryIds = query.CategoryIds,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                MinQty = query.MinQty,
+                MaxQty = query.MaxQty,
+                Status = query.Status,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSYSWC10ReportAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SYSWC10ReportDto
+            {
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                GoodsId = item.GoodsId,
+                GoodsName = item.GoodsName,
+                BigCategoryId = item.BigCategoryId,
+                BigCategoryName = item.BigCategoryName,
+                MidCategoryId = item.MidCategoryId,
+                MidCategoryName = item.MidCategoryName,
+                SmallCategoryId = item.SmallCategoryId,
+                SmallCategoryName = item.SmallCategoryName,
+                WarehouseId = item.WarehouseId,
+                WarehouseName = item.WarehouseName,
+                InQty = item.InQty,
+                OutQty = item.OutQty,
+                CurrentQty = item.CurrentQty,
+                CurrentAmt = item.CurrentAmt,
+                LastStockDate = item.LastStockDate,
+                SafeQty = item.SafeQty,
+                IsLowStock = item.IsLowStock,
+                IsOverStock = item.IsOverStock
+            }).ToList();
+
+            return new PagedResult<SYSWC10ReportDto>
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢庫存分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSYSWC10ReportAsync(SYSWC10QueryDto query, string format)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSWC10QueryDto
+            {
+                GoodsIdFrom = query.GoodsIdFrom,
+                GoodsIdTo = query.GoodsIdTo,
+                GoodsName = query.GoodsName,
+                SiteIds = query.SiteIds,
+                WarehouseIds = query.WarehouseIds,
+                CategoryIds = query.CategoryIds,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                MinQty = query.MinQty,
+                MaxQty = query.MaxQty,
+                Status = query.Status,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSWC10ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BigCategoryName", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MidCategoryName", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SmallCategoryName", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "WarehouseName", DisplayName = "庫別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InQty", DisplayName = "入庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutQty", DisplayName = "出庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CurrentQty", DisplayName = "當前庫存數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CurrentAmt", DisplayName = "當前庫存金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "IsLowStock", DisplayName = "低庫存", DataType = ExportDataType.Boolean },
+                new ExportColumn { PropertyName = "IsOverStock", DisplayName = "過量庫存", DataType = ExportDataType.Boolean },
+                new ExportColumn { PropertyName = "LastStockDate", DisplayName = "最後庫存異動日期", DataType = ExportDataType.Date }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "庫存分析報表 (SYSWC10)");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "庫存分析報表", "庫存分析報表 (SYSWC10)");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出庫存分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSYSWC10ReportAsync(SYSWC10QueryDto query)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SYSWC10QueryDto
+            {
+                GoodsIdFrom = query.GoodsIdFrom,
+                GoodsIdTo = query.GoodsIdTo,
+                GoodsName = query.GoodsName,
+                SiteIds = query.SiteIds,
+                WarehouseIds = query.WarehouseIds,
+                CategoryIds = query.CategoryIds,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                MinQty = query.MinQty,
+                MaxQty = query.MaxQty,
+                Status = query.Status,
+                BId = query.BId,
+                MId = query.MId,
+                SId = query.SId,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSYSWC10ReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "SiteId", DisplayName = "店別代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GoodsName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BigCategoryName", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MidCategoryName", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SmallCategoryName", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "WarehouseName", DisplayName = "庫別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "InQty", DisplayName = "入庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OutQty", DisplayName = "出庫數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CurrentQty", DisplayName = "當前庫存數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "CurrentAmt", DisplayName = "當前庫存金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "SafeQty", DisplayName = "安全庫存量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "IsLowStock", DisplayName = "低庫存", DataType = ExportDataType.Boolean },
+                new ExportColumn { PropertyName = "IsOverStock", DisplayName = "過量庫存", DataType = ExportDataType.Boolean },
+                new ExportColumn { PropertyName = "LastStockDate", DisplayName = "最後庫存異動日期", DataType = ExportDataType.Date }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "庫存分析報表 (SYSWC10)");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印庫存分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<SalesAnalysisReportResult> GetSalesAnalysisReportAsync(SalesAnalysisQueryDto query)
+    {
+        try
+        {
+            var repositoryQuery = new SalesAnalysisQuery
+            {
+                SiteId = query.SiteId,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                BigClassId = query.BigClassId,
+                MidClassId = query.MidClassId,
+                SmallClassId = query.SmallClassId,
+                ProductId = query.ProductId,
+                VendorId = query.VendorId,
+                SalesPersonId = query.SalesPersonId,
+                CustomerId = query.CustomerId,
+                ReportType = query.ReportType,
+                GroupBy = query.GroupBy,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize
+            };
+
+            var result = await _repository.GetSalesAnalysisReportAsync(repositoryQuery);
+            var summary = await _repository.GetSalesAnalysisSummaryAsync(repositoryQuery);
+
+            var dtos = result.Items.Select(item => new SalesAnalysisReportDto
+            {
+                ProductId = item.ProductId,
+                ProductName = item.ProductName,
+                BigClassId = item.BigClassId,
+                BigClassName = item.BigClassName,
+                MidClassId = item.MidClassId,
+                MidClassName = item.MidClassName,
+                SmallClassId = item.SmallClassId,
+                SmallClassName = item.SmallClassName,
+                VendorId = item.VendorId,
+                VendorName = item.VendorName,
+                SiteId = item.SiteId,
+                SiteName = item.SiteName,
+                SalesPersonId = item.SalesPersonId,
+                SalesPersonName = item.SalesPersonName,
+                TotalQuantity = item.TotalQuantity,
+                TotalAmount = item.TotalAmount,
+                TotalCost = item.TotalCost,
+                TotalProfit = item.TotalProfit,
+                ProfitRate = item.ProfitRate,
+                OrderCount = item.OrderCount,
+                AvgUnitPrice = item.AvgUnitPrice,
+                AvgQuantity = item.AvgQuantity
+            }).ToList();
+
+            return new SalesAnalysisReportResult
+            {
+                Items = dtos,
+                TotalCount = result.TotalCount,
+                PageIndex = result.PageIndex,
+                PageSize = result.PageSize,
+                TotalPages = result.TotalPages,
+                Summary = new SalesAnalysisSummaryDto
+                {
+                    TotalQuantity = summary.TotalQuantity,
+                    TotalAmount = summary.TotalAmount,
+                    TotalCost = summary.TotalCost,
+                    TotalProfit = summary.TotalProfit,
+                    AvgProfitRate = summary.AvgProfitRate,
+                    TotalOrderCount = summary.TotalOrderCount
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢銷售分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportSalesAnalysisReportAsync(SalesAnalysisQueryDto query, string format)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SalesAnalysisQueryDto
+            {
+                SiteId = query.SiteId,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                BigClassId = query.BigClassId,
+                MidClassId = query.MidClassId,
+                SmallClassId = query.SmallClassId,
+                ProductId = query.ProductId,
+                VendorId = query.VendorId,
+                SalesPersonId = query.SalesPersonId,
+                CustomerId = query.CustomerId,
+                ReportType = query.ReportType,
+                GroupBy = query.GroupBy,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSalesAnalysisReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ProductId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProductName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BigClassName", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MidClassName", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SmallClassName", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "VendorName", DisplayName = "廠商", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SalesPersonName", DisplayName = "銷售人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TotalQuantity", DisplayName = "總數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalCost", DisplayName = "總成本", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalProfit", DisplayName = "總毛利", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ProfitRate", DisplayName = "毛利率(%)", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderCount", DisplayName = "筆數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "AvgUnitPrice", DisplayName = "平均單價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AvgQuantity", DisplayName = "平均數量", DataType = ExportDataType.Decimal }
+            };
+
+            // 根据格式导出
+            if (format.ToLower() == "pdf")
+            {
+                return _exportHelper.ExportToPdf(result.Items, columns, "銷售分析報表");
+            }
+            else
+            {
+                return _exportHelper.ExportToExcel(result.Items, columns, "銷售分析報表", "銷售分析報表");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出銷售分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> PrintSalesAnalysisReportAsync(SalesAnalysisQueryDto query)
+    {
+        try
+        {
+            // 获取所有数据（不分页）
+            var allDataQuery = new SalesAnalysisQueryDto
+            {
+                SiteId = query.SiteId,
+                DateFrom = query.DateFrom,
+                DateTo = query.DateTo,
+                BigClassId = query.BigClassId,
+                MidClassId = query.MidClassId,
+                SmallClassId = query.SmallClassId,
+                ProductId = query.ProductId,
+                VendorId = query.VendorId,
+                SalesPersonId = query.SalesPersonId,
+                CustomerId = query.CustomerId,
+                ReportType = query.ReportType,
+                GroupBy = query.GroupBy,
+                PageIndex = 1,
+                PageSize = int.MaxValue // 获取所有数据
+            };
+
+            var result = await GetSalesAnalysisReportAsync(allDataQuery);
+
+            // 定义导出列
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ProductId", DisplayName = "商品代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ProductName", DisplayName = "商品名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "BigClassName", DisplayName = "大分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "MidClassName", DisplayName = "中分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SmallClassName", DisplayName = "小分類", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "VendorName", DisplayName = "廠商", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SiteName", DisplayName = "店別", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SalesPersonName", DisplayName = "銷售人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TotalQuantity", DisplayName = "總數量", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalAmount", DisplayName = "總金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalCost", DisplayName = "總成本", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "TotalProfit", DisplayName = "總毛利", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "ProfitRate", DisplayName = "毛利率(%)", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "OrderCount", DisplayName = "筆數", DataType = ExportDataType.Integer },
+                new ExportColumn { PropertyName = "AvgUnitPrice", DisplayName = "平均單價", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "AvgQuantity", DisplayName = "平均數量", DataType = ExportDataType.Decimal }
+            };
+
+            // 生成 PDF
+            return _exportHelper.ExportToPdf(result.Items, columns, "銷售分析報表");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印銷售分析報表失敗", ex);
             throw;
         }
     }

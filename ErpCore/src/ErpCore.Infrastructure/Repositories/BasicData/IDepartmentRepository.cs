@@ -53,4 +53,3 @@ public class DepartmentQuery
     public string? OrgId { get; set; }
     public string? Status { get; set; }
 }
-

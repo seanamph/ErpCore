@@ -17,7 +17,7 @@ public interface IPurchaseReceiptRepository
     Task DeleteAsync(string receiptId);
     Task<IEnumerable<PendingPurchaseOrderForReceipt>> GetPendingOrdersAsync(PendingPurchaseOrderQuery query);
     Task<int> GetPendingOrdersCountAsync(PendingPurchaseOrderQuery query);
-    Task UpdateStatusAsync(string receiptId, string status, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string receiptId, string status, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateReceiptIdAsync();
 
     // SYSW333 - 已日結採購單驗收調整作業
@@ -44,6 +44,7 @@ public class PurchaseReceiptQuery
     public string? Status { get; set; }
     public DateTime? ReceiptDateFrom { get; set; }
     public DateTime? ReceiptDateTo { get; set; }
+    public string? SourceProgram { get; set; }
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 20;
 }

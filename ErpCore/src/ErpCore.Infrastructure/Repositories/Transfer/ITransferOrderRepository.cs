@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace ErpCore.Infrastructure.Repositories.Transfer;
 
 /// <summary>
@@ -12,7 +14,7 @@ public interface ITransferOrderRepository
     /// <param name="transferDetailId">調撥單明細ID</param>
     /// <param name="returnQty">驗退數量</param>
     /// <param name="transaction">交易物件</param>
-    Task UpdateReturnQtyAsync(Guid transferDetailId, decimal returnQty, System.Data.IDbTransaction? transaction = null);
+    Task UpdateReturnQtyAsync(Guid transferDetailId, decimal returnQty, global::System.Data.IDbTransaction? transaction = null);
 
     /// <summary>
     /// 更新調撥單明細已收數量
@@ -20,7 +22,7 @@ public interface ITransferOrderRepository
     /// <param name="transferDetailId">調撥單明細ID</param>
     /// <param name="receiptQty">驗收數量</param>
     /// <param name="transaction">交易物件</param>
-    Task UpdateReceiptQtyAsync(Guid transferDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null);
+    Task UpdateReceiptQtyAsync(Guid transferDetailId, decimal receiptQty, global::System.Data.IDbTransaction? transaction = null);
 
     /// <summary>
     /// 取得調撥單資料（含明細）

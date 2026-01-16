@@ -27,6 +27,14 @@ public class DepartmentQueryDto
     public int PageSize { get; set; } = 20;
     public string? SortField { get; set; }
     public string? SortOrder { get; set; }
+    public DepartmentQueryFilters? Filters { get; set; }
+}
+
+/// <summary>
+/// 部別查詢篩選條件
+/// </summary>
+public class DepartmentQueryFilters
+{
     public string? DeptId { get; set; }
     public string? DeptName { get; set; }
     public string? OrgId { get; set; }
@@ -42,7 +50,7 @@ public class CreateDepartmentDto
     public string DeptName { get; set; } = string.Empty;
     public string? OrgId { get; set; }
     public int? SeqNo { get; set; }
-    public string Status { get; set; } = "A";
+    public string? Status { get; set; }
     public string? Notes { get; set; }
 }
 
@@ -54,7 +62,7 @@ public class UpdateDepartmentDto
     public string DeptName { get; set; } = string.Empty;
     public string? OrgId { get; set; }
     public int? SeqNo { get; set; }
-    public string Status { get; set; } = "A";
+    public string? Status { get; set; }
     public string? Notes { get; set; }
 }
 
@@ -67,10 +75,9 @@ public class BatchDeleteDepartmentDto
 }
 
 /// <summary>
-/// 更新狀態 DTO
+/// 更新部別狀態 DTO
 /// </summary>
 public class UpdateDepartmentStatusDto
 {
     public string Status { get; set; } = "A";
 }
-

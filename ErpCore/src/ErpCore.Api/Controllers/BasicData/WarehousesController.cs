@@ -116,4 +116,3 @@ public class WarehousesController : BaseController
         }, $"更新庫別狀態失敗: {warehouseId}");
     }
 }
-

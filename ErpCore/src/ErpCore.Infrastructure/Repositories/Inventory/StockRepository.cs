@@ -22,7 +22,7 @@ public class StockRepository : BaseRepository, IStockRepository
     /// 注意: 假設有 Stocks 資料表，包含 ShopId, GoodsId, Qty 欄位
     /// 如果實際資料表結構不同，請調整 SQL
     /// </summary>
-    public async Task UpdateStockQtyAsync(string shopId, string goodsId, decimal qty, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStockQtyAsync(string shopId, string goodsId, decimal qty, IDbTransaction? transaction = null)
     {
         try
         {

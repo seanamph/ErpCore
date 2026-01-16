@@ -93,6 +93,7 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 Status = query.Status,
                 ReceiptDateFrom = query.ReceiptDateFrom,
                 ReceiptDateTo = query.ReceiptDateTo,
+                SourceProgram = query.SourceProgram,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize
             };
@@ -114,6 +115,7 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 Memo = x.Memo,
                 IsSettled = x.IsSettled,
                 SettledDate = x.SettledDate,
+                SourceProgram = x.SourceProgram,
                 CreatedBy = x.CreatedBy,
                 CreatedAt = x.CreatedAt,
                 UpdatedBy = x.UpdatedBy,
@@ -277,6 +279,7 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 IsSettled = false,
                 ShopId = order.ShopId,
                 SupplierId = order.SupplierId,
+                SourceProgram = dto.SourceProgram,
                 CreatedBy = dto.ReceiptUserId ?? GetCurrentUserId()
             };
 
@@ -733,9 +736,23 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
     {
         try
         {
-            // 驗證採購單是否已日結（Status = 'A' 表示已審核，視為已日結）
+            // 驗證採購單是否存在
             var order = await _repository.GetPurchaseOrderByIdAsync(dto.OrderId);
-            if (order == null || order.Status != "A")
+            if (order == null)
+            {
+                throw new KeyNotFoundException($"採購單不存在: {dto.OrderId}");
+            }
+
+            // 檢查該採購單是否有已日結的驗收單（非調整單）
+            var query = new PurchaseReceiptQuery
+            {
+                OrderId = dto.OrderId,
+                PageIndex = 1,
+                PageSize = 1000
+            };
+            var existingReceipts = await _repository.QueryAsync(query);
+            var hasSettledReceipt = existingReceipts.Any(r => r.IsSettled && r.PurchaseOrderType == "1" && !r.IsSettledAdjustment);
+            if (!hasSettledReceipt)
             {
                 throw new InvalidOperationException("僅已日結的採購單可進行驗收調整");
             }
@@ -752,7 +769,7 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 IsSettled = false,
                 IsSettledAdjustment = true,
                 PurchaseOrderType = "1", // 採購單
-                AdjustmentReason = dto.Memo, // 使用備註作為調整原因
+                AdjustmentReason = dto.AdjustmentReason ?? dto.Memo, // 使用調整原因，如果沒有則使用備註
                 ShopId = order.ShopId,
                 SupplierId = order.SupplierId,
                 CreatedBy = dto.ReceiptUserId ?? GetCurrentUserId()
@@ -810,7 +827,11 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
             entity.ReceiptDate = dto.ReceiptDate;
             entity.ReceiptUserId = dto.ReceiptUserId;
             entity.Memo = dto.Memo;
-            entity.AdjustmentReason = dto.Memo;
+            // 注意：UpdatePurchaseReceiptDto 沒有 AdjustmentReason 字段，保持原有邏輯
+            if (!string.IsNullOrEmpty(dto.Memo))
+            {
+                entity.AdjustmentReason = dto.Memo;
+            }
             entity.UpdatedBy = dto.ReceiptUserId ?? GetCurrentUserId();
 
             var existingDetails = await _repository.GetDetailsByReceiptIdAsync(receiptId);
@@ -1274,6 +1295,7 @@ public class PurchaseReceiptService : BaseService, IPurchaseReceiptService
                 IsSettledAdjustment = true,
                 PurchaseOrderType = "2", // 退貨單
                 AdjustmentReason = dto.Memo,
+                SourceProgram = "SYSW337", // 來源程式
                 ShopId = order.ShopId,
                 SupplierId = order.SupplierId,
                 CreatedBy = dto.ReceiptUserId ?? GetCurrentUserId()

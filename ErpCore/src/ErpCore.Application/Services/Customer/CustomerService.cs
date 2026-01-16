@@ -395,7 +395,7 @@ public class CustomerService : BaseService, ICustomerService
         }
     }
 
-    private CustomerDto MapToDto(Customer entity)
+    private CustomerDto MapToDto(ErpCore.Domain.Entities.Customer.Customer entity)
     {
         return new CustomerDto
         {
@@ -657,6 +657,55 @@ public class CustomerService : BaseService, ICustomerService
         catch (Exception ex)
         {
             _logger.LogError($"刪除查詢歷史記錄失敗: {historyId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<byte[]> ExportToExcelAsync(CustomerAdvancedQueryDto query)
+    {
+        try
+        {
+            // 查詢所有資料（不分頁）
+            var allDataQuery = new CustomerAdvancedQueryDto
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder,
+                Filters = query.Filters,
+                DateRange = query.DateRange,
+                AmountRange = query.AmountRange
+            };
+
+            var result = await AdvancedQueryAsync(allDataQuery);
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "CustomerId", DisplayName = "客戶編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CustomerName", DisplayName = "客戶名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GuiId", DisplayName = "統一編號", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "GuiType", DisplayName = "識別類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ContactStaff", DisplayName = "聯絡人", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CompTel", DisplayName = "公司電話", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Cell", DisplayName = "手機", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Email", DisplayName = "電子郵件", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "City", DisplayName = "城市", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Canton", DisplayName = "區域", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Addr", DisplayName = "地址", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Status", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "TransDate", DisplayName = "最近交易日期", DataType = ExportDataType.Date },
+                new ExportColumn { PropertyName = "AccAmt", DisplayName = "消費累積金額", DataType = ExportDataType.Decimal },
+                new ExportColumn { PropertyName = "MonthlyYn", DisplayName = "月結客戶", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "DiscountYn", DisplayName = "享有折扣", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SalesId", DisplayName = "業務員", DataType = ExportDataType.String }
+            };
+
+            return _exportHelper.ExportToExcel(result.Items, columns, "客戶查詢結果", "客戶查詢作業 (CUS5120)");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出客戶查詢結果到 Excel 失敗", ex);
             throw;
         }
     }

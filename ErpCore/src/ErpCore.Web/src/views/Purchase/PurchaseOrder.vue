@@ -30,6 +30,7 @@
             <el-option label="已送出" value="S" />
             <el-option label="已審核" value="A" />
             <el-option label="已取消" value="X" />
+            <el-option label="已結案" value="C" />
           </el-select>
         </el-form-item>
         <el-form-item label="採購日期">
@@ -99,6 +100,7 @@
             <el-button v-if="row.Status === 'D'" type="success" size="small" @click="handleSubmit(row)">送出</el-button>
             <el-button v-if="row.Status === 'S'" type="info" size="small" @click="handleApprove(row)">審核</el-button>
             <el-button v-if="['S', 'A'].includes(row.Status)" type="danger" size="small" @click="handleCancel(row)">取消</el-button>
+            <el-button v-if="row.Status === 'A'" type="success" size="small" @click="handleClose(row)">結案</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -345,7 +347,8 @@ export default {
         'D': 'info',
         'S': 'warning',
         'A': 'success',
-        'X': 'danger'
+        'X': 'danger',
+        'C': 'success'
       }
       return types[status] || 'info'
     }
@@ -356,7 +359,8 @@ export default {
         'D': '草稿',
         'S': '已送出',
         'A': '已審核',
-        'X': '已取消'
+        'X': '已取消',
+        'C': '已結案'
       }
       return texts[status] || status
     }
@@ -514,6 +518,22 @@ export default {
       } catch (error) {
         if (error !== 'cancel') {
           ElMessage.error('取消失敗: ' + (error.message || '未知錯誤'))
+        }
+      }
+    }
+
+    // 結案
+    const handleClose = async (row) => {
+      try {
+        await ElMessageBox.confirm('確定要結案此採購單嗎？', '確認', {
+          type: 'warning'
+        })
+        await purchaseOrderApi.closePurchaseOrder(row.OrderId)
+        ElMessage.success('結案成功')
+        loadData()
+      } catch (error) {
+        if (error !== 'cancel') {
+          ElMessage.error('結案失敗: ' + (error.message || '未知錯誤'))
         }
       }
     }
@@ -679,6 +699,7 @@ export default {
       handleSubmit,
       handleApprove,
       handleCancel,
+      handleClose,
       handleAddDetail,
       handleDeleteDetail,
       handleGoodsChange,

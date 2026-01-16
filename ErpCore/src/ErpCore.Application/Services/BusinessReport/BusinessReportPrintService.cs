@@ -58,14 +58,14 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
         }
     }
 
-    public async Task<BusinessReportPrintDto?> GetBusinessReportPrintByIdAsync(long tKey)
+    public async Task<BusinessReportPrintDto> GetBusinessReportPrintByIdAsync(long tKey)
     {
         try
         {
             var entity = await _repository.GetByIdAsync(tKey);
             if (entity == null)
             {
-                return null;
+                throw new InvalidOperationException($"業務報表列印不存在: {tKey}");
             }
 
             return MapToDto(entity);
@@ -81,6 +81,29 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
     {
         try
         {
+            // 驗證必填欄位
+            if (dto.GiveYear <= 0)
+            {
+                throw new ArgumentException("發放年度不能為空或小於等於0");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.SiteId))
+            {
+                throw new ArgumentException("店別代碼不能為空");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.EmpId))
+            {
+                throw new ArgumentException("員工編號不能為空");
+            }
+
+            // 檢查年度是否已審核（年度修改唯讀控制）
+            var isYearAudited = await _repository.IsYearAuditedAsync(dto.GiveYear, dto.SiteId);
+            if (isYearAudited)
+            {
+                throw new InvalidOperationException($"年度 {dto.GiveYear} 已審核，無法新增資料");
+            }
+
             var entity = new BusinessReportPrint
             {
                 GiveYear = dto.GiveYear,
@@ -88,7 +111,7 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
                 OrgId = dto.OrgId,
                 EmpId = dto.EmpId,
                 EmpName = dto.EmpName,
-                Qty = dto.Qty,
+                Qty = dto.Qty ?? 0,
                 Status = dto.Status,
                 Notes = dto.Notes,
                 CreatedBy = GetCurrentUserId(),
@@ -97,8 +120,8 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
                 UpdatedAt = DateTime.Now
             };
 
-            var tKey = await _repository.CreateAsync(entity);
-            return tKey;
+            var result = await _repository.CreateAsync(entity);
+            return result.TKey;
         }
         catch (Exception ex)
         {
@@ -107,31 +130,57 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
         }
     }
 
-    public async Task<bool> UpdateBusinessReportPrintAsync(long tKey, UpdateBusinessReportPrintDto dto)
+    public async Task UpdateBusinessReportPrintAsync(long tKey, UpdateBusinessReportPrintDto dto)
     {
         try
         {
             var entity = await _repository.GetByIdAsync(tKey);
             if (entity == null)
             {
-                throw new Exception($"找不到業務報表列印資料: {tKey}");
+                throw new InvalidOperationException($"業務報表列印不存在: {tKey}");
             }
 
-            // 檢查年度修改唯讀控制（已審核的年度不可修改）
-            if (entity.Status == "A" && entity.GiveYear != DateTime.Now.Year)
+            // 驗證必填欄位
+            if (dto.GiveYear <= 0)
             {
-                throw new Exception("已審核的年度資料不可修改");
+                throw new ArgumentException("發放年度不能為空或小於等於0");
             }
 
-            entity.OrgId = dto.OrgId ?? entity.OrgId;
-            entity.EmpName = dto.EmpName ?? entity.EmpName;
-            entity.Qty = dto.Qty ?? entity.Qty;
-            entity.Status = dto.Status ?? entity.Status;
-            entity.Notes = dto.Notes ?? entity.Notes;
+            if (string.IsNullOrWhiteSpace(dto.SiteId))
+            {
+                throw new ArgumentException("店別代碼不能為空");
+            }
+
+            if (string.IsNullOrWhiteSpace(dto.EmpId))
+            {
+                throw new ArgumentException("員工編號不能為空");
+            }
+
+            // 檢查年度是否已審核（年度修改唯讀控制）
+            var isYearAudited = await _repository.IsYearAuditedAsync(dto.GiveYear, dto.SiteId);
+            if (isYearAudited)
+            {
+                throw new InvalidOperationException($"年度 {dto.GiveYear} 已審核，無法修改資料");
+            }
+
+            // 已審核的資料不可修改
+            if (entity.Status == "A")
+            {
+                throw new InvalidOperationException("已審核的資料不可修改");
+            }
+
+            entity.GiveYear = dto.GiveYear;
+            entity.SiteId = dto.SiteId;
+            entity.OrgId = dto.OrgId;
+            entity.EmpId = dto.EmpId;
+            entity.EmpName = dto.EmpName;
+            entity.Qty = dto.Qty ?? 0;
+            entity.Status = dto.Status;
+            entity.Notes = dto.Notes;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
 
-            return await _repository.UpdateAsync(entity);
+            await _repository.UpdateAsync(entity);
         }
         catch (Exception ex)
         {
@@ -140,23 +189,23 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
         }
     }
 
-    public async Task<bool> DeleteBusinessReportPrintAsync(long tKey)
+    public async Task DeleteBusinessReportPrintAsync(long tKey)
     {
         try
         {
             var entity = await _repository.GetByIdAsync(tKey);
             if (entity == null)
             {
-                throw new Exception($"找不到業務報表列印資料: {tKey}");
+                throw new InvalidOperationException($"業務報表列印不存在: {tKey}");
             }
 
-            // 檢查年度修改唯讀控制（已審核的年度不可刪除）
-            if (entity.Status == "A" && entity.GiveYear != DateTime.Now.Year)
+            // 已審核的資料不可刪除
+            if (entity.Status == "A")
             {
-                throw new Exception("已審核的年度資料不可刪除");
+                throw new InvalidOperationException("已審核的資料不可刪除");
             }
 
-            return await _repository.DeleteAsync(tKey);
+            await _repository.DeleteAsync(tKey);
         }
         catch (Exception ex)
         {
@@ -165,48 +214,47 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
         }
     }
 
-    public async Task<BatchAuditResultDto> BatchAuditAsync(BatchAuditBusinessReportPrintDto dto)
+    public async Task<int> BatchDeleteBusinessReportPrintAsync(List<long> tKeys)
     {
         try
         {
-            var successCount = 0;
-            var failCount = 0;
-
-            foreach (var tKey in dto.TKeys)
+            // 檢查是否有已審核的資料
+            foreach (var tKey in tKeys)
             {
-                try
+                var entity = await _repository.GetByIdAsync(tKey);
+                if (entity != null && entity.Status == "A")
                 {
-                    var entity = await _repository.GetByIdAsync(tKey);
-                    if (entity == null)
-                    {
-                        failCount++;
-                        continue;
-                    }
-
-                    // 檢查審核權限（可根據需求擴展）
-                    // 支援專屬審核帳號設定
-
-                    entity.Status = dto.Status;
-                    entity.Verifier = GetCurrentUserId();
-                    entity.VerifyDate = DateTime.Now;
-                    entity.Notes = dto.Notes ?? entity.Notes;
-                    entity.UpdatedBy = GetCurrentUserId();
-                    entity.UpdatedAt = DateTime.Now;
-
-                    await _repository.UpdateAsync(entity);
-                    successCount++;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"批次審核失敗: {tKey}", ex);
-                    failCount++;
+                    throw new InvalidOperationException($"資料 {tKey} 已審核，無法刪除");
                 }
             }
+
+            return await _repository.BatchDeleteAsync(tKeys);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("批次刪除業務報表列印失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<BatchAuditResultDto> BatchAuditAsync(BatchAuditDto dto)
+    {
+        try
+        {
+            var verifier = GetCurrentUserId();
+            var verifyDate = DateTime.Now;
+
+            var successCount = await _repository.BatchAuditAsync(
+                dto.TKeys,
+                dto.Status,
+                verifier,
+                verifyDate,
+                dto.Notes);
 
             return new BatchAuditResultDto
             {
                 SuccessCount = successCount,
-                FailCount = failCount
+                FailCount = dto.TKeys.Count - successCount
             };
         }
         catch (Exception ex)
@@ -216,13 +264,26 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
         }
     }
 
-    public async Task<CopyResultDto> CopyNextYearAsync(CopyNextYearDto dto)
+    public async Task<CopyNextYearResultDto> CopyNextYearAsync(CopyNextYearDto dto)
     {
         try
         {
-            var copiedCount = await _repository.CopyNextYearAsync(dto.SourceYear, dto.TargetYear, dto.SiteId);
+            if (dto.SourceYear <= 0 || dto.TargetYear <= 0)
+            {
+                throw new ArgumentException("年度必須大於0");
+            }
 
-            return new CopyResultDto
+            if (dto.TargetYear <= dto.SourceYear)
+            {
+                throw new ArgumentException("目標年度必須大於來源年度");
+            }
+
+            var copiedCount = await _repository.CopyNextYearAsync(
+                dto.SourceYear,
+                dto.TargetYear,
+                dto.SiteId);
+
+            return new CopyNextYearResultDto
             {
                 CopiedCount = copiedCount
             };
@@ -238,16 +299,44 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
     {
         try
         {
-            var qty = await _repository.CalculateQtyAsync(dto.TKey, dto.CalculationRules);
+            var entity = await _repository.GetByIdAsync(dto.TKey);
+            if (entity == null)
+            {
+                throw new InvalidOperationException($"業務報表列印不存在: {dto.TKey}");
+            }
+
+            // 這裡可以根據業務規則計算數量
+            // 目前先返回現有數量，實際業務邏輯需要根據需求實現
+            decimal calculatedQty = entity.Qty ?? 0;
+
+            // 如果有計算規則，可以根據規則計算
+            if (dto.CalculationRules != null && dto.CalculationRules.Count > 0)
+            {
+                // 根據計算規則計算數量
+                // 這裡需要根據實際業務需求實現
+            }
 
             return new CalculateQtyResultDto
             {
-                Qty = qty
+                Qty = calculatedQty
             };
         }
         catch (Exception ex)
         {
             _logger.LogError($"計算數量失敗: {dto.TKey}", ex);
+            throw;
+        }
+    }
+
+    public async Task<bool> IsYearAuditedAsync(int giveYear, string? siteId = null)
+    {
+        try
+        {
+            return await _repository.IsYearAuditedAsync(giveYear, siteId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"檢查年度審核狀態失敗: GiveYear={giveYear}", ex);
             throw;
         }
     }
@@ -262,15 +351,13 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
             TKey = entity.TKey,
             GiveYear = entity.GiveYear,
             SiteId = entity.SiteId,
-            SiteName = entity.SiteName,
             OrgId = entity.OrgId,
-            OrgName = entity.OrgName,
             EmpId = entity.EmpId,
             EmpName = entity.EmpName,
             Qty = entity.Qty,
             Status = entity.Status,
+            StatusName = GetStatusName(entity.Status),
             Verifier = entity.Verifier,
-            VerifierName = entity.VerifierName,
             VerifyDate = entity.VerifyDate,
             Notes = entity.Notes,
             CreatedBy = entity.CreatedBy,
@@ -279,5 +366,18 @@ public class BusinessReportPrintService : BaseService, IBusinessReportPrintServi
             UpdatedAt = entity.UpdatedAt
         };
     }
-}
 
+    /// <summary>
+    /// 取得狀態名稱
+    /// </summary>
+    private string GetStatusName(string status)
+    {
+        return status switch
+        {
+            "P" => "待審核",
+            "A" => "已審核",
+            "R" => "已拒絕",
+            _ => status
+        };
+    }
+}

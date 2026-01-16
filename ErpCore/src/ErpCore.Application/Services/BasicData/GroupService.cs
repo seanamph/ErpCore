@@ -46,55 +46,53 @@ public class GroupService : BaseService, IGroupService
 
             var result = await _repository.QueryAsync(repositoryQuery);
 
-            // 查詢部別名稱和組織名稱
-            var deptIds = result.Items.Where(x => !string.IsNullOrEmpty(x.DeptId)).Select(x => x.DeptId!).Distinct().ToList();
-            var orgIds = result.Items.Where(x => !string.IsNullOrEmpty(x.OrgId)).Select(x => x.OrgId!).Distinct().ToList();
+            // 需要從查詢結果中獲取 DeptName 和 OrgName
+            var dtos = new List<GroupDto>();
+            using var conn = _connectionFactory.CreateConnection();
             
-            var deptNameMap = new Dictionary<string, string>();
-            var orgNameMap = new Dictionary<string, string>();
-
-            if (deptIds.Any())
+            foreach (var item in result.Items)
             {
-                try
+                var dto = new GroupDto
                 {
-                    var deptNames = await QueryDeptNamesAsync(deptIds);
-                    deptNameMap = deptNames.ToDictionary(x => x.DeptId, x => x.DeptName);
-                }
-                catch (Exception ex)
+                    GroupId = item.GroupId,
+                    GroupName = item.GroupName,
+                    DeptId = item.DeptId,
+                    OrgId = item.OrgId,
+                    SeqNo = item.SeqNo,
+                    Status = item.Status,
+                    Notes = item.Notes,
+                    CreatedBy = item.CreatedBy,
+                    CreatedAt = item.CreatedAt,
+                    UpdatedBy = item.UpdatedBy,
+                    UpdatedAt = item.UpdatedAt
+                };
+
+                // 查詢部別名稱
+                if (!string.IsNullOrEmpty(item.DeptId))
                 {
-                    _logger.LogWarning("查詢部別名稱失敗，將使用空值", ex);
+                    var deptName = await conn.QueryFirstOrDefaultAsync<string>(
+                        "SELECT DeptName FROM Departments WHERE DeptId = @DeptId",
+                        new { DeptId = item.DeptId });
+                    if (!string.IsNullOrEmpty(deptName))
+                    {
+                        dto.DeptName = deptName;
+                    }
                 }
+
+                // 查詢組織名稱
+                if (!string.IsNullOrEmpty(item.OrgId))
+                {
+                    var orgName = await conn.QueryFirstOrDefaultAsync<string>(
+                        "SELECT OrgName FROM Organizations WHERE OrgId = @OrgId",
+                        new { OrgId = item.OrgId });
+                    if (!string.IsNullOrEmpty(orgName))
+                    {
+                        dto.OrgName = orgName;
+                    }
+                }
+
+                dtos.Add(dto);
             }
-
-            if (orgIds.Any())
-            {
-                try
-                {
-                    var orgNames = await QueryOrgNamesAsync(orgIds);
-                    orgNameMap = orgNames.ToDictionary(x => x.OrgId, x => x.OrgName);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("查詢組織名稱失敗，將使用空值", ex);
-                }
-            }
-
-            var dtos = result.Items.Select(x => new GroupDto
-            {
-                GroupId = x.GroupId,
-                GroupName = x.GroupName,
-                DeptId = x.DeptId,
-                DeptName = x.DeptId != null && deptNameMap.ContainsKey(x.DeptId) ? deptNameMap[x.DeptId] : null,
-                OrgId = x.OrgId,
-                OrgName = x.OrgId != null && orgNameMap.ContainsKey(x.OrgId) ? orgNameMap[x.OrgId] : null,
-                SeqNo = x.SeqNo,
-                Status = x.Status,
-                Notes = x.Notes,
-                CreatedBy = x.CreatedBy,
-                CreatedAt = x.CreatedAt,
-                UpdatedBy = x.UpdatedBy,
-                UpdatedAt = x.UpdatedAt
-            }).ToList();
 
             return new PagedResult<GroupDto>
             {
@@ -121,44 +119,12 @@ public class GroupService : BaseService, IGroupService
                 throw new InvalidOperationException($"組別不存在: {groupId}");
             }
 
-            // 查詢部別名稱和組織名稱
-            string? deptName = null;
-            string? orgName = null;
-
-            if (!string.IsNullOrEmpty(entity.DeptId))
-            {
-                try
-                {
-                    var deptNames = await QueryDeptNamesAsync(new List<string> { entity.DeptId });
-                    deptName = deptNames.FirstOrDefault().DeptName;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"查詢部別名稱失敗: {entity.DeptId}", ex);
-                }
-            }
-
-            if (!string.IsNullOrEmpty(entity.OrgId))
-            {
-                try
-                {
-                    var orgNames = await QueryOrgNamesAsync(new List<string> { entity.OrgId });
-                    orgName = orgNames.FirstOrDefault().OrgName;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"查詢組織名稱失敗: {entity.OrgId}", ex);
-                }
-            }
-
-            return new GroupDto
+            var dto = new GroupDto
             {
                 GroupId = entity.GroupId,
                 GroupName = entity.GroupName,
                 DeptId = entity.DeptId,
-                DeptName = deptName,
                 OrgId = entity.OrgId,
-                OrgName = orgName,
                 SeqNo = entity.SeqNo,
                 Status = entity.Status,
                 Notes = entity.Notes,
@@ -167,6 +133,34 @@ public class GroupService : BaseService, IGroupService
                 UpdatedBy = entity.UpdatedBy,
                 UpdatedAt = entity.UpdatedAt
             };
+
+            // 查詢部別名稱
+            if (!string.IsNullOrEmpty(entity.DeptId))
+            {
+                using var conn = _connectionFactory.CreateConnection();
+                var deptName = await conn.QueryFirstOrDefaultAsync<string>(
+                    "SELECT DeptName FROM Departments WHERE DeptId = @DeptId",
+                    new { DeptId = entity.DeptId });
+                if (!string.IsNullOrEmpty(deptName))
+                {
+                    dto.DeptName = deptName;
+                }
+            }
+
+            // 查詢組織名稱
+            if (!string.IsNullOrEmpty(entity.OrgId))
+            {
+                using var conn = _connectionFactory.CreateConnection();
+                var orgName = await conn.QueryFirstOrDefaultAsync<string>(
+                    "SELECT OrgName FROM Organizations WHERE OrgId = @OrgId",
+                    new { OrgId = entity.OrgId });
+                if (!string.IsNullOrEmpty(orgName))
+                {
+                    dto.OrgName = orgName;
+                }
+            }
+
+            return dto;
         }
         catch (Exception ex)
         {
@@ -322,61 +316,4 @@ public class GroupService : BaseService, IGroupService
             throw new ArgumentException("狀態值必須為 A (啟用) 或 I (停用)");
         }
     }
-
-    /// <summary>
-    /// 查詢部別名稱
-    /// </summary>
-    private async Task<List<(string DeptId, string DeptName)>> QueryDeptNamesAsync(List<string> deptIds)
-    {
-        try
-        {
-            if (!deptIds.Any())
-            {
-                return new List<(string, string)>();
-            }
-
-            const string sql = @"
-                SELECT DeptId, DeptName 
-                FROM Departments 
-                WHERE DeptId IN @DeptIds";
-
-            using var connection = _connectionFactory.CreateConnection();
-            var results = await connection.QueryAsync<(string DeptId, string DeptName)>(sql, new { DeptIds = deptIds });
-            return results.ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("查詢部別名稱失敗", ex);
-            throw;
-        }
-    }
-
-    /// <summary>
-    /// 查詢組織名稱
-    /// </summary>
-    private async Task<List<(string OrgId, string OrgName)>> QueryOrgNamesAsync(List<string> orgIds)
-    {
-        try
-        {
-            if (!orgIds.Any())
-            {
-                return new List<(string, string)>();
-            }
-
-            const string sql = @"
-                SELECT OrgId, OrgName 
-                FROM Organizations 
-                WHERE OrgId IN @OrgIds";
-
-            using var connection = _connectionFactory.CreateConnection();
-            var results = await connection.QueryAsync<(string OrgId, string OrgName)>(sql, new { OrgIds = orgIds });
-            return results.ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("查詢組織名稱失敗", ex);
-            throw;
-        }
-    }
 }
-

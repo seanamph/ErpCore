@@ -106,8 +106,7 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
-                PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+                PageSize = query.PageSize
             };
         }
         catch (Exception ex)
@@ -159,7 +158,7 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
             // 根據報表ID選擇不同的查詢邏輯
             return reportId switch
             {
-                "SYSA1011" => await GetSYSA1011ReportAsync(new SYSA1011Query
+                "SYSA1011" => ConvertToDictionary(await GetSYSA1011ReportAsync(new SYSA1011Query
                 {
                     PageIndex = query.PageIndex,
                     PageSize = query.PageSize,
@@ -169,8 +168,162 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                     SId = query.SId,
                     GoodsId = query.GoodsId,
                     FilterType = query.FilterType
-                }).ContinueWith(t => ConvertToDictionary(t.Result)),
-                "SYSA1012" => await GetSYSA1012ReportAsync(query),
+                })),
+                "SYSA1012" => ConvertToDictionary(await GetSYSA1012ReportAsync(new SYSA1012Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    GoodsId = query.GoodsId,
+                    ReportMonth = query.YearMonth?.Replace("/", "") ?? query.YearMonth
+                })),
+                "SYSA1013" => ConvertToDictionary(await GetSYSA1013ReportAsync(new SYSA1013Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    OrgId = query.OrgId,
+                    GoodsId = query.GoodsId,
+                    BeginDate = query.BeginDate,
+                    EndDate = query.EndDate,
+                    SupplierId = query.Vendor,
+                    Use = query.Use,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1014" => ConvertToDictionary(await GetSYSA1014ReportAsync(new SYSA1014Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    OrgId = query.OrgId,
+                    GoodsId = query.GoodsId,
+                    BeginDate = query.BeginDate,
+                    EndDate = query.EndDate
+                })),
+                "SYSA1015" => ConvertToDictionary(await GetSYSA1015ReportAsync(new SYSA1015Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    GoodsId = query.GoodsId,
+                    YearMonth = query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1016" => ConvertToDictionary(await GetSYSA1016ReportAsync(new SYSA1016Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    OrgId = query.OrgId,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    GoodsId = query.GoodsId,
+                    YearMonth = query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1017" => ConvertToDictionary(await GetSYSA1017ReportAsync(new SYSA1017Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    OrgId = query.OrgId,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    GoodsId = query.GoodsId,
+                    YearMonth = query.YearMonth?.Replace("/", "") ?? query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1018" => ConvertToDictionary(await GetSYSA1018ReportAsync(new SYSA1018Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    OrgId = query.OrgId,
+                    YearMonth = query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1019" => ConvertToDictionary(await GetSYSA1019ReportAsync(new SYSA1019Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    OrgId = query.OrgId,
+                    SiteId = query.SiteId,
+                    YearMonth = query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1020" => ConvertToDictionary(await GetSYSA1020ReportAsync(new SYSA1020Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    PlanId = query.OrgId,
+                    ShowType = query.FilterType,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1021" => ConvertToDictionary(await GetSYSA1021ReportAsync(new SYSA1021Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BId = query.BId,
+                    MId = query.MId,
+                    SId = query.SId,
+                    GoodsId = query.GoodsId,
+                    YearMonth = query.YearMonth?.Replace("/", "") ?? query.YearMonth,
+                    FilterType = query.FilterType
+                })),
+                "SYSA1022" => ConvertToDictionary(await GetSYSA1022ReportAsync(new SYSA1022Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BelongStatus = query.BelongStatus,
+                    ApplyDateB = query.ApplyDateB,
+                    ApplyDateE = query.ApplyDateE,
+                    BelongOrg = query.BelongOrg,
+                    MaintainEmp = query.MaintainEmp,
+                    ApplyType = query.ApplyType
+                })),
+                "SYSA1023" => ConvertToDictionary(await GetSYSA1023ReportAsync(new SYSA1023Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    ReportType = query.FilterType,
+                    SiteId = query.SiteId,
+                    BelongStatus = query.BelongStatus,
+                    ApplyDateB = query.ApplyDateB,
+                    ApplyDateE = query.ApplyDateE,
+                    BelongOrg = query.BelongOrg,
+                    MaintainEmp = query.MaintainEmp,
+                    ApplyType = query.ApplyType
+                })),
+                "SYSA1024" => ConvertToDictionary(await GetSYSA1024ReportAsync(new SYSA1024Query
+                {
+                    PageIndex = query.PageIndex,
+                    PageSize = query.PageSize,
+                    SiteId = query.SiteId,
+                    BelongStatus = query.BelongStatus,
+                    ApplyDateB = query.ApplyDateB,
+                    ApplyDateE = query.ApplyDateE,
+                    BelongOrg = query.BelongOrg,
+                    MaintainEmp = query.MaintainEmp,
+                    ApplyType = query.ApplyType,
+                    OtherCondition1 = query.OtherCondition1,
+                    OtherCondition2 = query.OtherCondition2
+                })),
                 _ => throw new ArgumentException($"不支援的報表ID: {reportId}")
             };
         }
@@ -319,7 +472,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -448,7 +600,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -507,7 +658,7 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 LEFT JOIN (
                     SELECT 
                         pod.GoodsId,
-                        SUM(CASE WHEN po.OrderType = 'PO' THEN pod.Qty ELSE -pod.Qty END) AS PurchaseQty
+                        SUM(CASE WHEN po.OrderType = 'PO' THEN pod.OrderQty ELSE -pod.OrderQty END) AS PurchaseQty
                     FROM PurchaseOrderDetails pod
                     INNER JOIN PurchaseOrders po ON pod.OrderId = po.OrderId
                     WHERE po.Status IN ('A', 'C')
@@ -519,7 +670,7 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 LEFT JOIN (
                     SELECT 
                         sod.GoodsId,
-                        SUM(CASE WHEN so.OrderType = 'SO' THEN sod.Qty ELSE -sod.Qty END) AS SalesQty
+                        SUM(CASE WHEN so.OrderType = 'SO' THEN sod.OrderQty ELSE -sod.OrderQty END) AS SalesQty
                     FROM SalesOrderDetails sod
                     INNER JOIN SalesOrders so ON sod.OrderId = so.OrderId
                     WHERE so.Status IN ('A', 'C', 'O')
@@ -594,7 +745,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -695,7 +845,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -806,7 +955,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -918,7 +1066,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -932,79 +1079,85 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
     {
         try
         {
-            // 查詢工務維修件數統計報表
-            var whereClause = "WHERE 1=1";
+            // 查詢工務維修件數統計報表 (SYSA1018)
+            // 根據計劃文件，需要查詢 WorkMaintainM 表，統計維修件數
+            // 使用 WorkMaintainM 表，類似於 SYSA1022 的實現
+            var sql = @"
+                SELECT 
+                    ISNULL(wm.OrgId, @OrgId) AS OrgId,
+                    ISNULL(org.OrgName, '') AS OrgName,
+                    '工務維修件數統計表' AS ReportName,
+                    ISNULL(@YearMonth, FORMAT(wm.ApplyDate, 'yyyy-MM')) AS YearMonth,
+                    wm.ApplyType AS MaintenanceType,
+                    '已完成' AS MaintenanceStatus, -- WorkMaintainM 表沒有狀態欄位，使用預設值
+                    COUNT(DISTINCT wm.TxnNo) AS ItemCount,
+                    0 AS TotalCount
+                FROM WorkMaintainM wm
+                LEFT JOIN Organizations org ON wm.OrgId = org.OrgId
+                WHERE 1=1";
+
             var parameters = new DynamicParameters();
             parameters.Add("OrgId", query.OrgId);
             parameters.Add("YearMonth", query.YearMonth);
+            parameters.Add("FilterType", query.FilterType);
 
-            // 組織篩選
+            // 組織單位篩選
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                whereClause += " AND mr.OrgId = @OrgId";
+                sql += " AND wm.OrgId = @OrgId";
             }
 
             // 年月篩選 (YYYY-MM 格式)
             if (!string.IsNullOrEmpty(query.YearMonth))
             {
-                whereClause += " AND FORMAT(mr.MaintenanceDate, 'yyyy-MM') = @YearMonth";
+                sql += " AND FORMAT(wm.ApplyDate, 'yyyy-MM') = @YearMonth";
             }
 
-            // 篩選類型（維修狀態）
+            // 篩選類型（根據 FilterType 進行篩選，目前 WorkMaintainM 表沒有狀態欄位，暫時不處理）
+            // 如果需要根據狀態篩選，可能需要從其他表或欄位獲取狀態資訊
             if (!string.IsNullOrEmpty(query.FilterType) && query.FilterType != "全部")
             {
-                var statusMap = new Dictionary<string, string>
-                {
-                    { "pending", "待處理" },
-                    { "processing", "處理中" },
-                    { "completed", "已完成" },
-                    { "cancelled", "已取消" }
-                };
-
-                if (statusMap.ContainsKey(query.FilterType))
-                {
-                    whereClause += " AND mr.MaintenanceStatus = @FilterType";
-                    parameters.Add("FilterType", statusMap[query.FilterType]);
-                }
+                // 暫時不處理，因為 WorkMaintainM 表沒有 MaintenanceStatus 欄位
+                // 如果需要，可以根據實際業務需求調整
             }
 
-            // 查詢 SQL
-            var sql = $@"
-                SELECT 
-                    mr.OrgId,
-                    ISNULL(org.OrgName, '') AS OrgName,
-                    '工務維修件數統計表' AS ReportName,
-                    ISNULL(@YearMonth, FORMAT(mr.MaintenanceDate, 'yyyy-MM')) AS YearMonth,
-                    mr.MaintenanceType,
-                    mr.MaintenanceStatus,
-                    SUM(mr.ItemCount) AS ItemCount,
-                    0 AS TotalCount
-                FROM MaintenanceRecords mr
-                LEFT JOIN Organizations org ON mr.OrgId = org.OrgId
-                {whereClause}
-                GROUP BY mr.OrgId, org.OrgName, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus";
-
-            // 計算總數
+            // 計算總數（先不分組）
             var countSql = $@"
                 SELECT COUNT(*)
                 FROM (
-                    SELECT mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM') AS YearMonth, mr.MaintenanceType, mr.MaintenanceStatus
-                    FROM MaintenanceRecords mr
-                    {whereClause}
-                    GROUP BY mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus
+                    SELECT 
+                        wm.OrgId,
+                        FORMAT(wm.ApplyDate, 'yyyy-MM') AS YearMonth,
+                        wm.ApplyType
+                    FROM WorkMaintainM wm
+                    WHERE 1=1
+                        {(!string.IsNullOrEmpty(query.OrgId) ? " AND wm.OrgId = @OrgId" : "")}
+                        {(!string.IsNullOrEmpty(query.YearMonth) ? " AND FORMAT(wm.ApplyDate, 'yyyy-MM') = @YearMonth" : "")}
+                    GROUP BY wm.OrgId, FORMAT(wm.ApplyDate, 'yyyy-MM'), wm.ApplyType
                 ) AS t";
             
             var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
 
             // 計算總件數
-            var totalItemCountSql = $@"
-                SELECT ISNULL(SUM(mr.ItemCount), 0)
-                FROM MaintenanceRecords mr
-                {whereClause}";
+            var totalItemCountSql = @"
+                SELECT COUNT(DISTINCT wm.TxnNo)
+                FROM WorkMaintainM wm
+                WHERE 1=1";
+            
+            if (!string.IsNullOrEmpty(query.OrgId))
+            {
+                totalItemCountSql += " AND wm.OrgId = @OrgId";
+            }
+            if (!string.IsNullOrEmpty(query.YearMonth))
+            {
+                totalItemCountSql += " AND FORMAT(wm.ApplyDate, 'yyyy-MM') = @YearMonth";
+            }
+            
             var totalItemCount = await ExecuteScalarAsync<int>(totalItemCountSql, parameters);
 
             // 分頁
-            sql += " ORDER BY mr.OrgId, FORMAT(mr.MaintenanceDate, 'yyyy-MM'), mr.MaintenanceType, mr.MaintenanceStatus";
+            sql += " GROUP BY wm.OrgId, org.OrgName, FORMAT(wm.ApplyDate, 'yyyy-MM'), wm.ApplyType";
+            sql += " ORDER BY wm.OrgId, FORMAT(wm.ApplyDate, 'yyyy-MM'), wm.ApplyType";
             sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
 
             var items = await QueryAsync<SYSA1018ReportItem>(sql, parameters);
@@ -1021,7 +1174,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -1114,7 +1266,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -1203,7 +1354,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -1320,7 +1470,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -1443,7 +1592,6 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
@@ -1464,7 +1612,7 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                     ISNULL(wm.SiteId, @SiteId) AS SiteId,
                     ISNULL(sites.SiteName, '') AS SiteName,
                     '工務維修統計報表(報表類型)' AS ReportName,
-                    @ReportType AS ReportType,
+                    wm.ReportType AS ReportType,
                     wm.BelongStatus AS BelongStatus,
                     CONVERT(VARCHAR(10), @ApplyDateB, 120) AS ApplyDateB,
                     CONVERT(VARCHAR(10), @ApplyDateE, 120) AS ApplyDateE,
@@ -1554,6 +1702,147 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
                 GROUP BY 
                     wm.SiteId,
                     sites.SiteName,
+                    wm.ReportType,
+                    wm.BelongStatus,
+                    wm.BelongOrg,
+                    wm.MaintainEmp,
+                    wm.ApplyType";
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY wm.SiteId, wm.ReportType, wm.BelongStatus";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSA1023ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSA1023ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢工務維修統計報表(報表類型)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSA1024ReportItem>> GetSYSA1024ReportAsync(SYSA1024Query query)
+    {
+        try
+        {
+            // 查詢工務維修統計報表(其他) (SYSA1024)
+            // 根據計劃文件，需要查詢 WorkMaintainM 表，統計申請件數和總金額，並支援其他查詢條件
+            var sql = @"
+                SELECT 
+                    ISNULL(wm.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    '工務維修統計報表(其他)' AS ReportName,
+                    wm.BelongStatus AS BelongStatus,
+                    CONVERT(VARCHAR(10), @ApplyDateB, 120) AS ApplyDateB,
+                    CONVERT(VARCHAR(10), @ApplyDateE, 120) AS ApplyDateE,
+                    wm.BelongOrg AS BelongOrg,
+                    wm.MaintainEmp AS MaintainEmp,
+                    wm.ApplyType AS ApplyType,
+                    @OtherCondition1 AS OtherCondition1,
+                    @OtherCondition2 AS OtherCondition2,
+                    COUNT(DISTINCT wm.TxnNo) AS RequestCount,
+                    ISNULL(SUM(d.Amount), 0) AS TotalAmount
+                FROM WorkMaintainM wm
+                LEFT JOIN Sites sites ON wm.SiteId = sites.SiteId
+                LEFT JOIN (
+                    SELECT 
+                        TxnNo,
+                        SUM(Amount) AS Amount
+                    FROM WorkMaintainD
+                    GROUP BY TxnNo
+                ) d ON wm.TxnNo = d.TxnNo
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("SiteId", query.SiteId);
+            parameters.Add("OtherCondition1", query.OtherCondition1 ?? string.Empty);
+            parameters.Add("OtherCondition2", query.OtherCondition2 ?? string.Empty);
+            
+            // 日期範圍
+            if (!string.IsNullOrEmpty(query.ApplyDateB))
+            {
+                parameters.Add("ApplyDateB", DateTime.Parse(query.ApplyDateB));
+                sql += " AND wm.ApplyDate >= @ApplyDateB";
+            }
+            else
+            {
+                parameters.Add("ApplyDateB", DateTime.Now.AddMonths(-1));
+            }
+
+            if (!string.IsNullOrEmpty(query.ApplyDateE))
+            {
+                parameters.Add("ApplyDateE", DateTime.Parse(query.ApplyDateE));
+                sql += " AND wm.ApplyDate <= @ApplyDateE";
+            }
+            else
+            {
+                parameters.Add("ApplyDateE", DateTime.Now);
+            }
+
+            // 店別篩選
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                sql += " AND wm.SiteId = @SiteId";
+            }
+
+            // 費用負擔篩選
+            if (!string.IsNullOrEmpty(query.BelongStatus))
+            {
+                sql += " AND wm.BelongStatus = @BelongStatus";
+                parameters.Add("BelongStatus", query.BelongStatus);
+            }
+
+            // 費用歸屬單位篩選
+            if (!string.IsNullOrEmpty(query.BelongOrg))
+            {
+                sql += " AND wm.BelongOrg = @BelongOrg";
+                parameters.Add("BelongOrg", query.BelongOrg);
+            }
+
+            // 維保人員篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.MaintainEmp))
+            {
+                sql += " AND (wm.MaintainEmp LIKE '%' + @MaintainEmp + '%' OR wm.MaintainEmp = @MaintainEmp)";
+                parameters.Add("MaintainEmp", query.MaintainEmp);
+            }
+
+            // 請修類別篩選（支援多選，以分號分隔）
+            if (!string.IsNullOrEmpty(query.ApplyType))
+            {
+                sql += " AND (wm.ApplyType LIKE '%' + @ApplyType + '%' OR wm.ApplyType = @ApplyType)";
+                parameters.Add("ApplyType", query.ApplyType);
+            }
+
+            // 其他查詢條件1（可根據實際業務需求調整）
+            if (!string.IsNullOrEmpty(query.OtherCondition1))
+            {
+                // 這裡可以根據實際業務邏輯添加查詢條件
+                // 例如：sql += " AND wm.SomeField LIKE '%' + @OtherCondition1 + '%'";
+            }
+
+            // 其他查詢條件2（可根據實際業務需求調整）
+            if (!string.IsNullOrEmpty(query.OtherCondition2))
+            {
+                // 這裡可以根據實際業務邏輯添加查詢條件
+                // 例如：sql += " AND wm.AnotherField LIKE '%' + @OtherCondition2 + '%'";
+            }
+
+            // 分組
+            sql += @"
+                GROUP BY 
+                    wm.SiteId,
+                    sites.SiteName,
                     wm.BelongStatus,
                     wm.BelongOrg,
                     wm.MaintainEmp,
@@ -1566,20 +1855,210 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
             sql += " ORDER BY wm.SiteId, wm.BelongStatus";
             sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
 
-            var items = await QueryAsync<SYSA1023ReportItem>(sql, parameters);
+            var items = await QueryAsync<SYSA1024ReportItem>(sql, parameters);
 
-            return new PagedResult<SYSA1023ReportItem>
+            return new PagedResult<SYSA1024ReportItem>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
             };
         }
         catch (Exception ex)
         {
-            _logger.LogError("查詢工務維修統計報表(報表類型)失敗", ex);
+            _logger.LogError("查詢工務維修統計報表(其他)失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<PagedResult<SYSWC10ReportItem>> GetSYSWC10ReportAsync(SYSWC10Query query)
+    {
+        try
+        {
+            // 查詢庫存分析報表 (SYSWC10)
+            // 根據計劃文件，需要查詢 InventoryStocks、Goods、Warehouses 表，統計入庫、出庫、當前庫存等資訊
+            var sql = @"
+                SELECT 
+                    ISNULL(s.SiteId, @SiteId) AS SiteId,
+                    ISNULL(sites.SiteName, '') AS SiteName,
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.BId AS BigCategoryId,
+                    bc.ClassName AS BigCategoryName,
+                    g.MId AS MidCategoryId,
+                    mc.ClassName AS MidCategoryName,
+                    g.SId AS SmallCategoryId,
+                    sc.ClassName AS SmallCategoryName,
+                    ISNULL(w.WarehouseId, '') AS WarehouseId,
+                    ISNULL(w.WarehouseName, '') AS WarehouseName,
+                    ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE 0 END), 0) AS InQty,
+                    ISNULL(SUM(CASE WHEN s.StocksStatus IN ('2', '3', '5', '6') THEN s.Qty ELSE 0 END), 0) AS OutQty,
+                    ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) AS CurrentQty,
+                    ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.StocksNtaxAmt ELSE -s.StocksNtaxAmt END), 0) AS CurrentAmt,
+                    MAX(s.StocksDate) AS LastStockDate,
+                    ISNULL(g.SafeQty, 0) AS SafeQty,
+                    CASE 
+                        WHEN ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) < ISNULL(g.SafeQty, 0) THEN 1
+                        ELSE 0
+                    END AS IsLowStock,
+                    CASE 
+                        WHEN ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) > ISNULL(g.SafeQty * 2, 0) THEN 1
+                        ELSE 0
+                    END AS IsOverStock
+                FROM Goods g
+                LEFT JOIN InventoryStocks s ON g.GoodsId = s.GoodsId
+                LEFT JOIN Sites sites ON s.SiteId = sites.SiteId
+                LEFT JOIN Warehouses w ON w.SiteId = s.SiteId
+                LEFT JOIN ProductCategories bc ON g.BId = bc.ClassId AND bc.ClassMode = '1'
+                LEFT JOIN ProductCategories mc ON g.MId = mc.ClassId AND mc.ClassMode = '2'
+                LEFT JOIN ProductCategories sc ON g.SId = sc.ClassId AND sc.ClassMode = '3'
+                WHERE 1=1";
+
+            var parameters = new DynamicParameters();
+            
+            // 商品代碼範圍
+            if (!string.IsNullOrEmpty(query.GoodsIdFrom))
+            {
+                sql += " AND g.GoodsId >= @GoodsIdFrom";
+                parameters.Add("GoodsIdFrom", query.GoodsIdFrom);
+            }
+
+            if (!string.IsNullOrEmpty(query.GoodsIdTo))
+            {
+                sql += " AND g.GoodsId <= @GoodsIdTo";
+                parameters.Add("GoodsIdTo", query.GoodsIdTo);
+            }
+
+            // 商品名稱
+            if (!string.IsNullOrEmpty(query.GoodsName))
+            {
+                sql += " AND g.GoodsName LIKE @GoodsName";
+                parameters.Add("GoodsName", $"%{query.GoodsName}%");
+            }
+
+            // 店別篩選
+            if (query.SiteIds != null && query.SiteIds.Count > 0)
+            {
+                sql += " AND s.SiteId IN @SiteIds";
+                parameters.Add("SiteIds", query.SiteIds);
+            }
+            else if (!string.IsNullOrEmpty(query.SiteIds?.FirstOrDefault()))
+            {
+                sql += " AND s.SiteId = @SiteId";
+                parameters.Add("SiteId", query.SiteIds.FirstOrDefault());
+            }
+
+            // 庫別篩選（根據 SiteId 關聯 Warehouses，但可能不準確，因為 InventoryStocks 表沒有 WarehouseId 字段）
+            if (query.WarehouseIds != null && query.WarehouseIds.Count > 0)
+            {
+                // 根據 SiteId 關聯的 Warehouses 進行篩選
+                sql += " AND EXISTS (SELECT 1 FROM Warehouses w2 WHERE w2.SiteId = s.SiteId AND w2.WarehouseId IN @WarehouseIds)";
+                parameters.Add("WarehouseIds", query.WarehouseIds);
+            }
+
+            // 分類篩選
+            if (!string.IsNullOrEmpty(query.BId))
+            {
+                sql += " AND g.BId = @BId";
+                parameters.Add("BId", query.BId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MId))
+            {
+                sql += " AND g.MId = @MId";
+                parameters.Add("MId", query.MId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SId))
+            {
+                sql += " AND g.SId = @SId";
+                parameters.Add("SId", query.SId);
+            }
+
+            // 日期範圍
+            if (!string.IsNullOrEmpty(query.DateFrom))
+            {
+                sql += " AND s.StocksDate >= @DateFrom";
+                parameters.Add("DateFrom", DateTime.Parse(query.DateFrom));
+            }
+
+            if (!string.IsNullOrEmpty(query.DateTo))
+            {
+                sql += " AND s.StocksDate <= @DateTo";
+                parameters.Add("DateTo", DateTime.Parse(query.DateTo));
+            }
+
+            // 庫存數量範圍
+            if (query.MinQty.HasValue)
+            {
+                sql += " HAVING ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) >= @MinQty";
+                parameters.Add("MinQty", query.MinQty.Value);
+            }
+
+            if (query.MaxQty.HasValue)
+            {
+                if (query.MinQty.HasValue)
+                {
+                    sql += " AND ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) <= @MaxQty";
+                }
+                else
+                {
+                    sql += " HAVING ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) <= @MaxQty";
+                }
+                parameters.Add("MaxQty", query.MaxQty.Value);
+            }
+
+            // 狀態篩選
+            if (!string.IsNullOrEmpty(query.Status))
+            {
+                if (query.Status == "LowStock")
+                {
+                    sql += " HAVING ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) < ISNULL(g.SafeQty, 0)";
+                }
+                else if (query.Status == "OverStock")
+                {
+                    sql += " HAVING ISNULL(SUM(CASE WHEN s.StocksStatus IN ('1', '4') THEN s.Qty ELSE -s.Qty END), 0) > ISNULL(g.SafeQty * 2, 0)";
+                }
+            }
+
+            // 分組
+            sql += @"
+                GROUP BY 
+                    s.SiteId,
+                    sites.SiteName,
+                    g.GoodsId,
+                    g.GoodsName,
+                    g.BId,
+                    bc.ClassName,
+                    g.MId,
+                    mc.ClassName,
+                    g.SId,
+                    sc.ClassName,
+                    w.WarehouseId,
+                    w.WarehouseName,
+                    g.SafeQty";
+
+            // 分頁
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS t";
+            var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
+
+            sql += " ORDER BY g.GoodsId, s.SiteId";
+            sql += $" OFFSET {(query.PageIndex - 1) * query.PageSize} ROWS FETCH NEXT {query.PageSize} ROWS ONLY";
+
+            var items = await QueryAsync<SYSWC10ReportItem>(sql, parameters);
+
+            return new PagedResult<SYSWC10ReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢庫存分析報表失敗", ex);
             throw;
         }
     }
@@ -1704,5 +2183,296 @@ public class AnalysisReportRepository : BaseRepository, IAnalysisReportRepositor
             PageIndex = query.PageIndex,
             PageSize = query.PageSize
         };
+    }
+
+    public async Task<PagedResult<SalesAnalysisReportItem>> GetSalesAnalysisReportAsync(SalesAnalysisQuery query)
+    {
+        try
+        {
+            _logger.LogInfo($"查詢銷售分析報表 - SiteId: {query.SiteId}, DateFrom: {query.DateFrom}, DateTo: {query.DateTo}");
+
+            // 構建 SQL 查詢
+            var sql = @"
+                SELECT 
+                    d.GoodsId AS ProductId,
+                    ISNULL(g.GoodsName, '') AS ProductName,
+                    ISNULL(g.BId, '') AS BigClassId,
+                    ISNULL(bc.BName, '') AS BigClassName,
+                    ISNULL(g.MId, '') AS MidClassId,
+                    ISNULL(mc.MName, '') AS MidClassName,
+                    ISNULL(g.SId, '') AS SmallClassId,
+                    ISNULL(sc.SName, '') AS SmallClassName,
+                    ISNULL(g.VendorId, '') AS VendorId,
+                    ISNULL(v.VendorName, '') AS VendorName,
+                    ISNULL(o.ShopId, '') AS SiteId,
+                    ISNULL(s.SiteName, '') AS SiteName,
+                    ISNULL(o.ApplyUserId, '') AS SalesPersonId,
+                    ISNULL(u.UserName, '') AS SalesPersonName,
+                    SUM(ISNULL(d.OrderQty, 0)) AS TotalQuantity,
+                    SUM(ISNULL(d.Amount, 0)) AS TotalAmount,
+                    SUM(ISNULL(d.Amount, 0) * 0.8) AS TotalCost, -- 假設成本為金額的80%，實際應從成本表查詢
+                    SUM(ISNULL(d.Amount, 0) * 0.2) AS TotalProfit, -- 假設毛利為金額的20%
+                    CASE 
+                        WHEN SUM(ISNULL(d.Amount, 0)) > 0 
+                        THEN (SUM(ISNULL(d.Amount, 0) * 0.2) / SUM(ISNULL(d.Amount, 0))) * 100
+                        ELSE 0 
+                    END AS ProfitRate,
+                    COUNT(DISTINCT o.OrderId) AS OrderCount,
+                    CASE 
+                        WHEN SUM(ISNULL(d.OrderQty, 0)) > 0 
+                        THEN SUM(ISNULL(d.Amount, 0)) / SUM(ISNULL(d.OrderQty, 0))
+                        ELSE 0 
+                    END AS AvgUnitPrice,
+                    CASE 
+                        WHEN COUNT(DISTINCT o.OrderId) > 0 
+                        THEN SUM(ISNULL(d.OrderQty, 0)) / COUNT(DISTINCT o.OrderId)
+                        ELSE 0 
+                    END AS AvgQuantity
+                FROM SalesOrders o
+                INNER JOIN SalesOrderDetails d ON o.OrderId = d.OrderId
+                LEFT JOIN Goods g ON d.GoodsId = g.GoodsId
+                LEFT JOIN Sites s ON o.ShopId = s.SiteId
+                LEFT JOIN Vendors v ON g.VendorId = v.VendorId
+                LEFT JOIN Users u ON o.ApplyUserId = u.UserId
+                LEFT JOIN Classify bc ON g.BId = bc.BId AND bc.ClassifyType = 'B'
+                LEFT JOIN Classify mc ON g.MId = mc.MId AND mc.ClassifyType = 'M'
+                LEFT JOIN Classify sc ON g.SId = sc.SId AND sc.ClassifyType = 'S'
+                WHERE o.Status != 'X' -- 排除已取消的訂單
+            ";
+
+            var parameters = new DynamicParameters();
+            var conditions = new List<string>();
+
+            // 添加查詢條件
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                conditions.Add("o.ShopId = @SiteId");
+                parameters.Add("SiteId", query.SiteId);
+            }
+
+            if (!string.IsNullOrEmpty(query.DateFrom))
+            {
+                conditions.Add("o.OrderDate >= @DateFrom");
+                parameters.Add("DateFrom", DateTime.Parse(query.DateFrom));
+            }
+
+            if (!string.IsNullOrEmpty(query.DateTo))
+            {
+                conditions.Add("o.OrderDate <= @DateTo");
+                parameters.Add("DateTo", DateTime.Parse(query.DateTo).AddDays(1).AddSeconds(-1));
+            }
+
+            if (!string.IsNullOrEmpty(query.BigClassId))
+            {
+                conditions.Add("g.BId = @BigClassId");
+                parameters.Add("BigClassId", query.BigClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MidClassId))
+            {
+                conditions.Add("g.MId = @MidClassId");
+                parameters.Add("MidClassId", query.MidClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SmallClassId))
+            {
+                conditions.Add("g.SId = @SmallClassId");
+                parameters.Add("SmallClassId", query.SmallClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.ProductId))
+            {
+                conditions.Add("d.GoodsId = @ProductId");
+                parameters.Add("ProductId", query.ProductId);
+            }
+
+            if (!string.IsNullOrEmpty(query.VendorId))
+            {
+                conditions.Add("g.VendorId = @VendorId");
+                parameters.Add("VendorId", query.VendorId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SalesPersonId))
+            {
+                conditions.Add("o.ApplyUserId = @SalesPersonId");
+                parameters.Add("SalesPersonId", query.SalesPersonId);
+            }
+
+            if (!string.IsNullOrEmpty(query.CustomerId))
+            {
+                conditions.Add("o.CustomerId = @CustomerId");
+                parameters.Add("CustomerId", query.CustomerId);
+            }
+
+            if (conditions.Count > 0)
+            {
+                sql += " AND " + string.Join(" AND ", conditions);
+            }
+
+            // 根據群組方式添加 GROUP BY
+            var groupByFields = new List<string>();
+            if (query.GroupBy == "product")
+            {
+                groupByFields.AddRange(new[] { "d.GoodsId", "g.GoodsName", "g.BId", "bc.BName", "g.MId", "mc.MName", "g.SId", "sc.SName", "g.VendorId", "v.VendorName" });
+            }
+            else if (query.GroupBy == "category")
+            {
+                groupByFields.AddRange(new[] { "g.BId", "bc.BName", "g.MId", "mc.MName", "g.SId", "sc.SName" });
+            }
+            else if (query.GroupBy == "site")
+            {
+                groupByFields.AddRange(new[] { "o.ShopId", "s.SiteName" });
+            }
+            else if (query.GroupBy == "vendor")
+            {
+                groupByFields.AddRange(new[] { "g.VendorId", "v.VendorName" });
+            }
+            else if (query.GroupBy == "salesperson")
+            {
+                groupByFields.AddRange(new[] { "o.ApplyUserId", "u.UserName" });
+            }
+            else
+            {
+                // 預設按商品分組
+                groupByFields.AddRange(new[] { "d.GoodsId", "g.GoodsName", "g.BId", "bc.BName", "g.MId", "mc.MName", "g.SId", "sc.SName", "g.VendorId", "v.VendorName", "o.ShopId", "s.SiteName", "o.ApplyUserId", "u.UserName" });
+            }
+
+            sql += " GROUP BY " + string.Join(", ", groupByFields);
+
+            // 查詢總數
+            var countSql = $"SELECT COUNT(*) FROM ({sql}) AS CountQuery";
+            var totalCount = await QuerySingleAsync<int>(countSql, parameters);
+
+            // 添加分頁
+            sql += " ORDER BY TotalAmount DESC";
+            sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
+            parameters.Add("PageSize", query.PageSize);
+
+            var items = await QueryAsync<SalesAnalysisReportItem>(sql, parameters);
+
+            return new PagedResult<SalesAnalysisReportItem>
+            {
+                Items = items.ToList(),
+                TotalCount = totalCount,
+                PageIndex = query.PageIndex,
+                PageSize = query.PageSize,
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢銷售分析報表失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<SalesAnalysisSummaryItem> GetSalesAnalysisSummaryAsync(SalesAnalysisQuery query)
+    {
+        try
+        {
+            _logger.LogInfo($"查詢銷售分析報表彙總 - SiteId: {query.SiteId}, DateFrom: {query.DateFrom}, DateTo: {query.DateTo}");
+
+            // 構建 SQL 查詢（不包含 GROUP BY，直接彙總）
+            var sql = @"
+                SELECT 
+                    SUM(ISNULL(d.OrderQty, 0)) AS TotalQuantity,
+                    SUM(ISNULL(d.Amount, 0)) AS TotalAmount,
+                    SUM(ISNULL(d.Amount, 0) * 0.8) AS TotalCost, -- 假設成本為金額的80%，實際應從成本表查詢
+                    SUM(ISNULL(d.Amount, 0) * 0.2) AS TotalProfit, -- 假設毛利為金額的20%
+                    CASE 
+                        WHEN SUM(ISNULL(d.Amount, 0)) > 0 
+                        THEN (SUM(ISNULL(d.Amount, 0) * 0.2) / SUM(ISNULL(d.Amount, 0))) * 100
+                        ELSE 0 
+                    END AS AvgProfitRate,
+                    COUNT(DISTINCT o.OrderId) AS TotalOrderCount
+                FROM SalesOrders o
+                INNER JOIN SalesOrderDetails d ON o.OrderId = d.OrderId
+                LEFT JOIN Goods g ON d.GoodsId = g.GoodsId
+                LEFT JOIN Sites s ON o.ShopId = s.SiteId
+                LEFT JOIN Vendors v ON g.VendorId = v.VendorId
+                LEFT JOIN Users u ON o.ApplyUserId = u.UserId
+                LEFT JOIN Classify bc ON g.BId = bc.BId AND bc.ClassifyType = 'B'
+                LEFT JOIN Classify mc ON g.MId = mc.MId AND mc.ClassifyType = 'M'
+                LEFT JOIN Classify sc ON g.SId = sc.SId AND sc.ClassifyType = 'S'
+                WHERE o.Status != 'X' -- 排除已取消的訂單
+            ";
+
+            var parameters = new DynamicParameters();
+            var conditions = new List<string>();
+
+            // 添加查詢條件（與 GetSalesAnalysisReportAsync 相同）
+            if (!string.IsNullOrEmpty(query.SiteId))
+            {
+                conditions.Add("o.ShopId = @SiteId");
+                parameters.Add("SiteId", query.SiteId);
+            }
+
+            if (!string.IsNullOrEmpty(query.DateFrom))
+            {
+                conditions.Add("o.OrderDate >= @DateFrom");
+                parameters.Add("DateFrom", DateTime.Parse(query.DateFrom));
+            }
+
+            if (!string.IsNullOrEmpty(query.DateTo))
+            {
+                conditions.Add("o.OrderDate <= @DateTo");
+                parameters.Add("DateTo", DateTime.Parse(query.DateTo).AddDays(1).AddSeconds(-1));
+            }
+
+            if (!string.IsNullOrEmpty(query.BigClassId))
+            {
+                conditions.Add("g.BId = @BigClassId");
+                parameters.Add("BigClassId", query.BigClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.MidClassId))
+            {
+                conditions.Add("g.MId = @MidClassId");
+                parameters.Add("MidClassId", query.MidClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SmallClassId))
+            {
+                conditions.Add("g.SId = @SmallClassId");
+                parameters.Add("SmallClassId", query.SmallClassId);
+            }
+
+            if (!string.IsNullOrEmpty(query.ProductId))
+            {
+                conditions.Add("d.GoodsId = @ProductId");
+                parameters.Add("ProductId", query.ProductId);
+            }
+
+            if (!string.IsNullOrEmpty(query.VendorId))
+            {
+                conditions.Add("g.VendorId = @VendorId");
+                parameters.Add("VendorId", query.VendorId);
+            }
+
+            if (!string.IsNullOrEmpty(query.SalesPersonId))
+            {
+                conditions.Add("o.ApplyUserId = @SalesPersonId");
+                parameters.Add("SalesPersonId", query.SalesPersonId);
+            }
+
+            if (!string.IsNullOrEmpty(query.CustomerId))
+            {
+                conditions.Add("o.CustomerId = @CustomerId");
+                parameters.Add("CustomerId", query.CustomerId);
+            }
+
+            if (conditions.Count > 0)
+            {
+                sql += " AND " + string.Join(" AND ", conditions);
+            }
+
+            var summary = await QuerySingleAsync<SalesAnalysisSummaryItem>(sql, parameters);
+            return summary ?? new SalesAnalysisSummaryItem();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢銷售分析報表彙總失敗", ex);
+            throw;
+        }
     }
 }

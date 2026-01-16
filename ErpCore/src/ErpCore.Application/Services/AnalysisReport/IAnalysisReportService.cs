@@ -222,4 +222,49 @@ public interface IAnalysisReportService
     /// 列印工務維修統計報表(報表類型) (SYSA1023)
     /// </summary>
     Task<byte[]> PrintSYSA1023ReportAsync(SYSA1023QueryDto query);
+
+    /// <summary>
+    /// 查詢工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    Task<PagedResult<SYSA1024ReportDto>> GetSYSA1024ReportAsync(SYSA1024QueryDto query);
+
+    /// <summary>
+    /// 匯出工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    Task<byte[]> ExportSYSA1024ReportAsync(SYSA1024QueryDto query, string format);
+
+    /// <summary>
+    /// 列印工務維修統計報表(其他) (SYSA1024)
+    /// </summary>
+    Task<byte[]> PrintSYSA1024ReportAsync(SYSA1024QueryDto query);
+
+    /// <summary>
+    /// 查詢庫存分析報表 (SYSWC10)
+    /// </summary>
+    Task<PagedResult<SYSWC10ReportDto>> GetSYSWC10ReportAsync(SYSWC10QueryDto query);
+
+    /// <summary>
+    /// 匯出庫存分析報表 (SYSWC10)
+    /// </summary>
+    Task<byte[]> ExportSYSWC10ReportAsync(SYSWC10QueryDto query, string format);
+
+    /// <summary>
+    /// 列印庫存分析報表 (SYSWC10)
+    /// </summary>
+    Task<byte[]> PrintSYSWC10ReportAsync(SYSWC10QueryDto query);
+
+    /// <summary>
+    /// 查詢銷售分析報表
+    /// </summary>
+    Task<SalesAnalysisReportResult> GetSalesAnalysisReportAsync(SalesAnalysisQueryDto query);
+
+    /// <summary>
+    /// 匯出銷售分析報表
+    /// </summary>
+    Task<byte[]> ExportSalesAnalysisReportAsync(SalesAnalysisQueryDto query, string format);
+
+    /// <summary>
+    /// 列印銷售分析報表
+    /// </summary>
+    Task<byte[]> PrintSalesAnalysisReportAsync(SalesAnalysisQueryDto query);
 }

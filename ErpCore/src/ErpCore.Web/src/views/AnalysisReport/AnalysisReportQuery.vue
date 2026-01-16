@@ -23,6 +23,8 @@
                 <el-option label="盤點差異明細表 (SYSA1020)" value="SYSA1020" />
                 <el-option label="耗材進銷存月報表 (SYSA1021)" value="SYSA1021" />
                 <el-option label="公務費用歸屬統計表 (SYSA1022)" value="SYSA1022" />
+                <el-option label="工務維修統計報表(報表類型) (SYSA1023)" value="SYSA1023" />
+                <el-option label="工務維修統計報表(其他) (SYSA1024)" value="SYSA1024" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -143,6 +145,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row :gutter="20" v-if="showAdvancedFields">
+          <el-col :span="8">
+            <el-form-item label="其他條件1">
+              <el-input v-model="queryForm.OtherCondition1" placeholder="請輸入其他條件1" clearable />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="其他條件2">
+              <el-input v-model="queryForm.OtherCondition2" placeholder="請輸入其他條件2" clearable />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-button type="primary" @click="handleSearch">查詢</el-button>
           <el-button @click="handleReset">重置</el-button>
@@ -255,7 +269,9 @@ export default {
       DateType: '',
       MaintainEmp: '',
       BelongOrg: '',
-      ApplyType: ''
+      ApplyType: '',
+      OtherCondition1: '',
+      OtherCondition2: ''
     })
 
     // 分頁資訊
@@ -332,7 +348,9 @@ export default {
           DateType: queryForm.DateType || null,
           MaintainEmp: queryForm.MaintainEmp || null,
           BelongOrg: queryForm.BelongOrg || null,
-          ApplyType: queryForm.ApplyType || null
+          ApplyType: queryForm.ApplyType || null,
+          OtherCondition1: queryForm.OtherCondition1 || null,
+          OtherCondition2: queryForm.OtherCondition2 || null
         }
 
         // 移除空值
@@ -385,7 +403,9 @@ export default {
         DateType: '',
         MaintainEmp: '',
         BelongOrg: '',
-        ApplyType: ''
+        ApplyType: '',
+        OtherCondition1: '',
+        OtherCondition2: ''
       })
       reportData.value = null
       tableData.value = []

@@ -4,7 +4,7 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Infrastructure.Repositories.System;
 
 /// <summary>
-/// 角色 Repository 介面
+/// 角色 Repository 介面 (SYS0210)
 /// </summary>
 public interface IRoleRepository
 {
@@ -56,4 +56,3 @@ public class RoleQuery
     public string? RoleId { get; set; }
     public string? RoleName { get; set; }
 }
-

@@ -51,4 +51,3 @@ public class RegionQuery
     public string? RegionId { get; set; }
     public string? RegionName { get; set; }
 }
-

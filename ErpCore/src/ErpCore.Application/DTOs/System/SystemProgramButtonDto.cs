@@ -49,13 +49,13 @@ public class ProgramButtonDto
     /// <summary>
     /// 功能按鈕列表
     /// </summary>
-    public List<ButtonDto> Buttons { get; set; } = new();
+    public List<ProgramButtonItemDto> Buttons { get; set; } = new();
 }
 
 /// <summary>
 /// 功能按鈕 DTO (SYS0810, SYS0780, SYS0999)
 /// </summary>
-public class ButtonDto
+public class ProgramButtonItemDto
 {
     /// <summary>
     /// 按鈕代碼

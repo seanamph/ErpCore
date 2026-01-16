@@ -1,8 +1,6 @@
-using Dapper;
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -15,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class DepartmentService : BaseService, IDepartmentService
 {
     private readonly IDepartmentRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public DepartmentService(
         IDepartmentRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<DepartmentDto>> GetDepartmentsAsync(DepartmentQueryDto query)
@@ -37,37 +32,19 @@ public class DepartmentService : BaseService, IDepartmentService
                 PageSize = query.PageSize,
                 SortField = query.SortField,
                 SortOrder = query.SortOrder,
-                DeptId = query.DeptId,
-                DeptName = query.DeptName,
-                OrgId = query.OrgId,
-                Status = query.Status
+                DeptId = query.Filters?.DeptId,
+                DeptName = query.Filters?.DeptName,
+                OrgId = query.Filters?.OrgId,
+                Status = query.Filters?.Status
             };
 
             var result = await _repository.QueryAsync(repositoryQuery);
-
-            // 查詢組織名稱（如果有 OrgId）
-            var orgIds = result.Items.Where(x => !string.IsNullOrEmpty(x.OrgId)).Select(x => x.OrgId!).Distinct().ToList();
-            var orgNameMap = new Dictionary<string, string>();
-            
-            if (orgIds.Any())
-            {
-                try
-                {
-                    var orgNames = await QueryOrgNamesAsync(orgIds);
-                    orgNameMap = orgNames.ToDictionary(x => x.OrgId, x => x.OrgName);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("查詢組織名稱失敗，將使用空值", ex);
-                }
-            }
 
             var dtos = result.Items.Select(x => new DepartmentDto
             {
                 DeptId = x.DeptId,
                 DeptName = x.DeptName,
                 OrgId = x.OrgId,
-                OrgName = x.OrgId != null && orgNameMap.ContainsKey(x.OrgId) ? orgNameMap[x.OrgId] : null,
                 SeqNo = x.SeqNo,
                 Status = x.Status,
                 Notes = x.Notes,
@@ -92,7 +69,7 @@ public class DepartmentService : BaseService, IDepartmentService
         }
     }
 
-    public async Task<DepartmentDto> GetDepartmentByIdAsync(string deptId)
+    public async Task<DepartmentDto> GetDepartmentAsync(string deptId)
     {
         try
         {
@@ -102,27 +79,11 @@ public class DepartmentService : BaseService, IDepartmentService
                 throw new InvalidOperationException($"部別不存在: {deptId}");
             }
 
-            // 查詢組織名稱
-            string? orgName = null;
-            if (!string.IsNullOrEmpty(entity.OrgId))
-            {
-                try
-                {
-                    var orgNames = await QueryOrgNamesAsync(new List<string> { entity.OrgId });
-                    orgName = orgNames.FirstOrDefault().OrgName;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"查詢組織名稱失敗: {entity.OrgId}", ex);
-                }
-            }
-
             return new DepartmentDto
             {
                 DeptId = entity.DeptId,
                 DeptName = entity.DeptName,
                 OrgId = entity.OrgId,
-                OrgName = orgName,
                 SeqNo = entity.SeqNo,
                 Status = entity.Status,
                 Notes = entity.Notes,
@@ -244,7 +205,7 @@ public class DepartmentService : BaseService, IDepartmentService
         }
     }
 
-    public async Task UpdateStatusAsync(string deptId, UpdateDepartmentStatusDto dto)
+    public async Task UpdateStatusAsync(string deptId, string status)
     {
         try
         {
@@ -254,7 +215,12 @@ public class DepartmentService : BaseService, IDepartmentService
                 throw new InvalidOperationException($"部別不存在: {deptId}");
             }
 
-            entity.Status = dto.Status;
+            if (status != "A" && status != "I")
+            {
+                throw new ArgumentException("狀態值必須為 A (啟用) 或 I (停用)");
+            }
+
+            entity.Status = status;
             entity.UpdatedBy = GetCurrentUserId();
             entity.UpdatedAt = DateTime.Now;
 
@@ -278,39 +244,5 @@ public class DepartmentService : BaseService, IDepartmentService
         {
             throw new ArgumentException("部別名稱不能為空");
         }
-
-        if (!string.IsNullOrEmpty(dto.Status) && dto.Status != "A" && dto.Status != "I")
-        {
-            throw new ArgumentException("狀態值必須為 A (啟用) 或 I (停用)");
-        }
-    }
-
-    /// <summary>
-    /// 查詢組織名稱
-    /// </summary>
-    private async Task<List<(string OrgId, string OrgName)>> QueryOrgNamesAsync(List<string> orgIds)
-    {
-        try
-        {
-            if (!orgIds.Any())
-            {
-                return new List<(string, string)>();
-            }
-
-            const string sql = @"
-                SELECT OrgId, OrgName 
-                FROM Organizations 
-                WHERE OrgId IN @OrgIds";
-
-            using var connection = _connectionFactory.CreateConnection();
-            var results = await connection.QueryAsync<(string OrgId, string OrgName)>(sql, new { OrgIds = orgIds });
-            return results.ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError("查詢組織名稱失敗", ex);
-            throw;
-        }
     }
 }
-

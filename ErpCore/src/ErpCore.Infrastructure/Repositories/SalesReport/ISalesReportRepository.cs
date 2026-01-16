@@ -1,5 +1,6 @@
 using ErpCore.Domain.Entities.SalesReport;
 using ErpCore.Shared.Common;
+using SalesReportEntity = ErpCore.Domain.Entities.SalesReport.SalesReport;
 
 namespace ErpCore.Infrastructure.Repositories.SalesReport;
 
@@ -11,22 +12,22 @@ public interface ISalesReportRepository
     /// <summary>
     /// 根據報表編號查詢
     /// </summary>
-    Task<SalesReport?> GetByIdAsync(string reportId);
+    Task<SalesReportEntity?> GetByIdAsync(string reportId);
 
     /// <summary>
     /// 查詢銷售報表列表（分頁）
     /// </summary>
-    Task<PagedResult<SalesReport>> QueryAsync(SalesReportQuery query);
+    Task<PagedResult<SalesReportEntity>> QueryAsync(SalesReportQuery query);
 
     /// <summary>
     /// 新增銷售報表
     /// </summary>
-    Task<SalesReport> CreateAsync(SalesReport report);
+    Task<SalesReportEntity> CreateAsync(SalesReportEntity report);
 
     /// <summary>
     /// 修改銷售報表
     /// </summary>
-    Task<SalesReport> UpdateAsync(SalesReport report);
+    Task<SalesReportEntity> UpdateAsync(SalesReportEntity report);
 
     /// <summary>
     /// 刪除銷售報表

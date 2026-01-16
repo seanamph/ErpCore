@@ -154,7 +154,7 @@ public class UserFieldPermissionRepository : BaseRepository, IUserFieldPermissio
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
 
-            return await QuerySingleOrDefaultAsync<UserFieldPermission>(sql, parameters);
+            return await QueryFirstOrDefaultAsync<UserFieldPermission>(sql, parameters);
         }
         catch (Exception ex)
         {

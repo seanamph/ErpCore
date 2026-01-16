@@ -220,6 +220,8 @@
 <script>
 import { ref, reactive, onMounted } from 'vue'
 import { einvoiceApi } from '@/api/einvoice'
+import { shopsApi } from '@/api/modules/shop'
+import { vendorsApi } from '@/api/vendors'
 import { ElMessage } from 'element-plus'
 
 export default {
@@ -443,10 +445,40 @@ export default {
       return statusMap[status] || status
     }
 
+    // 載入店別列表
+    const loadStoreList = async () => {
+      try {
+        const response = await shopsApi.getShops({ PageSize: 1000 })
+        if (response.data.Success) {
+          storeList.value = response.data.Data.map(shop => ({
+            StoreId: shop.ShopId,
+            StoreName: shop.ShopName
+          }))
+        }
+      } catch (error) {
+        console.error('載入店別列表失敗：', error)
+      }
+    }
+
+    // 載入供應商列表
+    const loadProviderList = async () => {
+      try {
+        const response = await vendorsApi.getVendors({ PageSize: 1000 })
+        if (response.data.Success) {
+          providerList.value = response.data.Data.Items.map(vendor => ({
+            ProviderId: vendor.VendorId,
+            ProviderName: vendor.VendorName
+          }))
+        }
+      } catch (error) {
+        console.error('載入供應商列表失敗：', error)
+      }
+    }
+
     // 初始化
-    onMounted(() => {
+    onMounted(async () => {
+      await Promise.all([loadStoreList(), loadProviderList()])
       handleQuery()
-      // TODO: 載入店別和供應商列表
     })
 
     return {

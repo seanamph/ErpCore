@@ -5,7 +5,6 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
-using ErpCore.Application.DTOs.Query;
 
 namespace ErpCore.Infrastructure.Repositories.Query;
 
@@ -54,7 +53,7 @@ public class PcCashRepository : BaseRepository, IPcCashRepository
         }
     }
 
-    public async Task<PagedResult<PcCashDto>> QueryAsync(PcCashQueryDto query)
+    public async Task<PagedResult<PcCash>> QueryAsync(PcCashQueryParams query)
     {
         try
         {
@@ -121,7 +120,7 @@ public class PcCashRepository : BaseRepository, IPcCashRepository
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<PcCashDto>(sql, parameters);
+            var items = await QueryAsync<PcCash>(sql, parameters);
 
             // 查詢總數
             var countSql = @"SELECT COUNT(*) FROM PcCash pc WHERE 1=1";
@@ -165,7 +164,7 @@ public class PcCashRepository : BaseRepository, IPcCashRepository
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<PcCashDto>
+            return new PagedResult<PcCash>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,

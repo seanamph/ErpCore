@@ -115,6 +115,8 @@ try
     builder.Services.AddScoped<IStocktakingPlanRepository, StocktakingPlanRepository>();
     builder.Services.AddScoped<IPurchaseReceiptRepository, PurchaseReceiptRepository>();
     builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+    builder.Services.AddScoped<IPurchaseOrderQueryRepository, PurchaseOrderQueryRepository>();
+    builder.Services.AddScoped<IPurchaseReportRepository, PurchaseReportRepository>();
     builder.Services.AddScoped<ISupplierGoodsRepository, SupplierGoodsRepository>();
     builder.Services.AddScoped<IProductGoodsIdRepository, ProductGoodsIdRepository>();
     builder.Services.AddScoped<IPriceChangeRepository, PriceChangeRepository>();
@@ -220,6 +222,7 @@ try
     builder.Services.AddScoped<IVoucherImportRepository, VoucherImportRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.ISupplierRepository, ErpCore.Infrastructure.Repositories.Procurement.SupplierRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IPaymentRepository, ErpCore.Infrastructure.Repositories.Procurement.PaymentRepository>();
+    builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IPaymentVoucherRepository, ErpCore.Infrastructure.Repositories.Procurement.PaymentVoucherRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IBankAccountRepository, ErpCore.Infrastructure.Repositories.Procurement.BankAccountRepository>();
     builder.Services.AddScoped<ErpCore.Infrastructure.Repositories.Procurement.IProcurementOtherRepository, ErpCore.Infrastructure.Repositories.Procurement.ProcurementOtherRepository>();
     builder.Services.AddScoped<IContractRepository, ContractRepository>();
@@ -299,6 +302,9 @@ try
     builder.Services.AddScoped<IPurchaseReceiptService, PurchaseReceiptService>();
     builder.Services.AddScoped<IPurchaseOrderService, PurchaseOrderService>();
     builder.Services.AddScoped<IOnSitePurchaseOrderService, OnSitePurchaseOrderService>();
+    builder.Services.AddScoped<IOnSitePurchaseOrderService, OnSitePurchaseOrderService>();
+    builder.Services.AddScoped<IPurchaseOrderQueryService, PurchaseOrderQueryService>();
+    builder.Services.AddScoped<IPurchaseReportService, PurchaseReportService>();
     builder.Services.AddScoped<ISupplierGoodsService, SupplierGoodsService>();
     builder.Services.AddScoped<IProductGoodsIdService, ProductGoodsIdService>();
     builder.Services.AddScoped<IPriceChangeService, PriceChangeService>();
@@ -344,7 +350,6 @@ try
     builder.Services.AddScoped<IProgramUserPermissionService, ProgramUserPermissionService>();
     builder.Services.AddScoped<IRoleSystemPermissionService, RoleSystemPermissionService>();
     builder.Services.AddScoped<IProgramRolePermissionService, ProgramRolePermissionService>();
-    builder.Services.AddScoped<IRoleUserService, RoleUserService>();
     builder.Services.AddScoped<IRoleUserService, RoleUserService>();
     builder.Services.AddScoped<IPermissionCategoryReportService, PermissionCategoryReportService>();
     builder.Services.AddScoped<ISystemProgramButtonService, SystemProgramButtonService>();
@@ -420,9 +425,14 @@ try
     builder.Services.AddScoped<IVoucherImportService, VoucherImportService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.ISupplierService, ErpCore.Application.Services.Procurement.SupplierService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPaymentService, ErpCore.Application.Services.Procurement.PaymentService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPaymentVoucherService, ErpCore.Application.Services.Procurement.PaymentVoucherService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IBankAccountService, ErpCore.Application.Services.Procurement.BankAccountService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPurchaseReportPrintService, ErpCore.Application.Services.Procurement.PurchaseReportPrintService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPurchaseReportPrintService, ErpCore.Application.Services.Procurement.PurchaseReportPrintService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IProcurementReportService, ErpCore.Application.Services.Procurement.ProcurementReportService>();
     builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IProcurementOtherService, ErpCore.Application.Services.Procurement.ProcurementOtherService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPurchaseExtendedFunctionService, ErpCore.Application.Services.Procurement.PurchaseExtendedFunctionService>();
+    builder.Services.AddScoped<ErpCore.Application.Services.Procurement.IPurchaseExtendedMaintenanceService, ErpCore.Application.Services.Procurement.PurchaseExtendedMaintenanceService>();
     builder.Services.AddScoped<IContractService, ContractService>();
     builder.Services.AddScoped<ICashParamsService, CashParamsService>();
     builder.Services.AddScoped<IPcKeepService, PcKeepService>();

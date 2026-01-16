@@ -1,4 +1,5 @@
 using System.Data;
+using System.Linq;
 using Dapper;
 using ErpCore.Domain.Entities.ReportManagement;
 using ErpCore.Infrastructure.Data;
@@ -149,7 +150,7 @@ public class DepositsRepository : BaseRepository, IDepositsRepository
 
             return new PagedResult<Deposits>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

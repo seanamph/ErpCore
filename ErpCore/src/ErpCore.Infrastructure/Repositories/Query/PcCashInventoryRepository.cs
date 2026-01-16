@@ -5,7 +5,6 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
-using ErpCore.Application.DTOs.Query;
 
 namespace ErpCore.Infrastructure.Repositories.Query;
 
@@ -54,7 +53,7 @@ public class PcCashInventoryRepository : BaseRepository, IPcCashInventoryReposit
         }
     }
 
-    public async Task<PagedResult<PcCashInventoryDto>> QueryAsync(PcCashInventoryQueryDto query)
+    public async Task<PagedResult<PcCashInventory>> QueryAsync(PcCashInventoryQueryParams query)
     {
         try
         {
@@ -109,7 +108,7 @@ public class PcCashInventoryRepository : BaseRepository, IPcCashInventoryReposit
             parameters.Add("Offset", offset);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<PcCashInventoryDto>(sql, parameters);
+            var items = await QueryAsync<PcCashInventory>(sql, parameters);
 
             // 計算差異金額
             foreach (var item in items)
@@ -156,7 +155,7 @@ public class PcCashInventoryRepository : BaseRepository, IPcCashInventoryReposit
 
             var totalCount = await QuerySingleAsync<int>(countSql, countParameters);
 
-            return new PagedResult<PcCashInventoryDto>
+            return new PagedResult<PcCashInventory>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,

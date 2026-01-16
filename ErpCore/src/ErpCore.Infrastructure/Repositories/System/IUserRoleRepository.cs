@@ -97,11 +97,11 @@ public interface IUserRoleRepository
     /// <summary>
     /// 根據角色ID刪除所有使用者分配 (SYS0240)
     /// </summary>
-    Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null);
+    Task DeleteByRoleIdAsync(string roleId, global::System.Data.IDbTransaction? transaction = null);
 
     /// <summary>
     /// 從來源角色複製使用者分配到目的角色 (SYS0240)
     /// </summary>
-    Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null);
+    Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, global::System.Data.IDbTransaction? transaction = null);
 }
 

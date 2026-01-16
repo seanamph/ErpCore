@@ -34,7 +34,7 @@ public class UserPermissionService : BaseService, IUserPermissionService
         _connectionFactory = connectionFactory;
     }
 
-    public async Task<PagedResult<UserPermissionDto>> GetUserPermissionsAsync(string userId, UserPermissionQueryDto query)
+    public async Task<PagedResult<ErpCore.Application.DTOs.System.UserPermissionDto>> GetUserPermissionsAsync(string userId, UserPermissionQueryDto query)
     {
         try
         {
@@ -59,7 +59,7 @@ public class UserPermissionService : BaseService, IUserPermissionService
 
             var result = await _repository.QueryPermissionsAsync(userId, repositoryQuery);
 
-            var dtos = result.Items.Select(x => new UserPermissionDto
+            var dtos = result.Items.Select(x => new ErpCore.Application.DTOs.System.UserPermissionDto
             {
                 TKey = x.TKey,
                 UserId = x.UserId,
@@ -90,7 +90,7 @@ public class UserPermissionService : BaseService, IUserPermissionService
         }
     }
 
-    public async Task<List<UserPermissionStatsDto>> GetSystemStatsAsync(string userId)
+    public async Task<List<ErpCore.Application.DTOs.System.UserPermissionStatsDto>> GetSystemStatsAsync(string userId)
     {
         try
         {
@@ -102,7 +102,7 @@ public class UserPermissionService : BaseService, IUserPermissionService
             }
 
             var stats = await _repository.GetSystemStatsAsync(userId);
-            return stats.Select(x => new UserPermissionStatsDto
+            return stats.Select(x => new ErpCore.Application.DTOs.System.UserPermissionStatsDto
             {
                 SystemId = x.SystemId,
                 SystemName = x.SystemName,
@@ -447,6 +447,184 @@ public class UserPermissionService : BaseService, IUserPermissionService
         catch (Exception ex)
         {
             _logger.LogError($"批量刪除使用者權限失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<ErpCore.Application.DTOs.System.UserSystemListDto>> GetUserSystemsAsync(string userId)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            var systems = await _repository.GetUserSystemsAsync(userId);
+            return systems.Select(x => new UserSystemListDto
+            {
+                SystemId = x.SystemId,
+                SystemName = x.SystemName,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized,
+                AuthorizedRate = x.AuthorizedRate
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者系統列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<UserMenuListDto>> GetUserMenusAsync(string userId, string? systemId = null)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            var menus = await _repository.GetUserMenusAsync(userId, systemId);
+            return menus.Select(x => new ErpCore.Application.DTOs.System.UserMenuListDto
+            {
+                MenuId = x.MenuId,
+                MenuName = x.MenuName,
+                SystemId = x.SystemId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者選單列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<ErpCore.Application.DTOs.System.UserProgramListDto>> GetUserProgramsAsync(string userId, string? menuId = null)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            var programs = await _repository.GetUserProgramsAsync(userId, menuId);
+            return programs.Select(x => new UserProgramListDto
+            {
+                ProgramId = x.ProgramId,
+                ProgramName = x.ProgramName,
+                MenuId = x.MenuId,
+                TotalButtons = x.TotalButtons,
+                AuthorizedButtons = x.AuthorizedButtons,
+                IsFullyAuthorized = x.IsFullyAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者作業列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<List<ErpCore.Application.DTOs.System.UserButtonListDto>> GetUserButtonsAsync(string userId, string? programId = null)
+    {
+        try
+        {
+            // 檢查使用者是否存在
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException($"使用者不存在: {userId}");
+            }
+
+            var buttons = await _repository.GetUserButtonsAsync(userId, programId);
+            return buttons.Select(x => new ErpCore.Application.DTOs.System.UserButtonListDto
+            {
+                ButtonId = x.ButtonId,
+                ButtonName = x.ButtonName,
+                ProgramId = x.ProgramId,
+                Funs = x.Funs,
+                PageId = x.PageId,
+                IsAuthorized = x.IsAuthorized
+            }).ToList();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢使用者按鈕列表失敗: {userId}", ex);
+            throw;
+        }
+    }
+
+    public async Task<ErpCore.Application.DTOs.System.UserPermissionDto> UpdateUserPermissionAsync(string userId, long tKey, UpdateUserPermissionDto dto)
+    {
+        try
+        {
+            // 檢查權限是否存在
+            var permission = await _repository.GetByIdAsync(tKey);
+            if (permission == null)
+            {
+                throw new InvalidOperationException($"使用者權限不存在: {tKey}");
+            }
+
+            if (permission.UserId != userId)
+            {
+                throw new InvalidOperationException($"權限不屬於該使用者: {userId}");
+            }
+
+            // 檢查新的按鈕是否存在
+            if (string.IsNullOrEmpty(dto.ButtonId))
+            {
+                throw new InvalidOperationException("按鈕代碼不能為空");
+            }
+
+            // 更新權限
+            permission.ButtonId = dto.ButtonId;
+            var updated = await _repository.UpdateAsync(permission);
+
+            // 查詢更新後的完整資訊
+            var permissions = await _repository.QueryPermissionsAsync(userId, new UserPermissionQuery
+            {
+                PageIndex = 1,
+                PageSize = 1
+            });
+
+            var result = permissions.Items.FirstOrDefault(x => x.TKey == updated.TKey);
+            if (result == null)
+            {
+                throw new InvalidOperationException("查詢更新後的權限失敗");
+            }
+
+            return new UserPermissionDto
+            {
+                TKey = result.TKey,
+                UserId = result.UserId,
+                ButtonId = result.ButtonId,
+                SystemId = result.SystemId,
+                SystemName = result.SystemName,
+                SubSystemId = result.SubSystemId,
+                SubSystemName = result.SubSystemName,
+                ProgramId = result.ProgramId,
+                ProgramName = result.ProgramName,
+                ButtonName = result.ButtonName,
+                CreatedBy = result.CreatedBy,
+                CreatedAt = result.CreatedAt
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"修改使用者權限失敗: {userId} - {tKey}", ex);
             throw;
         }
     }

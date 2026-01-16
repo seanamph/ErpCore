@@ -1,7 +1,7 @@
 namespace ErpCore.Application.DTOs.Procurement;
 
 /// <summary>
-/// 銀行帳戶 DTO
+/// 銀行帳戶 DTO (銀行帳戶維護)
 /// </summary>
 public class BankAccountDto
 {
@@ -12,13 +12,26 @@ public class BankAccountDto
     public string AccountName { get; set; } = string.Empty;
     public string AccountNumber { get; set; } = string.Empty;
     public string? AccountType { get; set; }
+    public string? AccountTypeName { get; set; }
     public string? CurrencyId { get; set; }
-    public string Status { get; set; } = "A";
-    public string? Memo { get; set; }
+    public string Status { get; set; } = "1";
+    public string? StatusName { get; set; }
+    public decimal? Balance { get; set; }
+    public DateTime? OpeningDate { get; set; }
+    public DateTime? ClosingDate { get; set; }
+    public string? ContactPerson { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? ContactEmail { get; set; }
+    public string? BranchName { get; set; }
+    public string? BranchCode { get; set; }
+    public string? SwiftCode { get; set; }
+    public string? Notes { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; }
+    public int? CreatedPriority { get; set; }
+    public string? CreatedGroup { get; set; }
 }
 
 /// <summary>
@@ -32,8 +45,17 @@ public class CreateBankAccountDto
     public string AccountNumber { get; set; } = string.Empty;
     public string? AccountType { get; set; }
     public string? CurrencyId { get; set; }
-    public string Status { get; set; } = "A";
-    public string? Memo { get; set; }
+    public string Status { get; set; } = "1";
+    public decimal? Balance { get; set; }
+    public DateTime? OpeningDate { get; set; }
+    public DateTime? ClosingDate { get; set; }
+    public string? ContactPerson { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? ContactEmail { get; set; }
+    public string? BranchName { get; set; }
+    public string? BranchCode { get; set; }
+    public string? SwiftCode { get; set; }
+    public string? Notes { get; set; }
 }
 
 /// <summary>
@@ -46,12 +68,21 @@ public class UpdateBankAccountDto
     public string AccountNumber { get; set; } = string.Empty;
     public string? AccountType { get; set; }
     public string? CurrencyId { get; set; }
-    public string Status { get; set; } = "A";
-    public string? Memo { get; set; }
+    public string Status { get; set; } = "1";
+    public decimal? Balance { get; set; }
+    public DateTime? OpeningDate { get; set; }
+    public DateTime? ClosingDate { get; set; }
+    public string? ContactPerson { get; set; }
+    public string? ContactPhone { get; set; }
+    public string? ContactEmail { get; set; }
+    public string? BranchName { get; set; }
+    public string? BranchCode { get; set; }
+    public string? SwiftCode { get; set; }
+    public string? Notes { get; set; }
 }
 
 /// <summary>
-/// 查詢銀行帳戶 DTO
+/// 銀行帳戶查詢 DTO
 /// </summary>
 public class BankAccountQueryDto
 {
@@ -64,6 +95,8 @@ public class BankAccountQueryDto
     public string? AccountType { get; set; }
     public string? CurrencyId { get; set; }
     public string? Status { get; set; }
+    public string? SortField { get; set; }
+    public string? SortOrder { get; set; }
 }
 
 /// <summary>
@@ -73,8 +106,7 @@ public class BankAccountBalanceDto
 {
     public string BankAccountId { get; set; } = string.Empty;
     public string AccountName { get; set; } = string.Empty;
-    public decimal Balance { get; set; }
-    public string CurrencyId { get; set; } = "TWD";
-    public DateTime LastUpdateDate { get; set; }
+    public decimal? Balance { get; set; }
+    public string? CurrencyId { get; set; }
+    public DateTime? LastUpdateDate { get; set; }
 }
-

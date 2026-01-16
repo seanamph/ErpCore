@@ -45,6 +45,8 @@ public class PurchaseReceiptsV2Controller : BaseController
     {
         return await ExecuteAsync(async () =>
         {
+            // 自動過濾 SYSW336 的資料
+            query.SourceProgram = "SYSW336";
             var result = await _service.GetPurchaseReceiptsAsync(query);
             return result;
         }, "查詢驗收單列表失敗 (SYSW336)");
@@ -85,6 +87,8 @@ public class PurchaseReceiptsV2Controller : BaseController
     {
         return await ExecuteAsync(async () =>
         {
+            // 自動設定 SourceProgram = "SYSW336"
+            dto.SourceProgram = "SYSW336";
             var receiptId = await _service.CreatePurchaseReceiptAsync(dto);
             return receiptId;
         }, "新增驗收單失敗 (SYSW336)");

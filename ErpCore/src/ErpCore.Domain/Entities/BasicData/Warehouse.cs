@@ -70,4 +70,3 @@ public class Warehouse
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

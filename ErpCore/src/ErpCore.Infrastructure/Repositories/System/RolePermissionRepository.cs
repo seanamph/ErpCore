@@ -1,3 +1,5 @@
+using System.Data;
+using System.Data.Common;
 using Dapper;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Infrastructure.Data;
@@ -222,7 +224,14 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -359,7 +368,14 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -442,7 +458,14 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -525,7 +548,14 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         try
         {
             using var connection = _connectionFactory.CreateConnection();
-            await connection.OpenAsync();
+            if (connection is DbConnection dbConnection)
+            {
+                await dbConnection.OpenAsync();
+            }
+            else
+            {
+                connection.Open();
+            }
 
             using var transaction = connection.BeginTransaction();
             try
@@ -600,7 +630,7 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         }
     }
 
-    public async Task DeleteByRoleIdAsync(string roleId, System.Data.IDbTransaction? transaction = null)
+    public async Task DeleteByRoleIdAsync(string roleId, IDbTransaction? transaction = null)
     {
         try
         {
@@ -622,7 +652,7 @@ public class RolePermissionRepository : BaseRepository, IRolePermissionRepositor
         }
     }
 
-    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, System.Data.IDbTransaction? transaction = null)
+    public async Task<int> CopyFromRoleAsync(string sourceRoleId, string targetRoleId, string createdBy, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {

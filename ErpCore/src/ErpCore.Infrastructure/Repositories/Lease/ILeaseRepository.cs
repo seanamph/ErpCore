@@ -1,4 +1,4 @@
-using ErpCore.Domain.Entities.Lease;
+using LeaseEntity = ErpCore.Domain.Entities.Lease.Lease;
 
 namespace ErpCore.Infrastructure.Repositories.Lease;
 
@@ -7,12 +7,12 @@ namespace ErpCore.Infrastructure.Repositories.Lease;
 /// </summary>
 public interface ILeaseRepository
 {
-    Task<Lease?> GetByIdAsync(string leaseId);
-    Task<IEnumerable<Lease>> QueryAsync(LeaseQuery query);
+    Task<LeaseEntity?> GetByIdAsync(string leaseId);
+    Task<IEnumerable<LeaseEntity>> QueryAsync(LeaseQuery query);
     Task<int> GetCountAsync(LeaseQuery query);
     Task<bool> ExistsAsync(string leaseId);
-    Task<Lease> CreateAsync(Lease lease);
-    Task<Lease> UpdateAsync(Lease lease);
+    Task<LeaseEntity> CreateAsync(LeaseEntity lease);
+    Task<LeaseEntity> UpdateAsync(LeaseEntity lease);
     Task DeleteAsync(string leaseId);
     Task UpdateStatusAsync(string leaseId, string status);
 }

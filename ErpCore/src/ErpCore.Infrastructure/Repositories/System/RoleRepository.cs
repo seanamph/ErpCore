@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.System;
 
 /// <summary>
-/// 角色 Repository 實作
+/// 角色 Repository 實作 (SYS0210)
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class RoleRepository : BaseRepository, IRoleRepository
@@ -110,13 +110,11 @@ public class RoleRepository : BaseRepository, IRoleRepository
         {
             const string sql = @"
                 INSERT INTO Roles (
-                    RoleId, RoleName, RoleNote,
-                    CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup
+                    RoleId, RoleName, RoleNote, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup
                 )
                 OUTPUT INSERTED.*
                 VALUES (
-                    @RoleId, @RoleName, @RoleNote,
-                    @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
+                    @RoleId, @RoleName, @RoleNote, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup
                 )";
 
             var result = await QueryFirstOrDefaultAsync<Role>(sql, role);
@@ -215,4 +213,3 @@ public class RoleRepository : BaseRepository, IRoleRepository
         }
     }
 }
-

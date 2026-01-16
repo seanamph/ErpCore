@@ -2,6 +2,7 @@ using ErpCore.Application.DTOs.InvoiceSales;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.InvoiceSales;
 using ErpCore.Infrastructure.Repositories.InvoiceSales;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using System.Text.Json;
 

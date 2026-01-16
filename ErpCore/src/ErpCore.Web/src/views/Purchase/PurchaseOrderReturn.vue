@@ -260,7 +260,7 @@
 <script>
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { purchaseOrderApi } from '@/api/purchase'
+import { purchaseOrderV2Api } from '@/api/purchase'
 import { getProductById } from '@/api/modules/product'
 
 export default {
@@ -378,7 +378,7 @@ export default {
         }
         delete params.OrderDateRange
 
-        const response = await purchaseOrderApi.getPurchaseOrders(params)
+        const response = await purchaseOrderV2Api.getPurchaseOrders(params)
         if (response.Data) {
           tableData.value = response.Data.Items || []
           pagination.TotalCount = response.Data.TotalCount || 0
@@ -428,7 +428,7 @@ export default {
     // 查看
     const handleView = async (row) => {
       try {
-        const response = await purchaseOrderApi.getPurchaseOrder(row.OrderId)
+        const response = await purchaseOrderV2Api.getPurchaseOrder(row.OrderId)
         if (response.Data) {
           isEdit.value = true
           dialogVisible.value = true
@@ -460,7 +460,7 @@ export default {
         await ElMessageBox.confirm('確定要刪除此採購單嗎？', '確認', {
           type: 'warning'
         })
-        await purchaseOrderApi.deletePurchaseOrder(row.OrderId)
+        await purchaseOrderV2Api.deletePurchaseOrder(row.OrderId)
         ElMessage.success('刪除成功')
         loadData()
       } catch (error) {
@@ -476,7 +476,7 @@ export default {
         await ElMessageBox.confirm('確定要送出此採購單進行審核嗎？', '確認', {
           type: 'warning'
         })
-        await purchaseOrderApi.submitPurchaseOrder(row.OrderId)
+        await purchaseOrderV2Api.submitPurchaseOrder(row.OrderId)
         ElMessage.success('送出成功')
         loadData()
       } catch (error) {
@@ -492,7 +492,7 @@ export default {
         await ElMessageBox.confirm('確定要審核通過此採購單嗎？', '確認', {
           type: 'warning'
         })
-        await purchaseOrderApi.approvePurchaseOrder(row.OrderId)
+        await purchaseOrderV2Api.approvePurchaseOrder(row.OrderId)
         ElMessage.success('審核成功')
         loadData()
       } catch (error) {
@@ -508,7 +508,7 @@ export default {
         await ElMessageBox.confirm('確定要取消此採購單嗎？', '確認', {
           type: 'warning'
         })
-        await purchaseOrderApi.cancelPurchaseOrder(row.OrderId)
+        await purchaseOrderV2Api.cancelPurchaseOrder(row.OrderId)
         ElMessage.success('取消成功')
         loadData()
       } catch (error) {
@@ -616,10 +616,10 @@ export default {
             }
 
             if (isEdit.value) {
-              await purchaseOrderApi.updatePurchaseOrder(formData.OrderId, submitData)
+              await purchaseOrderV2Api.updatePurchaseOrder(formData.OrderId, submitData)
               ElMessage.success('修改成功')
             } else {
-              await purchaseOrderApi.createPurchaseOrder(submitData)
+              await purchaseOrderV2Api.createPurchaseOrder(submitData)
               ElMessage.success('新增成功')
             }
             dialogVisible.value = false

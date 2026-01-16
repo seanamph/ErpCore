@@ -1,7 +1,7 @@
 namespace ErpCore.Domain.Entities.Transfer;
 
 /// <summary>
-/// 調撥短溢單明細
+/// 調撥短溢單明細 (SYSW384)
 /// </summary>
 public class TransferShortageDetail
 {

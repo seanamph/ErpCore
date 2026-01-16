@@ -153,5 +153,79 @@ public class UserPermissionsController : BaseController
             return result;
         }, $"批量刪除使用者權限失敗: {userId}");
     }
+
+    /// <summary>
+    /// 查詢使用者系統列表 (SYS0320)
+    /// </summary>
+    [HttpGet("systems")]
+    public async Task<ActionResult<ApiResponse<List<UserSystemListDto>>>> GetUserSystems(string userId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserSystemsAsync(userId);
+            return result;
+        }, $"查詢使用者系統列表失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 查詢使用者選單列表 (SYS0320)
+    /// </summary>
+    [HttpGet("menus")]
+    public async Task<ActionResult<ApiResponse<List<UserMenuListDto>>>> GetUserMenus(
+        string userId,
+        [FromQuery] string? systemId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserMenusAsync(userId, systemId);
+            return result;
+        }, $"查詢使用者選單列表失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 查詢使用者作業列表 (SYS0320)
+    /// </summary>
+    [HttpGet("programs")]
+    public async Task<ActionResult<ApiResponse<List<UserProgramListDto>>>> GetUserPrograms(
+        string userId,
+        [FromQuery] string? menuId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserProgramsAsync(userId, menuId);
+            return result;
+        }, $"查詢使用者作業列表失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 查詢使用者按鈕列表 (SYS0320)
+    /// </summary>
+    [HttpGet("buttons")]
+    public async Task<ActionResult<ApiResponse<List<UserButtonListDto>>>> GetUserButtons(
+        string userId,
+        [FromQuery] string? programId = null)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.GetUserButtonsAsync(userId, programId);
+            return result;
+        }, $"查詢使用者按鈕列表失敗: {userId}");
+    }
+
+    /// <summary>
+    /// 修改使用者權限
+    /// </summary>
+    [HttpPut("{tKey}")]
+    public async Task<ActionResult<ApiResponse<UserPermissionDto>>> UpdateUserPermission(
+        string userId,
+        long tKey,
+        [FromBody] UpdateUserPermissionDto dto)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            var result = await _service.UpdateUserPermissionAsync(userId, tKey, dto);
+            return result;
+        }, $"修改使用者權限失敗: {userId} - {tKey}");
+    }
 }
 

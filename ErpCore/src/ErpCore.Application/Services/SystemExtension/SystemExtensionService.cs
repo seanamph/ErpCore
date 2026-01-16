@@ -258,10 +258,65 @@ public class SystemExtensionService : BaseService, ISystemExtensionService
         }
     }
 
+    public async Task<byte[]> ExportToExcelAsync(SystemExtensionQueryDto query)
+    {
+        try
+        {
+            // 查詢所有符合條件的資料（不分頁）
+            var repositoryQuery = new SystemExtensionQuery
+            {
+                PageIndex = 1,
+                PageSize = int.MaxValue, // 取得所有資料
+                SortField = query.SortField ?? "SeqNo",
+                SortOrder = query.SortOrder ?? "ASC",
+                ExtensionId = query.ExtensionId,
+                ExtensionName = query.ExtensionName,
+                ExtensionType = query.ExtensionType,
+                Status = query.Status,
+                CreatedDateFrom = query.CreatedDateFrom,
+                CreatedDateTo = query.CreatedDateTo
+            };
+
+            var result = await _repository.QueryAsync(repositoryQuery);
+            var dtos = result.Items.Select(x => MapToDto(x)).ToList();
+
+            // 定義匯出欄位
+            var columns = new List<ExportColumn>
+            {
+                new ExportColumn { PropertyName = "ExtensionId", DisplayName = "擴展功能代碼", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ExtensionName", DisplayName = "擴展功能名稱", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ExtensionType", DisplayName = "擴展類型", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "ExtensionValue", DisplayName = "擴展值", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "SeqNo", DisplayName = "排序序號", DataType = ExportDataType.Number },
+                new ExportColumn { PropertyName = "Status", DisplayName = "狀態", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "Notes", DisplayName = "備註", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CreatedBy", DisplayName = "建立人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "CreatedAt", DisplayName = "建立時間", DataType = ExportDataType.DateTime },
+                new ExportColumn { PropertyName = "UpdatedBy", DisplayName = "更新人員", DataType = ExportDataType.String },
+                new ExportColumn { PropertyName = "UpdatedAt", DisplayName = "更新時間", DataType = ExportDataType.DateTime }
+            };
+
+            // 使用 ExportHelper 匯出
+            var exportHelper = new ExportHelper(_logger);
+            var excelBytes = exportHelper.ExportToExcel(
+                dtos,
+                columns,
+                "系統擴展查詢",
+                "系統擴展查詢報表");
+
+            return excelBytes;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出系統擴展資料失敗", ex);
+            throw;
+        }
+    }
+
     /// <summary>
     /// 將 Entity 轉換為 DTO
     /// </summary>
-    private SystemExtensionDto MapToDto(SystemExtension entity)
+    private SystemExtensionDto MapToDto(ErpCore.Domain.Entities.SystemExtension.SystemExtension entity)
     {
         return new SystemExtensionDto
         {

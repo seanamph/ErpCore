@@ -154,7 +154,7 @@ public class RoleFieldPermissionRepository : BaseRepository, IRoleFieldPermissio
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
 
-            return await QuerySingleOrDefaultAsync<RoleFieldPermission>(sql, parameters);
+            return await QueryFirstOrDefaultAsync<RoleFieldPermission>(sql, parameters);
         }
         catch (Exception ex)
         {

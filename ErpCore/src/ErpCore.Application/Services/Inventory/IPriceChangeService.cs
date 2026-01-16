@@ -4,7 +4,7 @@ using ErpCore.Shared.Common;
 namespace ErpCore.Application.Services.Inventory;
 
 /// <summary>
-/// 變價單服務介面
+/// 商品永久變價服務介面
 /// </summary>
 public interface IPriceChangeService
 {
@@ -39,7 +39,7 @@ public interface IPriceChangeService
     Task ApprovePriceChangeAsync(string priceChangeId, string priceChangeType, ApprovePriceChangeDto dto);
 
     /// <summary>
-    /// 確認變價單
+    /// 確認變價單（執行變價作業）
     /// </summary>
     Task ConfirmPriceChangeAsync(string priceChangeId, string priceChangeType, ConfirmPriceChangeDto dto);
 
@@ -48,4 +48,3 @@ public interface IPriceChangeService
     /// </summary>
     Task CancelPriceChangeAsync(string priceChangeId, string priceChangeType);
 }
-

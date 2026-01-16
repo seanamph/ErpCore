@@ -100,3 +100,63 @@ public class UserPermissionStatsDto
     public double AuthorizedRate { get; set; }
 }
 
+/// <summary>
+/// 使用者系統列表 DTO (SYS0320)
+/// </summary>
+public class UserSystemListDto
+{
+    public string SystemId { get; set; } = string.Empty;
+    public string SystemName { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+    public double AuthorizedRate { get; set; }
+}
+
+/// <summary>
+/// 使用者選單列表 DTO (SYS0320)
+/// </summary>
+public class UserMenuListDto
+{
+    public string MenuId { get; set; } = string.Empty;
+    public string MenuName { get; set; } = string.Empty;
+    public string SystemId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 使用者作業列表 DTO (SYS0320)
+/// </summary>
+public class UserProgramListDto
+{
+    public string ProgramId { get; set; } = string.Empty;
+    public string ProgramName { get; set; } = string.Empty;
+    public string MenuId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 使用者按鈕列表 DTO (SYS0320)
+/// </summary>
+public class UserButtonListDto
+{
+    public string ButtonId { get; set; } = string.Empty;
+    public string ButtonName { get; set; } = string.Empty;
+    public string ProgramId { get; set; } = string.Empty;
+    public string? Funs { get; set; }
+    public string? PageId { get; set; }
+    public bool IsAuthorized { get; set; }
+}
+
+/// <summary>
+/// 修改使用者權限 DTO
+/// </summary>
+public class UpdateUserPermissionDto
+{
+    public string ButtonId { get; set; } = string.Empty;
+}
+

@@ -399,7 +399,7 @@ public class PurchaseOrderRepository : BaseRepository, IPurchaseOrderRepository
         }
     }
 
-    public async Task UpdateStatusAsync(string orderId, string status, string? userId = null, IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string orderId, string status, string? userId = null, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -478,7 +478,7 @@ public class PurchaseOrderRepository : BaseRepository, IPurchaseOrderRepository
     /// <summary>
     /// 產生採購單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateOrderIdAsync(System.Data.IDbConnection connection, System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateOrderIdAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 OrderId 
@@ -502,7 +502,7 @@ public class PurchaseOrderRepository : BaseRepository, IPurchaseOrderRepository
     /// <summary>
     /// 更新採購單明細已收數量
     /// </summary>
-    public async Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateReceiptQtyAsync(Guid orderDetailId, decimal receiptQty, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {

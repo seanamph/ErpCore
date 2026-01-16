@@ -261,7 +261,7 @@ public class LeaseService : BaseService, ILeaseService
     /// <summary>
     /// 將 Entity 轉換為 DTO
     /// </summary>
-    private LeaseDto MapToDto(Lease lease)
+    private LeaseDto MapToDto(ErpCore.Domain.Entities.Lease.Lease lease)
     {
         return new LeaseDto
         {

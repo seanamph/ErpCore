@@ -40,4 +40,3 @@ export const vendorsApi = {
     return axios.delete('/vendors/batch', { data })
   }
 }
-

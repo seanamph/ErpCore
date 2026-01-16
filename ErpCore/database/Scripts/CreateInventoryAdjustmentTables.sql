@@ -11,7 +11,7 @@ BEGIN
         [AdjustmentId] NVARCHAR(50) NOT NULL PRIMARY KEY, -- 調整單號 (SP_NO)
         [AdjustmentDate] DATETIME2 NOT NULL, -- 調整日期 (SP_DATE)
         [ShopId] NVARCHAR(50) NOT NULL, -- 分店代碼 (SHOP_ID)
-        [Status] NVARCHAR(10) NOT NULL DEFAULT 'D', -- 狀態 (D:草稿, C:已確認, X:已取消)
+        [Status] NVARCHAR(10) NOT NULL DEFAULT 'D', -- 狀態 (STATUS, D:草稿, C:已確認, X:已取消)
         [AdjustmentType] NVARCHAR(20) NULL, -- 調整類型 (SP_TYPE)
         [AdjustmentUser] NVARCHAR(50) NULL, -- 調整人員 (SP_USER)
         [Memo] NVARCHAR(500) NULL, -- 備註 (MEMO)
@@ -21,13 +21,11 @@ BEGIN
         [SourceCheckDate] DATETIME2 NULL, -- 來源檢查日期 (SRC_CHECK_DATE)
         [SourceSuppId] NVARCHAR(50) NULL, -- 來源供應商 (SRC_SUPP_ID)
         [SiteId] NVARCHAR(50) NULL, -- 分公司代碼 (SITE_ID)
-        [TotalQty] DECIMAL(18, 4) NULL DEFAULT 0, -- 總調整數量
-        [TotalCost] DECIMAL(18, 4) NULL DEFAULT 0, -- 總調整成本
-        [TotalAmount] DECIMAL(18, 4) NULL DEFAULT 0, -- 總調整金額
         [CreatedBy] NVARCHAR(50) NULL,
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
         [UpdatedBy] NVARCHAR(50) NULL,
-        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
+        [UpdatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
+        CONSTRAINT [PK_InventoryAdjustments] PRIMARY KEY CLUSTERED ([AdjustmentId] ASC)
     );
 
     -- 索引
@@ -85,7 +83,7 @@ BEGIN
         [ReasonId] NVARCHAR(50) NOT NULL PRIMARY KEY,
         [ReasonName] NVARCHAR(100) NOT NULL,
         [ReasonType] NVARCHAR(20) NULL, -- 增加/減少
-        [Status] NVARCHAR(10) NOT NULL DEFAULT 'A', -- A:啟用, I:停用
+        [Status] NVARCHAR(10) NOT NULL DEFAULT 'A',
         [CreatedBy] NVARCHAR(50) NULL,
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE()
     );
@@ -97,7 +95,3 @@ BEGIN
     PRINT '資料表 AdjustmentReasons 已存在';
 END
 GO
-
-PRINT '庫存調整作業資料表建立完成';
-GO
-

@@ -1,3 +1,4 @@
+using System.Data;
 using ErpCore.Domain.Entities.Transfer;
 
 namespace ErpCore.Infrastructure.Repositories.Transfer;
@@ -17,7 +18,7 @@ public interface ITransferReceiptRepository
     Task DeleteAsync(string receiptId);
     Task<IEnumerable<PendingTransferOrderForReceipt>> GetPendingOrdersAsync(PendingTransferOrderQuery query);
     Task<int> GetPendingOrdersCountAsync(PendingTransferOrderQuery query);
-    Task UpdateStatusAsync(string receiptId, string status, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string receiptId, string status, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GenerateReceiptIdAsync();
 }
 

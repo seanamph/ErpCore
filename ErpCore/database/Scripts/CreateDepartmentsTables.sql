@@ -33,3 +33,24 @@ BEGIN
 END
 GO
 
+-- 如果 Organizations 表存在，建立外鍵約束
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Organizations]') AND type in (N'U'))
+BEGIN
+    IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'FK_Departments_Organizations')
+    BEGIN
+        ALTER TABLE [dbo].[Departments]
+        ADD CONSTRAINT [FK_Departments_Organizations] 
+        FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrgId]);
+        
+        PRINT 'Departments 外鍵約束建立成功';
+    END
+    ELSE
+    BEGIN
+        PRINT 'Departments 外鍵約束已存在';
+    END
+END
+ELSE
+BEGIN
+    PRINT 'Organizations 表不存在，跳過外鍵約束建立';
+END
+GO

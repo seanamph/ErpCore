@@ -2,6 +2,7 @@ using ErpCore.Application.DTOs.InvoiceSalesB2B;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.InvoiceSalesB2B;
 using ErpCore.Infrastructure.Repositories.InvoiceSalesB2B;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
 namespace ErpCore.Application.Services.InvoiceSalesB2B;

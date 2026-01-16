@@ -1,8 +1,8 @@
 using Dapper;
-using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Domain.Entities.DropdownList;
 using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 
@@ -36,7 +36,7 @@ public class CityRepository : BaseRepository, ICityRepository
         }
     }
 
-    public async Task<PagedResult<City>> QueryAsync(CityQueryDto query)
+    public async Task<PagedResult<City>> QueryAsync(CityQuery query)
     {
         try
         {
@@ -88,8 +88,7 @@ public class CityRepository : BaseRepository, ICityRepository
                 Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
-                PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+                PageSize = query.PageSize
             };
         }
         catch (Exception ex)
@@ -99,7 +98,7 @@ public class CityRepository : BaseRepository, ICityRepository
         }
     }
 
-    public async Task<IEnumerable<CityOptionDto>> GetOptionsAsync(string? countryCode = null, string? status = "1")
+    public async Task<IEnumerable<CityOption>> GetOptionsAsync(string? countryCode = null, string? status = "1")
     {
         try
         {
@@ -124,7 +123,7 @@ public class CityRepository : BaseRepository, ICityRepository
 
             sql += " ORDER BY SeqNo, CityName";
 
-            return await QueryAsync<CityOptionDto>(sql, parameters);
+            return await QueryAsync<CityOption>(sql, parameters);
         }
         catch (Exception ex)
         {

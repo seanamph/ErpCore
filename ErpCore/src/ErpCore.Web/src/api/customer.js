@@ -89,6 +89,13 @@ export const customerQueryApi = {
   // 刪除查詢歷史記錄
   deleteQueryHistory: (historyId) => {
     return axios.delete(`/customers/query-history/${historyId}`)
+  },
+
+  // 匯出Excel (CUS5120)
+  exportToExcel: (data) => {
+    return axios.post('/customers/export', data, {
+      responseType: 'blob'
+    })
   }
 }
 

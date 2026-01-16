@@ -5,6 +5,7 @@ using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
+using TypeCodeEntity = ErpCore.Domain.Entities.StoreFloor.TypeCode;
 
 namespace ErpCore.Infrastructure.Repositories.StoreFloor;
 
@@ -19,7 +20,7 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
     {
     }
 
-    public async Task<TypeCode?> GetByIdAsync(long tKey)
+    public async Task<TypeCodeEntity?> GetByIdAsync(long tKey)
     {
         try
         {
@@ -27,7 +28,7 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
                 SELECT * FROM TypeCodes 
                 WHERE TKey = @TKey";
 
-            return await QueryFirstOrDefaultAsync<TypeCode>(sql, new { TKey = tKey });
+            return await QueryFirstOrDefaultAsync<TypeCodeEntity>(sql, new { TKey = tKey });
         }
         catch (Exception ex)
         {
@@ -36,7 +37,7 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
         }
     }
 
-    public async Task<PagedResult<TypeCode>> QueryAsync(TypeCodeQuery query)
+    public async Task<PagedResult<TypeCodeEntity>> QueryAsync(TypeCodeQuery query)
     {
         try
         {
@@ -80,10 +81,10 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
             parameters.Add("Offset", (query.PageIndex - 1) * query.PageSize);
             parameters.Add("PageSize", query.PageSize);
 
-            var items = await QueryAsync<TypeCode>(sql, parameters);
+            var items = await QueryAsync<TypeCodeEntity>(sql, parameters);
             var totalCount = await GetCountAsync(query);
 
-            return new PagedResult<TypeCode>
+            return new PagedResult<TypeCodeEntity>
             {
                 Items = items.ToList(),
                 TotalCount = totalCount,
@@ -141,7 +142,7 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
         }
     }
 
-    public async Task<TypeCode> CreateAsync(TypeCode typeCode)
+    public async Task<TypeCodeEntity> CreateAsync(TypeCodeEntity typeCode)
     {
         try
         {
@@ -157,7 +158,7 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
                 SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
             var parameters = new DynamicParameters();
-            parameters.Add("TypeCode", typeCode.TypeCode);
+            parameters.Add("TypeCode", typeCode.TypeCodeValue);
             parameters.Add("TypeName", typeCode.TypeName);
             parameters.Add("TypeNameEn", typeCode.TypeNameEn);
             parameters.Add("Category", typeCode.Category);
@@ -176,12 +177,12 @@ public class TypeCodeRepository : BaseRepository, ITypeCodeRepository
         }
         catch (Exception ex)
         {
-            _logger.LogError($"新增類型代碼失敗: {typeCode.TypeCode}", ex);
+            _logger.LogError($"新增類型代碼失敗: {typeCode.TypeCodeValue}", ex);
             throw;
         }
     }
 
-    public async Task<TypeCode> UpdateAsync(TypeCode typeCode)
+    public async Task<TypeCodeEntity> UpdateAsync(TypeCodeEntity typeCode)
     {
         try
         {

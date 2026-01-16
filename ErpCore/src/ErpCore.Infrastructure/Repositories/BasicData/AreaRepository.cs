@@ -210,4 +210,3 @@ public class AreaRepository : BaseRepository, IAreaRepository
         }
     }
 }
-

@@ -44,7 +44,7 @@ public class DepartmentsController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            var result = await _service.GetDepartmentByIdAsync(deptId);
+            var result = await _service.GetDepartmentAsync(deptId);
             return result;
         }, $"查詢部別失敗: {deptId}");
     }
@@ -112,8 +112,7 @@ public class DepartmentsController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
-            await _service.UpdateStatusAsync(deptId, dto);
+            await _service.UpdateStatusAsync(deptId, dto.Status);
         }, $"更新部別狀態失敗: {deptId}");
     }
 }
-

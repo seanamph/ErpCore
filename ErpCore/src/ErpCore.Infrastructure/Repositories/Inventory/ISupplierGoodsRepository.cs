@@ -19,11 +19,6 @@ public interface ISupplierGoodsRepository
     Task<PagedResult<SupplierGoods>> QueryAsync(SupplierGoodsQuery query);
 
     /// <summary>
-    /// 檢查供應商商品是否存在
-    /// </summary>
-    Task<bool> ExistsAsync(string supplierId, string barcodeId, string shopId);
-
-    /// <summary>
     /// 新增供應商商品
     /// </summary>
     Task<SupplierGoods> CreateAsync(SupplierGoods supplierGoods);
@@ -39,9 +34,9 @@ public interface ISupplierGoodsRepository
     Task DeleteAsync(string supplierId, string barcodeId, string shopId);
 
     /// <summary>
-    /// 批次刪除供應商商品
+    /// 檢查是否存在
     /// </summary>
-    Task BatchDeleteAsync(List<SupplierGoodsKey> keys);
+    Task<bool> ExistsAsync(string supplierId, string barcodeId, string shopId);
 }
 
 /// <summary>
@@ -58,14 +53,3 @@ public class SupplierGoodsQuery
     public string? ShopId { get; set; }
     public string? Status { get; set; }
 }
-
-/// <summary>
-/// 供應商商品主鍵
-/// </summary>
-public class SupplierGoodsKey
-{
-    public string SupplierId { get; set; } = string.Empty;
-    public string BarcodeId { get; set; } = string.Empty;
-    public string ShopId { get; set; } = string.Empty;
-}
-

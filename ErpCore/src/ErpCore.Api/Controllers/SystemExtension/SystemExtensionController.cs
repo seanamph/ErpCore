@@ -131,5 +131,25 @@ public class SystemExtensionQueryController : BaseController
             return result;
         }, "查詢系統擴展統計失敗");
     }
+
+    /// <summary>
+    /// 匯出系統擴展資料到 Excel
+    /// </summary>
+    [HttpPost("export")]
+    public async Task<IActionResult> ExportToExcel(
+        [FromBody] SystemExtensionQueryDto query)
+    {
+        try
+        {
+            var excelBytes = await _service.ExportToExcelAsync(query);
+            var fileName = $"系統擴展查詢_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+            return File(excelBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出系統擴展資料失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail("匯出失敗: " + ex.Message));
+        }
+    }
 }
 

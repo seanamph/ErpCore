@@ -5,13 +5,14 @@ namespace ErpCore.Application.DTOs.SystemConfig;
 /// </summary>
 public class ConfigProgramDto
 {
+    public long TKey { get; set; }
     public string ProgramId { get; set; } = string.Empty;
+    public string ProgramName { get; set; } = string.Empty;
+    public int? SeqNo { get; set; }
     public string SystemId { get; set; } = string.Empty;
     public string? SystemName { get; set; }
     public string? SubSystemId { get; set; }
     public string? SubSystemName { get; set; }
-    public string ProgramName { get; set; } = string.Empty;
-    public int? SeqNo { get; set; }
     public string Status { get; set; } = "A";
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
@@ -41,10 +42,10 @@ public class ConfigProgramQueryDto
 public class CreateConfigProgramDto
 {
     public string ProgramId { get; set; } = string.Empty;
-    public string SystemId { get; set; } = string.Empty;
-    public string? SubSystemId { get; set; }
     public string ProgramName { get; set; } = string.Empty;
     public int? SeqNo { get; set; }
+    public string SystemId { get; set; } = string.Empty;
+    public string? SubSystemId { get; set; }
     public string Status { get; set; } = "A";
 }
 
@@ -53,10 +54,10 @@ public class CreateConfigProgramDto
 /// </summary>
 public class UpdateConfigProgramDto
 {
-    public string SystemId { get; set; } = string.Empty;
-    public string? SubSystemId { get; set; }
     public string ProgramName { get; set; } = string.Empty;
     public int? SeqNo { get; set; }
+    public string SystemId { get; set; } = string.Empty;
+    public string? SubSystemId { get; set; }
     public string Status { get; set; } = "A";
 }
 
@@ -67,4 +68,3 @@ public class BatchDeleteConfigProgramDto
 {
     public List<string> ProgramIds { get; set; } = new();
 }
-

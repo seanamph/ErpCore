@@ -30,6 +30,7 @@
           <el-button type="primary" @click="handleSearch">查詢</el-button>
           <el-button @click="handleReset">重置</el-button>
           <el-button type="success" @click="handleCreate">新增</el-button>
+          <el-button type="info" @click="handleCreateFromTransfer">依調撥單號建立</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -59,7 +60,13 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="TotalShortageQty" label="短溢數量" width="120" />
+        <el-table-column prop="TotalShortageQty" label="短溢數量" width="120">
+          <template #default="{ row }">
+            <span :style="{ color: row.TotalShortageQty >= 0 ? '#67C23A' : '#F56C6C' }">
+              {{ row.TotalShortageQty >= 0 ? '+' : '' }}{{ row.TotalShortageQty }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column prop="TotalAmount" label="總金額" width="120">
           <template #default="{ row }">
             {{ formatCurrency(row.TotalAmount) }}
@@ -121,10 +128,11 @@
         </el-row>
         <el-row :gutter="20">
           <el-col :span="12">
-            <el-form-item label="處理類型" prop="ProcessType">
-              <el-select v-model="formData.ProcessType" placeholder="請選擇處理類型" clearable>
-                <el-option label="短少" value="S" />
-                <el-option label="溢收" value="O" />
+            <el-form-item label="處理方式" prop="ProcessType">
+              <el-select v-model="formData.ProcessType" placeholder="請選擇處理方式" clearable>
+                <el-option label="調整庫存" value="ADJUST" />
+                <el-option label="待處理" value="PENDING" />
+                <el-option label="已處理" value="PROCESSED" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -152,10 +160,12 @@
             <template #default="{ row }">
               <el-input-number
                 v-model="row.ShortageQty"
-                :min="0"
                 :precision="2"
                 @change="calculateTotal"
               />
+              <span style="margin-left: 5px; color: #909399; font-size: 12px;">
+                (正數為溢收，負數為短少)
+              </span>
             </template>
           </el-table-column>
           <el-table-column prop="UnitPrice" label="單價" width="120">
@@ -333,6 +343,7 @@ export default {
       isEdit.value = false
       dialogVisible.value = true
       Object.assign(formData, {
+        ShortageId: '',
         TransferId: '',
         ReceiptId: '',
         ShortageDate: new Date(),
@@ -341,6 +352,39 @@ export default {
         Memo: '',
         Details: []
       })
+    }
+
+    // 依調撥單號建立
+    const handleCreateFromTransfer = async () => {
+      try {
+        const { value: transferId } = await ElMessageBox.prompt('請輸入調撥單號', '依調撥單號建立短溢單', {
+          confirmButtonText: '確定',
+          cancelButtonText: '取消',
+          inputPattern: /.+/,
+          inputErrorMessage: '調撥單號不能為空'
+        })
+        
+        if (transferId) {
+          loading.value = true
+          try {
+            const response = await transferShortageApi.createShortageFromTransfer(transferId)
+            if (response.Data) {
+              isEdit.value = false
+              dialogVisible.value = true
+              Object.assign(formData, response.Data)
+              ElMessage.success('已載入調撥單資料，請填寫短溢數量')
+            }
+          } catch (error) {
+            ElMessage.error('載入調撥單資料失敗: ' + (error.message || '未知錯誤'))
+          } finally {
+            loading.value = false
+          }
+        }
+      } catch (error) {
+        if (error !== 'cancel') {
+          ElMessage.error('操作失敗: ' + (error.message || '未知錯誤'))
+        }
+      }
     }
 
     // 查看
@@ -531,6 +575,7 @@ export default {
       handleSearch,
       handleReset,
       handleCreate,
+      handleCreateFromTransfer,
       handleView,
       handleEdit,
       handleApprove,

@@ -40,4 +40,3 @@ export const warehousesApi = {
     return axios.put(`/warehouses/${warehouseId}/status`, data)
   }
 }
-

@@ -3,6 +3,7 @@ using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.Tools;
 using ErpCore.Infrastructure.Repositories.Tools;
 using ErpCore.Infrastructure.Services.FileStorage;
+using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
@@ -171,7 +172,7 @@ public class Html2PdfService : BaseService, IHtml2PdfService
         return document.GeneratePdf();
     }
 
-    private QuestPDF.Infrastructure.PageSize GetPageSize(string pageSize)
+    private QuestPDF.Helpers.PageSize GetPageSize(string pageSize)
     {
         return pageSize.ToUpperInvariant() switch
         {

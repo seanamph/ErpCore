@@ -1,5 +1,5 @@
-using ErpCore.Application.DTOs.DropdownList;
 using ErpCore.Domain.Entities.DropdownList;
+using ErpCore.Infrastructure.Repositories.Queries;
 using ErpCore.Shared.Common;
 
 namespace ErpCore.Infrastructure.Repositories.DropdownList;
@@ -10,7 +10,7 @@ namespace ErpCore.Infrastructure.Repositories.DropdownList;
 public interface ICityRepository
 {
     Task<City?> GetByIdAsync(string cityId);
-    Task<PagedResult<City>> QueryAsync(CityQueryDto query);
-    Task<IEnumerable<CityOptionDto>> GetOptionsAsync(string? countryCode = null, string? status = "1");
+    Task<PagedResult<City>> QueryAsync(CityQuery query);
+    Task<IEnumerable<CityOption>> GetOptionsAsync(string? countryCode = null, string? status = "1");
 }
 

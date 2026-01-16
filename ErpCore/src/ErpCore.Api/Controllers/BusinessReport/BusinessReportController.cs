@@ -35,5 +35,48 @@ public class BusinessReportController : BaseController
             return result;
         }, "查詢業務報表列表失敗");
     }
+
+    /// <summary>
+    /// 匯出業務報表
+    /// </summary>
+    [HttpPost("export")]
+    public async Task<IActionResult> ExportBusinessReports(
+        [FromBody] BusinessReportQueryDto query,
+        [FromQuery] string format = "excel")
+    {
+        try
+        {
+            var fileBytes = await _service.ExportBusinessReportsAsync(query, format);
+            var fileName = $"業務報表查詢_{DateTime.Now:yyyyMMddHHmmss}.{(format.ToLower() == "excel" ? "xlsx" : "pdf")}";
+            var contentType = format.ToLower() == "excel"
+                ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                : "application/pdf";
+            return File(fileBytes, contentType, fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("匯出業務報表失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail($"匯出業務報表失敗: {ex.Message}"));
+        }
+    }
+
+    /// <summary>
+    /// 列印業務報表
+    /// </summary>
+    [HttpPost("print")]
+    public async Task<IActionResult> PrintBusinessReports([FromBody] BusinessReportQueryDto query)
+    {
+        try
+        {
+            var fileBytes = await _service.PrintBusinessReportsAsync(query);
+            var fileName = $"業務報表查詢_{DateTime.Now:yyyyMMddHHmmss}.pdf";
+            return File(fileBytes, "application/pdf", fileName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("列印業務報表失敗", ex);
+            return BadRequest(ApiResponse<object>.Fail($"列印業務報表失敗: {ex.Message}"));
+        }
+    }
 }
 

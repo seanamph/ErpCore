@@ -8,7 +8,7 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Infrastructure.Repositories.Transfer;
 
 /// <summary>
-/// 調撥驗退單 Repository 實作 (SYSW362)
+/// 調撥驗退單 Repository 實作
 /// 使用 Dapper 進行資料庫存取
 /// </summary>
 public class TransferReturnRepository : BaseRepository, ITransferReturnRepository
@@ -321,7 +321,6 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
 
     public async Task<IEnumerable<PendingTransferOrderForReturn>> GetPendingOrdersAsync(PendingTransferOrderForReturnQuery query)
     {
-        // 查詢已驗收但可驗退的調撥單
         var sql = @"
             SELECT 
                 t.TransferId,
@@ -436,7 +435,7 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
     /// <summary>
     /// 更新狀態
     /// </summary>
-    public async Task UpdateStatusAsync(string returnId, string status, global::System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateStatusAsync(string returnId, string status, IDbTransaction? transaction = null)
     {
         try
         {
@@ -492,7 +491,7 @@ public class TransferReturnRepository : BaseRepository, ITransferReturnRepositor
     /// <summary>
     /// 產生驗退單號（內部方法，用於交易中）
     /// </summary>
-    private async Task<string> GenerateReturnIdAsync(global::System.Data.IDbConnection connection, global::System.Data.IDbTransaction transaction)
+    private async Task<string> GenerateReturnIdAsync(IDbConnection connection, IDbTransaction transaction)
     {
         const string sql = @"
             SELECT TOP 1 ReturnId 

@@ -1,7 +1,7 @@
 namespace ErpCore.Domain.Entities.BasicData;
 
 /// <summary>
-/// 區域資料實體 (SYSB450)
+/// 區域基本資料實體 (SYSB450)
 /// </summary>
 public class Area
 {
@@ -60,4 +60,3 @@ public class Area
     /// </summary>
     public string? CreatedGroup { get; set; }
 }
-

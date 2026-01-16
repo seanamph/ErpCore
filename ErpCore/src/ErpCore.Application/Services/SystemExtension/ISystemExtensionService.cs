@@ -42,5 +42,10 @@ public interface ISystemExtensionService
     /// 查詢統計資訊 (SYSX120)
     /// </summary>
     Task<SystemExtensionStatisticsDto> GetStatisticsAsync(SystemExtensionStatisticsQueryDto query);
+
+    /// <summary>
+    /// 匯出系統擴展資料到 Excel (SYSX120)
+    /// </summary>
+    Task<byte[]> ExportToExcelAsync(SystemExtensionQueryDto query);
 }
 

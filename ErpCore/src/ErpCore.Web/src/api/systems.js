@@ -73,3 +73,47 @@ export function getSystemTypes() {
     method: 'get'
   })
 }
+
+/**
+ * 查詢系統作業與功能列表 (SYS0810)
+ */
+export function getSystemProgramButtons(systemId) {
+  return request({
+    url: `/api/v1/systems/${systemId}/programs-and-buttons`,
+    method: 'get'
+  })
+}
+
+/**
+ * 匯出系統作業與功能列表報表 (SYS0810)
+ */
+export function exportSystemProgramButtons(systemId, exportFormat = 'Excel') {
+  return request({
+    url: `/api/v1/systems/${systemId}/programs-and-buttons/export`,
+    method: 'post',
+    params: { exportFormat },
+    responseType: 'blob'
+  })
+}
+
+/**
+ * 查詢系統作業與功能列表（出庫用）(SYS0999)
+ */
+export function getSystemProgramButtonsForExport(systemId) {
+  return request({
+    url: `/api/v1/systems/${systemId}/programs-and-buttons/export-query`,
+    method: 'get'
+  })
+}
+
+/**
+ * 匯出系統作業與功能列表報表（出庫用）(SYS0999)
+ */
+export function exportSystemProgramButtonsReport(systemId, exportFormat = 'Excel') {
+  return request({
+    url: `/api/v1/systems/${systemId}/programs-and-buttons/export-report`,
+    method: 'post',
+    params: { exportFormat },
+    responseType: 'blob'
+  })
+}

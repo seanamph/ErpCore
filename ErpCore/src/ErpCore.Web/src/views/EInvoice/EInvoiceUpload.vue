@@ -33,14 +33,6 @@
           </el-upload>
         </el-form-item>
 
-        <el-form-item label="上傳類型">
-          <el-select v-model="uploadForm.UploadType" placeholder="請選擇上傳類型" style="width: 200px">
-            <el-option label="ECA2050" value="ECA2050" />
-            <el-option label="ECA3010" value="ECA3010" />
-            <el-option label="ECA3030" value="ECA3030" />
-          </el-select>
-        </el-form-item>
-
         <el-form-item label="店別">
           <el-select
             v-model="uploadForm.StoreId"
@@ -122,16 +114,18 @@
         <el-table-column prop="TotalRecords" label="總筆數" width="100" />
         <el-table-column prop="SuccessRecords" label="成功筆數" width="100" />
         <el-table-column prop="FailedRecords" label="失敗筆數" width="100" />
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" width="250" fixed="right">
           <template #default="{ row }">
             <el-button type="primary" size="small" @click="handleView(row)">
               查看
+            </el-button>
+            <el-button type="success" size="small" @click="handleDownload(row)">
+              下載
             </el-button>
             <el-button
               type="danger"
               size="small"
               @click="handleDelete(row)"
-              :disabled="row.Status === 'PROCESSING' || row.Status === 'COMPLETED'"
             >
               刪除
             </el-button>
@@ -178,9 +172,9 @@ export default {
     const retailerList = ref([])
 
     const uploadForm = reactive({
-      UploadType: 'ECA3030',
       StoreId: '',
-      RetailerId: ''
+      RetailerId: '',
+      Description: ''
     })
 
     const pagination = reactive({
@@ -189,7 +183,7 @@ export default {
       TotalCount: 0
     })
 
-    const uploadUrl = ref('/api/v1/einvoices/upload')
+    const uploadUrl = ref('/api/v1/einvoices/eca3030/upload')
     const uploadHeaders = ref({
       Authorization: `Bearer ${localStorage.getItem('token') || ''}`
     })
@@ -257,8 +251,7 @@ export default {
       // 準備上傳資料
       uploadData.value = {
         StoreId: uploadForm.StoreId || undefined,
-        RetailerId: uploadForm.RetailerId || undefined,
-        UploadType: uploadForm.UploadType || 'ECA3030'
+        RetailerId: uploadForm.RetailerId || undefined
       }
 
       // 觸發上傳
@@ -267,9 +260,9 @@ export default {
 
     // 重置
     const handleReset = () => {
-      uploadForm.UploadType = 'ECA3030'
       uploadForm.StoreId = ''
       uploadForm.RetailerId = ''
+      uploadForm.Description = ''
       fileList.value = []
       uploadRef.value?.clearFiles()
       uploadProgress.value = 0
@@ -283,12 +276,11 @@ export default {
         const query = {
           PageIndex: pagination.PageIndex,
           PageSize: pagination.PageSize,
-          UploadType: 'ECA3030',
           SortField: 'UploadDate',
           SortOrder: 'DESC'
         }
 
-        const response = await einvoiceApi.getUploads(query)
+        const response = await einvoiceApi.getUploadsECA3030(query)
         if (response.data.Success) {
           uploadList.value = response.data.Data.Items
           pagination.TotalCount = response.data.Data.TotalCount
@@ -305,7 +297,7 @@ export default {
     // 查看詳情
     const handleView = async (row) => {
       try {
-        const response = await einvoiceApi.getUpload(row.UploadId)
+        const response = await einvoiceApi.getUploadECA3030(row.UploadId)
         if (response.data.Success) {
           ElMessageBox.alert(
             JSON.stringify(response.data.Data, null, 2),
@@ -320,6 +312,25 @@ export default {
       }
     }
 
+    // 下載
+    const handleDownload = async (row) => {
+      try {
+        const response = await einvoiceApi.downloadUploadECA3030(row.UploadId)
+        // 處理檔案下載
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', row.FileName)
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(url)
+        ElMessage.success('下載成功')
+      } catch (error) {
+        ElMessage.error('下載失敗：' + (error.message || '未知錯誤'))
+      }
+    }
+
     // 刪除
     const handleDelete = async (row) => {
       try {
@@ -327,7 +338,7 @@ export default {
           type: 'warning'
         })
 
-        const response = await einvoiceApi.deleteUpload(row.UploadId)
+        const response = await einvoiceApi.deleteUploadECA3030(row.UploadId)
         if (response.data.Success) {
           ElMessage.success('刪除成功')
           handleQuery()
@@ -421,6 +432,7 @@ export default {
       handleReset,
       handleQuery,
       handleView,
+      handleDownload,
       handleDelete,
       handleSizeChange,
       handlePageChange,

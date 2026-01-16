@@ -75,21 +75,4 @@ public interface ISalesOrderDetailRepository
     Task<int> DeleteByOrderIdAsync(string orderId);
 }
 
-/// <summary>
-/// 銷售單查詢參數
-/// </summary>
-public class SalesOrderQuery
-{
-    public int PageIndex { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-    public string? SortField { get; set; }
-    public string? SortOrder { get; set; }
-    public string? OrderId { get; set; }
-    public string? OrderType { get; set; }
-    public string? ShopId { get; set; }
-    public string? CustomerId { get; set; }
-    public string? Status { get; set; }
-    public DateTime? OrderDateFrom { get; set; }
-    public DateTime? OrderDateTo { get; set; }
-}
 

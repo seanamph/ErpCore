@@ -81,175 +81,166 @@
       width="900px"
       @close="handleDialogClose"
     >
-      <el-tabs v-model="activeTab">
-        <!-- 基本資料 -->
-        <el-tab-pane label="基本資料" name="basic">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="140px">
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="識別類型" prop="GuiType">
-                  <el-radio-group v-model="form.GuiType">
-                    <el-radio label="1">統一編號</el-radio>
-                    <el-radio label="2">身份證字號</el-radio>
-                    <el-radio label="3">自編編號</el-radio>
-                  </el-radio-group>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item :label="getGuiIdLabel()" prop="GuiId">
-                  <el-input
-                    v-model="form.GuiId"
-                    :placeholder="getGuiIdPlaceholder()"
-                    @blur="handleCheckGuiId"
-                    :disabled="isEdit"
-                  />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="廠商名稱(中文)" prop="VendorName">
-                  <el-input v-model="form.VendorName" placeholder="請輸入廠商名稱" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="廠商名稱(英文)" prop="VendorNameE">
-                  <el-input v-model="form.VendorNameE" placeholder="請輸入英文名稱" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="廠商簡稱" prop="VendorNameS">
-              <el-input v-model="form.VendorNameS" placeholder="請輸入廠商簡稱" />
+      <el-form :model="form" :rules="rules" ref="formRef" label-width="140px">
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="識別類型" prop="GuiType">
+              <el-radio-group v-model="form.GuiType">
+                <el-radio label="1">統一編號</el-radio>
+                <el-radio label="2">身份證字號</el-radio>
+                <el-radio label="3">自編編號</el-radio>
+              </el-radio-group>
             </el-form-item>
-            <el-form-item label="郵電費負擔" prop="Mcode">
-              <el-input v-model="form.Mcode" placeholder="請輸入郵電費負擔" />
+          </el-col>
+          <el-col :span="12">
+            <el-form-item :label="getGuiIdLabel()" prop="GuiId">
+              <el-input 
+                v-model="form.GuiId" 
+                :placeholder="getGuiIdPlaceholder()"
+                :disabled="isEdit"
+                @blur="handleCheckGuiId"
+              />
             </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="廠商名稱(中文)" prop="VendorName">
+              <el-input v-model="form.VendorName" placeholder="請輸入廠商名稱" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="廠商名稱(英文)" prop="VendorNameE">
+              <el-input v-model="form.VendorNameE" placeholder="請輸入英文名稱" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="廠商簡稱" prop="VendorNameS">
+          <el-input v-model="form.VendorNameS" placeholder="請輸入廠商簡稱" />
+        </el-form-item>
+        <el-form-item label="郵電費負擔" prop="Mcode">
+          <el-input v-model="form.Mcode" placeholder="請輸入郵電費負擔" />
+        </el-form-item>
+        <el-form-item label="公司登記地址" prop="VendorRegAddr">
+          <el-input v-model="form.VendorRegAddr" placeholder="請輸入公司登記地址" />
+        </el-form-item>
+        <el-form-item label="發票地址" prop="TaxAddr">
+          <el-input v-model="form.TaxAddr" placeholder="請輸入發票地址" />
+        </el-form-item>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="公司登記電話" prop="VendorRegTel">
+              <el-input v-model="form.VendorRegTel" placeholder="請輸入電話" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="公司傳真" prop="VendorFax">
+              <el-input v-model="form.VendorFax" placeholder="請輸入傳真" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="公司電子郵件" prop="VendorEmail">
+              <el-input v-model="form.VendorEmail" placeholder="請輸入電子郵件" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="發票電子郵件" prop="InvEmail">
+              <el-input v-model="form.InvEmail" placeholder="請輸入發票電子郵件" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-divider>聯絡人資訊</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="聯絡人" prop="ChargeStaff">
+              <el-input v-model="form.ChargeStaff" placeholder="請輸入聯絡人" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="聯絡人職稱" prop="ChargeTitle">
+              <el-input v-model="form.ChargeTitle" placeholder="請輸入職稱" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="聯絡人身份證字號" prop="ChargePid">
+              <el-input v-model="form.ChargePid" placeholder="請輸入身份證字號" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="聯絡人電話" prop="ChargeTel">
+              <el-input v-model="form.ChargeTel" placeholder="請輸入電話" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-form-item label="聯絡人聯絡地址" prop="ChargeAddr">
+          <el-input v-model="form.ChargeAddr" placeholder="請輸入聯絡地址" />
+        </el-form-item>
+        <el-form-item label="聯絡人電子郵件" prop="ChargeEmail">
+          <el-input v-model="form.ChargeEmail" placeholder="請輸入電子郵件" />
+        </el-form-item>
+        <el-divider>付款資訊</el-divider>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="付款方式" prop="PayType">
+              <el-input v-model="form.PayType" placeholder="請輸入付款方式" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="匯款銀行代碼" prop="SuplBankId">
+              <el-input v-model="form.SuplBankId" placeholder="請輸入銀行代碼" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="匯款銀行帳號" prop="SuplBankAcct">
+              <el-input v-model="form.SuplBankAcct" placeholder="請輸入銀行帳號" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="帳戶名稱" prop="SuplAcctName">
+              <el-input v-model="form.SuplAcctName" placeholder="請輸入帳戶名稱" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
+            <el-form-item label="票據別" prop="TicketBe">
+              <el-input v-model="form.TicketBe" placeholder="請輸入票據別" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="支票抬頭" prop="CheckTitle">
+              <el-input v-model="form.CheckTitle" placeholder="請輸入支票抬頭" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="12">
             <el-form-item label="狀態" prop="Status">
               <el-select v-model="form.Status" placeholder="請選擇狀態" style="width: 100%">
                 <el-option label="啟用" value="A" />
                 <el-option label="停用" value="I" />
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="系統別" prop="SysId">
               <el-input v-model="form.SysId" placeholder="請輸入系統別" />
             </el-form-item>
-            <el-form-item label="組織代碼" prop="OrgId">
-              <el-input v-model="form.OrgId" placeholder="請輸入組織代碼" />
-            </el-form-item>
-            <el-form-item label="備註" prop="Notes">
-              <el-input v-model="form.Notes" type="textarea" :rows="3" placeholder="請輸入備註" />
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
-
-        <!-- 公司資料 -->
-        <el-tab-pane label="公司資料" name="company">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="140px">
-            <el-form-item label="公司登記地址" prop="VendorRegAddr">
-              <el-input v-model="form.VendorRegAddr" type="textarea" :rows="2" placeholder="請輸入公司登記地址" />
-            </el-form-item>
-            <el-form-item label="發票地址" prop="TaxAddr">
-              <el-input v-model="form.TaxAddr" type="textarea" :rows="2" placeholder="請輸入發票地址" />
-            </el-form-item>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="公司登記電話" prop="VendorRegTel">
-                  <el-input v-model="form.VendorRegTel" placeholder="請輸入公司登記電話" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="公司傳真" prop="VendorFax">
-                  <el-input v-model="form.VendorFax" placeholder="請輸入公司傳真" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="公司電子郵件" prop="VendorEmail">
-                  <el-input v-model="form.VendorEmail" placeholder="請輸入公司電子郵件" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="發票電子郵件" prop="InvEmail">
-                  <el-input v-model="form.InvEmail" placeholder="請輸入發票電子郵件" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-tab-pane>
-
-        <!-- 聯絡人資料 -->
-        <el-tab-pane label="聯絡人資料" name="contact">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="140px">
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="聯絡人" prop="ChargeStaff">
-                  <el-input v-model="form.ChargeStaff" placeholder="請輸入聯絡人" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="聯絡人職稱" prop="ChargeTitle">
-                  <el-input v-model="form.ChargeTitle" placeholder="請輸入聯絡人職稱" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="聯絡人身份證字號" prop="ChargePid">
-              <el-input v-model="form.ChargePid" placeholder="請輸入聯絡人身份證字號" />
-            </el-form-item>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="聯絡人電話" prop="ChargeTel">
-                  <el-input v-model="form.ChargeTel" placeholder="請輸入聯絡人電話" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="聯絡人電子郵件" prop="ChargeEmail">
-                  <el-input v-model="form.ChargeEmail" placeholder="請輸入聯絡人電子郵件" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="聯絡人聯絡地址" prop="ChargeAddr">
-              <el-input v-model="form.ChargeAddr" type="textarea" :rows="2" placeholder="請輸入聯絡人聯絡地址" />
-            </el-form-item>
-          </el-form>
-        </el-tab-pane>
-
-        <!-- 付款資料 -->
-        <el-tab-pane label="付款資料" name="payment">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="140px">
-            <el-form-item label="付款方式" prop="PayType">
-              <el-input v-model="form.PayType" placeholder="請輸入付款方式" />
-            </el-form-item>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="匯款銀行代碼" prop="SuplBankId">
-                  <el-input v-model="form.SuplBankId" placeholder="請輸入匯款銀行代碼" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="匯款銀行帳號" prop="SuplBankAcct">
-                  <el-input v-model="form.SuplBankAcct" placeholder="請輸入匯款銀行帳號" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-form-item label="帳戶名稱" prop="SuplAcctName">
-              <el-input v-model="form.SuplAcctName" placeholder="請輸入帳戶名稱" />
-            </el-form-item>
-            <el-row :gutter="20">
-              <el-col :span="12">
-                <el-form-item label="票據別" prop="TicketBe">
-                  <el-input v-model="form.TicketBe" placeholder="請輸入票據別" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="支票抬頭" prop="CheckTitle">
-                  <el-input v-model="form.CheckTitle" placeholder="請輸入支票抬頭" />
-                </el-form-item>
-              </el-col>
-            </el-row>
-          </el-form>
-        </el-tab-pane>
-      </el-tabs>
+          </el-col>
+        </el-row>
+        <el-form-item label="組織代碼" prop="OrgId">
+          <el-input v-model="form.OrgId" placeholder="請輸入組織代碼" />
+        </el-form-item>
+        <el-form-item label="備註" prop="Notes">
+          <el-input v-model="form.Notes" type="textarea" :rows="3" placeholder="請輸入備註" />
+        </el-form-item>
+      </el-form>
       <template #footer>
         <el-button @click="handleDialogClose">取消</el-button>
         <el-button type="primary" @click="handleSubmit">確定</el-button>
@@ -287,7 +278,6 @@ const dialogVisible = ref(false)
 const dialogTitle = ref('新增廠商')
 const isEdit = ref(false)
 const formRef = ref(null)
-const activeTab = ref('basic')
 
 // 表單資料
 const form = reactive({
@@ -324,6 +314,7 @@ const form = reactive({
 
 // 表單驗證規則
 const rules = {
+  GuiType: [{ required: true, message: '請選擇識別類型', trigger: 'change' }],
   GuiId: [{ required: true, message: '請輸入統一編號/身份證字號/自編編號', trigger: 'blur' }],
   VendorName: [{ required: true, message: '請輸入廠商名稱', trigger: 'blur' }],
   Status: [{ required: true, message: '請選擇狀態', trigger: 'change' }]
@@ -331,30 +322,35 @@ const rules = {
 
 // 取得識別類型標籤
 const getGuiIdLabel = () => {
-  if (form.GuiType === '1') return '統一編號'
-  if (form.GuiType === '2') return '身份證字號'
-  if (form.GuiType === '3') return '自編編號'
-  return '識別編號'
+  const labelMap = {
+    '1': '統一編號',
+    '2': '身份證字號',
+    '3': '自編編號'
+  }
+  return labelMap[form.GuiType] || '統一編號'
 }
 
-// 取得識別類型佔位符
+// 取得識別類型提示
 const getGuiIdPlaceholder = () => {
-  if (form.GuiType === '1') return '請輸入統一編號'
-  if (form.GuiType === '2') return '請輸入身份證字號'
-  if (form.GuiType === '3') return '請輸入自編編號'
-  return '請輸入識別編號'
+  const placeholderMap = {
+    '1': '請輸入統一編號（8碼數字）',
+    '2': '請輸入身份證字號',
+    '3': '請輸入自編編號'
+  }
+  return placeholderMap[form.GuiType] || '請輸入統一編號'
 }
 
 // 檢查統一編號
 const handleCheckGuiId = async () => {
   if (!form.GuiId || isEdit.value) return
+  
   try {
     const response = await vendorsApi.checkGuiId(form.GuiId)
     if (response.data.success && response.data.data.exists) {
-      ElMessage.warning('統一編號已存在')
+      ElMessage.warning(`統一編號 ${form.GuiId} 已存在，廠商編號：${response.data.data.vendorId}`)
     }
   } catch (error) {
-    // 忽略檢查錯誤
+    // 忽略錯誤，可能是網路問題
   }
 }
 
@@ -399,7 +395,6 @@ const handleCreate = () => {
   isEdit.value = false
   dialogTitle.value = '新增廠商'
   resetForm()
-  activeTab.value = 'basic'
   dialogVisible.value = true
 }
 
@@ -417,7 +412,6 @@ const handleEdit = async (row) => {
   } catch (error) {
     ElMessage.error('查詢失敗：' + error.message)
   }
-  activeTab.value = 'basic'
   dialogVisible.value = true
 }
 
@@ -449,15 +443,37 @@ const handleSubmit = async () => {
       try {
         let response
         if (isEdit.value) {
-          const updateData = { ...form }
-          delete updateData.VendorId
-          delete updateData.GuiId
-          delete updateData.GuiType
+          const updateData = {
+            VendorName: form.VendorName,
+            VendorNameE: form.VendorNameE,
+            VendorNameS: form.VendorNameS,
+            Mcode: form.Mcode,
+            VendorRegAddr: form.VendorRegAddr,
+            TaxAddr: form.TaxAddr,
+            VendorRegTel: form.VendorRegTel,
+            VendorFax: form.VendorFax,
+            VendorEmail: form.VendorEmail,
+            InvEmail: form.InvEmail,
+            ChargeStaff: form.ChargeStaff,
+            ChargeTitle: form.ChargeTitle,
+            ChargePid: form.ChargePid,
+            ChargeTel: form.ChargeTel,
+            ChargeAddr: form.ChargeAddr,
+            ChargeEmail: form.ChargeEmail,
+            Status: form.Status,
+            SysId: form.SysId,
+            PayType: form.PayType,
+            SuplBankId: form.SuplBankId,
+            SuplBankAcct: form.SuplBankAcct,
+            SuplAcctName: form.SuplAcctName,
+            TicketBe: form.TicketBe,
+            CheckTitle: form.CheckTitle,
+            OrgId: form.OrgId,
+            Notes: form.Notes
+          }
           response = await vendorsApi.updateVendor(form.VendorId, updateData)
         } else {
-          const createData = { ...form }
-          delete createData.VendorId
-          response = await vendorsApi.createVendor(createData)
+          response = await vendorsApi.createVendor(form)
         }
         if (response.data.success) {
           ElMessage.success(isEdit.value ? '修改成功' : '新增成功')
@@ -566,4 +582,3 @@ onMounted(() => {
   }
 }
 </style>
-

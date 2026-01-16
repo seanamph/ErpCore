@@ -30,6 +30,8 @@ public class PurchaseOrderController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
+            // 自動過濾 SYSW315 的資料
+            query.SourceProgram = "SYSW315";
             var result = await _service.GetPurchaseOrdersAsync(query);
             return result;
         }, "查詢採購單列表失敗");
@@ -44,6 +46,11 @@ public class PurchaseOrderController : BaseController
         return await ExecuteAsync(async () =>
         {
             var result = await _service.GetPurchaseOrderByIdAsync(orderId);
+            // 驗證是否為 SYSW315 的資料
+            if (result != null && result.SourceProgram != "SYSW315")
+            {
+                throw new InvalidOperationException($"採購單 {orderId} 不屬於 SYSW315 功能");
+            }
             return result;
         }, $"查詢採購單失敗: {orderId}");
     }
@@ -57,6 +64,8 @@ public class PurchaseOrderController : BaseController
     {
         return await ExecuteAsync(async () =>
         {
+            // 自動設定來源程式為 SYSW315
+            dto.SourceProgram = "SYSW315";
             var orderId = await _service.CreatePurchaseOrderAsync(dto);
             return orderId;
         }, "新增採購單失敗");
@@ -122,6 +131,18 @@ public class PurchaseOrderController : BaseController
         {
             await _service.CancelPurchaseOrderAsync(orderId);
         }, $"取消採購單失敗: {orderId}");
+    }
+
+    /// <summary>
+    /// 結案採購單
+    /// </summary>
+    [HttpPut("{orderId}/close")]
+    public async Task<ActionResult<ApiResponse<object>>> ClosePurchaseOrder(string orderId)
+    {
+        return await ExecuteAsync(async () =>
+        {
+            await _service.ClosePurchaseOrderAsync(orderId);
+        }, $"結案採購單失敗: {orderId}");
     }
 }
 

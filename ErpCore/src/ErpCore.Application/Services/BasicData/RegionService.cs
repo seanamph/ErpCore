@@ -1,7 +1,6 @@
 using ErpCore.Application.DTOs.BasicData;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.BasicData;
-using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -14,16 +13,13 @@ namespace ErpCore.Application.Services.BasicData;
 public class RegionService : BaseService, IRegionService
 {
     private readonly IRegionRepository _repository;
-    private readonly IDbConnectionFactory _connectionFactory;
 
     public RegionService(
         IRegionRepository repository,
-        IDbConnectionFactory connectionFactory,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
-        _connectionFactory = connectionFactory;
     }
 
     public async Task<PagedResult<RegionDto>> GetRegionsAsync(RegionQueryDto query)
@@ -68,7 +64,7 @@ public class RegionService : BaseService, IRegionService
         }
     }
 
-    public async Task<RegionDto> GetRegionByIdAsync(string regionId)
+    public async Task<RegionDto> GetRegionAsync(string regionId)
     {
         try
         {
@@ -118,7 +114,9 @@ public class RegionService : BaseService, IRegionService
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
-                UpdatedAt = DateTime.Now
+                UpdatedAt = DateTime.Now,
+                CreatedPriority = null,
+                CreatedGroup = GetCurrentOrgId()
             };
 
             await _repository.CreateAsync(entity);
@@ -206,4 +204,3 @@ public class RegionService : BaseService, IRegionService
         }
     }
 }
-

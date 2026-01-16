@@ -1,6 +1,6 @@
 using ErpCore.Application.DTOs.Contract;
 using ErpCore.Application.Services.Base;
-using ErpCore.Domain.Entities.Contract;
+using ContractEntity = ErpCore.Domain.Entities.Contract.Contract;
 using ErpCore.Infrastructure.Repositories.Contract;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -300,7 +300,7 @@ public class ContractService : BaseService, IContractService
         }
     }
 
-    private ContractDto MapToDto(Contract contract)
+    private ContractDto MapToDto(ContractEntity contract)
     {
         return new ContractDto
         {

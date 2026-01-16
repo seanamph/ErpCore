@@ -16,9 +16,9 @@ public interface IStocktakingPlanRepository
     Task<string> CreateAsync(StocktakingPlan entity, List<StocktakingPlanShop> shops);
     Task UpdateAsync(StocktakingPlan entity, List<StocktakingPlanShop> shops);
     Task DeleteAsync(string planId);
-    Task UpdateStatusAsync(string planId, string status, System.Data.IDbTransaction? transaction = null);
+    Task UpdateStatusAsync(string planId, string status, global::System.Data.IDbTransaction? transaction = null);
     Task<string> GeneratePlanIdAsync();
-    Task BulkInsertTempAsync(List<StocktakingTemp> tempList, System.Data.IDbTransaction? transaction = null);
+    Task BulkInsertTempAsync(List<StocktakingTemp> tempList, global::System.Data.IDbTransaction? transaction = null);
     Task<IEnumerable<StocktakingDetail>> CalculateDiffAsync(string planId, string shopId);
 }
 

@@ -1,6 +1,8 @@
 using Dapper;
 using ErpCore.Domain.Entities.Tools;
+using ErpCore.Infrastructure.Data;
 using ErpCore.Infrastructure.Repositories;
+using ErpCore.Shared.Logging;
 
 namespace ErpCore.Infrastructure.Repositories.Tools;
 

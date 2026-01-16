@@ -1,3 +1,4 @@
+using ErpCore.Domain.Entities.AnalysisReport;
 using ErpCore.Shared.Common;
 
 namespace ErpCore.Infrastructure.Repositories.AnalysisReport;

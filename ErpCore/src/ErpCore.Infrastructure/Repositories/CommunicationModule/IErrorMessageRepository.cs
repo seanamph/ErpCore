@@ -6,7 +6,7 @@ namespace ErpCore.Infrastructure.Repositories.CommunicationModule;
 /// <summary>
 /// 錯誤訊息 Repository 接口
 /// </summary>
-public interface IErrorMessageRepository : IBaseRepository
+public interface IErrorMessageRepository
 {
     /// <summary>
     /// 根據主鍵查詢錯誤訊息

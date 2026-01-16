@@ -48,4 +48,3 @@ public interface IVendorService
     /// </summary>
     Task<string> GenerateVendorIdAsync(string guiId);
 }
-

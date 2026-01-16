@@ -18,101 +18,71 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
     {
     }
 
+    public async Task<BusinessReportPrint?> GetByIdAsync(long tKey)
+    {
+        try
+        {
+            const string sql = @"
+                SELECT * FROM BusinessReportPrint 
+                WHERE TKey = @TKey";
+
+            return await QueryFirstOrDefaultAsync<BusinessReportPrint>(sql, new { TKey = tKey });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"查詢業務報表列印失敗: {tKey}", ex);
+            throw;
+        }
+    }
+
     public async Task<PagedResult<BusinessReportPrint>> QueryAsync(BusinessReportPrintQuery query)
     {
         try
         {
             var sql = @"
-                SELECT 
-                    brp.TKey,
-                    brp.GiveYear,
-                    brp.SiteId,
-                    s.SiteName,
-                    brp.OrgId,
-                    o.OrgName,
-                    brp.EmpId,
-                    brp.EmpName,
-                    brp.Qty,
-                    brp.Status,
-                    brp.Verifier,
-                    u.UserName AS VerifierName,
-                    brp.VerifyDate,
-                    brp.Notes,
-                    brp.CreatedBy,
-                    brp.CreatedAt,
-                    brp.UpdatedBy,
-                    brp.UpdatedAt,
-                    brp.CreatedPriority,
-                    brp.CreatedGroup
-                FROM BusinessReportPrint brp
-                LEFT JOIN Sites s ON brp.SiteId = s.SiteId
-                LEFT JOIN Organizations o ON brp.OrgId = o.OrgId
-                LEFT JOIN Users u ON brp.Verifier = u.UserId
+                SELECT * FROM BusinessReportPrint
                 WHERE 1=1";
 
             var parameters = new DynamicParameters();
 
             if (query.GiveYear.HasValue)
             {
-                sql += " AND brp.GiveYear = @GiveYear";
+                sql += " AND GiveYear = @GiveYear";
                 parameters.Add("GiveYear", query.GiveYear.Value);
             }
 
             if (!string.IsNullOrEmpty(query.SiteId))
             {
-                sql += " AND brp.SiteId = @SiteId";
+                sql += " AND SiteId = @SiteId";
                 parameters.Add("SiteId", query.SiteId);
             }
 
             if (!string.IsNullOrEmpty(query.OrgId))
             {
-                sql += " AND brp.OrgId = @OrgId";
+                sql += " AND OrgId = @OrgId";
                 parameters.Add("OrgId", query.OrgId);
             }
 
             if (!string.IsNullOrEmpty(query.EmpId))
             {
-                sql += " AND brp.EmpId LIKE @EmpId";
+                sql += " AND EmpId LIKE @EmpId";
                 parameters.Add("EmpId", $"%{query.EmpId}%");
             }
 
             if (!string.IsNullOrEmpty(query.Status))
             {
-                sql += " AND brp.Status = @Status";
+                sql += " AND Status = @Status";
                 parameters.Add("Status", query.Status);
             }
 
             // 計算總筆數
-            var countSql = @"
-                SELECT COUNT(*) 
-                FROM BusinessReportPrint brp
-                WHERE 1=1";
-            if (query.GiveYear.HasValue)
-            {
-                countSql += " AND brp.GiveYear = @GiveYear";
-            }
-            if (!string.IsNullOrEmpty(query.SiteId))
-            {
-                countSql += " AND brp.SiteId = @SiteId";
-            }
-            if (!string.IsNullOrEmpty(query.OrgId))
-            {
-                countSql += " AND brp.OrgId = @OrgId";
-            }
-            if (!string.IsNullOrEmpty(query.EmpId))
-            {
-                countSql += " AND brp.EmpId LIKE @EmpId";
-            }
-            if (!string.IsNullOrEmpty(query.Status))
-            {
-                countSql += " AND brp.Status = @Status";
-            }
+            var countSql = sql.Replace("SELECT *", "SELECT COUNT(*)");
             var totalCount = await ExecuteScalarAsync<int>(countSql, parameters);
 
             // 排序
             var sortField = string.IsNullOrEmpty(query.SortField) ? "TKey" : query.SortField;
             var sortOrder = string.IsNullOrEmpty(query.SortOrder) || query.SortOrder.ToUpper() == "ASC" ? "ASC" : "DESC";
-            sql += $" ORDER BY brp.{sortField} {sortOrder}";
+            sql += $" ORDER BY {sortField} {sortOrder}";
 
             // 分頁
             var offset = (query.PageIndex - 1) * query.PageSize;
@@ -137,60 +107,21 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<BusinessReportPrint?> GetByIdAsync(long tKey)
-    {
-        try
-        {
-            const string sql = @"
-                SELECT 
-                    brp.TKey,
-                    brp.GiveYear,
-                    brp.SiteId,
-                    s.SiteName,
-                    brp.OrgId,
-                    o.OrgName,
-                    brp.EmpId,
-                    brp.EmpName,
-                    brp.Qty,
-                    brp.Status,
-                    brp.Verifier,
-                    u.UserName AS VerifierName,
-                    brp.VerifyDate,
-                    brp.Notes,
-                    brp.CreatedBy,
-                    brp.CreatedAt,
-                    brp.UpdatedBy,
-                    brp.UpdatedAt,
-                    brp.CreatedPriority,
-                    brp.CreatedGroup
-                FROM BusinessReportPrint brp
-                LEFT JOIN Sites s ON brp.SiteId = s.SiteId
-                LEFT JOIN Organizations o ON brp.OrgId = o.OrgId
-                LEFT JOIN Users u ON brp.Verifier = u.UserId
-                WHERE brp.TKey = @TKey";
-
-            return await QueryFirstOrDefaultAsync<BusinessReportPrint>(sql, new { TKey = tKey });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"查詢業務報表列印失敗: {tKey}", ex);
-            throw;
-        }
-    }
-
-    public async Task<long> CreateAsync(BusinessReportPrint entity)
+    public async Task<BusinessReportPrint> CreateAsync(BusinessReportPrint entity)
     {
         try
         {
             const string sql = @"
                 INSERT INTO BusinessReportPrint 
-                (GiveYear, SiteId, OrgId, EmpId, EmpName, Qty, Status, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup)
+                (GiveYear, SiteId, OrgId, EmpId, EmpName, Qty, Status, Verifier, VerifyDate, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup)
                 VALUES 
-                (@GiveYear, @SiteId, @OrgId, @EmpId, @EmpName, @Qty, @Status, @Notes, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup);
+                (@GiveYear, @SiteId, @OrgId, @EmpId, @EmpName, @Qty, @Status, @Verifier, @VerifyDate, @Notes, @CreatedBy, @CreatedAt, @UpdatedBy, @UpdatedAt, @CreatedPriority, @CreatedGroup);
                 SELECT CAST(SCOPE_IDENTITY() AS BIGINT);";
 
             var tKey = await ExecuteScalarAsync<long>(sql, entity);
-            return tKey;
+            entity.TKey = tKey;
+
+            return entity;
         }
         catch (Exception ex)
         {
@@ -199,13 +130,16 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<bool> UpdateAsync(BusinessReportPrint entity)
+    public async Task<BusinessReportPrint> UpdateAsync(BusinessReportPrint entity)
     {
         try
         {
             const string sql = @"
                 UPDATE BusinessReportPrint SET
+                    GiveYear = @GiveYear,
+                    SiteId = @SiteId,
                     OrgId = @OrgId,
+                    EmpId = @EmpId,
                     EmpName = @EmpName,
                     Qty = @Qty,
                     Status = @Status,
@@ -216,8 +150,8 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
                     UpdatedAt = @UpdatedAt
                 WHERE TKey = @TKey";
 
-            var affectedRows = await ExecuteAsync(sql, entity);
-            return affectedRows > 0;
+            await ExecuteAsync(sql, entity);
+            return entity;
         }
         catch (Exception ex)
         {
@@ -226,13 +160,12 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<bool> DeleteAsync(long tKey)
+    public async Task DeleteAsync(long tKey)
     {
         try
         {
             const string sql = "DELETE FROM BusinessReportPrint WHERE TKey = @TKey";
-            var affectedRows = await ExecuteAsync(sql, new { TKey = tKey });
-            return affectedRows > 0;
+            await ExecuteAsync(sql, new { TKey = tKey });
         }
         catch (Exception ex)
         {
@@ -241,7 +174,25 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<int> BatchAuditAsync(List<long> tKeys, string status, string? verifier, DateTime verifyDate, string? notes)
+    public async Task<int> BatchDeleteAsync(List<long> tKeys)
+    {
+        try
+        {
+            const string sql = @"
+                DELETE FROM BusinessReportPrint 
+                WHERE TKey IN @TKeys";
+
+            var parameters = new { TKeys = tKeys };
+            return await ExecuteAsync(sql, parameters);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("批次刪除業務報表列印失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<int> BatchAuditAsync(List<long> tKeys, string status, string verifier, DateTime verifyDate, string? notes = null)
     {
         try
         {
@@ -250,17 +201,18 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
                     Status = @Status,
                     Verifier = @Verifier,
                     VerifyDate = @VerifyDate,
-                    Notes = @Notes,
-                    UpdatedAt = GETDATE()
+                    Notes = CASE WHEN @Notes IS NOT NULL THEN @Notes ELSE Notes END,
+                    UpdatedBy = @Verifier,
+                    UpdatedAt = @VerifyDate
                 WHERE TKey IN @TKeys";
 
             var parameters = new
             {
+                TKeys = tKeys,
                 Status = status,
                 Verifier = verifier,
                 VerifyDate = verifyDate,
-                Notes = notes,
-                TKeys = tKeys
+                Notes = notes
             };
 
             return await ExecuteAsync(sql, parameters);
@@ -272,26 +224,28 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<int> CopyNextYearAsync(int sourceYear, int targetYear, string? siteId)
+    public async Task<int> CopyNextYearAsync(int sourceYear, int targetYear, string? siteId = null)
     {
         try
         {
             var sql = @"
                 INSERT INTO BusinessReportPrint 
-                (GiveYear, SiteId, OrgId, EmpId, EmpName, Qty, Status, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup)
+                (GiveYear, SiteId, OrgId, EmpId, EmpName, Qty, Status, Verifier, VerifyDate, Notes, CreatedBy, CreatedAt, UpdatedBy, UpdatedAt, CreatedPriority, CreatedGroup)
                 SELECT 
-                    @TargetYear,
+                    @TargetYear AS GiveYear,
                     SiteId,
                     OrgId,
                     EmpId,
                     EmpName,
                     Qty,
-                    'P',
+                    'P' AS Status,
+                    NULL AS Verifier,
+                    NULL AS VerifyDate,
                     Notes,
                     CreatedBy,
-                    GETDATE(),
-                    UpdatedBy,
-                    GETDATE(),
+                    GETDATE() AS CreatedAt,
+                    NULL AS UpdatedBy,
+                    GETDATE() AS UpdatedAt,
                     CreatedPriority,
                     CreatedGroup
                 FROM BusinessReportPrint
@@ -316,25 +270,30 @@ public class BusinessReportPrintRepository : BaseRepository, IBusinessReportPrin
         }
     }
 
-    public async Task<decimal> CalculateQtyAsync(long tKey, Dictionary<string, object>? calculationRules)
+    public async Task<bool> IsYearAuditedAsync(int giveYear, string? siteId = null)
     {
         try
         {
-            // 基本數量計算邏輯（可根據業務需求擴展）
-            var entity = await GetByIdAsync(tKey);
-            if (entity == null)
+            var sql = @"
+                SELECT COUNT(*) FROM BusinessReportPrint
+                WHERE GiveYear = @GiveYear AND Status = 'A'";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("GiveYear", giveYear);
+
+            if (!string.IsNullOrEmpty(siteId))
             {
-                throw new Exception($"找不到業務報表列印資料: {tKey}");
+                sql += " AND SiteId = @SiteId";
+                parameters.Add("SiteId", siteId);
             }
 
-            // 預設返回現有數量，實際業務邏輯需根據需求實作
-            return entity.Qty ?? 0;
+            var count = await ExecuteScalarAsync<int>(sql, parameters);
+            return count > 0;
         }
         catch (Exception ex)
         {
-            _logger.LogError($"計算數量失敗: {tKey}", ex);
+            _logger.LogError($"檢查年度審核狀態失敗: GiveYear={giveYear}", ex);
             throw;
         }
     }
 }
-

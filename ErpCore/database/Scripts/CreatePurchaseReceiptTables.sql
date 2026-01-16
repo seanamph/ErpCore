@@ -24,6 +24,7 @@ BEGIN
         [IsSettledAdjustment] BIT NOT NULL DEFAULT 0, -- 是否為已日結調整
         [OriginalReceiptId] NVARCHAR(50) NULL, -- 原始驗收單號（如有）
         [AdjustmentReason] NVARCHAR(500) NULL, -- 調整原因
+        [SourceProgram] NVARCHAR(50) NULL, -- 來源程式 (SYSW324/SYSW336)
         [CreatedBy] NVARCHAR(50) NULL,
         [CreatedAt] DATETIME2 NOT NULL DEFAULT GETDATE(),
         [UpdatedBy] NVARCHAR(50) NULL,
@@ -36,6 +37,7 @@ BEGIN
     CREATE NONCLUSTERED INDEX [IX_PurchaseReceipts_Status] ON [dbo].[PurchaseReceipts] ([Status]);
     CREATE NONCLUSTERED INDEX [IX_PurchaseReceipts_ReceiptDate] ON [dbo].[PurchaseReceipts] ([ReceiptDate]);
     CREATE NONCLUSTERED INDEX [IX_PurchaseReceipts_IsSettled] ON [dbo].[PurchaseReceipts] ([IsSettled]);
+    CREATE NONCLUSTERED INDEX [IX_PurchaseReceipts_SourceProgram] ON [dbo].[PurchaseReceipts] ([SourceProgram]);
 
     PRINT '資料表 PurchaseReceipts 建立成功';
 END

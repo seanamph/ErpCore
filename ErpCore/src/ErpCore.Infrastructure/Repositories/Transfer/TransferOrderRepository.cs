@@ -21,7 +21,7 @@ public class TransferOrderRepository : BaseRepository, ITransferOrderRepository
     /// 更新調撥單明細已退數量
     /// 注意: 假設有 TransferOrderDetails 資料表，包含 DetailId, ReturnQty 欄位
     /// </summary>
-    public async Task UpdateReturnQtyAsync(Guid transferDetailId, decimal returnQty, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateReturnQtyAsync(Guid transferDetailId, decimal returnQty, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {
@@ -98,7 +98,7 @@ public class TransferOrderRepository : BaseRepository, ITransferOrderRepository
     /// 更新調撥單明細已收數量
     /// 注意: 假設有 TransferOrderDetails 資料表，包含 DetailId, ReceiptQty 欄位
     /// </summary>
-    public async Task UpdateReceiptQtyAsync(Guid transferDetailId, decimal receiptQty, System.Data.IDbTransaction? transaction = null)
+    public async Task UpdateReceiptQtyAsync(Guid transferDetailId, decimal receiptQty, global::System.Data.IDbTransaction? transaction = null)
     {
         try
         {

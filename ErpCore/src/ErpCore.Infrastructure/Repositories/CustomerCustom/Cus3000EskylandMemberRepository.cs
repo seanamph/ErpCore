@@ -193,7 +193,21 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
         }
     }
 
-    public async Task<long> CreateAsync(Cus3000EskylandMember entity)
+    public async Task<IEnumerable<Cus3000EskylandMember>> GetAllAsync()
+    {
+        try
+        {
+            const string sql = "SELECT * FROM Cus3000EskylandMembers ORDER BY TKey";
+            return await QueryAsync<Cus3000EskylandMember>(sql);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("查詢所有CUS3000.ESKYLAND會員失敗", ex);
+            throw;
+        }
+    }
+
+    public async Task<Cus3000EskylandMember> AddAsync(Cus3000EskylandMember entity)
     {
         try
         {
@@ -218,7 +232,9 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
             parameters.Add("UpdatedBy", entity.UpdatedBy);
             parameters.Add("UpdatedAt", entity.UpdatedAt);
 
-            return await QuerySingleAsync<long>(sql, parameters);
+            var tKey = await QuerySingleAsync<long>(sql, parameters);
+            entity.TKey = tKey;
+            return entity;
         }
         catch (Exception ex)
         {
@@ -227,7 +243,7 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
         }
     }
 
-    public async Task<bool> UpdateAsync(Cus3000EskylandMember entity)
+    public async Task UpdateAsync(Cus3000EskylandMember entity)
     {
         try
         {
@@ -256,8 +272,7 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
             parameters.Add("UpdatedBy", entity.UpdatedBy);
             parameters.Add("UpdatedAt", entity.UpdatedAt);
 
-            var rowsAffected = await ExecuteAsync(sql, parameters);
-            return rowsAffected > 0;
+            await ExecuteAsync(sql, parameters);
         }
         catch (Exception ex)
         {
@@ -266,7 +281,7 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
         }
     }
 
-    public async Task<bool> DeleteAsync(long tKey)
+    public async Task DeleteAsync(long tKey)
     {
         try
         {
@@ -274,14 +289,19 @@ public class Cus3000EskylandMemberRepository : BaseRepository, ICus3000EskylandM
                 DELETE FROM Cus3000EskylandMembers 
                 WHERE TKey = @TKey";
 
-            var rowsAffected = await ExecuteAsync(sql, new { TKey = tKey });
-            return rowsAffected > 0;
+            await ExecuteAsync(sql, new { TKey = tKey });
         }
         catch (Exception ex)
         {
             _logger.LogError($"刪除CUS3000.ESKYLAND會員失敗: {tKey}", ex);
             throw;
         }
+    }
+
+    public async Task<long> CreateAsync(Cus3000EskylandMember entity)
+    {
+        var result = await AddAsync(entity);
+        return result.TKey;
     }
 }
 

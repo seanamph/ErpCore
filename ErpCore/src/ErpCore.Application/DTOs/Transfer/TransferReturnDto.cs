@@ -73,8 +73,6 @@ public class CreateTransferReturnDetailDto
     public int LineNum { get; set; }
     public string GoodsId { get; set; } = string.Empty;
     public string? BarcodeId { get; set; }
-    public decimal TransferQty { get; set; }
-    public decimal ReceiptQty { get; set; }
     public decimal ReturnQty { get; set; }
     public decimal? UnitPrice { get; set; }
     public string? ReturnReason { get; set; }
@@ -125,7 +123,7 @@ public class TransferReturnQueryDto
 /// <summary>
 /// 待驗退調撥單查詢 DTO
 /// </summary>
-public class PendingTransferOrderForReturnQueryDto
+public class PendingTransferReturnQueryDto
 {
     public int PageIndex { get; set; } = 1;
     public int PageSize { get; set; } = 20;
@@ -139,7 +137,7 @@ public class PendingTransferOrderForReturnQueryDto
 /// <summary>
 /// 待驗退調撥單 DTO
 /// </summary>
-public class PendingTransferOrderForReturnDto
+public class PendingTransferReturnDto
 {
     public string TransferId { get; set; } = string.Empty;
     public DateTime TransferDate { get; set; }

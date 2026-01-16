@@ -72,6 +72,26 @@ public interface IUserPermissionRepository
     /// 根據使用者ID刪除所有直接權限（SYS0230）
     /// </summary>
     Task<int> DeleteByUserIdAsync(string userId);
+
+    /// <summary>
+    /// 查詢使用者系統列表 (SYS0320)
+    /// </summary>
+    Task<List<UserSystemListDto>> GetUserSystemsAsync(string userId);
+
+    /// <summary>
+    /// 查詢使用者選單列表 (SYS0320)
+    /// </summary>
+    Task<List<UserMenuListDto>> GetUserMenusAsync(string userId, string? systemId = null);
+
+    /// <summary>
+    /// 查詢使用者作業列表 (SYS0320)
+    /// </summary>
+    Task<List<UserProgramListDto>> GetUserProgramsAsync(string userId, string? menuId = null);
+
+    /// <summary>
+    /// 查詢使用者按鈕列表 (SYS0320)
+    /// </summary>
+    Task<List<UserButtonListDto>> GetUserButtonsAsync(string userId, string? programId = null);
 }
 
 /// <summary>
@@ -119,5 +139,57 @@ public class UserPermissionStatsDto
     public int AuthorizedButtons { get; set; }
     public bool IsFullyAuthorized { get; set; }
     public double AuthorizedRate { get; set; }
+}
+
+/// <summary>
+/// 使用者系統列表 DTO (SYS0320)
+/// </summary>
+public class UserSystemListDto
+{
+    public string SystemId { get; set; } = string.Empty;
+    public string SystemName { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+    public double AuthorizedRate { get; set; }
+}
+
+/// <summary>
+/// 使用者選單列表 DTO (SYS0320)
+/// </summary>
+public class UserMenuListDto
+{
+    public string MenuId { get; set; } = string.Empty;
+    public string MenuName { get; set; } = string.Empty;
+    public string SystemId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 使用者作業列表 DTO (SYS0320)
+/// </summary>
+public class UserProgramListDto
+{
+    public string ProgramId { get; set; } = string.Empty;
+    public string ProgramName { get; set; } = string.Empty;
+    public string MenuId { get; set; } = string.Empty;
+    public int TotalButtons { get; set; }
+    public int AuthorizedButtons { get; set; }
+    public bool IsFullyAuthorized { get; set; }
+}
+
+/// <summary>
+/// 使用者按鈕列表 DTO (SYS0320)
+/// </summary>
+public class UserButtonListDto
+{
+    public string ButtonId { get; set; } = string.Empty;
+    public string ButtonName { get; set; } = string.Empty;
+    public string ProgramId { get; set; } = string.Empty;
+    public string? Funs { get; set; }
+    public string? PageId { get; set; }
+    public bool IsAuthorized { get; set; }
 }
 

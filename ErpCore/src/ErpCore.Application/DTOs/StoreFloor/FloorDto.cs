@@ -62,20 +62,6 @@ public class FloorDto
 }
 
 /// <summary>
-/// 樓層查詢 DTO
-/// </summary>
-public class FloorQueryDto
-{
-    public int PageIndex { get; set; } = 1;
-    public int PageSize { get; set; } = 20;
-    public string? SortField { get; set; }
-    public string? SortOrder { get; set; }
-    public string? FloorId { get; set; }
-    public string? FloorName { get; set; }
-    public string? Status { get; set; }
-}
-
-/// <summary>
 /// 建立樓層 DTO
 /// </summary>
 public class CreateFloorDto

@@ -21,6 +21,7 @@ public class PurchaseReceiptDto
     public bool IsSettledAdjustment { get; set; }
     public string? OriginalReceiptId { get; set; }
     public string? AdjustmentReason { get; set; }
+    public string? SourceProgram { get; set; }
     public string? CreatedBy { get; set; }
     public DateTime CreatedAt { get; set; }
     public string? UpdatedBy { get; set; }
@@ -61,6 +62,8 @@ public class CreatePurchaseReceiptDto
     public DateTime ReceiptDate { get; set; }
     public string? ReceiptUserId { get; set; }
     public string? Memo { get; set; }
+    public string? SourceProgram { get; set; }
+    public string? AdjustmentReason { get; set; }
     public List<CreatePurchaseReceiptDetailDto> Details { get; set; } = new();
 }
 
@@ -114,6 +117,7 @@ public class PurchaseReceiptQueryDto
     public string? Status { get; set; }
     public DateTime? ReceiptDateFrom { get; set; }
     public DateTime? ReceiptDateTo { get; set; }
+    public string? SourceProgram { get; set; }
 }
 
 /// <summary>

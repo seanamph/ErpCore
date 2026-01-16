@@ -170,7 +170,7 @@ public class B2BInvoiceRepository : BaseRepository, IB2BInvoiceRepository
 
             return new PagedResult<B2BInvoice>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
                 PageSize = query.PageSize

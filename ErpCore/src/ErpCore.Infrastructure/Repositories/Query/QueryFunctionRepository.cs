@@ -111,11 +111,10 @@ public class QueryFunctionRepository : BaseRepository, IQueryFunctionRepository
 
             return new PagedResult<QueryFunction>
             {
-                Items = items,
+                Items = items.ToList(),
                 TotalCount = totalCount,
                 PageIndex = query.PageIndex,
-                PageSize = query.PageSize,
-                TotalPages = (int)Math.Ceiling(totalCount / (double)query.PageSize)
+                PageSize = query.PageSize
             };
         }
         catch (Exception ex)

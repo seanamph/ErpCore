@@ -56,27 +56,27 @@ public interface IRolePermissionService
     /// <summary>
     /// 查詢角色系統列表 (SYS0310)
     /// </summary>
-    Task<List<RoleSystemListDto>> GetRoleSystemsAsync(string roleId);
+    Task<List<ErpCore.Application.DTOs.System.RoleSystemListDto>> GetRoleSystemsAsync(string roleId);
 
     /// <summary>
     /// 查詢角色選單列表 (SYS0310)
     /// </summary>
-    Task<List<RoleMenuListDto>> GetRoleMenusAsync(string roleId, string? systemId = null);
+    Task<List<ErpCore.Application.DTOs.System.RoleMenuListDto>> GetRoleMenusAsync(string roleId, string? systemId = null);
 
     /// <summary>
     /// 查詢角色作業列表 (SYS0310)
     /// </summary>
-    Task<List<RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null);
+    Task<List<ErpCore.Application.DTOs.System.RoleProgramListDto>> GetRoleProgramsAsync(string roleId, string? menuId = null);
 
     /// <summary>
     /// 查詢角色按鈕列表 (SYS0310)
     /// </summary>
-    Task<List<RoleButtonListDto>> GetRoleButtonsAsync(string roleId, string? programId = null);
+    Task<List<ErpCore.Application.DTOs.System.RoleButtonListDto>> GetRoleButtonsAsync(string roleId, string? programId = null);
 
     /// <summary>
     /// 修改角色權限
     /// </summary>
-    Task<RolePermissionDto> UpdateRolePermissionAsync(string roleId, long tKey, UpdateRolePermissionDto dto);
+    Task<ErpCore.Application.DTOs.System.RolePermissionDto> UpdateRolePermissionAsync(string roleId, long tKey, UpdateRolePermissionDto dto);
 }
 
 /// <summary>

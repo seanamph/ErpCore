@@ -224,4 +224,3 @@ public class BankRepository : BaseRepository, IBankRepository
         }
     }
 }
-

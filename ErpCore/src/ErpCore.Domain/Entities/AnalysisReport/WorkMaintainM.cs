@@ -46,6 +46,11 @@ public class WorkMaintainM
     public string? BelongOrg { get; set; }
 
     /// <summary>
+    /// 報表類型 (SYSA1023 使用)
+    /// </summary>
+    public string? ReportType { get; set; }
+
+    /// <summary>
     /// 建立者
     /// </summary>
     public string? CreatedBy { get; set; }

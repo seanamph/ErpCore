@@ -1,6 +1,7 @@
 using ErpCore.Application.DTOs.Procurement;
 using ErpCore.Application.Services.Base;
 using ErpCore.Domain.Entities.Procurement;
+using ErpCore.Infrastructure.Repositories.BasicData;
 using ErpCore.Infrastructure.Repositories.Procurement;
 using ErpCore.Shared.Common;
 using ErpCore.Shared.Logging;
@@ -8,18 +9,21 @@ using ErpCore.Shared.Logging;
 namespace ErpCore.Application.Services.Procurement;
 
 /// <summary>
-/// 銀行帳戶服務實作
+/// 銀行帳戶服務實作 (銀行帳戶維護)
 /// </summary>
 public class BankAccountService : BaseService, IBankAccountService
 {
     private readonly IBankAccountRepository _repository;
+    private readonly IBankRepository _bankRepository;
 
     public BankAccountService(
         IBankAccountRepository repository,
+        IBankRepository bankRepository,
         ILoggerService logger,
         IUserContext userContext) : base(logger, userContext)
     {
         _repository = repository;
+        _bankRepository = bankRepository;
     }
 
     public async Task<PagedResult<BankAccountDto>> GetBankAccountsAsync(BankAccountQueryDto query)
@@ -36,13 +40,27 @@ public class BankAccountService : BaseService, IBankAccountService
                 AccountNumber = query.AccountNumber,
                 AccountType = query.AccountType,
                 CurrencyId = query.CurrencyId,
-                Status = query.Status
+                Status = query.Status,
+                SortField = query.SortField,
+                SortOrder = query.SortOrder
             };
 
             var items = await _repository.QueryAsync(repositoryQuery);
             var totalCount = await _repository.GetCountAsync(repositoryQuery);
 
-            var dtos = items.Select(x => MapToDto(x)).ToList();
+            // 獲取所有銀行ID並查詢銀行名稱
+            var bankIds = items.Select(x => x.BankId).Distinct().ToList();
+            var bankNameMap = new Dictionary<string, string>();
+            foreach (var bankId in bankIds)
+            {
+                var bank = await _bankRepository.GetByIdAsync(bankId);
+                if (bank != null)
+                {
+                    bankNameMap[bankId] = bank.BankName;
+                }
+            }
+
+            var dtos = items.Select(x => MapToDto(x, bankNameMap.GetValueOrDefault(x.BankId))).ToList();
 
             return new PagedResult<BankAccountDto>
             {
@@ -69,7 +87,15 @@ public class BankAccountService : BaseService, IBankAccountService
                 throw new InvalidOperationException($"銀行帳戶不存在: {bankAccountId}");
             }
 
-            return MapToDto(bankAccount);
+            // 獲取銀行名稱
+            string? bankName = null;
+            if (!string.IsNullOrEmpty(bankAccount.BankId))
+            {
+                var bank = await _bankRepository.GetByIdAsync(bankAccount.BankId);
+                bankName = bank?.BankName;
+            }
+
+            return MapToDto(bankAccount, bankName);
         }
         catch (Exception ex)
         {
@@ -89,7 +115,7 @@ public class BankAccountService : BaseService, IBankAccountService
             }
 
             // 檢查帳戶號碼是否已存在
-            if (!string.IsNullOrEmpty(dto.AccountNumber) && await _repository.ExistsByAccountNumberAsync(dto.AccountNumber))
+            if (await _repository.ExistsByAccountNumberAsync(dto.AccountNumber))
             {
                 throw new InvalidOperationException($"帳戶號碼已存在: {dto.AccountNumber}");
             }
@@ -103,7 +129,16 @@ public class BankAccountService : BaseService, IBankAccountService
                 AccountType = dto.AccountType,
                 CurrencyId = dto.CurrencyId ?? "TWD",
                 Status = dto.Status,
-                Memo = dto.Memo,
+                Balance = dto.Balance ?? 0,
+                OpeningDate = dto.OpeningDate,
+                ClosingDate = dto.ClosingDate,
+                ContactPerson = dto.ContactPerson,
+                ContactPhone = dto.ContactPhone,
+                ContactEmail = dto.ContactEmail,
+                BranchName = dto.BranchName,
+                BranchCode = dto.BranchCode,
+                SwiftCode = dto.SwiftCode,
+                Notes = dto.Notes,
                 CreatedBy = GetCurrentUserId(),
                 CreatedAt = DateTime.Now,
                 UpdatedBy = GetCurrentUserId(),
@@ -133,11 +168,13 @@ public class BankAccountService : BaseService, IBankAccountService
             }
 
             // 檢查帳戶號碼是否已被其他帳戶使用
-            if (!string.IsNullOrEmpty(dto.AccountNumber) && 
-                dto.AccountNumber != bankAccount.AccountNumber &&
-                await _repository.ExistsByAccountNumberAsync(dto.AccountNumber))
+            var existingAccount = await _repository.GetByIdAsync(bankAccountId);
+            if (existingAccount != null && existingAccount.AccountNumber != dto.AccountNumber)
             {
-                throw new InvalidOperationException($"帳戶號碼已被使用: {dto.AccountNumber}");
+                if (await _repository.ExistsByAccountNumberAsync(dto.AccountNumber))
+                {
+                    throw new InvalidOperationException($"帳戶號碼已被使用: {dto.AccountNumber}");
+                }
             }
 
             bankAccount.BankId = dto.BankId;
@@ -146,7 +183,16 @@ public class BankAccountService : BaseService, IBankAccountService
             bankAccount.AccountType = dto.AccountType;
             bankAccount.CurrencyId = dto.CurrencyId ?? "TWD";
             bankAccount.Status = dto.Status;
-            bankAccount.Memo = dto.Memo;
+            bankAccount.Balance = dto.Balance ?? 0;
+            bankAccount.OpeningDate = dto.OpeningDate;
+            bankAccount.ClosingDate = dto.ClosingDate;
+            bankAccount.ContactPerson = dto.ContactPerson;
+            bankAccount.ContactPhone = dto.ContactPhone;
+            bankAccount.ContactEmail = dto.ContactEmail;
+            bankAccount.BranchName = dto.BranchName;
+            bankAccount.BranchCode = dto.BranchCode;
+            bankAccount.SwiftCode = dto.SwiftCode;
+            bankAccount.Notes = dto.Notes;
             bankAccount.UpdatedBy = GetCurrentUserId();
             bankAccount.UpdatedAt = DateTime.Now;
 
@@ -171,7 +217,7 @@ public class BankAccountService : BaseService, IBankAccountService
                 throw new InvalidOperationException($"銀行帳戶不存在: {bankAccountId}");
             }
 
-            // TODO: 檢查是否有相關付款單使用此帳戶
+            // TODO: 檢查是否有相關付款單，如果有則不允許刪除
 
             await _repository.DeleteAsync(bankAccountId);
 
@@ -200,7 +246,7 @@ public class BankAccountService : BaseService, IBankAccountService
 
             await _repository.UpdateAsync(bankAccount);
 
-            _logger.LogInfo($"更新銀行帳戶狀態成功: {bankAccountId} -> {status}");
+            _logger.LogInfo($"更新銀行帳戶狀態成功: {bankAccountId}, 狀態: {status}");
         }
         catch (Exception ex)
         {
@@ -219,15 +265,14 @@ public class BankAccountService : BaseService, IBankAccountService
                 throw new InvalidOperationException($"銀行帳戶不存在: {bankAccountId}");
             }
 
-            // 從付款單等相關表計算實際餘額
-            var balance = await _repository.CalculateBalanceAsync(bankAccountId);
-            
+            var balance = await _repository.GetBalanceAsync(bankAccountId);
+
             return new BankAccountBalanceDto
             {
                 BankAccountId = bankAccount.BankAccountId,
                 AccountName = bankAccount.AccountName,
                 Balance = balance,
-                CurrencyId = bankAccount.CurrencyId ?? "TWD",
+                CurrencyId = bankAccount.CurrencyId,
                 LastUpdateDate = bankAccount.UpdatedAt
             };
         }
@@ -251,24 +296,58 @@ public class BankAccountService : BaseService, IBankAccountService
         }
     }
 
-    private BankAccountDto MapToDto(BankAccount bankAccount)
+    private BankAccountDto MapToDto(BankAccount bankAccount, string? bankName = null)
     {
         return new BankAccountDto
         {
             TKey = bankAccount.TKey,
             BankAccountId = bankAccount.BankAccountId,
             BankId = bankAccount.BankId,
+            BankName = bankName,
             AccountName = bankAccount.AccountName,
             AccountNumber = bankAccount.AccountNumber,
             AccountType = bankAccount.AccountType,
+            AccountTypeName = GetAccountTypeName(bankAccount.AccountType),
             CurrencyId = bankAccount.CurrencyId,
             Status = bankAccount.Status,
-            Memo = bankAccount.Memo,
+            StatusName = GetStatusName(bankAccount.Status),
+            Balance = bankAccount.Balance,
+            OpeningDate = bankAccount.OpeningDate,
+            ClosingDate = bankAccount.ClosingDate,
+            ContactPerson = bankAccount.ContactPerson,
+            ContactPhone = bankAccount.ContactPhone,
+            ContactEmail = bankAccount.ContactEmail,
+            BranchName = bankAccount.BranchName,
+            BranchCode = bankAccount.BranchCode,
+            SwiftCode = bankAccount.SwiftCode,
+            Notes = bankAccount.Notes,
             CreatedBy = bankAccount.CreatedBy,
             CreatedAt = bankAccount.CreatedAt,
             UpdatedBy = bankAccount.UpdatedBy,
-            UpdatedAt = bankAccount.UpdatedAt
+            UpdatedAt = bankAccount.UpdatedAt,
+            CreatedPriority = bankAccount.CreatedPriority,
+            CreatedGroup = bankAccount.CreatedGroup
+        };
+    }
+
+    private string? GetAccountTypeName(string? accountType)
+    {
+        return accountType switch
+        {
+            "1" => "活期",
+            "2" => "定期",
+            "3" => "外幣",
+            _ => accountType
+        };
+    }
+
+    private string? GetStatusName(string status)
+    {
+        return status switch
+        {
+            "1" => "啟用",
+            "0" => "停用",
+            _ => status
         };
     }
 }
-

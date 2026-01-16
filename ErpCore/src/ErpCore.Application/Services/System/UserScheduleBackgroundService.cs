@@ -1,6 +1,7 @@
 using ErpCore.Application.Services.System;
 using ErpCore.Shared.Logging;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace ErpCore.Application.Services.System;
 

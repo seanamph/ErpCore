@@ -1,4 +1,3 @@
-using ErpCore.Application.DTOs.System;
 using ErpCore.Domain.Entities.System;
 using ErpCore.Shared.Common;
 
@@ -12,27 +11,27 @@ public interface IItemPermissionRepository
     /// <summary>
     /// 查詢項目權限列表（含關聯資訊）
     /// </summary>
-    Task<PagedResult<ItemPermissionDto>> QueryPermissionsAsync(string itemId, ItemPermissionQuery query);
+    Task<PagedResult<ItemPermissionQueryResult>> QueryPermissionsAsync(string itemId, ItemPermissionQueryModel query);
 
     /// <summary>
     /// 查詢項目系統列表及權限狀態
     /// </summary>
-    Task<List<ItemSystemDto>> GetSystemListAsync(string itemId);
+    Task<List<ItemSystemQueryResult>> GetSystemListAsync(string itemId);
 
     /// <summary>
     /// 查詢項目選單列表及權限狀態
     /// </summary>
-    Task<List<ItemMenuDto>> GetMenuListAsync(string itemId, string systemId);
+    Task<List<ItemMenuQueryResult>> GetMenuListAsync(string itemId, string systemId);
 
     /// <summary>
     /// 查詢項目作業列表及權限狀態
     /// </summary>
-    Task<List<ItemProgramDto>> GetProgramListAsync(string itemId, string menuId);
+    Task<List<ItemProgramQueryResult>> GetProgramListAsync(string itemId, string menuId);
 
     /// <summary>
     /// 查詢項目按鈕列表及權限狀態
     /// </summary>
-    Task<List<ItemButtonDto>> GetButtonListAsync(string itemId, string programId);
+    Task<List<ItemButtonQueryResult>> GetButtonListAsync(string itemId, string programId);
 
     /// <summary>
     /// 查詢項目權限（單筆）

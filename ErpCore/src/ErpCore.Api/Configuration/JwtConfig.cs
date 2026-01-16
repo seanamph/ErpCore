@@ -1,12 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using ErpCore.Shared.Logging;
+using ErpCore.Shared.Common;
 
 namespace ErpCore.Api.Configuration;
 
 /// <summary>
 /// JWT 設定類別
 /// </summary>
-public class JwtConfig
+public class JwtConfig : IJwtConfig
 {
     private readonly IConfiguration _configuration;
     private readonly ILoggerService _logger;
